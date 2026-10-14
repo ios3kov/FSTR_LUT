@@ -1,3 +1,7 @@
 /build*/
 /.DS_Store
 *.dSYM/
+__pycache__/
+*.pyc
+/assets/models/*.onnx
+/assets/models/*.pth

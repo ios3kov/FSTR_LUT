@@ -1,46 +1,46 @@
-# FSTR-LUT: product contract and implementation plan
+# FSTR-LUT — AI Enhance + Looks v3
 
-Source: full user specification in USER_SPEC.txt, accepted 2026-10-14. No prior implementation exists. Repository `ios3kov/FSTR_LUT` was empty when cloned; no existing changes were overwritten. Work occurs on `dev/sdr-foundation`, not main.
+Canonical contract: USER_SPEC_V3.txt and user's implementation guidance, 2026-10-14. V3 supersedes USER_SPEC.txt; original plan preserved in history/PLAN-v1.md. Initial GitHub repository was empty; interruption occurred before processing code existed. Preserved baseline b21b571. Branch dev/ai-enhance-prototype. No main/release/publication authorized.
 
-## Product discovery
+## Discovery and delta
+For AE artists processing phone footage, compressed SDR, low light, moderate softness, photographs and graphics. Apply effect -> automatic moderate Enhance/Fast/Neutral -> select Look -> adjust strength. No analyze button or model selector. Preserve night/light character, faces and clean footage.
+AI is now core; HDR, upscale, interpolation and generative face changes are excluded. Custom .cube moves after MVP. Six looks: Neutral, Natural Skin, Warm Film, Cool Modern, Soft Vintage, Night Mood. Five main controls: Enhance, Look, Look Amount, Quality, Mix. Advanced controls only when algorithms make them meaningful. No independent framewise auto color or previousFrame. Python/PyTorch research/export only. JSON state and embedded versioned LUTs. Fast 33–40 ms at 1080p is target, not claim. User selected this Mac as initial reference.
+Stage 0 is covered by supplied contract. Model/license/quality/speed unknowns block production selection, not independent research. Senior consultation was expressly authorized, read-only, no implementation ownership.
 
-For After Effects artists grading ordinary SDR footage locally. Apply the effect, select the actual incoming working-space contract, adjust exposure/contrast/highlights/shadows/saturation/creative balance, choose a bundled or imported look, blend and save. The value is predictable grading with portable LUT state. There is no RAW/LOG/detail recovery claim. Unknown LUT color spaces require explicit metadata, not automatic detection. Errors must be visible and must not silently substitute a look. User specification covers Stage 0; the exact repository URL was the only blocking intake question and was answered.
+## Accepted rules
+AE Development Rules v11.1.0, commit 04b606845e0f73ab28b9807bb45682eae4d6ce34, tag object 67359cba5ff85401c90455ccde803e65dcc91a85. Complete checkout ../AE-Development-Rules-v11.1.0. Smart Entry, Product Discovery; Process §§1–13; Engineering §§14,16–21,24–25,32,34–35,41; Native §23; transfer §26. Critical risk, Development delivery. Research-methodology governs audit; production-engineering governs implementation/native review/testing. Reference Audit N/A: model research inputs are not whole-product parity targets. Release, updater, IPC, CEP, UXP, HDR out of this block.
 
-Core v1 includes native macOS arm64 and Windows x64, 8/16/32 bpc, CPU reference, custom .cube, portable presets and six original looks. GPU/MFR validation follows the CPU reference; HDR follows completed SDR. No AI/cloud/temporal dependence. Precise AE/OS compatibility and speed budgets are measured, not assumed.
+## Architecture / first slice
+C++17 core without AE headers. Typed borrowed CPU RGBA float includes dimensions, stride, accessible buffer length, transfer/primaries, alpha mode. Immutable settings, explicit FrameWindow, context resources/backend/cancel. First experimental model FFDNet Color Clip is a small denoising path; NAFNet-SIDD-width32 is a quality comparator, no production choice yet.
+One ONNX Conv/ReLU trunk; exact C++ shuffle/pad/sigma prep; shared loaded session, one active inference, reusable context buffers. Temporal radius explicitly zero; other windows rejected until implemented.
+Initial AI slice supports opaque SDR with explicit sRGB/linear-sRGB. Reject unsupported alpha/extended input, never successful silent clipping. Mix=0 bypass remains exact; LUT-only uses explicit residual policy. These research restrictions do not remove full v3 requirements. No fake auto color, defect estimator, independent Denoise/Detail or skin recognition.
 
-## Rules baseline
-
-AE Development Rules v11.1.0 at `04b606845e0f73ab28b9807bb45682eae4d6ce34`; annotated tag `67359cba5ff85401c90455ccde803e65dcc91a85`. Complete checkout is ../AE-Development-Rules-v11.1.0. Adoption selects AI_ENTRYPOINT, Product Discovery, Process §§1–4,6–13; Engineering §§14,16–21,24–25,32,34,41; Native §23; transfer §26. Risk Critical (render/math/serialization); delivery Development. Reference Audit N/A: user supplied a specification, not a product parity target. Release/distribution, IPC, updater, AI, CEP and UXP are outside this development block. Use production-engineering's workflow, native and behavior-testing guidance. No agent delegation requested or used.
-
-## Acceptance and traceability
-
-| ID | Requirement and observable acceptance | Block/check |
+## Acceptance / traceability
+| ID | Requirement | Check / remaining obligation |
 | --- | --- | --- |
-| SDR-01 | Neutral controls and disabled LUT return exact original including transparent/extended pixels | CPU neutral tests; AE depth fixtures later |
-| SDR-02 | All controls have bounded finite values and documented formulas/defaults | CPU analytic control tests; COLOR.md |
-| LUT-01 | .cube 17³/33³/65³, domain validation, red-fastest order, tetrahedral results | Parser malformed/size/domain tests; six simplex tests |
-| LUT-02 | Outside-domain policy preserves extended values; no global [0,1] clamp | Identity/affine/exterior tests |
-| LUT-03 | Six original looks, descriptions, fixed spaces, strengths and limitations | Asset checks + rendered visual review |
-| COL-01 | Explicit native/linear/sRGB input; no inferred Rec.709 or double gamma | Color roundtrip/contract rejection tests + AE linear fixture later |
-| ALPHA-01 | Preserve alpha; unpremultiply/repremultiply; transparent policy | CPU alpha tests; AE transparency later |
-| STATE-01 | Versioned presets embed LUT bytes/metadata; no path dependency | Roundtrip/error tests; AE arbitrary-data import/save/reopen remains open |
-| AE-01 | Native SDK adapter + bundle builds, flags/PiPL align, exceptions contained | SDK build and binary audit; actual host load/render open |
-| AE-02 | 8/16/32, AE16=32768, row stride, ROI, scale, cancellation, parameter checkout cleanup | Adapter code review + actual AE fixtures open |
-| MFR-01 | Deterministic parallel/out-of-order results without mutable render state | Core parallel tests; actual AE MFR open |
-| PERF-01 | CPU prototype time at 1080p/4K; AE/RAM/VRAM/cold/warm separately measured | CPU benchmark; AE profiling open |
-| GPU-01 | Select SDK-supported backend, CPU parity tolerance before implementation | Stage 3, NOT RUN |
-| HDR-01 | Explicit nits/white/peak mapping and AE output workflow in float | Stage 4, NOT RUN |
-| VIS-01 | Gradients, skin, night, saturated, highlights, compressed 8-bit, cuts | Synthetic swatches now; footage and AE viewing later |
+| AI-01 | Exact weights/code provenance and commercial redistribution rights | Model audit; rights unresolved => no weights redistribution |
+| AI-02 | Model improves defects without face/detail invention | Real pretrained inference + paired synthetic metrics; natural video review open |
+| CORE-01 | Typed bounds/stride/color/memory; no AE headers | C++ compile, bounds/stride/NaN tests |
+| CORE-02 | Frame -> model -> LUT -> same dimensions | Upstream/ONNX/C++ parity; odd-size/RGB shuffle |
+| MIX-01 | Mix=0 exact, Enhance=0 allows looks | Extended/transparent bypass + backend call-count |
+| COL-01 | Model normalization/gamma, no inferred Rec.709/global clamp | Explicit color/unsupported-input tests; AE working-space later |
+| LUT-01 | Tetrahedral CPU and exterior policy | Independent six-simplex/identity/domain tests |
+| STATE-01 | Versioned JSON, embedded versioned LUT, preserved old state | JSON foundation; native save/reopen/Undo later |
+| TEMP-01 | Explicit bounded window, cut/boundary behavior, order independence | Radius-zero repeatability now; video/SDK neighbor checkout later |
+| CACHE-01 | Look change doesn't rerun restoration, bounded invalidation | Later after content identity and AE cache audit |
+| AE-01 | Native automatic Enhance/Neutral/Fast; 8/16/32, alpha, ROI, scale, cancel | Stage 2 NOT RUN until core measured |
+| MFR-01 | Bounded loaded sessions/parallel inference | Shared CPU backend tests; real AE MFR later |
+| PERF-01 | Cold/warm/total times, RAM/VRAM, 1080p/4K | CLI/research MPS; AE/4K later |
+| VIS-01 | Clean/night/faces/textures/text/motion/compression/cuts | Authored synthetic chart now; representative video corpus open |
+| UX-01 | Five controls, meaningful advanced group | Native stage 2/4 |
+| PORT-01 | Shared source, actual Windows/macOS evidence | Mac C++ CLI now; Windows/AE NOT RUN |
 
-## Sequence and architecture
+## Sequence
+1. Candidate/license/environment audit, source/checksum pins, comparative bench.
+2. Minimal C++ pipeline and ONNX CPU reference, parity, timing, synthetic rendered QA.
+3. NAFNet and short-video quality; CoreML EP placement/precision investigation; select only from evidence.
+4. AE prototype: Enhance, Neutral + one artistic look, Look Amount, exact runtime identity and total latency.
+5. Temporal/cuts, adaptive/stable color, six looks, Fast/Best, bounded caches, actual MFR.
+6. Both platforms and measured optimization/fine-tuning. No release implied.
 
-1. Audit/toolchain/color contract (docs/AUDIT.md, COLOR.md).
-2. Host-independent C++17 processing core, color pipeline, LUT engine, portable preset serialization and CPU backend. Tests first for dangerous math/parser behavior.
-3. Native SDK adapter with built-in controls/looks, SmartFX, no render-time UI/file access. SDK headers are external and never copied into Git.
-4. Native custom LUT/preset UI and arbitrary-data state, save/reopen/Undo/portability fixtures. This remains an obligation even if the initial core and bundle build pass.
-5. Owned AE runtime: exact loaded identity, neutral/non-neutral 8/16/32, linear space, transparency, ROI/downsample, RAM Preview, queue/aerender, cancellation, MFR, save/reopen and error paths. Windows requires its own toolchain/host.
-6. Measure, then GPU; finally HDR. No scope reduction or release inferred from this initial block.
-
-## Dependencies/licensing
-
-C++ standard library only for core; CMake/Clang for local build; Adobe SDK external under Adobe's terms. New LUTs are authored analytically for this project. Product source/assets remain all rights reserved pending owner's license decision; do not invent an open-source grant. No imported media or third-party LUTs.
+Core standard library + small MIT JSON/SHA headers; external ORT; external Adobe SDK later. Source/assets all rights reserved pending owner's license decision. No imported footage/LUTs.

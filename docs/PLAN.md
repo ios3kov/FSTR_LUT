@@ -1,6 +1,6 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
-Canonical contract: USER_SPEC_V3.txt and user's implementation guidance, 2026-10-14. V3 supersedes USER_SPEC.txt; original plan preserved in history/PLAN-v1.md. Initial GitHub repository was empty; interruption occurred before processing code existed. Preserved baseline b21b571. Branch dev/ai-enhance-prototype. No main/release/publication authorized.
+Current scope: user's color-first MVP steering, recorded in MVP_COLOR.md, takes precedence over the original v3 sequence below. V3 remains the broader post-MVP contract unless superseded by a direct decision. Initial GitHub repository was empty; preserved baseline b21b571. Branch dev/ai-enhance-prototype. No main/release/publication authorized.
 
 ## Discovery and delta
 For AE artists processing phone footage, compressed SDR, low light, moderate softness, photographs and graphics. Apply effect -> automatic moderate Enhance/Fast/Neutral -> select Look -> adjust strength. No analyze button or model selector. Preserve night/light character, faces and clean footage.
@@ -44,3 +44,34 @@ Initial AI slice supports opaque SDR with explicit sRGB/linear-sRGB. Reject unsu
 6. Both platforms and measured optimization/fine-tuning. No release implied.
 
 Core standard library + small MIT JSON/SHA headers; external ORT; external Adobe SDK later. Source/assets all rights reserved pending owner's license decision. No imported footage/LUTs.
+
+## Authorized continuation block 2 — 2026-10-14
+
+User requests maximum useful steps in one run and short human progress after each step; senior-model code consultation is explicitly authorized. Restore/preserve baseline2f6f3f2. Development branch retained; no release/main/unknown cleanup. Bounded work:
+
+1. Real-footage technical corpus with source rights/attribution, explicit color conversion and disjoint scene train/validation/test splits; authored corruption and unmodified source distinguished.
+2. Official FFDNet gray/luma and IRCNN color timed against prior RGB model; excluded candidates record actual license reason.
+3. If measured speed gate fails, bounded existing-architecture residual student/distillation research (not a new large network), train recipe and exact teacher/source provenance; held-out scenes untouched until selection frozen. Unknown teacher rights keep all derived weights research-only.
+4. Core improvement: conservative defect/confidence/noise gate, clean exact bypass, temporal-statistics-only explicit window and cut boundaries; no temporal pixel mixing. Tests must show benefit on degraded input, not just a no-op mask.
+5. Optional bounded fast transfer implementation only after independent error bound vs reference; retain exact reference and extended-value fallback. Real CoreML C++ path, active cancellation/admission tests, source/state serialization and six original look definitions where independent.
+6. AE research adapter/bundle and owned-host checks only when dependent model/core quality gates permit the stated prototype scope. Incomplete selection is not production approval. Actual AE/Windows/runtime gaps remain explicit.
+
+After each block update STATUS or this record with measured scope, evidence and next decision. Benchmarks run serially, separate from compilation/training. Final source review and affected checks required before push to dev branch.
+
+## User steering — quality before acceleration
+
+2026-10-14: establish which processing actually works before making it faster. This overrides the execution order above. Park further student training, color/backend optimization and AE integration; preserve their existing changes and failed experiments. A fast near-identity student is not success.
+
+Q-01: compare source/no processing, ordinary blur, RGB FFDNet, IRCNN and NAFNet on identical short motion clips and identical corruptions. Include original material, weak/strong added noise, extra H264 compression and modest blur. Freeze cases/seeds/settings before looking at results. Explicit sigma15 is a research setting, not automatic estimation.
+
+Q-02: evaluate the official SIDD homepage noisy/reference pair separately as real smartphone noise; it is one illustrative published example, not independent held-out certification (NAFNet was trained on SIDD). Preserve original-size crops, range/color/detail errors and negative results. No extrapolation to all phone video.
+
+Q-03: compare unclamped float outputs against references, gradient error and motion-relative error changes. Inspect stills and prepare motion previews; visual motion inspection is a separate gate. Natural ToS source is already compressed/graded, not noise-free GT. Metrics from authored corruptions establish only recovery of those corruptions. Clean original damage, residual color bias, no-op and blur counterexamples are explicit vetoes for universal default selection.
+
+Q-04: document defect-specific usefulness and outstanding automatic/temporal/color/native requirements, then select the next quality experiment. Speed targets remain open; do not optimize a failed quality path.
+
+## Current priority — color-first MVP
+
+Direct user steering: «нам прежде всего надо решить вопрос с цветом плоских исходников, чтобы можно было работать как с логарифмом. остальные улучшения оставь на потом после мвп». Restoration/model selection, denoise, compression, detail, temporal restoration, training and acceleration are deferred until after MVP. Their code, evidence and open requirements remain preserved. Model latency does not gate the color-only MVP.
+
+One essential clarification is pending: SDR grading with log-style controls, actual camera Log decoding, or SDR-to-Log export for external LUTs. Do not guess the camera curve/gamut or claim recovered RAW/scene latitude. Independent work: preserve state, establish float/alpha/identity color contracts and record concrete MVP acceptance in MVP_COLOR.md. Dependent transform/UI implementation waits for that answer.

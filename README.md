@@ -1,6 +1,6 @@
-# FSTR-LUT: AI Enhance + Looks
+# FSTR-LUT: color-first MVP
 
-Native After Effects effect in development under AE Development Rules v11.1.0. Current result is an independent C++ research pipeline; no accepted AE plugin build yet. See docs/PLAN.md and docs/STATUS.md for completion/open checks; full product contract docs/USER_SPEC_V3.txt.
+Native After Effects effect in development under AE Development Rules v11.1.0. Current user priority is useful color grading of flat material, before any restoration or acceleration. See docs/MVP_COLOR.md for the current scope, docs/PLAN.md and docs/STATUS.md for acceptance/open checks. AI Enhance research and the broader v3 contract are preserved for after MVP. Current result is an independent C++ research pipeline; no accepted AE plugin build yet.
 
 Core build/tests (CMake 3.20+, C++17):
 

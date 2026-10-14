@@ -1,5 +1,7 @@
 # Research color contract
 
+Current priority: color-first MVP per MVP_COLOR.md. The model contract below is preserved research, deferred post-MVP. Independent common grading kernel requires explicitly supplied linear Rec709/sRGB float-domain RGB; it performs exposure/contrast/saturation only and is not yet wired into render. Desired source/output profile interpretation is pending; flat appearance is not a camera Log identifier. No scene/RAW radiance recovery is implied.
+
 Borrowed CPU interleaved RGBA float32; positive stride in float elements; declared accessible length; full frame; caller owns memory through render. Explicit sRGB/Rec.709 D65 primaries and sRGB or linear transfer. AE input-space determination is pending; no inference from file or host.
 
 Model: experimental FFDNet Color Clip; RGB NCHW encoded sRGB [0,1]; sigma in encoded sample units (15/255 research initial). Linear input converts exactly once to encoded sRGB and model result back once. AI supports opaque input only now. Nonfinite, negative, above-one or nonopaque inputs produce an explicit error, never a successful clipped frame. V3 alpha/extended support remains open. Mix=0 copies original exactly and skips model. Enhance=0 leaves LUT usable.

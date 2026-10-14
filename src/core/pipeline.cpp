@@ -5,12 +5,6 @@
 #include <limits>
 #include <stdexcept>
 namespace fstr {
-double srgb_to_linear(double x) {
-    return x<=0.04045 ? x/12.92 : std::pow((x+0.055)/1.055,2.4);
-}
-double linear_to_srgb(double x) {
-    return x<=0.0031308 ? x*12.92 : 1.055*std::pow(x,1.0/2.4)-0.055;
-}
 namespace {
 using Clock=std::chrono::steady_clock;
 double milliseconds(Clock::time_point start) {
@@ -56,6 +50,8 @@ RenderResult render(const FrameWindow& window, const RenderSettings& s, RenderCo
             result.status=Status::Unsupported; result.message="Explicit sRGB/linear-sRGB contract required";
             result.rgba.clear(); return result;
         }
+        auto decode=s.fast_color_math?srgb_to_linear_fast:srgb_to_linear;
+        auto encode=s.fast_color_math?linear_to_srgb_fast:linear_to_srgb;
         auto prep=Clock::now();
         std::vector<float> encoded(result.rgba.size());
         for(std::size_t p=0;p<f.width*f.height;++p) {
@@ -69,7 +65,7 @@ RenderResult render(const FrameWindow& window, const RenderSettings& s, RenderCo
                 double value=result.rgba[p*4+c];
                 if(!std::isfinite(value)) throw std::invalid_argument("Nonfinite input");
                 if(f.alpha==Alpha::Premultiplied && alpha>0) value/=alpha;
-                if(f.transfer==Transfer::Linear) value=linear_to_srgb(value);
+                if(f.transfer==Transfer::Linear) value=encode(value);
                 if(!std::isfinite(value) || std::abs(value)>std::numeric_limits<float>::max())
                     throw std::invalid_argument("Transfer exceeds float representability");
                 if(s.enhance>0 && (value<0||value>1)) {
@@ -127,18 +123,18 @@ RenderResult render(const FrameWindow& window, const RenderSettings& s, RenderCo
             if(alpha==0) continue; // Preserve hidden RGB, never divide by zero.
             std::array<double,3> original{},graded{};
             for(std::size_t c=0;c<3;++c) {
-                original[c]=srgb_to_linear(encoded[p*4+c]);
-                auto restored=s.enhance>0 ? srgb_to_linear(ctx.restored[p*4+c]) : original[c];
+                original[c]=decode(encoded[p*4+c]);
+                auto restored=s.enhance>0 ? decode(ctx.restored[p*4+c]) : original[c];
                 graded[c]=original[c]+s.enhance*(restored-original[c]);
             }
             if(s.look && s.look_amount>0) {
-                auto mapped=s.look->sample({linear_to_srgb(graded[0]),linear_to_srgb(graded[1]),linear_to_srgb(graded[2])});
+                auto mapped=s.look->sample({encode(graded[0]),encode(graded[1]),encode(graded[2])});
                 auto values=std::array<double,3>{mapped.r,mapped.g,mapped.b};
-                for(std::size_t c=0;c<3;++c) graded[c]+=s.look_amount*(srgb_to_linear(values[c])-graded[c]);
+                for(std::size_t c=0;c<3;++c) graded[c]+=s.look_amount*(decode(values[c])-graded[c]);
             }
             for(std::size_t c=0;c<3;++c) {
                 auto value=original[c]+s.mix*(graded[c]-original[c]);
-                if(f.transfer==Transfer::SRGB) value=linear_to_srgb(value);
+                if(f.transfer==Transfer::SRGB) value=encode(value);
                 if(f.alpha==Alpha::Premultiplied) value*=alpha;
                 if(!std::isfinite(value)||std::abs(value)>std::numeric_limits<float>::max())
                     throw std::invalid_argument("Processing exceeds float representability");

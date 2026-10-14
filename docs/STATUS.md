@@ -1,5 +1,21 @@
 # FSTR-LUT checkpoint — 2026-10-14
 
+## Current priority — overrides historical sequence below
+
+User now requests a color-first MVP: useful grading of flat material «как с логарифмом». All restoration, compression/detail/denoise, training and speed optimization are after MVP. Preserve existing source/research. One essential input/output interpretation is pending in the chat; dependent transform implementation awaits it. See MVP_COLOR.md for acceptance and PLAN.md for authoritative steering history. The native plugin is not yet implemented or installed; current C++ research core is reusable with Enhance0 and no model backend.
+
+Current working branch remains dev/ai-enhance-prototype, HEAD2f6f3f2; uncommitted source includes parked optional transfer-table research, compact/student tools and new paired quality tools. Nothing was reset/deleted. quality-v1 completed 20 short clip cases plus one public SIDD example; results are retained in ../research-block2/quality-v1/quality.json and quality-v1.log. Motion playback QA is NOT RUN. These research results do not block the color-only MVP. Details/commit binding to be finalized after current block checks.
+
+Independent color foundation added in include/fstr/color.hpp / src/color/grade.cpp: explicit linear Rec709/sRGB float-range input, exposure stops, signed-log per-channel contrast and luminance-based saturation. No model dependency, inferred profile or hidden frame state. Not yet wired into frame render/native UI: input/output interpretation is still pending. Core model default is historical research behavior, not a color-MVP default.
+
+PASS: actual Release build and final ASan/UBSan core suite,3427bounded assertions including independent exposure/contrast<1/contrast>1/combined unequal RGB arithmetic, monotonic extended ramp, neutral signed zero, finite/bounded input failures and concurrent pure results. Final sanitizer log ../research-block2/color-kernel-sanitize-final.log. Separate root code review and senior read-only review: input-domain overflow outside float was closed with explicit float-domain validation; output-to-float bounds remain future adapter responsibility.
+
+Rendered fixture fstr_color_fixture executed against final sanitizer build, CSV retains actual negative/above-one linear values. Root inspected1024x432 authored ramp/color preview. Functional arithmetic PASS; artistic acceptance NOT RUN on actual flat footage. Contrast substantially moves black point; full research parameter range is not an accepted UI range. Alpha/frame/pipeline/profile/native tests for the new grade stage NOT RUN (not integrated). No camera-Log/RAW/latitude recovery claim. Fixture-only display clipping is explicit, core does not clamp.
+
+All broader v3 obligations remain in PLAN; restoration and acceleration moved after MVP by direct instruction. Next dependency: clarify desired SDR grading vs camera Log decode vs Log output, then integrate the chosen color transform and frame stage, inspect representative flat-source results and implement the native adapter. Actual AE/Windows/save-reopen/Undo/MFR remain open.
+
+## Historical AI slice — preserved evidence
+
 Contract: USER_SPEC_V3.txt, replacing first brief retained in USER_SPEC.txt/history/PLAN-v1.md. Baseline intake b21b571 preserved. Branch dev/ai-enhance-prototype. Accepted rules v11.1.0 / 04b606845e0f73ab28b9807bb45682eae4d6ce34. Tested core source: d30a40f35091d1a63a7a897d99a6fb8ec832a8ff. Model tooling source be42eb87ed6e0f5b29c82475c0e25c4575fcc667 is unchanged in that candidate. Evidence: ../evidence/2026-10-14-d30a40f/manifest.json, raw check/benchmark records beside it. This checkpoint/report commit is separate from tested source bytes.
 
 ## Current result

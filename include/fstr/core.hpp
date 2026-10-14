@@ -46,6 +46,8 @@ void unpack_ffdnet(const std::vector<float>& planes, std::size_t width,
                    std::size_t height, std::vector<float>& destination);
 double srgb_to_linear(double value);
 double linear_to_srgb(double value);
+double srgb_to_linear_fast(double value);
+double linear_to_srgb_fast(double value);
 
 class InferenceBackend {
 public:
@@ -59,6 +61,7 @@ struct RenderSettings {
     double enhance = 0.5, look_amount = 1.0, mix = 1.0;
     float sigma = 15.0f/255.0f; // Experimental model input, not product auto-estimation.
     std::shared_ptr<const LUT> look;
+    bool fast_color_math = false; // Bounded table approximation; reference remains available.
 };
 enum class Status { Ok, InvalidInput, Unsupported, Cancelled, BackendError };
 // Caller owns context, render serializes simultaneous use; backend may be shared.

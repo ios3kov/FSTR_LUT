@@ -1,4 +1,5 @@
 #include "fstr/core.hpp"
+#include "fstr/color.hpp"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -121,6 +122,52 @@ void pipeline_tests(){
     std::vector<float> premult{0.1f,0.2f,0.3f,0.5f};auto pm=view(premult,1,1);pm.alpha=Alpha::Premultiplied;
     s.look_amount=1;s.mix=1;r=render({pm,0},s,ctx);check(r.status==Status::Ok,"Premult nonidentity LUT failed");
     near(r.rgba[0],0.25);near(r.rgba[1],0.125);near(r.rgba[2],0.375);near(r.rgba[3],0.5);
+    double max_decode=0,max_encode=0;
+    for(int i=0;i<=200000;++i) {
+        double x=double(i)/200000;
+        max_decode=std::max(max_decode,std::abs(srgb_to_linear_fast(x)-srgb_to_linear(x)));
+        max_encode=std::max(max_encode,std::abs(linear_to_srgb_fast(x)-linear_to_srgb(x)));
+    }
+    check(max_decode<=1e-8&&max_encode<=5e-7,"Fast transfer exceeded declared bound");
+    for(double x:{-2.0,-.1,1.5,20.0}) {
+        check(srgb_to_linear_fast(x)==srgb_to_linear(x),"Extended decode lost exact fallback");
+        check(linear_to_srgb_fast(x)==linear_to_srgb(x),"Extended encode lost exact fallback");
+    }
+    s.fast_color_math=true;r=render({pm,0},s,ctx);
+    check(r.status==Status::Ok,"Fast premult LUT failed");near(r.rgba[0],.25,1e-6);near(r.rgba[1],.125,1e-6);near(r.rgba[2],.375,1e-6);
+}
+void grade_tests(){
+    GradeSettings s;
+    RGB source{-0.0,-.3,8.0};auto out=grade_linear(source,s);
+    check(std::signbit(out.r)&&out.g==source.g&&out.b==source.b,"Neutral grade lost exact samples");
+    s.exposure_stops=2;out=grade_linear({-.25,.18,2},s);
+    near(out.r,-1,1e-15);near(out.g,.72,1e-15);near(out.b,8,1e-15);
+    s={};s.saturation=0;out=grade_linear({.2,.4,.6},s);
+    near(out.r,.37192,1e-15);near(out.g,.37192,1e-15);near(out.b,.37192,1e-15);
+    s.saturation=1.7;out=grade_linear({-.2,.4,1.6},s);
+    near(.2126*out.r+.7152*out.g+.0722*out.b,.2126*(-.2)+.7152*.4+.0722*1.6,1e-15);
+    s={};s.contrast=2;out=grade_linear({.37,.18,-.01},s);
+    // Independently reduced integer-ratio oracle: 38^2/19=76; -(2^2*19)=-76.
+    near(out.r,.75,1e-14);near(out.g,.18,1e-14);near(out.b,-.75,1e-14);
+    out=grade_linear({0,1,2},s);near(out.r,-.18,1e-14);check(out.g>1&&out.b>out.g,"Contrast unexpectedly clamped extended values");
+    s.exposure_stops=-1;out=grade_linear({.74,.74,.74},s);near(out.r,.75,1e-14);
+    s={};s.contrast=.5;out=grade_linear({.75,0,-.01},s);
+    near(out.r,.37,1e-14);near(out.g,.01*(std::sqrt(19.0)-1),1e-14);near(out.b,.01*(std::sqrt(9.5)-1),1e-14);
+    s={1,2,.5};out=grade_linear({.185,.09,-.005},s);
+    near(out.r,.492018,1e-14);near(out.g,.207018,1e-14);near(out.b,-.257982,1e-14);
+    double last=-std::numeric_limits<double>::infinity();s={};s.contrast=1.3;
+    for(int i=0;i<=1000;++i){double x=-.5+double(i)*.003;out=grade_linear({x,x,x},s);check(out.r>last,"Grade ramp not strictly monotonic");last=out.r;}
+    for(auto invalid:{GradeSettings{11,1,1},GradeSettings{0,0,1},GradeSettings{0,1,3},GradeSettings{0,std::numeric_limits<double>::quiet_NaN(),1}})
+        rejects([&]{grade_linear({.1,.2,.3},invalid);});
+    rejects([&]{grade_linear({std::numeric_limits<double>::infinity(),0,0},GradeSettings{});});
+    s={};s.contrast=3;rejects([&]{grade_linear({std::numeric_limits<double>::max(),0,0},s);});
+    s={};s.contrast=.1;rejects([&]{grade_linear({1e307,0,0},s);});
+    auto extreme=grade_linear({std::numeric_limits<float>::max(),0,0},s);
+    check(std::isfinite(extreme.r)&&extreme.r>0,"Declared float-domain contrast overflowed");
+    s={};s.exposure_stops=.75;s.contrast=1.2;s.saturation=.85;
+    auto expected=grade_linear({-.05,.18,1.2},s);std::vector<std::future<RGB>> tasks;
+    for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[s]{return grade_linear({-.05,.18,1.2},s);}));
+    for(auto& task:tasks){auto actual=task.get();check(actual.r==expected.r&&actual.g==expected.g&&actual.b==expected.b,"Pure grade changed under concurrency");}
 }
 }
-int main(){try{lut_tests();shuffle_tests();pipeline_tests();std::cout<<"PASS "<<checks<<" bounded core assertions; AE/real-model validity not established\n";return 0;}catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<" at assertion "<<checks<<"\n";return 1;}}
+int main(){try{lut_tests();shuffle_tests();pipeline_tests();grade_tests();std::cout<<"PASS "<<checks<<" bounded core assertions; AE/real-model validity not established\n";return 0;}catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<" at assertion "<<checks<<"\n";return 1;}}

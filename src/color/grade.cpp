@@ -1,0 +1,54 @@
+#include "fstr/color.hpp"
+#include <cmath>
+#include <limits>
+#include <stdexcept>
+
+namespace fstr {
+bool grade_is_neutral(const GradeSettings& s) noexcept {
+    return s.exposure_stops==0.0 && s.contrast==1.0 && s.saturation==1.0;
+}
+void validate_grade(const GradeSettings& s) {
+    if(!std::isfinite(s.exposure_stops)||s.exposure_stops < -10||s.exposure_stops > 10||
+       !std::isfinite(s.contrast)||s.contrast < .1||s.contrast > 3||
+       !std::isfinite(s.saturation)||s.saturation < 0||s.saturation > 2)
+        throw std::invalid_argument("Invalid linear grading settings");
+}
+namespace {
+// Fixed grading coordinates, not a claim of physical middle gray in SDR footage.
+constexpr double pivot=.18, toe=.01;
+double log_coordinate(double x) {return std::copysign(std::log1p(std::abs(x)/toe),x);}
+double inverse_coordinate(double x) {return std::copysign(toe*std::expm1(std::abs(x)),x);}
+double contrast_channel(double x, double amount) {
+    const double p=log_coordinate(pivot);
+    return inverse_coordinate(p+amount*(log_coordinate(x)-p));
+}
+}
+RGB grade_linear(RGB input, const GradeSettings& s) {
+    validate_grade(s);
+    if(!std::isfinite(input.r)||!std::isfinite(input.g)||!std::isfinite(input.b))
+        throw std::invalid_argument("Nonfinite linear grading input");
+    const double limit=std::numeric_limits<float>::max();
+    if(std::abs(input.r)>limit||std::abs(input.g)>limit||std::abs(input.b)>limit)
+        throw std::invalid_argument("Linear grading input exceeds declared float domain");
+    if(grade_is_neutral(s)) return input; // Also preserves signed zero without arithmetic.
+    RGB result=input;
+    if(s.exposure_stops!=0) {
+        const double gain=std::exp2(s.exposure_stops);
+        result.r*=gain;result.g*=gain;result.b*=gain;
+    }
+    if(s.contrast!=1) {
+        result.r=contrast_channel(result.r,s.contrast);
+        result.g=contrast_channel(result.g,s.contrast);
+        result.b=contrast_channel(result.b,s.contrast);
+    }
+    if(s.saturation!=1) {
+        const double y=.2126*result.r+.7152*result.g+.0722*result.b;
+        result.r=y+s.saturation*(result.r-y);
+        result.g=y+s.saturation*(result.g-y);
+        result.b=y+s.saturation*(result.b-y);
+    }
+    if(!std::isfinite(result.r)||!std::isfinite(result.g)||!std::isfinite(result.b))
+        throw std::invalid_argument("Grading exceeds finite double range");
+    return result;
+}
+} // namespace fstr

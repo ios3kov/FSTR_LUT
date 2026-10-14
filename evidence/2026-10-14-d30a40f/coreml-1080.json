@@ -1,0 +1,29 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "fixed_graph_sha256": "f8cba39b3dfcacf077cd2e08efd8d4ff49ce564bb9f6ad0a8a48d70636a031fc",
+  "ort": "1.23.2",
+  "provider_options": {
+    "ModelFormat": "MLProgram",
+    "MLComputeUnits": "ALL",
+    "RequireStaticInputShapes": "1",
+    "EnableOnSubgraphs": "0"
+  },
+  "profile_providers": [
+    "CoreMLExecutionProvider"
+  ],
+  "session_create_compile_ms": 158.23141700820997,
+  "inference_runs_ms": [
+    340.76837499742396,
+    252.68325000070035,
+    238.53516599046998,
+    195.2342499862425
+  ],
+  "warm_median_ms": 238.53516599046998,
+  "cpu_max_abs_error": 1.1324882507324219e-06,
+  "fp32_reference_tolerance": 1e-05,
+  "fp32_reference_pass": true,
+  "device_placement": "CoreML EP placement only; ANE versus GPU not established",
+  "scope": "trunk inference only, excludes color/AE/model preparation",
+  "profile_file": "ort-profile_2026-10-14_11-22-14.json"
+}

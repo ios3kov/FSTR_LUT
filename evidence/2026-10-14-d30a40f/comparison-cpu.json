@@ -1,0 +1,51 @@
+{
+  "scope": "authored synthetic, Gaussian noise only; no natural-video certification",
+  "seed": 20261014,
+  "device": "cpu",
+  "hardware": "Apple M1 Pro, 16 GiB shared memory",
+  "torch": "2.8.0",
+  "threads": 4,
+  "full_input_output_transfer_included": true,
+  "models": [
+    {
+      "name": "FFDNet",
+      "weights_sha256": "99a5081e32afdaa25df3ded11aa16447556692e550906caed320db31324af5ce",
+      "parameters": 852108,
+      "width": 512,
+      "height": 384,
+      "model_to_device_ms": 2.266666997456923,
+      "first_frame_ms": 279.6341250068508,
+      "warm_frame_ms": 214.00666701083537,
+      "noisy_psnr_db": 32.663867959165735,
+      "clean_psnr_db": 33.10700367594104,
+      "clean_max_abs_change": 0.20721018314361572,
+      "output_min": -0.1645577847957611,
+      "output_max": 1.0202096700668335,
+      "static_noise_temporal_std_mean": 0.006033062469214201,
+      "five_frame_elapsed_ms": 1186.9916249997914,
+      "process_peak_rss_bytes_cumulative": 702464000
+    },
+    {
+      "name": "NAFNet",
+      "weights_sha256": "89c70e808d1783b6c07911306e106aaf0d4f7f3da8c61078b99ff7f8929a26f4",
+      "parameters": 29159715,
+      "width": 512,
+      "height": 384,
+      "model_to_device_ms": 2.103209000779316,
+      "first_frame_ms": 684.6392919978825,
+      "warm_frame_ms": 496.87649999395944,
+      "noisy_psnr_db": 22.374720031556844,
+      "clean_psnr_db": 21.02356329065625,
+      "clean_max_abs_change": 0.8157544136047363,
+      "output_min": 0.012065868824720383,
+      "output_max": 0.9319285750389099,
+      "static_noise_temporal_std_mean": 0.005543907638639212,
+      "five_frame_elapsed_ms": 2318.8392500014743,
+      "process_peak_rss_bytes_cumulative": 1360838656
+    }
+  ],
+  "baseline": {
+    "input_psnr_db": 24.718784321455555,
+    "ordinary_blur_psnr_db": 26.873026862351516
+  }
+}

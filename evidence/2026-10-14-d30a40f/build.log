@@ -1,0 +1,8 @@
+[ 10%] Building CXX object CMakeFiles/fstr_core.dir/src/looks/lut.cpp.o
+[ 20%] Linking CXX static library libfstr_core.a
+[ 40%] Built target fstr_core
+[ 50%] Linking CXX executable fstr_core_tests
+[ 70%] Built target fstr_ort
+[ 80%] Linking CXX executable fstr_benchmark
+[ 90%] Built target fstr_core_tests
+[100%] Built target fstr_benchmark

@@ -1,0 +1,111 @@
+{
+  "source_commit": "d30a40f35091d1a63a7a897d99a6fb8ec832a8ff",
+  "model_tools_commit": "be42eb87ed6e0f5b29c82475c0e25c4575fcc667",
+  "model_tool_sources_unchanged_in_final_commit": true,
+  "rules_version": "11.1.0",
+  "rules_commit": "04b606845e0f73ab28b9807bb45682eae4d6ce34",
+  "date_client": "2026-10-14",
+  "environment": {
+    "os": "macOS 26.6.2 25G83",
+    "hardware": "Apple M1 Pro",
+    "ram_bytes": 17179869184,
+    "compiler": "Apple Clang21",
+    "AE_metadata_only": "25.6.0.101"
+  },
+  "source_sha256": {
+    "src/core/pipeline.cpp": "df921ccd0acc716788d81d2c115519dc6243befacc06933d30fa8c2ebc01486a",
+    "src/inference/ort_backend.cpp": "73fec8c48cd6bc32badae7b29fd86356a1a0e8c53f73fa5841b8018de8705904",
+    "src/looks/lut.cpp": "51fc840b614937df8870d982d42424089869f1eef66605543268e6f7065b6414",
+    "src/restoration/ffdnet.cpp": "917873b8d6e2f3fb8d00d9971a8fa4d75294c293dfe5b7a12b5132150e2f48c8",
+    "include/fstr/core.hpp": "0c0a55ec1583340e22e17a14b81533a2eccc4f112d44496fd87ef4cb2769da4c",
+    "include/fstr/ort_backend.hpp": "ca024aca97359aa36ed296b3e143e3719238db3899f5337c6a77a250d4af59f2",
+    "tests/core_tests.cpp": "8112c46fa25c0a50fcd61d8fc80121bc187475d1c5e3942138a4ae2fc510ff48",
+    "tools/benchmark/compare_models.py": "fcc62cd269d1d2c8022da81f50274d1c49736082dca5b2a749fcc0be2e78e1a1",
+    "tools/benchmark/generate_looks.py": "feaf66ddf3bc09e621b28e28a4051de5f36da110765b753a591a745992a1faf6",
+    "tools/benchmark/main.cpp": "53520e2b975e599b5815a9281873a6ec092ed742802e8bbe47549144a386a3ae",
+    "tools/benchmark/probe_coreml.py": "2ca556056cb97bc51beb1b56c89646d332f68a83d7f9eb14ea25040a87c7dea4",
+    "tools/model_export/export_ffdnet.py": "c646f69c826dd871ae2ab16ce2a0e5ab44b32708ca76092874c10a32b8b06b66",
+    "tools/model_export/requirements-lock-macos-arm64.txt": "c306a7304bf2d4884529a1998482d554cb2882e6c146088137856ab0770c2601",
+    "scripts/check.py": "831f4e448c1c922cbda7f4f4c6388122f22ef4d5db445ff3dffe6b14feef4733",
+    "assets/looks/neutral-v1.cube": "9f98473e86f1d42b6defbe17f52c190ade766802d50f79235b531f4a999604df",
+    "assets/looks/neutral-v1.json": "955d2ba0b86981b0ad2b39ac791b0fc172fa50db6124917f84f0b027a7759224",
+    "assets/looks/warm-film-v1.cube": "ee9e15323b80514ab031a97c9c7d1583132dd96d49bfb6a8e9a6cc43077521b5",
+    "assets/looks/warm-film-v1.json": "582e0f04fb4752020bd9085a1dd315e3334acfc497ffc8abc4da71a809caf861",
+    "assets/models/ffdnet-research-manifest.json": "012af2ee497f5d14d8d7178817302ce3a1d566089d0786d351ed1a950641c230",
+    "third_party/JSON-LICENSE.txt": "46a65cffd1ea955132d95a8dd921640714a8d6b537d2e4e482d31145ae95b603",
+    "third_party/KAIR-LICENSE.txt": "448e69b705d64f21bf8cb86562301e0edd99ac79026064ddd75af8242b067be5",
+    "third_party/NAFNET-LICENSE.txt": "a29ecef3456149898f08e4c71b11b33e7d333664e087bc212e84e18ddd6599ad",
+    "third_party/PICOSHA2-LICENSE.txt": "6c30eb1f37554ec4199cb82a8c86d9e7a852da78a757832bebb03ac9ddc44ff1",
+    "third_party/PROVENANCE.json": "9a6048e3fb7801977d1a3715440b954fa9260f01285edb013f492be97a6603d5",
+    "third_party/json.hpp": "aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63",
+    "third_party/picosha2.h": "b13c180161ffac8d0adc81e033e493c409457c4d1258ab9781ac80579ba3bdd8",
+    "CMakeLists.txt": "29663d8c6b89fdb0ecd1ceb743b18da87eb0f88950666139381b2a15c24de621"
+  },
+  "artifacts": {
+    "cli_sha256": "f0170986bbe546fa9575d7474aa1db35e84114eaebfd395aef5518b10fc6a6db",
+    "ort_dylib_sha256": "d306d2bc768540766c7ed8a1e0ff05d2870c77a934ebeee4a7bafa1b732ef299",
+    "graph_sha256": "84948d05247157c2431a9b31bef008dd3aff318156883659201325c9a018b6ea",
+    "ffdnet_weights_sha256": "99a5081e32afdaa25df3ded11aa16447556692e550906caed320db31324af5ce",
+    "nafnet_weights_sha256": "89c70e808d1783b6c07911306e106aaf0d4f7f3da8c61078b99ff7f8929a26f4",
+    "1080_input_sha256": "19a8a8dd06e194a14a48418c4c60594ea2be1b6b78db9ea054d6d948a1e72dff",
+    "cpp_parity_input_sha256": "c6dc7ce398d387a82314ef9fb08097e0ac51fa93ffd0aae742773b9f7b900d79"
+  },
+  "checks": {
+    "core_build": "PASS exit0",
+    "core_tests": "PASS exit0 2377 assertions",
+    "ASan_UBSan": "PASS exit0 core only",
+    "upstream_ONNX_CPP": "PASS tolerance1e-5, observed max4.231929779e-6",
+    "bad_model_contracts": "PASS four explicit rejection cases on earlier identical backend source",
+    "cpu_mps_reference": "PASS tolerance1e-4, two 512x384 synthetic images",
+    "CoreML_EP_reference": "PASS tolerance1e-5 and CoreML profile placement; ANE/GPU device NOT ESTABLISHED",
+    "1080_fast_goal": "FAIL all measured candidates/paths slower than33-40ms",
+    "natural_video_quality": "NOT RUN",
+    "production_model_selection": "OPEN",
+    "weights_redistribution_rights": "NOT ESTABLISHED",
+    "active_ORT_cancel_and_admission_wait": "NOT RUN",
+    "AE_native_runtime": "NOT RUN",
+    "Windows": "NOT RUN",
+    "4K": "NOT RUN",
+    "full_six_looks_artistic_acceptance": "NOT RUN",
+    "native_presets_MFR_ROI_alpha_temporal": "NOT RUN"
+  },
+  "history": [
+    {
+      "event": "initial FP32 export threshold3e-6 exceeded at255x257",
+      "actual": 4.231929779e-06,
+      "resolution": "convolution tolerance explicitly revised to1e-5; no Mix0 relaxation"
+    },
+    {
+      "event": "initial stride overflow oracle used height1",
+      "resolution": "oracle corrected to height2; h1 next-row stride is unused"
+    },
+    {
+      "event": "initial CLI exit139, borrowed TypeInfo lifetime issue corrected",
+      "resolution": "new CLI exit0; frozen original root-cause reproduction NOT RUN"
+    },
+    {
+      "event": "initial NAFNet1080 MPS OOM at explicit40% memory budget",
+      "resolution": "later run succeeds under same configured budget; memory stability not established; no safety limit removed"
+    },
+    {
+      "event": "/usr/bin/time returned1 on sysctl permission after completed CLI",
+      "resolution": "final serial subprocess exits0; peak child RSS from resource API, no permission bypass"
+    }
+  ],
+  "evidence_file_sha256": {
+    "final-cpp-parity.json": "51a3724f19228c2ec53f4615da8c289c87682e4f4df8ff56eecb87d5ff5ebe81",
+    "sanitizer-preflight.log": "e653341610db4fa1b0f18b57a6faceee305fea128e964e4a10ba6af105df34e0",
+    "cpp-1080.json": "e8589171af9d3310c63b98ae3a4410596ad582ba7b7fd7273a158230bf5ea331",
+    "export.log": "a3e7e42c24537a3c8a683e0302576735f41d2eb42c7ccd1548c58741c1be3795",
+    "comparison-mps.json": "5d92d35eedae1b55c6b9d747ad8c6841656072874bc19d0ba9ec2b1932dce1aa",
+    "assets-and-device-parity.json": "0f966cdd1aa1e70e3b4286944e6dbce45f21e8d60b184eeaaa4529543e861722",
+    "model-contracts-earlier-core.json": "d18ef6b42fe4c4a72c120a438e1c6ab8cc9a2815197ac025920f02191ffaab2e",
+    "coreml-512.json": "c21eb9dd420b670b04fc1f7f72dc0d5b4455fb0b986ed8aed266b5a334304395",
+    "ctest.log": "c565fa93e582d8bd2e0e7b3f22afa511d1f9344788f13263a09af783555818b9",
+    "export-parity.json": "6b632592eda48c3c4ae908ace79df03868ccfc4324bbbc71b9bad0591bfa3b97",
+    "coreml-1080.json": "18ee04d72973148c86b91373d96ff374907a2688f7837b4e9e874e6bf37da451",
+    "core-tests.log": "4149ef854fda35f929959bf43b702ce89158ff131a285c590f68360af486fad9",
+    "comparison-cpu.json": "90560c9fa4491bf86bf05ab77e44cd1ca7bfe069dbc960feada76f257b5cf3ee",
+    "build.log": "233a8045895a1b565a9eb42c633bbf01a5b7cb3de53238be7e660bbd34a49483"
+  }
+}

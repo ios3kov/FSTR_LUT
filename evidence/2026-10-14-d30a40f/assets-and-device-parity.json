@@ -1,0 +1,28 @@
+{
+  "assets": [
+    {
+      "asset": "warm-film-v1.json",
+      "embedded_byte_identity": "PASS",
+      "sha256": "ee9e15323b80514ab031a97c9c7d1583132dd96d49bfb6a8e9a6cc43077521b5"
+    },
+    {
+      "asset": "neutral-v1.json",
+      "embedded_byte_identity": "PASS",
+      "sha256": "9f98473e86f1d42b6defbe17f52c190ade766802d50f79235b531f4a999604df"
+    }
+  ],
+  "cpu_mps": [
+    {
+      "model": "ffdnet",
+      "max_abs_error": 2.384185791015625e-06,
+      "research_tolerance": 0.0001,
+      "result": "PASS"
+    },
+    {
+      "model": "nafnet",
+      "max_abs_error": 6.556510925292969e-07,
+      "research_tolerance": 0.0001,
+      "result": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-sanitize
+[ 16%] Building CXX object CMakeFiles/fstr_core.dir/src/looks/lut.cpp.o
+[ 33%] Linking CXX static library libfstr_core.a
+[ 66%] Built target fstr_core
+[ 83%] Linking CXX executable fstr_core_tests
+[100%] Built target fstr_core_tests
+Internal ctest changing into directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-sanitize
+Test project /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-sanitize
+    Start 1: core_contracts
+1/1 Test #1: core_contracts ...................   Passed    0.74 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.74 sec
+PASS: executed pure core contracts. AE, Windows, active ORT cancellation: NOT RUN

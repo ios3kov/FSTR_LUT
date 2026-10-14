@@ -1,0 +1,8 @@
+Internal ctest changing into directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build
+Test project /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build
+    Start 1: core_contracts
+1/1 Test #1: core_contracts ...................   Passed    0.53 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.53 sec

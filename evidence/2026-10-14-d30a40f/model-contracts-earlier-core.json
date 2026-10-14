@@ -1,0 +1,94 @@
+{
+  "source_commit": "be42eb87ed6e0f5b29c82475c0e25c4575fcc667",
+  "binary_sha256": "7d11c533d0098082e8401342f3ef3eca557064d92c018dc8ab2a37ce13ba7e00",
+  "cases": [
+    {
+      "case": "sha256",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "message": "ERROR: Model checksum mismatch",
+      "status": "PASS"
+    },
+    {
+      "case": "file",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "message": "ERROR: Model path must be a local ONNX filename",
+      "status": "PASS"
+    },
+    {
+      "case": "normalization",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "message": "ERROR: Unsupported model manifest contract",
+      "status": "PASS"
+    },
+    {
+      "case": "schema",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "message": "ERROR: Unsupported model manifest contract",
+      "status": "PASS"
+    },
+    {
+      "case": "real-pipeline-none",
+      "max_abs_error": 3.7550926208496094e-06,
+      "tolerance": 1e-05,
+      "status": "PASS",
+      "benchmark": {
+        "active_inferences": 1,
+        "backend": "84948d05247157c2431a9b31bef008dd3aff318156883659201325c9a018b6ea:ort1.23.2:cpu:fp32",
+        "bpc": 32,
+        "cache_disabled": true,
+        "enhance": 1.0,
+        "hardware_threads": 8,
+        "height": 255,
+        "includes_AE": false,
+        "includes_load_in_frame_time": false,
+        "look": "none",
+        "model_load_ms": 79.944542,
+        "model_threads": 4,
+        "runs": [
+          {
+            "cache_hit": false,
+            "inference_ms": 98.697542,
+            "look_mix_ms": 6.487291,
+            "preparation_ms": 0.336958,
+            "total_ms": 105.720917
+          }
+        ],
+        "width": 257
+      }
+    },
+    {
+      "case": "real-pipeline-neutral-v1.cube",
+      "max_abs_error": 3.7550926208496094e-06,
+      "tolerance": 1e-05,
+      "status": "PASS",
+      "benchmark": {
+        "active_inferences": 1,
+        "backend": "84948d05247157c2431a9b31bef008dd3aff318156883659201325c9a018b6ea:ort1.23.2:cpu:fp32",
+        "bpc": 32,
+        "cache_disabled": true,
+        "enhance": 1.0,
+        "hardware_threads": 8,
+        "height": 255,
+        "includes_AE": false,
+        "includes_load_in_frame_time": false,
+        "look": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/assets/looks/neutral-v1.cube",
+        "model_load_ms": 39.053667,
+        "model_threads": 4,
+        "runs": [
+          {
+            "cache_hit": false,
+            "inference_ms": 98.363958,
+            "look_mix_ms": 16.129292,
+            "preparation_ms": 0.32175,
+            "total_ms": 114.943708
+          }
+        ],
+        "width": 257
+      }
+    }
+  ]
+}

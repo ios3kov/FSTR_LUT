@@ -1,0 +1,42 @@
+{
+  "active_inferences": 1,
+  "backend": "84948d05247157c2431a9b31bef008dd3aff318156883659201325c9a018b6ea:ort1.23.2:cpu:fp32",
+  "bpc": 32,
+  "cache_disabled": true,
+  "enhance": 0.5,
+  "hardware_threads": 8,
+  "height": 1080,
+  "includes_AE": false,
+  "includes_load_in_frame_time": false,
+  "look": "work/FSTR_LUT/assets/looks/warm-film-v1.cube",
+  "model_load_ms": 94.494,
+  "model_threads": 4,
+  "runs": [
+    {
+      "cache_hit": false,
+      "inference_ms": 3206.19875,
+      "look_mix_ms": 491.601334,
+      "preparation_ms": 13.902,
+      "total_ms": 3718.403041
+    },
+    {
+      "cache_hit": false,
+      "inference_ms": 3300.177083,
+      "look_mix_ms": 494.365625,
+      "preparation_ms": 14.48225,
+      "total_ms": 3815.33375
+    },
+    {
+      "cache_hit": false,
+      "inference_ms": 3030.521333,
+      "look_mix_ms": 480.617042,
+      "preparation_ms": 9.568584,
+      "total_ms": 3537.114791
+    }
+  ],
+  "width": 1920,
+  "process_peak_rss_bytes": 940769280,
+  "exit_code": 0,
+  "binary_sha256": "f0170986bbe546fa9575d7474aa1db35e84114eaebfd395aef5518b10fc6a6db",
+  "measurement_scope": "serial benchmark, no other agent build/test/benchmark concurrently; general desktop state not controlled"
+}

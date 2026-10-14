@@ -1,5 +1,6 @@
 // Owned SDK-callback fixture. Exercises native adapter bytes; not the AE loader/runtime.
 #include "plugin.hpp"
+#include "AE_EffectUI.h"
 #include <cstring>
 #include <future>
 #include <iostream>
@@ -26,6 +27,7 @@ Fixture& fixture(PF_ProgPtr ref){return *reinterpret_cast<Fixture*>(ref);}
 PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==f.fail_param)return 73;*value=f.params[id];return PF_Err_NONE;}
 PF_Err checkin_cb(PF_ProgPtr ref,PF_ParamDef*){auto& f=fixture(ref);++f.checkin;return f.fail_checkin?74:PF_Err_NONE;}
 PF_Err add(PF_ProgPtr ref,PF_ParamIndex,PF_ParamDef* value){auto& f=fixture(ref);f.params[++f.checkout]=*value;return PF_Err_NONE;}
+PF_Err register_ui_cb(PF_ProgPtr,PF_CustomUIInfo* value){return value&&value->events==PF_CustomEFlag_EFFECT?PF_Err_NONE:PF_Err_BAD_CALLBACK_PARAM;}
 PF_Err abort_cb(PF_ProgPtr ref){auto& f=fixture(ref);++f.abort_calls;return f.abort_now?75:PF_Err_NONE;}
 SPErr acquire_cb(const char* name,int32 version,const void** suite){++active->acquire;if(active->fail_suite)return 76;if(std::strcmp(name,kPFWorldSuite)||version!=kPFWorldSuiteVersion2)return 77;*suite=&active->worlds;return 0;}
 SPErr release_cb(const char*,int32){++active->release;return active->fail_release?78:0;}
@@ -36,7 +38,7 @@ PF_Err checkin_pixels(PF_ProgPtr ref,A_long){auto& f=fixture(ref);++f.pixels_in;
 Fixture::Fixture(){
     in.appl_id=kAppID_AfterEffects;
     in.effect_ref=reinterpret_cast<PF_ProgPtr>(this);in.time_scale=24;in.time_step=1;in.pica_basicP=&basic;
-    in.inter.checkout_param=checkout_cb;in.inter.checkin_param=checkin_cb;in.inter.add_param=add;in.inter.abort=abort_cb;
+    in.inter.checkout_param=checkout_cb;in.inter.checkin_param=checkin_cb;in.inter.add_param=add;in.inter.abort=abort_cb;in.inter.register_ui=register_ui_cb;
     basic.AcquireSuite=acquire_cb;basic.ReleaseSuite=release_cb;worlds.PF_GetPixelFormat=pixel_format;
     params[Source].u.pd.value=1;params[Look].u.pd.value=1;params[WorkingSpace].u.pd.value=3;
     params[Contrast].u.fs_d.value=1;params[Saturation].u.fs_d.value=100;params[LookAmount].u.fs_d.value=60;params[Mix].u.fs_d.value=100;
@@ -57,7 +59,7 @@ template<class P>void formats(PF_PixelFormat format,P pixel){
     check(run(f,true)==PF_Err_NONE,"Smart native bypass failed");
     check(std::memcmp(&output[0],&input[5],sizeof(P))==0,"Smart ROI/bypass sample mismatch");
     check(std::memcmp(&output[1],&guard,sizeof(P))==0,"Output row padding overwritten");
-    check(f.checkout==ParamCount-1&&f.checkin==f.checkout&&f.acquire==1&&f.release==1&&f.pixels_in==1,"Successful native resources unbalanced");
+    check(f.checkout==CameraInfo-1&&f.checkin==f.checkout&&f.acquire==1&&f.release==1&&f.pixels_in==1,"Successful native resources unbalanced");
     Fixture legacy;set_world(legacy.input,input,1,1,4,format);set_world(legacy.output,output,1,1,2,format);
     legacy.params[Mix].u.fs_d.value=0;legacy.params[Source].u.pd.value=2;legacy.params[WorkingSpace].u.pd.value=1;
     check(run(legacy,false)==PF_Err_NONE&&std::memcmp(&output[0],&input[0],sizeof(P))==0,"Legacy LogMix0 exact bypass failed");
@@ -70,7 +72,7 @@ void processing(){
     check(output[0].alpha==16384&&output[0].red==8192&&output[0].green==16384&&output[0].blue==24576,"SDK32768/premult scale wrong");
     Fixture unknown;unknown.params[Exposure].u.fs_d.value=1;unknown.params[WorkingSpace].u.pd.value=1;
     set_world(unknown.input,input,1,1,1,PF_PixelFormat_ARGB64);set_world(unknown.output,output,1,1,1,PF_PixelFormat_ARGB64);
-    check(run(unknown,true)==PF_Err_BAD_CALLBACK_PARAM&&unknown.acquire==0&&unknown.checkin==ParamCount-1&&unknown.pixels_in==1,"Unknown space error/resources wrong");
+    check(run(unknown,true)==PF_Err_BAD_CALLBACK_PARAM&&unknown.acquire==0&&unknown.checkin==CameraInfo-1&&unknown.pixels_in==1,"Unknown space error/resources wrong");
 }
 void failures(){
     for(int mode=0;mode<10;++mode){
@@ -87,7 +89,7 @@ void failures(){
         if(mode==8)f.abort_now=true;
         if(mode==9){f.params[Source].u.pd.value=2;f.params[Look].u.pd.value=2;f.params[Exposure].u.fs_d.value=11;}
         check(run(f,true)!=PF_Err_NONE,"Native injected failure silently succeeded");
-        check(f.checkin==(f.fail_param?f.fail_param-1:(mode==2||mode==3?0:ParamCount-1)),"Parameter failure cleanup wrong");
+        check(f.checkin==(f.fail_param?f.fail_param-1:(mode==2||mode==3?0:CameraInfo-1)),"Parameter failure cleanup wrong");
         check(f.pixels_in==(f.fail_pixel_checkout?0:1),"Pixel failure cleanup wrong");
         check(f.release==(f.acquire&&!f.fail_suite?1:0),"Suite failure cleanup wrong");
     }
@@ -101,7 +103,7 @@ int main(int argc,char** argv){try{
     auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
-    check(setup.out.out_flags==0x02000440&&setup.out.out_flags2==0x08001400&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
+    check(setup.out.out_flags==0x02008440&&setup.out.out_flags2==0x08001400&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
     Fixture ui;active=&ui;check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE&&ui.out.num_params==ParamCount,"Native control schema failed");
     check(ui.params[Contrast].uu.id==3&&ui.params[WorkingSpace].uu.id==9&&ui.params[Temperature].uu.id==10&&ui.params[Tint].uu.id==11,"Persistent IDs changed with UI order");
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
@@ -109,7 +111,7 @@ int main(int argc,char** argv){try{
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
     formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();failures();
     std::vector<std::future<bool>> tasks;
-    for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==ParamCount-1&&f.pixels_in==1;}));
+    for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==CameraInfo-1&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");
     check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setdown failed");
     check(dlclose(module)==0,"Native module cleanup failed");

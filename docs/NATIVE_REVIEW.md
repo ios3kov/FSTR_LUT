@@ -1,6 +1,20 @@
+# Final focused review — metadata/color development candidate
+
+Source8733709c7076da76a95e0510a9b55fd0cb2b7b8a; signed BuildID32597669ec8fb8e1. Root performed a separate critical review after actual UI/regression work. Current acceptance and exact evidence are in STATUS.md and EVIDENCE_COLOR_MVP.json; historical review below remains source-bound.
+
+Reviewed current delta: complete structural ISO-BMFF XML document parsing, box/read/depth/XML limits and namespace/conflict rejection; pinned tinyxml2/license; field whitelist; UTF16path size/NUL/surrogate handling; owned AEGP memory and suites; Drawbot RAII cleanup; bounded UI-only cache and refresh; render callback isolation; appended UI-only diskID12. Render parameter acquisition remains1..11, all existing color IDs/defaults/units and core processing are unchanged. No exceptions cross EffectMain. No remaining source defect identified in this focused review.
+
+Actual owned AE proves direct-camera automatic caption, replacement fallback, source Undo return and ordinary-panel legibility;10 fresh32-bpc project exports pass the original2/255 tolerance. Functional numeric tests, actual host behavior, visual observations and source declarations have separate evidence. The single SDR comparison looks intentionally subtle; it is an artistic judgment, not user acceptance or camera Log verification.
+
+Remaining limits: UI filesystem reads are byte-bounded, not a wall-time guarantee for slow volumes; manual profile/encoding remains required; proxy/missing/composition/refresh/narrow actual-host checks are not substituted by mocks. Full camera numeric comparison is uncalibrated after a clipped PSD8 baseline; float export attempts fail explicitly and do not become product PASS. Windows/realLog/direct extended floatworld/actualROI/downsample/gradingUndo/RAMPreview and measured callback concurrency remain open. Header-binding-only CMake adjustment changes the final BuildID after the sanitizer run; final signed Release has its own5suite PASS.
+
+Completed owned AE was saved and normally closed; its temporary runner is preserved outside MediaCore. No unrelated plugin/project/preferences were changed. No full MVP/release-readiness claim.
+
+## Historical color source review — preserved
+
 # Focused native review — color MVP
 
-Reviewed implementation source25819a9e379a49caaa94df4fa5e2af5112b5cd07, C++17/AppleClang21/arm64/Release, external SDK25.6_61. Exact file hashes and signed artifact binding in EVIDENCE_COLOR_MVP.json. Root performed this separate review after implementation; senior review was read-only, no execution. It is source/fixture review, not host certification.
+Reviewed implementation source25819a9e379a49caaa94df4fa5e2af5112b5cd07, C++17/AppleClang21/arm64/Release, external SDK25.6_61. Exact file hashes and signed artifact binding in history/EVIDENCE_COLOR_MVP-7fbe.json. Root performed this separate review after implementation; senior review was read-only, no execution. It is source/fixture review, not host certification.
 
 | Area | Reviewed paths / established behavior | Remaining boundary |
 | --- | --- | --- |

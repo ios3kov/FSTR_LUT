@@ -56,3 +56,7 @@ AI restoration/defect estimation, denoise/detail/compression, temporal restorati
 The completed quality-v1 run is an archived research result, not the current development objective. A 27.6ms near-identity student failed quality; it is not a product candidate.
 
 Temperature/Tint are creative gains, not Kelvin/CCT recovery: R=2^(temperature/2), G=2^(-tint/2), B=2^(-temperature/2), divided by their Rec709-luminance-weighted sum. Core range[-1,1], native UI[-100,100], default0. Uniform exposure precedes this balance; contrast/saturation follow. Neutral white luminance is preserved, positive temperature warms and positive tint moves toward magenta. No framewise auto-balance or camera white-point inference. Persistent IDs1..9 retain meaning; new Temperature/Tint use10/11 despite reordered presentation.
+
+## Latest actual-host checkpoint
+
+Source8733709 / BuildID32597669ec8fb8e1 is a limited Mac trial. Actual metadata and camera SDR still inspected; current32-bpc saved-project SDR/SyntheticSony/WB/alpha regression passes10 exports. Historical356 actual8/16/32/state/linear-space results remain source-bound evidence. Current full-camera float oracle, actual8/16/extended float/ROI/scale/gradingUndo/preview, realLog/motion/Windows and incoming-space discovery remain open. STATUS.md is the canonical current result; old paragraphs above describe their original implementation checkpoints.

@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "source_commit": "8733709c7076da76a95e0510a9b55fd0cb2b7b8a",
+  "build_id": "32597669ec8fb8e1",
+  "archive": "FSTR-LUT-dev-32597669ec8fb8e1.zip",
+  "archive_sha256": "76c18cbbd5c174ffdb461504506713f12eb0e52c1cc852dcbd74be89bebe5f38",
+  "archive_bytes": 96487,
+  "zip_roundtrip_bundle_files_match": true,
+  "strict_signature_after_extraction": true,
+  "helper_or_models_or_footage_in_zip": false,
+  "evidence_matches_repo": true,
+  "guide_separate_final_review": "PASS: installed path, exact effect name, firstSDR/Log scenario, manualencoding and scoped limits/rollback described; local download only, remote installation not tested"
+}

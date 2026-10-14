@@ -1,162 +1,157 @@
 {
-  "schema": 1,
-  "created_utc": "2026-10-14T12:11:40.264417+00:00",
-  "candidate_source_commit": "25819a9e379a49caaa94df4fa5e2af5112b5cd07",
+  "schema": 2,
+  "created_utc": "2026-10-14T17:28:26.690259+00:00",
+  "candidate_source_commit": "8733709c7076da76a95e0510a9b55fd0cb2b7b8a",
+  "core_color_source_commit": "25819a9e379a49caaa94df4fa5e2af5112b5cd07",
+  "branch": "dev/ai-enhance-prototype",
   "rules": {
     "version": "v11.1.0",
     "sha": "04b606845e0f73ab28b9807bb45682eae4d6ce34"
   },
-  "branch": "dev/ai-enhance-prototype",
+  "environment": {
+    "device": "Apple M1 Pro16GiB",
+    "os": "macOS26.6.2",
+    "compiler": "AppleClang21",
+    "cpp": 17,
+    "sdk": "25.6_61",
+    "ae": "25.6x101"
+  },
   "source_sha256": {
-    "CMakeLists.txt": "571d78a3013448aeae5eb310a2617f8bf5b06eac0d277563aa3de8a8f60d4720",
+    "CMakeLists.txt": "981fbd150f6817a2c02f40ae04b6a048abbec1210fbde14b79d5975a4167ad3a",
     "include/fstr/color.hpp": "078f4cc186db231d02298751c658154b6fcb2d099e4b7202a5983af4ee833604",
     "include/fstr/core.hpp": "627ee2a75af61c32a7a0e8f715fd2c369dc3b43e475f35761bc66ab2f4e44286",
+    "include/fstr/metadata.hpp": "ed1d862a7d5c8c429ea5f57500d30d2e3a39fb4b13c470becf7a3290670c3ca8",
     "include/fstr/ort_backend.hpp": "ca024aca97359aa36ed296b3e143e3719238db3899f5337c6a77a250d4af59f2",
-    "src/ae/FSTR_LUT_PiPL.r": "869aff4f32e3fe8307568b777f581e9702942b935de3d2b39bfbb8cd6a24f41f",
-    "src/ae/Info.plist.in": "69fa156cb9a0973d99fd9c0ad3605af8df88194ddf0785983f598bab48d3b780",
+    "src/ae/FSTR_LUT_PiPL.r": "670bd8971245ec5085f15483698a7d85565bc0d4e3e8427174d7dd769ff9a339",
+    "src/ae/Info.plist.in": "06d64039fd16c6f63d022c8a7a774a54fea57dc4117bb43f6ae038c5debb9f4e",
     "src/ae/embedded_look.hpp.in": "11e80285c6d6e69f548fa37d71a380dc02e959e210dca55fbdf8ac8e3c07aeb9",
-    "src/ae/plugin.cpp": "b4bd535a91abe147009eb594b91c7db8ddb5d25bd8cfcdbfadbac61e8c37953a",
-    "src/ae/plugin.hpp": "70fd9f396774e15a0747543662e0ab3afe02cde331e7d05915c7f29f1d973da4",
+    "src/ae/metadata_ui.cpp": "b5a57c6c7cbec74047ede7cc384421cd815037be2739737ef0ae4cf3b6602bcb",
+    "src/ae/metadata_ui.hpp": "0c935e1e1c835320b1c357289bbbd8a546775fe84ee8bd36334c714c3a94371f",
+    "src/ae/plugin.cpp": "52e95540c540fe750238975991a5e19722beb42faed3c72f2b3d42b816d84579",
+    "src/ae/plugin.hpp": "c7aa6311bc70211ad8f98a2253fe3b28a7813bb618299fb44ff08bf92b1da450",
     "src/color/frame.cpp": "175893ef1afd45b57b10a6ab7a07cedaf1496ea3f70db9d8c404eb34cb2e74c4",
     "src/color/grade.cpp": "137a1cf7474da46d75d2cfc2ff880f3103c0880452656ccaa55fe29a33f55c75",
     "src/color/pixel.cpp": "2ebf02761e418e45451f7e6c096eb890f06af4dd5fc1ba39669719c70877ee46",
     "src/color/profiles.cpp": "72a3d94b122a9e720fba0fdbcd37c7558ea455fc11c2bc4a7d71045d45f68251",
     "src/color/transfer.cpp": "350af5563af6240035c42887e5aad62d8371c33c5e6a3fa65d6ccb6346d595ea",
-    "src/core/pipeline.cpp": "529bfb440031154396ecf020e3f3f63081ade13d6c10592875e1b7b55f3ca731",
-    "src/inference/ort_backend.cpp": "73fec8c48cd6bc32badae7b29fd86356a1a0e8c53f73fa5841b8018de8705904",
     "src/looks/lut.cpp": "51fc840b614937df8870d982d42424089869f1eef66605543268e6f7065b6414",
-    "src/restoration/ffdnet.cpp": "917873b8d6e2f3fb8d00d9971a8fa4d75294c293dfe5b7a12b5132150e2f48c8",
-    "tests/ae_adapter_tests.cpp": "81b59ab4542d72bb82f4d17776ecc953acceca06bcd5b0a8fa8295f02290d6ca",
+    "src/metadata/metadata.cpp": "bc9f0bf170481cb406afda7767e1e50e61fbbc521e7f3cbb3650a8e3da8715ed",
+    "tests/ae_adapter_tests.cpp": "cd4a8213e347b570cd426ecb0b5014d34e8594ba77c0736b0f2426fbe839ca1a",
     "tests/color_tests.cpp": "3f8ada57c69f34ce7e5c413e8a7f91f5970df20d8f673869716a8b685327291e",
     "tests/core_tests.cpp": "d418e8887336ab42d39ba6949e9aff076d85ef08ac7ceab141b55d088355346a",
-    "tools/benchmark/color_fixture.cpp": "af660851f2aef1dd440f2491872dfd9a3b425bf16e01149ced9608b8d725b4d0",
+    "tests/metadata_tests.cpp": "4cc8cf6e216debe58a5e5e9ab78230587169365fccdd2bb8f0acca235fdb96e1",
+    "tests/metadata_ui_tests.cpp": "96138199d02db4bcd1cf4d30ffa126ca51a1d5fdd9bfb4fef8d37a0e7a482e18",
+    "third_party/tinyxml2/LICENSE.txt": "9332252e9b9e46db8285d4a3f0bf25f139bf1dca6781b956d57f2302efca6432",
+    "third_party/tinyxml2/provenance.json": "7797f6edc9f89b02e79b8641478dc82fd948b2ab251475e0ecc57d2eddd45037",
+    "third_party/tinyxml2/tinyxml2.cpp": "95f64e4cb06c9e147d5b12e8860c88898944858dfbc38fed92ebf918f1436554",
+    "third_party/tinyxml2/tinyxml2.h": "0f3c6e5a91b6d65caca3cc7239926455f21e488cff80ac3d27c74f5262fd2602",
+    "tools/ae_host_runner/CMakeLists.txt": "73f26c4415200b29b3a45afd26ba0244aa7179d766bced4dd263e842eb252542",
+    "tools/ae_host_runner/Info.plist": "4a913c245f129cfdb227aa19e7066807c76be64c0e8a4e486fab27edccc74917",
+    "tools/ae_host_runner/README.md": "b3caeb86639c515ffc1c35e12f4cb697263712b55bda9790971066e07ae5ff45",
+    "tools/ae_host_runner/acceptance.jsx.in": "aa2e652e15cebc68e2545474b9c5817ad50303f66503526cdf97646bfd83a174",
+    "tools/ae_host_runner/camera.jsx.in": "98bbf511a499ac448dcfce2e4971469dfe872f627b62cbd2f07b8eed65d78e8d",
+    "tools/ae_host_runner/owned.hpp.in": "de536af6d69325f3821af3e2d0a0eb567f7951c88821f95a229db838e4760c11",
+    "tools/ae_host_runner/runner.cpp": "f7b63890ffa65689e20743ae557e27e9b6bed6f655e28aea21f3348ee6304577",
+    "tools/ae_host_runner/runner.r": "6dbd2abbb1fdcb1be78e8b20e8f1e9ac36990e6d2a9241fbba731e31a7ce5b74",
     "tools/benchmark/color_main.cpp": "32e30dd5d44afe85226b0c1c64427000f86e4b5c8b532a0c2f0de930de7ddd97",
-    "tools/benchmark/color_qa.py": "8bbea6eba2e40adb5ff3903d901533f693f8970c998e95b2191c119db847d6fb",
-    "tools/benchmark/owned_ae_color.jsx.in": "0f04f892bcd928d0e511c6d977510a0b5046f896cd4ce5ad65f0eb8e0cc2a601"
-  },
-  "environment": {
-    "device": "Apple M1 Pro 16GiB",
-    "os": "macOS26.6.2",
-    "compiler": "AppleClang21",
-    "cpp": 17,
-    "sdk": "25.6_61",
-    "ae": "25.6.0x101"
+    "tools/metadata/main.cpp": "9114c02ad21562b33d19a07450ce5d4ef004e1e99d4f21aad25f2f9951d503f5"
   },
   "development_bundle": {
-    "source_build_id": "7fbe273f5beca507",
-    "signature": "local ad-hoc; no release/notarization claim",
+    "source_build_id": "32597669ec8fb8e1",
     "files": {
-      "Contents/Info.plist": "8043f171c0d451a51d696c513cc513fba56332f64f86fcdce0fc696b9748f70f",
-      "Contents/_CodeSignature/CodeResources": "fc9e5ca441c3197fd02a771c6861fd08407b435e6cfabe2a86f88d8f6db92b46",
-      "Contents/MacOS/FSTR_LUT_Development": "22a79517c47d20e289b6054f39021a77b34b09fae75f962fd0ec5a91ce701522",
-      "Contents/Resources/FSTR_LUT.rsrc": "58a25927836e1ddeefab34422d81d990d6718569aab7bbb6bac523c09bcb9c16"
+      "Contents/Info.plist": "c4cc218676a1b0ea7aa98c510e078e0e5fbfec0cde5aaddf6bb6132aa4b98f2d",
+      "Contents/MacOS/FSTR_LUT_Development": "0f04f6b8a89410e7cb249c88c9f570048a7b8e03d92d96a57eb17c1a7ba7a7e6",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "233f51098ae4e9dbf722ad81130a2f4887c4faeb13c1e7ec1423d65b3ed76996",
+      "Contents/_CodeSignature/CodeResources": "ad9d1da6725c19c95e94bb418fae92ce4de32bd7ec5cf08e850384e5f625d2c9"
     },
+    "signature": "local ad-hoc, no release/notarization certification",
+    "architecture": "arm64",
     "dependencies": [
       "libc++",
       "libSystem"
     ],
-    "onnx_python_model_dependency": false
+    "statically_linked_third_party": "tinyxml2v11.0.0/zlib",
+    "no_python_onnx_models_or_test_helper": true
   },
   "checks": {
-    "release_core": {
-      "result": "PASS",
-      "assertions": 3433
+    "signed_release_five_suites": {
+      "status": "PASS",
+      "evidence": "evidence/color-metadata-325/metadata-candidate-final.log",
+      "scope": "Core, color, parser, actual dlopened native adapter, actual metadata EVENT implementation with owned SDK/Drawbot stand-ins"
     },
-    "release_color": {
-      "result": "PASS",
-      "assertions": 2104
+    "asan_ubsan_five_suites": {
+      "status": "PASS",
+      "evidence": "evidence/color-metadata-325/metadata-sanitize-final.log",
+      "scope": "ASan/UBSan source behavior; run preceded SDK-header-only identity adjustment, actual AE not instrumented"
     },
-    "native_actual_module_callbacks": {
-      "result": "PASS",
-      "assertions": 78,
-      "scope": "Actual dlopened bundle in owned SDK fixture, not AE callback execution"
+    "actual_metadata_ui": {
+      "status": "PASS",
+      "confidence": "OBSERVED",
+      "evidence": "evidence/color-metadata-325/ui-review.json",
+      "scope": "Owned AE direct camera caption, source replacement fallback, Undo return, unchanged profile/encoding; normal default ECW panel"
     },
-    "asan_ubsan": {
-      "result": "PASS",
-      "scope": "Final pure core and instrumented native module in owned fixture; AE/SDK host code is not instrumented"
+    "actual_new_build_regression": {
+      "status": "PASS",
+      "evidence": "evidence/color-metadata-325/regression.json",
+      "scope": "10exports: old32-bpc SDR/SyntheticSony/alpha+WB project reopen; MFR ON50, PNG8/PSD8, tolerance2/255. No callback concurrency peak claim"
     },
-    "full_frame_color": {
-      "result": "PASS",
-      "cases": 9,
-      "max_abs_error": 4.309310952521628e-07,
-      "tolerance": 2e-06,
-      "report_sha256": "a1c6cf7b72b234554a7f49c910f9f7934bb77cae827e0e28262081bbda7e1913",
-      "binary_sha256": "39699d6f2e5da5806c6ede58aca9f63ec11911522a0caaeff9648c8e56e4a4d5",
-      "scope": "Authored flat SDR and synthetically encoded SLog3 full-frame fixtures; actual camera Log, AE and subjective product quality not certified"
+    "actual_sdr_visual": {
+      "status": "PASS",
+      "confidence": "OBSERVED",
+      "scope": "One camera frame, Original/Grade/Warm comparison and orientation inspected; subtle artistic result, user acceptance and motion are separate"
     },
-    "visual": {
-      "result": "INSPECTED",
-      "scope": "Root viewed final face/night/rooftop composites at1536x1044; technical matching roundtrip, natural-scene/real-camera artistic acceptance NOT RUN"
+    "camera_full_frame_numeric_oracle": {
+      "status": "NOT RUN",
+      "negative_attempt": "PSD8 neutral reference comparison FAIL0.04277/0.04752; clipped quantized source cannot establish original float reference. OpenEXR Format attempts reject read-only property; no tolerance relaxation",
+      "scope": "Valid unquantized full-frame camera oracle remains uncalibrated"
     },
-    "bundle_structure": {
-      "result": "PASS",
-      "scope": "arm64, exports, SDK/PiPL flag parity, data-fork resource, signed digests and strict codesign; no release claim"
+    "manual_refresh_and_narrow_actual_ui": {
+      "status": "NOT RUN",
+      "reason": "CUA coordinate routing failed; implementation/cleanup/cache covered with stand-ins, ordinary panel actual inspected"
     },
-    "owned_install": {
-      "result": "PASS",
-      "scope": "Unique new bundle in user MediaCore; exact file hashes verified; no pre-existing plugin replaced"
+    "new_candidate_actual_8_16_projects": {
+      "status": "NOT RUN",
+      "scope": "Historical356 actual8/16/32 evidence preserved; current candidate native fixture covers8/16/32 and actual regression covers32"
     },
-    "ae_module_mapping": {
-      "result": "PASS",
-      "scope": "PID91632/birth13:58:29 mapped exact installed executable; this alone does not prove effect registration/render"
+    "actual_direct_negative_hdr_roi_downsample_grading_undo_ram_preview": {
+      "status": "NOT RUN"
     },
-    "ae_headless_startup": {
-      "result": "FAIL",
-      "scope": "No render report/project; menu action in -noui instance entered host error/abort stack. Cause not assigned to plugin; negative evidence retained"
+    "windows_real_sony_log_and_other_camera_metadata": {
+      "status": "NOT RUN"
     },
-    "ae_render_state_ui": {
-      "result": "BLOCKED",
-      "scope": "Mac locked; ordinary owned instance running, CLI script execution not confirmed. Real render/save-reopen/Undo/alpha/ROI/downsample/MFR acceptance NOT RUN"
+    "automatic_incoming_pixel_encoding": {
+      "status": "NOT RUN",
+      "scope": "Source declarations cannot establish previous AE conversions; manual Input/Profile Encoding contract retained"
     },
-    "real_camera_log": {
-      "result": "NOT RUN"
+    "safe_install_and_cleanup": {
+      "status": "PASS",
+      "scope": "Owned old356/helper full hashes checked and archived; exactly one current FSTR bundle; completed own AE saved and normally closed; temporary helper absent from MediaCore"
     },
-    "windows": {
-      "result": "NOT RUN"
+    "source_final_review": {
+      "status": "PASS",
+      "scope": "Separate critical review of parser boundaries/namespace/UTF16 handles, UI resource cleanup, old parameter IDs, metadata-free render. Upstream vendor bytes/license pinned unchanged; vendor CRLF exempted from owned diff whitespace check"
     },
-    "speed": {
-      "result": "NOT RUN",
-      "scope": "Deferred after useful color MVP by user"
+    "release": {
+      "status": "NOT RUN",
+      "scope": "Limited development trial only. Full MVP incomplete; no merge/main/release"
+    },
+    "bounded_static_code_scan": {
+      "status": "PASS",
+      "evidence": "evidence/color-metadata-325/static-code-audit.json",
+      "scope": "250 bounded text files, exit0/no findings; source8733709 with documentation changes dirty. Release readiness not assessed; excluded/unsupported files and runtime remain separate."
+    },
+    "local_zip_roundtrip": {
+      "status": "PASS",
+      "scope": "Exact5bundle-file hashes match after ZIP extraction; strict signature verification passes; no helper/models/footage in ZIP. Local transfer only, external download/quarantine not tested."
     }
   },
-  "raw_logs": {
-    "mvp-final-build.log": {
-      "relative_to_work": "color-evidence/mvp-final-build.log",
-      "sha256": "65fdc5117ae7c03f2922ea99314981cd7c7f1d97d78dc0737c05a18160026339"
-    },
-    "mvp-final-tests.log": {
-      "relative_to_work": "color-evidence/mvp-final-tests.log",
-      "sha256": "0ba3d6e98f8a2a3c0ca910caf95e337929759b2fdcf3dbf8e8c253e9651e4399"
-    },
-    "mvp-native-sanitize-final.log": {
-      "relative_to_work": "color-evidence/mvp-native-sanitize-final.log",
-      "sha256": "a283b6533b17ff66773cd63d33fba5f7c3f32aa29fc889c03d05bbd5619a603f"
-    },
-    "mvp-final-signed-tests.log": {
-      "relative_to_work": "color-evidence/mvp-final-signed-tests.log",
-      "sha256": "193d3a2708bbc239d6d98ee63a7e795c8affb91fc44179d6690de87f21d4041c"
-    },
-    "full-frame-delivery.log": {
-      "relative_to_work": "color-evidence/full-frame-delivery.log",
-      "sha256": "901c2a8a3f9985030f8720f10863c1ef2499112117f4cd42f361ef8049c84ca0"
-    },
-    "mvp-final-bundle.json": {
-      "relative_to_work": "color-evidence/mvp-final-bundle.json",
-      "sha256": "de94bf9123efc29b649a56bd6490adfeea6ac20aad39713e91d4580a0c8c8280"
-    },
-    "incremental-rsrc.json": {
-      "relative_to_work": "color-evidence/incremental-rsrc.json",
-      "sha256": "910fe3650eabc3a058581d9fbb93c3660a7cee62bd5cbfc6867c09524dfe3fe9"
-    }
-  },
-  "sony_reference": {
-    "url": "https://download.pro.sony/FNGP/protein/1237494271390/1237494271406.pdf",
-    "sha256": "d9c8a042e7e9e8ee248df97633b645681b5370099a508b6cee97d8bad880d5d3",
-    "matrix_manifest_sha256": "abbc10b16e1d02f27cbb54f33baa5c752eb52761f82b34676ffd98f959ff71a4"
-  },
-  "review": {
-    "root": "Separate final source/requirements/actual-artifact review of core bounds, numeric units, pixel and SDK resource paths; final images inspected. Native file inventory in NATIVE_REVIEW.md.",
-    "senior": "Read-only source/SDK advice; no builds/tests performed by reviewer. No further material defect; source contracts and actual host acceptance remain unverified."
-  },
-  "preservation": "Existing research/branches/plugins/projects/evidence retained; only owned crashed test processes stopped after identity/nonce verification. No main merge/release."
+  "historical_evidence": "history/EVIDENCE_COLOR_MVP-7fbe.json",
+  "local_raw_evidence": [
+    "../color-host-metadata-v1",
+    "../color-host-regression-325",
+    "../color-host-sdk-render-v4",
+    "../color-host-final-v3"
+  ],
+  "privacy": "Original footage, frames, identifying original source path, full XML, serial and GPS remain local outside Git; only whitelisted source declarations and numeric/manual reports retained here"
 }

@@ -1,8 +1,33 @@
+# FSTR-LUT — current development checkpoint, 2026-10-14
+
+Color-first scope: ordinary SDR grading and explicit Sony S-Log3/S-Gamut3.Cine normalization. Automatic read-only Sony camera metadata recognition is added. Restoration, denoise/detail/training/acceleration remain after MVP. Branch dev/ai-enhance-prototype; rules v11.1.0 /04b606845e0f73ab28b9807bb45682eae4d6ce34.
+
+**Implementation committed: 8733709c7076da76a95e0510a9b55fd0cb2b7b8a. BuildID32597669ec8fb8e1. Limited Mac trial, full MVP incomplete.** Core color math remains25819a9e379a49caaa94df4fa5e2af5112b5cd07. Documentation checkpoints do not rebuild the bundle. Exact source/file hashes, procedures/results and retained boundaries: [EVIDENCE_COLOR_MVP.json](EVIDENCE_COLOR_MVP.json). Older7fbe evidence is archived unchanged under docs/history;356 host evidence remains a historical reference. No main merge or release.
+
+| Acceptance / inspected scope | Status |
+| --- | --- |
+| MVP-C01..07 core contracts, parameter units, alpha/extended policy, deterministic color and frozen look; actual dlopened native callback fixture | PASS, five Release suites; corresponding ASan/UBSan suites PASS. Actual AE and external SDK are not instrumented |
+| META01..03 structured bounded parser, namespaces/conflicts, whitelist privacy | PASS. Local supplied camera declared Sony ILME-FX3/Rec709,2100bytes read; vendor/license hashes unchanged |
+| META04..06 actual camera caption, source replacement fallback, Undo return, unchanged profile/encoding | PASS in nonce-owned AE25.6x101/default Effect Controls panel; no render IO or parameter auto-changes |
+| META07 actual manual-refresh click, narrower panel, proxy/missing/composition fallbacks | NOT RUN in actual host. Stand-in callback/error/cache tests PASS; CUA coordinate routing failed for the actual refresh click |
+| MVP-C08 actual SDR result | One Original/Grade/Warm portrait comparison inspected. Orientation/framing and subtle tonal/look changes observed; user artistic acceptance, multiple frames/motion and actual camera Log remain open |
+| Actual full-frame camera arithmetic | NOT RUN with a valid float oracle. Initial neutral-PSD8 reference failed at clipped whites(max0.04277/0.04752); tolerance2/255 retained. API/CLI OpenEXR-format attempts rejected the read-only property. Negative evidence preserved; no product color defect inferred from that uncalibrated oracle |
+| MVP-C09 current candidate old project reopen, SDR/SyntheticSony, WB and alpha, MFR ON50 | PASS10 exports on32-bpc projects vs references, tolerance2/255; max0.006246, alpha export error<=1LSB. Eight PNG8 SDR/Sony, one PNG RGB alpha-on-black, one RGBA PSD8. Actual concurrent callback peak is not measured |
+| New candidate actual8/16 projects, negative/HDR float worlds, ROI/downsample, grading-parameter Undo/RAM Preview | NOT RUN. Current owned callback fixture covers8/16/32 and ROI/cancel; historical356 actual8/16/32/state/linear-working-space evidence retained separately |
+| MVP-C10 Windows / real Sony Log / other camera metadata / automatic incoming-pixel-space discovery | NOT RUN. Explicit manual incoming encoding remains required |
+| Final package/owned installation/cleanup | PASS signed arm64 eFKT/FXTC bundle,5matching files; libc++/libSystem only, static tinyxml2. Old owned bundles archived, exactly one active current FSTR bundle. Saved own AE normally closed; temporary helper archived outside MediaCore |
+
+Separate root final review covered requirements, parser bounds/namespace/UTF16, source handle ownership, Drawbot cleanup, cache/render separation and old diskIDs1..11. The source was independently reviewed earlier by the authorized senior agent; that agent did not execute host/tests. Upstream tinyxml2 CRLF bytes/license remain exact; owned diff whitespace check excludes unchanged upstream files. Whole-product release/security/performance readiness is not claimed.
+
+Next bounded work: establish an unclipped actual-camera reference export, check real S-Log3 footage and short-video color, then remaining actual-host8/16/float/ROI/Undo/preview checks. Inspect actual refresh/narrow/proxy/missing behavior when coordinate routing is available. Windows remains a separate portability milestone. Broader v3 obligations are retained in PLAN.md/MVP_COLOR.md; this checkpoint does not silently discard them.
+
+## Historical checkpoints — retained, superseded
+
 # FSTR-LUT checkpoint — 2026-10-14, color native slice
 
 Current user scope: ordinary SDR grading and true camera Log, first Sony S-Log3/S-Gamut3.Cine. User delegated profile choice. Restoration, model/training and acceleration remain post-MVP; their existing code and negative evidence are preserved. Rules v11.1.0 /04b606845e0f73ab28b9807bb45682eae4d6ce34; branch dev/ai-enhance-prototype.
 
-Tested implementation source: **25819a9e379a49caaa94df4fa5e2af5112b5cd07**. Source BuildID **7fbe273f5beca507**. Exact final signed bundle/file and source hashes: [EVIDENCE_COLOR_MVP.json](EVIDENCE_COLOR_MVP.json); raw local evidence ../evidence/2026-10-14-color-25819a9/manifest.json and ../color-evidence. This checkpoint changes documentation only. Local ad-hoc signed development bundle, not a release or accepted production build. No merge/main changes.
+Tested implementation source: **25819a9e379a49caaa94df4fa5e2af5112b5cd07**. Source BuildID **7fbe273f5beca507**. Exact final signed bundle/file and source hashes: [historical7fbe evidence](history/EVIDENCE_COLOR_MVP-7fbe.json); raw local evidence ../evidence/2026-10-14-color-25819a9/manifest.json and ../color-evidence. This checkpoint changes documentation only. Local ad-hoc signed development bundle, not a release or accepted production build. No merge/main changes.
 
 Implemented: independent no-model frame/pixel core; official Sony full-range curve and S-Gamut3.Cine-to-linear-Rec709 transform; explicit host sRGB/linear/Gamma2.4; exposure stops, creative Temperature/Tint, signed-log contrast, saturation, optional luminance shoulder; tetrahedral encoded-sRGB WarmFilm v1, LookAmount and linear host-appearance Mix. Native Mac arm64 effect uses external SDK25.6. Frozen look checksum and disk parameter IDs retained. No guessed profile/project gamut. Core remains free of SDK headers; native packaging links only libc++/libSystem.
 

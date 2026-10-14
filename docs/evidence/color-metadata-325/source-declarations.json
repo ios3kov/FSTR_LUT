@@ -1,0 +1,11 @@
+{
+  "bytes_read": 2100,
+  "camera": "ILME-FX3",
+  "coding": "rec709",
+  "declared_profile": "Rec.709 (SDR)",
+  "gamma": "rec709",
+  "manufacturer": "Sony",
+  "primaries": "rec709",
+  "scope": "Source declarations only; AE pixel encoding and prior conversions remain explicit",
+  "status": "found"
+}

@@ -1,0 +1,72 @@
+{
+  "build_id": "32597669ec8fb8e1",
+  "source_commit": "8733709c7076da76a95e0510a9b55fd0cb2b7b8a",
+  "tolerance": 0.00784313725490196,
+  "scope": "Fresh aerender reopen of old32bpc SDR/Sony and alpha/WB saved projects; MFR ON50, PNG8/PSD8 export only; measured concurrency peak and float HDR not established.",
+  "cases": [
+    {
+      "file": "SDR_00000.png",
+      "sha256": "a9b3f9088e0c5d3bc0417c80684e235f7f3abac898ce13bf9e3f83eb65c42555",
+      "max_abs_error": 0.0039061903953552246,
+      "result": "PASS"
+    },
+    {
+      "file": "SDR_00001.png",
+      "sha256": "9d4e46643aecb06561705d91eb65801933bb8907934ee102d4f6005acb0c718d",
+      "max_abs_error": 0.0039061903953552246,
+      "result": "PASS"
+    },
+    {
+      "file": "SDR_00002.png",
+      "sha256": "b32e773dc206c90a5aa386c9bc47fbd7fede7ff4866660332ec166f098198505",
+      "max_abs_error": 0.0039061903953552246,
+      "result": "PASS"
+    },
+    {
+      "file": "SDR_00003.png",
+      "sha256": "570976caa2143be70aa7efa049170fa0786e43d207790b987bd6e19dc8c387e2",
+      "max_abs_error": 0.0039061903953552246,
+      "result": "PASS"
+    },
+    {
+      "file": "SONY_00000.png",
+      "sha256": "5c713ea186e69066e67d2df11b90d4fb4df0cf976aff51b6c849edce86833b0a",
+      "max_abs_error": 0.003945767879486084,
+      "result": "PASS"
+    },
+    {
+      "file": "SONY_00001.png",
+      "sha256": "37b205d5c4ce012c8b5df81db90a93376f3107d8166e7037ce064e2cdf33c531",
+      "max_abs_error": 0.003933608531951904,
+      "result": "PASS"
+    },
+    {
+      "file": "SONY_00002.png",
+      "sha256": "8db38a357bcfdd43f5edc25431ac562b46cd06ccb6871d3272f716e010cbe6f4",
+      "max_abs_error": 0.0039479732513427734,
+      "result": "PASS"
+    },
+    {
+      "file": "SONY_00003.png",
+      "sha256": "6a24fb227e758f91403d521988bc58ed230f10edda6a03783a10fc0d1f239a1b",
+      "max_abs_error": 0.003945767879486084,
+      "result": "PASS"
+    },
+    {
+      "file": "ALPHA_00000.png",
+      "sha256": "01c7b7caebcdfdf46ac369c5d3ebd556a3d70c190ae46eeb1f633e86b48b4410",
+      "max_abs_error": 0.006246000528335571,
+      "scope": "PNG RGB premultiplied export on black; alpha channel is not exported and not established by this case",
+      "result": "PASS"
+    },
+    {
+      "file": "ALPHA_PSD_00000.psd",
+      "sha256": "0c76c4ef702750d6fee1b9e07f54e2c9c657693f314cc6c4a37023adb197f87c",
+      "max_abs_error": 0.006246000528335571,
+      "alpha_max_abs_error": 0.003921568393707275,
+      "scope": "Photoshop template, RGBA PSD8, premultiplied export",
+      "result": "PASS"
+    }
+  ],
+  "result": "PASS"
+}

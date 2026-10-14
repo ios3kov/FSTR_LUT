@@ -1,0 +1,23 @@
+{
+  "source_commit": "8733709c7076da76a95e0510a9b55fd0cb2b7b8a",
+  "build_id": "32597669ec8fb8e1",
+  "host": "AE25.6x101 macOS arm64",
+  "owned_pid": 40072,
+  "owned_birth_local": "2026-10-14 19:15:50",
+  "project": "owned-camera.aep",
+  "actual_cua_review": {
+    "automatic_direct_movie_caption": "PASS: Sony ILME-FX3; Rec.709 (SDR); Suggested input: Already converted / SDR",
+    "panel_legibility": "PASS: three caption lines visible in the inspected default Effect Controls panel, alongside existing controls",
+    "source_replacement": "PASS: unsupported PNG source displays MP4/MOV camera metadata only and manual selection fallback",
+    "undo_source_replacement": "PASS: Undo returns FX3/Rec709 caption; Input Profile1 and Pixel Encoding4 unchanged",
+    "repeat_redraw": "PASS: stable caption after returning to the source and inspecting again",
+    "manual_cache_refresh_click": "NOT RUN: CUA coordinate routing returned windowNotFoundAtPosition; callback/cache invalidation is covered in the owned SDK fixture only",
+    "narrow_panel": "NOT RUN: truncation is implemented with Drawbot end ellipsis, but a narrower actual panel was not inspected",
+    "actual_proxy_missing_composition": "NOT RUN: these fallbacks are covered with SDK stand-ins only",
+    "grading_parameter_undo": "NOT RUN: source replacement Undo is a separate criterion",
+    "startup_message": "AE internal verification failure {no current context}; dismissed through Return. Subsequent saved owned project and real metadata control were inspected. No cause assigned to the color effect."
+  },
+  "camera_artistic_review": "Original/Grade/Warm portrait comparison inspected at2009x1248 and in AE. Orientation and framing agree with decoded source preview. Modest exposure/contrast adjustment and warm20% change appear subtle, without an obvious spatial seam; this single SDR frame cannot establish real Log, motion, recovered highlights or the user's artistic acceptance.",
+  "camera_numeric": "Full-frame comparison from neutral PSD8 FAIL(max0.04277 Grade/0.04752 Warm). Quantized clipped baseline cannot establish a reference for the original float path; differences peak at clipped white. Full float camera parity remains NOT RUN/uncalibrated. API and CLI Format->OpenEXR attempts both explicitly rejected as read-only. Tolerance2/255 was not increased. Negative reports and attempts retained.",
+  "scope": "Read-only manual result record, no original footage/full XML/serial/GPS in this report"
+}

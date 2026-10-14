@@ -1,0 +1,3 @@
+# FSTR-LUT development
+
+Read docs/PLAN.md, docs/STATUS.md, docs/USER_SPEC.txt and the accepted AE Development Rules v11.1.0 entrypoint before work. Preserve existing changes. Work on a development branch. Keep SDK external; never commit Adobe SDK headers/samples or user footage. Core tests and bundle builds do not establish AE runtime. Follow the requirement table in PLAN.md and record unperformed checks. No release, merge into main or installation over an existing plugin without corresponding authorization. No render-time UI or filesystem loading. Native param IDs/order and preset schema changes require explicit compatibility handling.

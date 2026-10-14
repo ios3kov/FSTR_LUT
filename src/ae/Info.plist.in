@@ -5,7 +5,9 @@
 <key>CFBundleExecutable</key><string>FSTR_LUT_Development</string>
 <key>CFBundleIdentifier</key><string>com.fstr.lut.color.development</string>
 <key>CFBundleName</key><string>FSTR-LUT Development</string>
-<key>CFBundlePackageType</key><string>BNDL</string>
+<key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
+<key>CFBundlePackageType</key><string>eFKT</string>
+<key>CFBundleSignature</key><string>FXTC</string>
 <key>CFBundleShortVersionString</key><string>0.1.0</string>
 <key>CFBundleVersion</key><string>1</string>
 <key>FSTRSourceBuildID</key><string>@FSTR_COLOR_BUILD_ID@</string>

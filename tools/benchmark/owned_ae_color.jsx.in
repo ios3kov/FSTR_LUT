@@ -1,6 +1,6 @@
 (function () {
     var cfg = @FSTR_HOST_CONFIG@;
-    var created = false, lines = [], succeeded = false;
+    var created = false, lines = [], succeeded = false, suppressed = false;
     function record(s) { lines.push(String(s)); }
     function report() {
         var f = new File(cfg.report);
@@ -16,6 +16,7 @@
             record("BLOCKED: initial instance has a project; no project changes made"); report(); return;
         }
         app.beginSuppressDialogs();
+        suppressed = true;
         record("HOST " + app.version + " BUILD " + app.buildNumber);
         var installed = app.effects, count = 0, version = "";
         for (var i = 0; i < installed.length; i++) if (installed[i].matchName === "FSTR LUT Color MVP") { count++; version = installed[i].version; }
@@ -35,7 +36,11 @@
                 var comp = app.project.items.addComp(name, 768, 320, 1, 4 / 24, 24);
                 var layer = comp.layers.add(footage);
                 var effect = layer.property("ADBE Effect Parade").addProperty("FSTR LUT Color MVP");
-                if (!effect || effect.numProperties !== 11) throw Error("Unexpected native parameter schema");
+                if (!effect) throw Error("Native effect not added");
+                record("EFFECT_PROPERTY_COUNT " + effect.numProperties);
+                // AE can append Compositing Options; check our controls by their names.
+                var controls = ["Input Profile", "Exposure", "Temperature", "Tint", "Contrast", "Saturation", "Highlight Rolloff", "Look", "Look Amount", "Mix", "AE Pixel Encoding"];
+                for (var c = 0; c < controls.length; c++) if (!effect.property(controls[c])) throw Error("Missing native control: " + controls[c]);
                 effect.property("Input Profile").setValue(variant === 0 ? 1 : 2);
                 effect.property("Exposure").setValue(variant === 0 ? 0.5 : 0);
                 effect.property("Temperature").setValue(0); effect.property("Tint").setValue(0);
@@ -44,11 +49,17 @@
                 effect.property("Look Amount").setValue(0); effect.property("Mix").setValue(100);
                 effect.property("AE Pixel Encoding").setValue(2); // Explicit sRGB interpretation in owned unmanaged project.
                 var queue = app.project.renderQueue.items.add(comp), om = queue.outputModule(1);
-                var templates = om.templates, png = null;
-                for (var t = 0; t < templates.length; t++) if (String(templates[t]).indexOf("PNG") >= 0) { png = templates[t]; break; }
-                if (png === null) throw Error("No existing PNG output template; no template/preferences created");
-                om.applyTemplate(png); record("OUTPUT_TEMPLATE " + png);
-                om.file = new File(cfg.folder + "/" + name + "_[#####].png");
+                var templates = om.templates, selected = null;
+                record("OUTPUT_TEMPLATES " + templates.join(" | "));
+                for (var t = 0; t < templates.length; t++) if (/PNG|TIFF|Photoshop/.test(String(templates[t]))) { selected = templates[t]; break; }
+                if (selected === null) for (var t = 0; t < templates.length; t++) if (String(templates[t]) === "Multi-Machine Sequence") { selected = templates[t]; break; }
+                if (selected === null) throw Error("No existing lossless image template; no template/preferences created");
+                om.applyTemplate(selected); record("OUTPUT_TEMPLATE " + selected);
+                var exportSettings = om.getSettings(GetSettingsFormat.STRING), format = String(exportSettings["Format"]);
+                var extension = /PNG/.test(format) ? "png" : /TIFF/.test(format) ? "tif" : /Photoshop/.test(format) ? "psd" : null;
+                record("OUTPUT_FORMAT " + format);
+                if (extension === null) throw Error("Chosen template is not a supported lossless image sequence");
+                om.file = new File(cfg.folder + "/" + name + "_[#####]." + extension);
             }
             var project = new File(cfg.project_prefix + "-" + depth + ".aep");
             if (project.exists) throw Error("Owned project already exists");
@@ -62,9 +73,14 @@
         succeeded = true; record("PASS_OWNED_NATIVE_COLOR_RENDER");
     } catch (e) { record("FAIL " + String(e)); }
     finally {
+        if (suppressed) app.endSuppressDialogs(false);
         try { report(); } catch (ignored) {}
+        if (succeeded && cfg.scheduled_quit) {
+            // Host main-loop task runs after the SDK caller has returned/released its suite.
+            app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '" + cfg.nonce + "' && (!app.project || (app.project.file === null && app.project.numItems === 0))) app.quit();", 1000, false);
+        }
         // Quit only our nonce-bearing instance with no user project; never the pre-existing instance.
-        if (succeeded || created) {
+        if (!cfg.keep_open && (succeeded || created)) {
             if (created && app.project && app.project.file && app.project.file.fsName.indexOf(cfg.project_prefix) === 0)
                 app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
             if (!app.project || (app.project.file === null && app.project.numItems === 0)) app.quit();

@@ -1,0 +1,3 @@
+#pragma once
+constexpr char owned_nonce[]="@FSTR_RUNNER_NONCE@";
+constexpr char owned_script[]=R"FSTRRUN(@FSTR_SCRIPT@)FSTRRUN";

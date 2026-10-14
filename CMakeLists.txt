@@ -50,6 +50,8 @@ if(FSTR_AE_SDK_ROOT)
   string(SUBSTRING "${FSTR_COLOR_BUILD_ID}" 0 16 FSTR_COLOR_BUILD_ID)
   configure_file(src/ae/embedded_look.hpp.in generated/fstr_embedded_look.hpp @ONLY)
   configure_file(src/ae/Info.plist.in generated/Info.plist @ONLY)
+  # Match the exact native-effect package identity emitted by the SDK sample.
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/generated/PkgInfo" "eFKTFXTC")
   set_target_properties(fstr_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
   add_library(fstr_ae_objects OBJECT src/ae/plugin.cpp)
   target_link_libraries(fstr_ae_objects PRIVATE fstr_core)
@@ -61,7 +63,8 @@ if(FSTR_AE_SDK_ROOT)
   add_custom_command(TARGET fstr_ae POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_BUNDLE_DIR:fstr_ae>/Contents/Resources"
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/generated/Info.plist" "$<TARGET_BUNDLE_DIR:fstr_ae>/Contents/Info.plist"
-    COMMAND /usr/bin/xcrun Rez -useDF -d __arm64__ -I "${FSTR_AE_EXAMPLES}/Headers" -I "${FSTR_AE_EXAMPLES}/Resources" "${CMAKE_CURRENT_SOURCE_DIR}/src/ae/FSTR_LUT_PiPL.r" -o "$<TARGET_BUNDLE_DIR:fstr_ae>/Contents/Resources/FSTR_LUT.rsrc"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/generated/PkgInfo" "$<TARGET_BUNDLE_DIR:fstr_ae>/Contents/PkgInfo"
+    COMMAND /usr/bin/xcrun Rez -useDF -d __arm64__ -I "${FSTR_AE_EXAMPLES}/Headers" -I "${FSTR_AE_EXAMPLES}/Resources" "${CMAKE_CURRENT_SOURCE_DIR}/src/ae/FSTR_LUT_PiPL.r" -o "$<TARGET_BUNDLE_DIR:fstr_ae>/Contents/Resources/FSTR_LUT_Development.rsrc"
     VERBATIM)
 endif()
 if(FSTR_SANITIZE AND NOT MSVC)

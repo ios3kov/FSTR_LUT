@@ -168,6 +168,12 @@ void grade_tests(){
     auto expected=grade_linear({-.05,.18,1.2},s);std::vector<std::future<RGB>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[s]{return grade_linear({-.05,.18,1.2},s);}));
     for(auto& task:tasks){auto actual=task.get();check(actual.r==expected.r&&actual.g==expected.g&&actual.b==expected.b,"Pure grade changed under concurrency");}
+    s={};s.temperature=1;out=grade_linear({.18,.18,.18},s);
+    near(out.r/out.g,std::sqrt(2.0),1e-14);near(out.b/out.g,1/std::sqrt(2.0),1e-14);
+    near(.2126*out.r+.7152*out.g+.0722*out.b,.18,1e-14);
+    s={};s.tint=1;out=grade_linear({.18,.18,.18},s);
+    near(out.r/out.g,std::sqrt(2.0),1e-14);near(out.b,out.r,1e-14);
+    rejects([&]{grade_linear({.1,.2,.3},GradeSettings{0,1,1,2,0});});
 }
 }
 int main(){try{lut_tests();shuffle_tests();pipeline_tests();grade_tests();std::cout<<"PASS "<<checks<<" bounded core assertions; AE/real-model validity not established\n";return 0;}catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<" at assertion "<<checks<<"\n";return 1;}}

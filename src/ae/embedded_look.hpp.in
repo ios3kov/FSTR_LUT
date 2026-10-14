@@ -1,0 +1,5 @@
+#pragma once
+namespace fstr {
+inline constexpr char embedded_warm_v1[]=R"FSTR_CUBE(@FSTR_WARM_CUBE@)FSTR_CUBE";
+inline constexpr char color_build_id[]="@FSTR_COLOR_BUILD_ID@";
+}

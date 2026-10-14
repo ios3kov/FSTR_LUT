@@ -5,12 +5,14 @@
 
 namespace fstr {
 bool grade_is_neutral(const GradeSettings& s) noexcept {
-    return s.exposure_stops==0.0 && s.contrast==1.0 && s.saturation==1.0;
+    return s.exposure_stops==0.0 && s.contrast==1.0 && s.saturation==1.0 && s.temperature==0.0 && s.tint==0.0;
 }
 void validate_grade(const GradeSettings& s) {
     if(!std::isfinite(s.exposure_stops)||s.exposure_stops < -10||s.exposure_stops > 10||
        !std::isfinite(s.contrast)||s.contrast < .1||s.contrast > 3||
-       !std::isfinite(s.saturation)||s.saturation < 0||s.saturation > 2)
+       !std::isfinite(s.saturation)||s.saturation < 0||s.saturation > 2||
+       !std::isfinite(s.temperature)||std::abs(s.temperature)>1||
+       !std::isfinite(s.tint)||std::abs(s.tint)>1)
         throw std::invalid_argument("Invalid linear grading settings");
 }
 namespace {
@@ -35,6 +37,11 @@ RGB grade_linear(RGB input, const GradeSettings& s) {
     if(s.exposure_stops!=0) {
         const double gain=std::exp2(s.exposure_stops);
         result.r*=gain;result.g*=gain;result.b*=gain;
+    }
+    if(s.temperature!=0||s.tint!=0) {
+        const double red=std::exp2(.5*s.temperature),green=std::exp2(-.5*s.tint),blue=std::exp2(-.5*s.temperature);
+        const double normal=.2126*red+.7152*green+.0722*blue;
+        result.r*=red/normal;result.g*=green/normal;result.b*=blue/normal;
     }
     if(s.contrast!=1) {
         result.r=contrast_channel(result.r,s.contrast);

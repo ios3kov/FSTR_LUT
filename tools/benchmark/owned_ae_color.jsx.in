@@ -1,0 +1,73 @@
+(function () {
+    var cfg = @FSTR_HOST_CONFIG@;
+    var created = false, lines = [], succeeded = false;
+    function record(s) { lines.push(String(s)); }
+    function report() {
+        var f = new File(cfg.report);
+        if (f.exists) throw Error("Owned report already exists");
+        f.encoding = "UTF-8"; f.lineFeed = "Unix";
+        if (!f.open("w")) throw Error("Scripting cannot write the owned report");
+        try { f.write(lines.join("\n") + "\n"); } finally { f.close(); }
+    }
+    // Never manipulate a forwarded script in a pre-existing/user instance.
+    if ($.getenv("FSTR_LUT_OWNED_TOKEN") !== cfg.nonce) return;
+    try {
+        if (app.project && (app.project.file !== null || app.project.numItems !== 0)) {
+            record("BLOCKED: initial instance has a project; no project changes made"); report(); return;
+        }
+        app.beginSuppressDialogs();
+        record("HOST " + app.version + " BUILD " + app.buildNumber);
+        var installed = app.effects, count = 0, version = "";
+        for (var i = 0; i < installed.length; i++) if (installed[i].matchName === "FSTR LUT Color MVP") { count++; version = installed[i].version; }
+        record("REGISTRY_MATCHES " + count + " VERSION " + version);
+        if (count !== 1) throw Error("Expected exactly one owned FSTR-LUT effect");
+        for (var b = 0; b < 3; b++) {
+            var depth = [8, 16, 32][b];
+            app.newProject(); created = true;
+            app.project.bitsPerChannel = depth;
+            app.project.workingSpace = "";
+            app.project.linearizeWorkingSpace = false;
+            record("PROJECT BPC " + app.project.bitsPerChannel + " COLOR_MANAGEMENT_NONE");
+            for (var variant = 0; variant < 2; variant++) {
+                var src = variant === 0 ? cfg.source : cfg.synthetic_log;
+                var footage = app.project.importFile(new ImportOptions(new File(src)));
+                var name = "FSTR_" + depth + "_" + (variant === 0 ? "SDR" : "SONY");
+                var comp = app.project.items.addComp(name, 768, 320, 1, 4 / 24, 24);
+                var layer = comp.layers.add(footage);
+                var effect = layer.property("ADBE Effect Parade").addProperty("FSTR LUT Color MVP");
+                if (!effect || effect.numProperties !== 11) throw Error("Unexpected native parameter schema");
+                effect.property("Input Profile").setValue(variant === 0 ? 1 : 2);
+                effect.property("Exposure").setValue(variant === 0 ? 0.5 : 0);
+                effect.property("Temperature").setValue(0); effect.property("Tint").setValue(0);
+                effect.property("Contrast").setValue(1); effect.property("Saturation").setValue(100);
+                effect.property("Highlight Rolloff").setValue(0); effect.property("Look").setValue(1);
+                effect.property("Look Amount").setValue(0); effect.property("Mix").setValue(100);
+                effect.property("AE Pixel Encoding").setValue(2); // Explicit sRGB interpretation in owned unmanaged project.
+                var queue = app.project.renderQueue.items.add(comp), om = queue.outputModule(1);
+                var templates = om.templates, png = null;
+                for (var t = 0; t < templates.length; t++) if (String(templates[t]).indexOf("PNG") >= 0) { png = templates[t]; break; }
+                if (png === null) throw Error("No existing PNG output template; no template/preferences created");
+                om.applyTemplate(png); record("OUTPUT_TEMPLATE " + png);
+                om.file = new File(cfg.folder + "/" + name + "_[#####].png");
+            }
+            var project = new File(cfg.project_prefix + "-" + depth + ".aep");
+            if (project.exists) throw Error("Owned project already exists");
+            app.project.save(project);
+            app.project.renderQueue.render();
+            for (var q = 1; q <= app.project.renderQueue.numItems; q++)
+                if (app.project.renderQueue.item(q).status !== RQItemStatus.DONE) throw Error("Native render queue did not complete");
+            app.project.save(project); record("RENDER_PASS " + depth);
+            app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES); created = false;
+        }
+        succeeded = true; record("PASS_OWNED_NATIVE_COLOR_RENDER");
+    } catch (e) { record("FAIL " + String(e)); }
+    finally {
+        try { report(); } catch (ignored) {}
+        // Quit only our nonce-bearing instance with no user project; never the pre-existing instance.
+        if (succeeded || created) {
+            if (created && app.project && app.project.file && app.project.file.fsName.indexOf(cfg.project_prefix) === 0)
+                app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);
+            if (!app.project || (app.project.file === null && app.project.numItems === 0)) app.quit();
+        }
+    }
+})();

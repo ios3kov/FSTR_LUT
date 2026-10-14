@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace fstr {
-enum class Transfer { SRGB, Linear };
+enum class Transfer { SRGB, Linear, Gamma24 };
 enum class Primaries { SRGB_Rec709, Unknown };
 enum class Alpha { Straight, Premultiplied };
 enum class Memory { CPU, GPU };

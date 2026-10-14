@@ -1,3 +1,34 @@
+# FSTR-LUT checkpoint — 2026-10-14, color native slice
+
+Current user scope: ordinary SDR grading and true camera Log, first Sony S-Log3/S-Gamut3.Cine. User delegated profile choice. Restoration, model/training and acceleration remain post-MVP; their existing code and negative evidence are preserved. Rules v11.1.0 /04b606845e0f73ab28b9807bb45682eae4d6ce34; branch dev/ai-enhance-prototype.
+
+Tested implementation source: **25819a9e379a49caaa94df4fa5e2af5112b5cd07**. Source BuildID **7fbe273f5beca507**. Exact final signed bundle/file and source hashes: [EVIDENCE_COLOR_MVP.json](EVIDENCE_COLOR_MVP.json); raw local evidence ../evidence/2026-10-14-color-25819a9/manifest.json and ../color-evidence. This checkpoint changes documentation only. Local ad-hoc signed development bundle, not a release or accepted production build. No merge/main changes.
+
+Implemented: independent no-model frame/pixel core; official Sony full-range curve and S-Gamut3.Cine-to-linear-Rec709 transform; explicit host sRGB/linear/Gamma2.4; exposure stops, creative Temperature/Tint, signed-log contrast, saturation, optional luminance shoulder; tetrahedral encoded-sRGB WarmFilm v1, LookAmount and linear host-appearance Mix. Native Mac arm64 effect uses external SDK25.6. Frozen look checksum and disk parameter IDs retained. No guessed profile/project gamut. Core remains free of SDK headers; native packaging links only libc++/libSystem.
+
+| Criterion / actual artifact | Status |
+| --- | --- |
+| Release core/color contracts | PASS3433 +2104 assertions; includes exact strided raw Mix0 bytes/signedzero/NaN payloads, official Sony codes/matrix oracles, finite/extended policy and concurrent renders |
+| Final ASan/UBSan | PASS core/color and instrumented native module in owned fixture; host/SDK code not instrumented, TSAN NOT RUN |
+| Actual bundle via dlopen in SDK fixture | PASS78 callback assertions: 8/16/32, legacy/SmartFX mapping, ROI/padded rows, integer units, empty worlds, UI/persistent IDs, cancellation/error cleanup and eight parallel frames |
+| Full-frame C++ color | PASS9 cases768x320: authored flat SDR and synthetic Sony encoding from3 scenes; max4.30931e-7 vs known reference, tolerance2e-6. This is not real camera Log footage |
+| Visual technical review | Root inspected final face/night/rooftop composites at1536x1044; reference restoration matches, WarmFilm remains artistic prototype. Actual flat/camera/motion artistic acceptance NOT RUN |
+| Bundle/resource/signature | PASS arm64,exports,actual data-fork PiPL flags/version, strict ad-hoc signature, exact final bytes. No model/ORT/Python dependency |
+| Owned installation | PASS added new user MediaCore/FSTR_LUT_Development_7fbe273f5beca507.plugin; verified exact four file hashes. No existing plugin overwritten |
+| Actual AE module mapping | PASS25.6x101 PID91632/birth13:58:29 mapped identified installed executable. Registry/effect/render acceptance is a separate open check |
+| Initial -noui host attempt | FAIL before test project/report. Menu action entered host error/abort stack; no causal plugin diagnosis. Preserved sample/log. Owned AE/crash handlers stopped after exact identity/nonce checks; absence confirmed |
+| Ordinary owned host/UI checks | BLOCKED by locked Mac; startup CLI script execution not confirmed. Real render queue/aerender/8-16-32 output/alpha/ROI/downsample/save-reopen/Undo/MFR NOT RUN |
+| Windows / real camera clip / automatic SDK color-space discovery | NOT RUN |
+| Acceleration/Fast timing | Deferred after useful color MVP, no new speed claim |
+
+Separate root review against MVP-C01..C10 and senior read-only code/SDK review performed. Closed enum exception-type mismatch, data-fork resource packaging, incremental identity invalidation, finite-domain overflow, very large shoulder cancellation, empty-input format access, unchecked test-result oracle access and exact no-op object-byte copy. The senior did not run our tests. Reviewed boundaries and remaining host assumptions in [NATIVE_REVIEW.md](NATIVE_REVIEW.md).
+
+Continuation ownership: ordinary test AE PID93316, birth2026-10-14 14:08:16, executable /Applications/Adobe After Effects 2025/Adobe After Effects 2025.app/Contents/MacOS/After Effects. Exact process record ../color-host-ui-run/process-snapshot-direct.json; nonce/config ../color-host-ui-run/config.json; protected script owned-test.jsx. CLI session43627. Process was left running because Mac is locked and actual project state cannot be inspected safely. Verify current PID/birth/executable/nonce and project ownership before any mutation or closure; do not kill a user/recovery project.
+
+Next: unlock Mac, use the owned ordinary AE instance/project and File > Scripts > Run Script File if the startup CLI route does not execute the guard. The scenario may only act in its matching nonce-bearing fresh instance. Compare actual outputs to standalone reference with declared integer export tolerances; extend owned tests to linearized semi-transparent edges, save/reopen with nonzero Temperature/Tint, repeated render and MFR. Never forward to/reuse a user AE session or toggle scripting/network/color settings without matching authorization. Camera Log artistic acceptance then requires an identified real source clip. All original v3 obligations remain in PLAN/MVP_COLOR; this milestone is not full MVP completion.
+
+## Historical checkpoints — retained, superseded by the status above
+
 # FSTR-LUT checkpoint — 2026-10-14
 
 ## Current priority — overrides historical sequence below

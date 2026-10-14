@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-14T12:11:40.264417+00:00",
+  "candidate_source_commit": "25819a9e379a49caaa94df4fa5e2af5112b5cd07",
+  "rules": {
+    "version": "v11.1.0",
+    "sha": "04b606845e0f73ab28b9807bb45682eae4d6ce34"
+  },
+  "branch": "dev/ai-enhance-prototype",
+  "source_sha256": {
+    "CMakeLists.txt": "571d78a3013448aeae5eb310a2617f8bf5b06eac0d277563aa3de8a8f60d4720",
+    "include/fstr/color.hpp": "078f4cc186db231d02298751c658154b6fcb2d099e4b7202a5983af4ee833604",
+    "include/fstr/core.hpp": "627ee2a75af61c32a7a0e8f715fd2c369dc3b43e475f35761bc66ab2f4e44286",
+    "include/fstr/ort_backend.hpp": "ca024aca97359aa36ed296b3e143e3719238db3899f5337c6a77a250d4af59f2",
+    "src/ae/FSTR_LUT_PiPL.r": "869aff4f32e3fe8307568b777f581e9702942b935de3d2b39bfbb8cd6a24f41f",
+    "src/ae/Info.plist.in": "69fa156cb9a0973d99fd9c0ad3605af8df88194ddf0785983f598bab48d3b780",
+    "src/ae/embedded_look.hpp.in": "11e80285c6d6e69f548fa37d71a380dc02e959e210dca55fbdf8ac8e3c07aeb9",
+    "src/ae/plugin.cpp": "b4bd535a91abe147009eb594b91c7db8ddb5d25bd8cfcdbfadbac61e8c37953a",
+    "src/ae/plugin.hpp": "70fd9f396774e15a0747543662e0ab3afe02cde331e7d05915c7f29f1d973da4",
+    "src/color/frame.cpp": "175893ef1afd45b57b10a6ab7a07cedaf1496ea3f70db9d8c404eb34cb2e74c4",
+    "src/color/grade.cpp": "137a1cf7474da46d75d2cfc2ff880f3103c0880452656ccaa55fe29a33f55c75",
+    "src/color/pixel.cpp": "2ebf02761e418e45451f7e6c096eb890f06af4dd5fc1ba39669719c70877ee46",
+    "src/color/profiles.cpp": "72a3d94b122a9e720fba0fdbcd37c7558ea455fc11c2bc4a7d71045d45f68251",
+    "src/color/transfer.cpp": "350af5563af6240035c42887e5aad62d8371c33c5e6a3fa65d6ccb6346d595ea",
+    "src/core/pipeline.cpp": "529bfb440031154396ecf020e3f3f63081ade13d6c10592875e1b7b55f3ca731",
+    "src/inference/ort_backend.cpp": "73fec8c48cd6bc32badae7b29fd86356a1a0e8c53f73fa5841b8018de8705904",
+    "src/looks/lut.cpp": "51fc840b614937df8870d982d42424089869f1eef66605543268e6f7065b6414",
+    "src/restoration/ffdnet.cpp": "917873b8d6e2f3fb8d00d9971a8fa4d75294c293dfe5b7a12b5132150e2f48c8",
+    "tests/ae_adapter_tests.cpp": "81b59ab4542d72bb82f4d17776ecc953acceca06bcd5b0a8fa8295f02290d6ca",
+    "tests/color_tests.cpp": "3f8ada57c69f34ce7e5c413e8a7f91f5970df20d8f673869716a8b685327291e",
+    "tests/core_tests.cpp": "d418e8887336ab42d39ba6949e9aff076d85ef08ac7ceab141b55d088355346a",
+    "tools/benchmark/color_fixture.cpp": "af660851f2aef1dd440f2491872dfd9a3b425bf16e01149ced9608b8d725b4d0",
+    "tools/benchmark/color_main.cpp": "32e30dd5d44afe85226b0c1c64427000f86e4b5c8b532a0c2f0de930de7ddd97",
+    "tools/benchmark/color_qa.py": "8bbea6eba2e40adb5ff3903d901533f693f8970c998e95b2191c119db847d6fb",
+    "tools/benchmark/owned_ae_color.jsx.in": "0f04f892bcd928d0e511c6d977510a0b5046f896cd4ce5ad65f0eb8e0cc2a601"
+  },
+  "environment": {
+    "device": "Apple M1 Pro 16GiB",
+    "os": "macOS26.6.2",
+    "compiler": "AppleClang21",
+    "cpp": 17,
+    "sdk": "25.6_61",
+    "ae": "25.6.0x101"
+  },
+  "development_bundle": {
+    "source_build_id": "7fbe273f5beca507",
+    "signature": "local ad-hoc; no release/notarization claim",
+    "files": {
+      "Contents/Info.plist": "8043f171c0d451a51d696c513cc513fba56332f64f86fcdce0fc696b9748f70f",
+      "Contents/_CodeSignature/CodeResources": "fc9e5ca441c3197fd02a771c6861fd08407b435e6cfabe2a86f88d8f6db92b46",
+      "Contents/MacOS/FSTR_LUT_Development": "22a79517c47d20e289b6054f39021a77b34b09fae75f962fd0ec5a91ce701522",
+      "Contents/Resources/FSTR_LUT.rsrc": "58a25927836e1ddeefab34422d81d990d6718569aab7bbb6bac523c09bcb9c16"
+    },
+    "dependencies": [
+      "libc++",
+      "libSystem"
+    ],
+    "onnx_python_model_dependency": false
+  },
+  "checks": {
+    "release_core": {
+      "result": "PASS",
+      "assertions": 3433
+    },
+    "release_color": {
+      "result": "PASS",
+      "assertions": 2104
+    },
+    "native_actual_module_callbacks": {
+      "result": "PASS",
+      "assertions": 78,
+      "scope": "Actual dlopened bundle in owned SDK fixture, not AE callback execution"
+    },
+    "asan_ubsan": {
+      "result": "PASS",
+      "scope": "Final pure core and instrumented native module in owned fixture; AE/SDK host code is not instrumented"
+    },
+    "full_frame_color": {
+      "result": "PASS",
+      "cases": 9,
+      "max_abs_error": 4.309310952521628e-07,
+      "tolerance": 2e-06,
+      "report_sha256": "a1c6cf7b72b234554a7f49c910f9f7934bb77cae827e0e28262081bbda7e1913",
+      "binary_sha256": "39699d6f2e5da5806c6ede58aca9f63ec11911522a0caaeff9648c8e56e4a4d5",
+      "scope": "Authored flat SDR and synthetically encoded SLog3 full-frame fixtures; actual camera Log, AE and subjective product quality not certified"
+    },
+    "visual": {
+      "result": "INSPECTED",
+      "scope": "Root viewed final face/night/rooftop composites at1536x1044; technical matching roundtrip, natural-scene/real-camera artistic acceptance NOT RUN"
+    },
+    "bundle_structure": {
+      "result": "PASS",
+      "scope": "arm64, exports, SDK/PiPL flag parity, data-fork resource, signed digests and strict codesign; no release claim"
+    },
+    "owned_install": {
+      "result": "PASS",
+      "scope": "Unique new bundle in user MediaCore; exact file hashes verified; no pre-existing plugin replaced"
+    },
+    "ae_module_mapping": {
+      "result": "PASS",
+      "scope": "PID91632/birth13:58:29 mapped exact installed executable; this alone does not prove effect registration/render"
+    },
+    "ae_headless_startup": {
+      "result": "FAIL",
+      "scope": "No render report/project; menu action in -noui instance entered host error/abort stack. Cause not assigned to plugin; negative evidence retained"
+    },
+    "ae_render_state_ui": {
+      "result": "BLOCKED",
+      "scope": "Mac locked; ordinary owned instance running, CLI script execution not confirmed. Real render/save-reopen/Undo/alpha/ROI/downsample/MFR acceptance NOT RUN"
+    },
+    "real_camera_log": {
+      "result": "NOT RUN"
+    },
+    "windows": {
+      "result": "NOT RUN"
+    },
+    "speed": {
+      "result": "NOT RUN",
+      "scope": "Deferred after useful color MVP by user"
+    }
+  },
+  "raw_logs": {
+    "mvp-final-build.log": {
+      "relative_to_work": "color-evidence/mvp-final-build.log",
+      "sha256": "65fdc5117ae7c03f2922ea99314981cd7c7f1d97d78dc0737c05a18160026339"
+    },
+    "mvp-final-tests.log": {
+      "relative_to_work": "color-evidence/mvp-final-tests.log",
+      "sha256": "0ba3d6e98f8a2a3c0ca910caf95e337929759b2fdcf3dbf8e8c253e9651e4399"
+    },
+    "mvp-native-sanitize-final.log": {
+      "relative_to_work": "color-evidence/mvp-native-sanitize-final.log",
+      "sha256": "a283b6533b17ff66773cd63d33fba5f7c3f32aa29fc889c03d05bbd5619a603f"
+    },
+    "mvp-final-signed-tests.log": {
+      "relative_to_work": "color-evidence/mvp-final-signed-tests.log",
+      "sha256": "193d3a2708bbc239d6d98ee63a7e795c8affb91fc44179d6690de87f21d4041c"
+    },
+    "full-frame-delivery.log": {
+      "relative_to_work": "color-evidence/full-frame-delivery.log",
+      "sha256": "901c2a8a3f9985030f8720f10863c1ef2499112117f4cd42f361ef8049c84ca0"
+    },
+    "mvp-final-bundle.json": {
+      "relative_to_work": "color-evidence/mvp-final-bundle.json",
+      "sha256": "de94bf9123efc29b649a56bd6490adfeea6ac20aad39713e91d4580a0c8c8280"
+    },
+    "incremental-rsrc.json": {
+      "relative_to_work": "color-evidence/incremental-rsrc.json",
+      "sha256": "910fe3650eabc3a058581d9fbb93c3660a7cee62bd5cbfc6867c09524dfe3fe9"
+    }
+  },
+  "sony_reference": {
+    "url": "https://download.pro.sony/FNGP/protein/1237494271390/1237494271406.pdf",
+    "sha256": "d9c8a042e7e9e8ee248df97633b645681b5370099a508b6cee97d8bad880d5d3",
+    "matrix_manifest_sha256": "abbc10b16e1d02f27cbb54f33baa5c752eb52761f82b34676ffd98f959ff71a4"
+  },
+  "review": {
+    "root": "Separate final source/requirements/actual-artifact review of core bounds, numeric units, pixel and SDK resource paths; final images inspected. Native file inventory in NATIVE_REVIEW.md.",
+    "senior": "Read-only source/SDK advice; no builds/tests performed by reviewer. No further material defect; source contracts and actual host acceptance remain unverified."
+  },
+  "preservation": "Existing research/branches/plugins/projects/evidence retained; only owned crashed test processes stopped after identity/nonce verification. No main merge/release."
+}

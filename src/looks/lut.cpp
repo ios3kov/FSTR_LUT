@@ -84,7 +84,11 @@ RGB LUT::sample(RGB input) const {
         frac[c]=coordinate-double(base[c]);
     }
     std::array<std::size_t,3> order{0,1,2};
-    std::stable_sort(order.begin(),order.end(),[&](auto a,auto b){return frac[a]>frac[b];});
+    // Three stable comparisons avoid a potential temporary allocation per pixel.
+    auto compare=[&](std::size_t a,std::size_t b){
+        if(frac[order[a]]<frac[order[b]]) std::swap(order[a],order[b]);
+    };
+    compare(0,1);compare(1,2);compare(0,1);
     auto node=[&](const auto& p){return channels(nodes_[p[0]+size_*(p[1]+size_*p[2])]);};
     auto a=node(base); auto p=base; ++p[order[0]]; auto b=node(p);
     ++p[order[1]]; auto c=node(p); ++p[order[2]]; auto d=node(p);

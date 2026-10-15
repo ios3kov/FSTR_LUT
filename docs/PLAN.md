@@ -1,5 +1,10 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Smart grading of the entire scene — revised scope, research complete
+
+User requires automatic preset-directed toning of all objects/materials, with skin as one part; original-hue protection is superseded. Professional-source review rejects fixed skin warmth as a sufficient Smart implementation. Preserve light/material relationships, soft confidence-weighted regional adjustments and temporal coherence. User reports small-face hard boundaries and mask toggling: visual acceptance remains FAIL. Unvalidated paired-grade draft archived outside product; runtime unchanged. [Research, revised contract and next experiment](SMART_SCENE_GRADING.md). No new host/model/visual PASS.
+
+
 ## Actual AE Smart trial — local functional checks passed
 
 AE25.6 loaded the isolated trial, saved/reopened Smart state and rendered8/16/32bpc. Short50recovers; long54–56falls back to plain LUT. ROI exact;156frame comparison exported; nine-frame MFR-enabled aerender matches. OriginalMP4 render passes at resolved path. Trial remains separately installed; original/userAE preserved, helper archived. Continuous perceptual approval, old-project migration and Undo remain NOT RUN. [Review](SMART_AE_HOST.md), [evidence](SMART_AE_HOST_EVIDENCE.json).

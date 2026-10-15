@@ -1,0 +1,88 @@
+{
+  "native_render_and_masks_exact_to_af88cb0_trial": true,
+  "all_media_exact": true,
+  "installed_preservation": {
+    "installed_build_id": "b7f44ed4ca0704d6",
+    "files": {
+      "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+      "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+    },
+    "unchanged": true
+  },
+  "video": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "r_frame_rate": "25/1",
+        "duration": "6.240000",
+        "nb_read_frames": "156"
+      }
+    ]
+  },
+  "full_decode_exit": 0,
+  "continuity_diagnostics": [
+    {
+      "frame": 39,
+      "mask_mass": 63.47312927246094
+    },
+    {
+      "frame": 40,
+      "mask_mass": 0.0
+    },
+    {
+      "frame": 41,
+      "mask_mass": 0.0
+    },
+    {
+      "frame": 42,
+      "mask_mass": 70.96412658691406
+    },
+    {
+      "frame": 130,
+      "mask_mass": 229.3162841796875
+    },
+    {
+      "frame": 131,
+      "mask_mass": 0.0
+    },
+    {
+      "frame": 132,
+      "mask_mass": 0.0
+    },
+    {
+      "frame": 133,
+      "mask_mass": 251.2578125
+    },
+    {
+      "frame": 139,
+      "mask_mass": 486.7397155761719
+    },
+    {
+      "frame": 140,
+      "mask_mass": 0.0
+    },
+    {
+      "frame": 141,
+      "mask_mass": 0.0
+    },
+    {
+      "frame": 142,
+      "mask_mass": 638.2991943359375
+    },
+    {
+      "frame": 145,
+      "mask_mass": 837.5780029296875
+    },
+    {
+      "frame": 146,
+      "mask_mass": 0.0
+    }
+  ],
+  "continuous_visual_review": "NOT RUN: native player started, tool only returns snapshots; human response pending",
+  "occlusion_acceptance": "FAIL: real footage with planted matched-color patch accepted by semantic gate",
+  "skin_stress_scope": "84 synthetic local tests, not full pipeline"
+}

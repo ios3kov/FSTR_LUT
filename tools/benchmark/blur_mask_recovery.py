@@ -5,7 +5,7 @@ occluders remain ambiguous; this module must not be promoted on numeric tests.
 """
 import cv2
 import numpy as np
-from smart_analysis import validate_rgb, connected_indices
+from smart_analysis import validate_rgb, connected_indices, smoothstep
 from turn_skin_recovery import checked_warp
 
 
@@ -13,6 +13,31 @@ def sharpness(rgb, mask):
     gray=cv2.cvtColor(rgb.astype(np.float32),cv2.COLOR_RGB2GRAY)
     edge=cv2.Laplacian(gray,cv2.CV_32F)
     return float(np.sum(edge*edge*mask)/max(float(mask.sum()),1e-8))
+
+
+def structural_warp(current, other, mask):
+    """Reject color-matched but structurally unrelated warped neighborhoods.
+
+    Normalized local correlation after equal low-pass filtering tolerates some
+    blur/brightness change. This is correspondence evidence, not semantics.
+    """
+    warped=checked_warp(current,other,mask)
+    gray=lambda x:cv2.cvtColor(x,cv2.COLOR_RGB2GRAY)
+    a,b=gray(current),gray(other)
+    flow=cv2.calcOpticalFlowFarneback(np.rint(a*255).astype(np.uint8),np.rint(b*255).astype(np.uint8),None,.5,3,15,3,5,1.2,0)
+    yy,xx=np.mgrid[:a.shape[0],:a.shape[1]].astype(np.float32)
+    b=cv2.remap(b,xx+flow[...,0],yy+flow[...,1],cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT)
+    a=cv2.GaussianBlur(a,(5,5),1.);b=cv2.GaussianBlur(b,(5,5),1.)
+    mean=lambda x:cv2.blur(x,(9,9))
+    am,bm=mean(a),mean(b)
+    av=np.maximum(mean(a*a)-am*am,0);bv=np.maximum(mean(b*b)-bm*bm,0)
+    covariance=mean(a*b)-am*bm
+    correlation=np.clip(covariance/np.maximum(np.sqrt(av*bv),1e-8),-1,1)
+    confidence=smoothstep(.5,.8,correlation)*(av>1e-6)*(bv>1e-6)
+    # A two-pixel inward margin prevents isolated matching texture from
+    # reopening the interior of a structurally rejected patch.
+    confidence=cv2.erode(confidence.astype(np.float32),np.ones((5,5),np.uint8))
+    return (warped*confidence).astype(np.float32)
 
 
 def recover_blur(images, support, observed, center, cuts):
@@ -42,8 +67,8 @@ def recover_blur(images, support, observed, center, cuts):
         if support[j].sum()<1 or observed[j].sum()/support[j].sum()<.8:return refuse('weak_neighbor')
     s=[sharpness(images[j],support[j]) for j in (lo,center,hi)]
     if min(s[0],s[2])<1e-6 or s[1]/min(s[0],s[2])>=.75:return refuse('no_relative_blur')
-    left=checked_warp(images[center],images[lo],observed[lo])
-    right=checked_warp(images[center],images[hi],observed[hi])
+    left=structural_warp(images[center],images[lo],observed[lo])
+    right=structural_warp(images[center],images[hi],observed[hi])
     overlap=np.minimum(left,right)
     agreement=float(overlap.sum()/max(float(np.maximum(left,right).sum()),1e-8))
     if agreement<.45:return refuse('motion_disagreement')

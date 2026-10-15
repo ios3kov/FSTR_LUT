@@ -1,5 +1,13 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Skin-colored occlusion acceptance — current research checkpoint
+
+[Scope and negative evidence](SKIN_OCCLUSION_ACCEPTANCE.md), [exact report](SKIN_OCCLUSION_ACCEPTANCE_EVIDENCE.json). Added structural correspondence guard against false temporal recovery.84 paired synthetic cases improve skin-colored texture rejection, with measured loss of valid surrounding support.156-frame native masks/render and23 static scene results unchanged from af88cb0; installed plugin unchanged.
+
+**FAIL semantic occlusion:** actual pinned FaceOcc accepts planted skin-colored patches in real footage before recovery (interior mean0.752/0.826). This cannot be fixed by relaxing recovery thresholds. No AE promotion. **Continuous visual review pending:** user could not confidently assess the small-face overview; enlarged three-loop preview created and started in QuickTime. Tool snapshots are not continuous perception. Earlier missing-mask intervals persist. Do not mark either requested gate closed without evidence.
+
+---
+
 ## Blur recovery — current research checkpoint
 
 Implemented two-sided motion-checked recovery for a relative-blur dropout, with inward directional feather. [Scope/results](BLUR_RECOVERY.md), [exact evidence](BLUR_RECOVERY_EVIDENCE.json).

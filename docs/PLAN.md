@@ -1,5 +1,9 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Skin-colored occlusion acceptance — 2026-10-15
+
+User requested closure of occlusion and continuous flicker.84 synthetic cases and actual FaceOcc planted-patch counterexamples expose remaining semantic failure. Correspondence guard is limited to temporal additions. Scope/results: [SKIN_OCCLUSION_ACCEPTANCE.md](SKIN_OCCLUSION_ACCEPTANCE.md). Next candidate must address semantic occluder rejection; no universal temporal veto or AE promotion on this evidence. Prior obligations retained.
+
 ## Blur recovery follow-up — 2026-10-15
 
 User authorized motion-aware mask recovery and conditional directional softening. BR01..05 scope and exact results: [BLUR_RECOVERY.md](BLUR_RECOVERY.md). Known55 dropout improved; overall motion/occlusion/flicker acceptance remains open. All earlier obligations retained.

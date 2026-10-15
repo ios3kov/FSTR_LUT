@@ -31,5 +31,11 @@ def main():
     except ValueError:pass
     try:recover_blur([a,a.astype(np.float64),a],supports,masks,1,[False,False]);raise AssertionError('Unsupported dtype accepted')
     except ValueError:pass
+    # An independently textured patch of the same color must not receive
+    # near-full protection merely because absolute RGB differences are small.
+    from skin_occlusion_stress import run
+    for kind in ('flat','textured'):
+        diagnostic,_,_=run(recover_blur,731,kind)
+        assert diagnostic['interior_mean']<.05 and diagnostic['outside_mean']>.75
     print('PASS blur recovery, unchanged sharp input, cuts, weak seeds, deterministic result, bounds, distinct-color occluder, invalid mask')
 if __name__=='__main__':main()

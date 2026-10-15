@@ -1,0 +1,1043 @@
+{
+  "sources": {
+    "blur_mask_trial.py": "baa0d158d5f5b7c0a9223d9eab00cd33f2b5234f34045ed996193c22cd5e4895",
+    "blur_mask_recovery.py": "b06e0d3b879af27c4afbc1f43f9b7943e6218cb8a7e001b2e3eb8c947c782371",
+    "turn_skin_recovery.py": "d5f119e823a60737cf0cf349d5f25ce5c20804d2f74d430276bfde1ec0206f6b",
+    "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+  },
+  "baseline_sha256": "5bb5ad1bd914b43c7e039a7c699e2b68a8083270d4a3bf1d37fcadc31be276cb",
+  "occlusion_sha256": "c105c0a8193b9845ccea05f42feb48fbd11adccca9a07003671b3427cb3870cd",
+  "cached_gate_sha256": "60f3bd1246f0650067357f0b62b12a9140bfe4444064e77af602d59fb1684ed7",
+  "mask_sha256": "22221358ccd91125fbef9b430240b4ca1dc494d6540fe5a8f5fa1ce026424b80",
+  "render_sha256": "54c221e50bf8452b846c7ba1efcb6f049ba413a3ecdd8fd9d7f2801c93866b2e",
+  "renderer_sha256": "bc999e101ebd45001c71a3a0160834230fce92fbfea3885036797b42661da8dd",
+  "look_sha256": "7175a683a54d2652ac04c078b26e6c9c6638abef3c4f2785eeeb89d6dcbc74bc",
+  "frames": [
+    {
+      "frame": 0,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 1,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 2,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 3,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 4,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 5,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 6,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 7,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 8,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 9,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 10,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 11,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 12,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 13,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 14,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 15,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 16,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 17,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 18,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 19,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 20,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 21,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 22,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 23,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 24,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 25,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 26,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 27,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 28,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 29,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 30,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 31,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 32,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 33,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 34,
+      "status": "unchanged",
+      "reason": "no_relative_blur"
+    },
+    {
+      "frame": 35,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 36,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 37,
+      "status": "unchanged",
+      "reason": "no_relative_blur"
+    },
+    {
+      "frame": 38,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 39,
+      "status": "unchanged",
+      "reason": "weak_neighbor"
+    },
+    {
+      "frame": 40,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 41,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 42,
+      "status": "unchanged",
+      "reason": "weak_neighbor"
+    },
+    {
+      "frame": 43,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 44,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 45,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 46,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 47,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 48,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 49,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 50,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 51,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 52,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 53,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 54,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 55,
+      "status": "recovered",
+      "neighbors": [
+        54,
+        56
+      ],
+      "sharpness": [
+        0.07536102086305618,
+        0.02564595639705658,
+        0.041891857981681824
+      ],
+      "agreement": 0.739773154258728,
+      "motion_vector": [
+        1.0280450582504272,
+        -10.77582836151123
+      ],
+      "feather_radius": 0.7756114131643022,
+      "before_mass": 1.3415346145629883,
+      "after_mass": 99.24549865722656
+    },
+    {
+      "frame": 56,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 57,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 58,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 59,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 60,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 61,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 62,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 63,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 64,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 65,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 66,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 67,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 68,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 69,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 70,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 71,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 72,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 73,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 74,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 75,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 76,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 77,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 78,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 79,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 80,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 81,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 82,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 83,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 84,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 85,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 86,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 87,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 88,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 89,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 90,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 91,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 92,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 93,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 94,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 95,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 96,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 97,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 98,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 99,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 100,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 101,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 102,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 103,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 104,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 105,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 106,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 107,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 108,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 109,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 110,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 111,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 112,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 113,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 114,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 115,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 116,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 117,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 118,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 119,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 120,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 121,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 122,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 123,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 124,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 125,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 126,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 127,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 128,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 129,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 130,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 131,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 132,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 133,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 134,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 135,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 136,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 137,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 138,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 139,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 140,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 141,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 142,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 143,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 144,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 145,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 146,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 147,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 148,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 149,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 150,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 151,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 152,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 153,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 154,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    },
+    {
+      "frame": 155,
+      "status": "unchanged",
+      "reason": "no_major_dropout"
+    }
+  ],
+  "scenes": [
+    {
+      "name": "train_day_first",
+      "unchanged": true,
+      "input_sha256": "81143627d1cc6ef5595040ba4d0b707885d3f96502b51804506f3705cb6515f3",
+      "gate_sha256": "8f4c18cb0255aac103cb53c13574976b2a7227efa1a00f1c908c77b616dcde81"
+    },
+    {
+      "name": "train_day_last",
+      "unchanged": true,
+      "input_sha256": "ca53bf5b57e606df9fa274c7303ce12d0a3f47b18c8067b9f2d714b721b2cbd2",
+      "gate_sha256": "2ac863347447cc100de64dc7dc4ce59bb83cc9d5ea2b293d4ad4c848f51b47a0"
+    },
+    {
+      "name": "validation_lab_first",
+      "unchanged": true,
+      "input_sha256": "6a03209691dafd0160656ec3258988a8cffb9a6e8d78bd551c9d26476292ceae",
+      "gate_sha256": "aff5e99d0130c2695a36d3a406cfd39219821c18a32866a2845916a382dd706f"
+    },
+    {
+      "name": "validation_lab_last",
+      "unchanged": true,
+      "input_sha256": "fa42e73ea00bb2c3b1ae0fb63f18857e2618893cd9ec07d71ac2a2f06820c75f",
+      "gate_sha256": "c0ea338540e4b2b7c90b0e4ca243eac26015e888fe16666159b86ed2146473ab"
+    },
+    {
+      "name": "validation_people_first",
+      "unchanged": true,
+      "input_sha256": "82b5db8d80716e97b7287e3cfedcf0ccaf1e80284fe618f440796eb454b1ae25",
+      "gate_sha256": "8a30a1fb591729b7ce7446241f923b742f6d7b518ee665763089078995281715"
+    },
+    {
+      "name": "validation_people_last",
+      "unchanged": true,
+      "input_sha256": "00857273510f0add74870f35e46d2bab05e5130941f2b6841df860064ed4e5c6",
+      "gate_sha256": "12cfab5a22b4c6fd96acccf583d81ca80126960ac6bc8794787583504c947e8b"
+    },
+    {
+      "name": "test_night_first",
+      "unchanged": true,
+      "input_sha256": "ca48ffb423adee4ae447077c024e910367bf991b750047c1601c0f5f7e3ac5a9",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "test_night_last",
+      "unchanged": true,
+      "input_sha256": "af6243b3898b67d04f2243113d41d81ab5fca9f261356d38a0f22b121065b983",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "test_face_first",
+      "unchanged": true,
+      "input_sha256": "96cf6e3b2071b1b4ac8a6f1835ffd913953361231863f2b7a30331394202a1c8",
+      "gate_sha256": "b24cb5a59cbd3ad429564096514f6796f00f358da9ec90217c62213e3ba5346c"
+    },
+    {
+      "name": "test_face_last",
+      "unchanged": true,
+      "input_sha256": "8e6040715725a07fe83dd024c43b11cddcd5b7870c6ba6fa4767dc7b28421175",
+      "gate_sha256": "b843da848d3ed65f678d9c5ab7a2611dd4b59436119fb89afcf4316956fb145a"
+    },
+    {
+      "name": "test_action_first",
+      "unchanged": true,
+      "input_sha256": "018d071cb8a10927cb6aab0dd02e55a27fc42b824e264eb17fc2aa32392d7848",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "test_action_last",
+      "unchanged": true,
+      "input_sha256": "3589485ab284acc09469d106f916467257be8fdbdd698d011aaace31970fb92c",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "test_rooftop_first",
+      "unchanged": true,
+      "input_sha256": "6714826b92f8d366623f79d63698f59af65873efbbdc45a098e9103d5e894608",
+      "gate_sha256": "f907a4c73cc91b535b11972f6194a539a5f92bc0e28d98fbe83d01a4f83e2713"
+    },
+    {
+      "name": "test_rooftop_last",
+      "unchanged": true,
+      "input_sha256": "e50aa3b1aa5fb360aa30e4730a54d2ae2e527677649afe12495b1dd16aded869",
+      "gate_sha256": "9e943977464f17e469e0f6c9a9aada644b04762898ffa3eff0ecbd20ab31f8ed"
+    },
+    {
+      "name": "beige",
+      "unchanged": true,
+      "input_sha256": "697979c5e953dc3d1d30b869fb747875de1708ab51a301dedc6e19da04498f46",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "night_blue",
+      "unchanged": true,
+      "input_sha256": "581d0ed2d84b3bcc3f91ac51d02bf12a02c83e9c7de9e8bb8189ce0745550651",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "grey",
+      "unchanged": true,
+      "input_sha256": "d8e6759a27e88bd8a9de7ba206bc230e8e2daff5802505fe87cf91a92f1a1c6f",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "extra_90s",
+      "unchanged": true,
+      "input_sha256": "ca48ffb423adee4ae447077c024e910367bf991b750047c1601c0f5f7e3ac5a9",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "extra_210s",
+      "unchanged": true,
+      "input_sha256": "87c6c2f38cf6843a7f420db9f6f1f0d96fd9fd96244e203c0585ffff3301aa81",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "extra_330s",
+      "unchanged": true,
+      "input_sha256": "e647deb9fbdb2a0a3bf1c48dc60d9468e79f08d9693739271c2a88167c967c11",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    },
+    {
+      "name": "extra_450s",
+      "unchanged": true,
+      "input_sha256": "524df7ebf3649055e6057a1f0b297e2624b84e13e27f4efd12c7177f468ea7a3",
+      "gate_sha256": "d87042558bcab62c217b9b8b0d0939f628eb6201cd20b68450ec47f40e7345b2"
+    },
+    {
+      "name": "extra_570s",
+      "unchanged": true,
+      "input_sha256": "bbb8afb116e9989219569b664d49b30d624f843f3d160c4690155211c4e0d8d9",
+      "gate_sha256": "bfa6b469c0603ce92e482f5aede27d3b540df8b88f5a4fb49531603bc75e2eac"
+    },
+    {
+      "name": "extra_690s",
+      "unchanged": true,
+      "input_sha256": "1f60ce93c8083a7fa01635656bd028e5acd8cc39774f16938f439895f730a8bb",
+      "gate_sha256": "d78a0636078875f3666932dbc81dbf33b4e4bfb857f14207191a9a5bb615182d"
+    }
+  ],
+  "background_exact": true,
+  "luma_max_error": 6.85930252075943e-08,
+  "model_inference": "NOT RUN: frozen validated baseline",
+  "native": "{\"frames\":156,\"elapsed_ms\":5929.93,\"ms_per_frame\":38.0124}\n",
+  "nonchronological_repeat": "PASS",
+  "artifacts": {
+    "detail-000.png": "3ff831303017b6497e490ab401aa1dc4e34b34d76def77f890ccf374a2a48110",
+    "full-037.png": "7a4355f263cbd7c6b0356b69bde63c0221f07fb1dd076a89a9b58107e1e5f560",
+    "detail-012.png": "49ced6d35f9e0e2fe2ee04e35d339b5a42724acac0f3a7d3f656c64fe2c93b67",
+    "full-140.png": "9c3afc274606471e0fa935bc84d8256236d7da2e52d6c6d0122d7643191982b1",
+    "Blur-recovery-comparison.mp4": "269b2564e493fba944e421b9f8bfdff152042e12b8358f2a072dc20fe974a29c",
+    "detail-048.png": "25e46b7123a999c5df6fc6b2313c3863f9e019014e7a78203c011dc20ce5f6e5",
+    "detail-060.png": "093ab8d2fb6a0a6fda6bc1cae8d9506c7ab4e07e4f1ba0bdd94dbeab111a813d",
+    "full-130.png": "0706f589c2ea690f485a9db1103eff8deffea36007df620a16777af7ab92464c",
+    "full-054.png": "547c108e51f677ac38f88e5442c073b6d9ed149935335ba7261ce04b131c5430",
+    "full-055.png": "b2d04e77ace04fbd4c4a19bda2e661749efa1943011ae870004598033d2a2a02",
+    "full-056.png": "0c28edcc6f6a331e0165bdcdbe9a05afd4a51fc3b3ae93548ebe0d341bd40b31",
+    "detail-072.png": "42a8062bd7581b588a7f1347890eecac5a6351e2a1955164e29e1657b8d827f9",
+    "detail-120.png": "130acc6b95527c3b179016a86097f3ed097bfb082eb4b2947bf4d32a898ec930",
+    "detail-108.png": "138f14c29ec5a63e6986d76f7109d76124cddf56b2ab31875f88e27642a2517c",
+    "detail-096.png": "142f3d83536b11ec2e6e0a7bf3c36e67861eed9e9234a3b70a403f54b7fac894",
+    "detail-132.png": "009f026bb9d316462df429678ff7f002c6e567072fbe2b896fe7dfe6cee9dac7",
+    "detail-084.png": "55e75a32b8c659937c9180c24d39d53ee9ce699bb435b22d0fb9109756fa2d14",
+    "detail-036.png": "854ee3f429d8cba888555ee30058709b64418557f069cfeaf9af8bd5bc43bed2",
+    "detail-144.png": "01c3a2440b21b585d15e4f4a728dc8428f35e4946cd7d9ea5f641cce3a251958",
+    "detail-024.png": "10db799ae8dd543b93a1031cf8458565900ea3c6dadd2760c76a0303a79e7011"
+  },
+  "final_checks": {
+    "changed_mask_frames": [
+      55
+    ],
+    "changed_render_frames": [
+      55
+    ],
+    "other_155_frames_bit_exact": true,
+    "all_v1_v2_visual_artifacts_bit_exact": true,
+    "source_hashes_verified": true,
+    "installed_preservation": {
+      "installed_build_id": "b7f44ed4ca0704d6",
+      "files": {
+        "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+        "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+        "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+        "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+        "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+      },
+      "unchanged": true
+    },
+    "video": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "width": 1080,
+          "height": 680,
+          "r_frame_rate": "25/1",
+          "duration": "6.240000",
+          "nb_read_frames": "156"
+        }
+      ]
+    },
+    "video_decode_exit": 0,
+    "visual_review": {
+      "detail_frames": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ],
+      "full_frames": [
+        54,
+        55,
+        56
+      ],
+      "method": "v1 inspected; all final v2 artifacts verified byte-identical",
+      "continuous_playback": "NOT RUN",
+      "full_sequence_native_scale": "NOT RUN"
+    },
+    "acceptance": "Known dropout improved, overall quality acceptance remains open",
+    "tests_sha256": "b5aaa761c12e701f17e37c285e42eed932f0b7b9be795b59c8268f5135a6a131"
+  },
+  "baseline_commit": "abb8a45"
+}

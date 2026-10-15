@@ -1,0 +1,62 @@
+{
+  "changed_mask_frames": [
+    55
+  ],
+  "changed_render_frames": [
+    55
+  ],
+  "other_155_frames_bit_exact": true,
+  "all_v1_v2_visual_artifacts_bit_exact": true,
+  "source_hashes_verified": true,
+  "installed_preservation": {
+    "installed_build_id": "b7f44ed4ca0704d6",
+    "files": {
+      "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+      "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+    },
+    "unchanged": true
+  },
+  "video": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1080,
+        "height": 680,
+        "r_frame_rate": "25/1",
+        "duration": "6.240000",
+        "nb_read_frames": "156"
+      }
+    ]
+  },
+  "video_decode_exit": 0,
+  "visual_review": {
+    "detail_frames": [
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59
+    ],
+    "full_frames": [
+      54,
+      55,
+      56
+    ],
+    "method": "v1 inspected; all final v2 artifacts verified byte-identical",
+    "continuous_playback": "NOT RUN",
+    "full_sequence_native_scale": "NOT RUN"
+  },
+  "acceptance": "Known dropout improved, overall quality acceptance remains open",
+  "tests_sha256": "b5aaa761c12e701f17e37c285e42eed932f0b7b9be795b59c8268f5135a6a131"
+}

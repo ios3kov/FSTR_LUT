@@ -1,5 +1,9 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Blur recovery follow-up — 2026-10-15
+
+User authorized motion-aware mask recovery and conditional directional softening. BR01..05 scope and exact results: [BLUR_RECOVERY.md](BLUR_RECOVERY.md). Known55 dropout improved; overall motion/occlusion/flicker acceptance remains open. All earlier obligations retained.
+
 ## Occlusion follow-up — 2026-10-15
 
 User authorized visible-face/hand/prop separation after turn recovery. ScopeOC01..05: [OCCLUSION_REVIEW.md](OCCLUSION_REVIEW.md). Independent pinned FaceOcc gate; compare face retention and rejected occluder separately. No automatic promotion to AE; repeat full supplied sequence and prior23scene cases, preserve failed candidates. Continuous playback and prior acceptance remain required.

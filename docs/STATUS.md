@@ -1,5 +1,15 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Blur recovery — current research checkpoint
+
+Implemented two-sided motion-checked recovery for a relative-blur dropout, with inward directional feather. [Scope/results](BLUR_RECOVERY.md), [exact evidence](BLUR_RECOVERY_EVIDENCE.json).
+
+**PASS in inspected scope:** frame55 protection partially restored (mask mass1.34→99.25, prior support181.62). Other155 frames have bit-identical masks and native renders.23 static scene results unchanged, including lab prop rejection. Synthetic translation, cuts, weak seeds, sharp input and distinct-color transient occluder tests pass; actual nonchronological repeats and MP4 full decode pass. Installed plugin unchanged.
+
+**Not fully accepted:** masks remain partial and inherited profile/blur misses persist. Similar-color moving occluders and multiple-face motion unverified. Continuous normal-speed flicker review and whole-sequence native-scale review **NOT RUN**. Visually inspected changed frame55, neighboring54/56 at full scale and48–59 detail. No AE integration/install/release. No additional threshold tuning to this one clip without independent cases. Earlier obligations below remain preserved.
+
+---
+
 ## Visible-face occlusion — current research checkpoint
 
 Implemented independent pinned FaceOcc gate with fixed roll hypotheses and strict input contracts. [Review and open criteria](OCCLUSION_REVIEW.md), [exact evidence](OCCLUSION_EVIDENCE.json).

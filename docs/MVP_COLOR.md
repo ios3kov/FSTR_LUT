@@ -60,3 +60,8 @@ Temperature/Tint are creative gains, not Kelvin/CCT recovery: R=2^(temperature/2
 ## Latest actual-host checkpoint
 
 Source8733709 / BuildID32597669ec8fb8e1 is a limited Mac trial. Actual metadata and camera SDR still inspected; current32-bpc saved-project SDR/SyntheticSony/WB/alpha regression passes10 exports. Historical356 actual8/16/32/state/linear-space results remain source-bound evidence. Current full-camera float oracle, actual8/16/extended float/ROI/scale/gradingUndo/preview, realLog/motion/Windows and incoming-space discovery remain open. STATUS.md is the canonical current result; old paragraphs above describe their original implementation checkpoints.
+
+
+## Cinema & Palettes delta — 2026-10-15
+
+Direct user steering supersedes the old six-name library: Natural exact neutral plus15original film/palette looks. Warm v1 remains only for legacy value2 behind a nonselectable separator. Strength defaults100%, soft0..100%, typed0..300%, extrapolated in the existing host-linear mixing space. Full contract and original palette source scope in CINEMA_LOOKS.md. The current implementation is fixed pointwise3D LUT processing, without scene/skin awareness or adaptive relighting. Source158682d / BuildIDb7f44ed4ca0704d6 current scoped checks are in STATUS.md/EVIDENCE_CINEMA_V1.json; earlier checkpoints above retain their original scope.

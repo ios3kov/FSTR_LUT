@@ -1,4 +1,18 @@
-# FSTR-LUT — current development checkpoint, 2026-10-14
+# FSTR-LUT — current development checkpoint, 2026-10-15
+
+Implementation158682d69567445980282b2d7dae70cb292c1bfd; signed Mac BuildID **b7f44ed4ca0704d6**. Natural plus15 original Cinema & Palettes looks with clear English names,0–100% slider/default100%, typed strength up to300%. Old Warm removed from new selection; stable value2 is a separator retaining frozen old-project appearance. No changed diskIDs/order. Current scope/acceptance: [CINEMA_LOOKS.md](CINEMA_LOOKS.md); exact artifact/Evidence: [EVIDENCE_CINEMA_V1.json](EVIDENCE_CINEMA_V1.json).
+
+PASS:6signed Release suites and6ASan/UBSan suites; 23actual AE25.6x101 PSD8 exports,16new-default100% styles,0/200/300%, old Warm and3reopen comparisons. Natural vs saved Original is exact in the inspected export; repeat/legacy/zero comparisons max1/255 at fixed2/255 tolerance. Actual loaded module path and5installed hashes verified. Actual controls show Teal & Orange100%, FX3/SDR and whole frame25%. Old project unchanged; previous plugin and completed one-shot helper fully archived outside MediaCore. Local ZIP8,224,367bytes roundtrip/strict signature PASS.
+
+Artistic judgment is separate: all15styles visibly differ on inspected supplied SDR frames; deliberate strong global color may tint skin. These are authored interpretations, not official studio LUTs, measured popularity ranking, skin recognition or exact-film matches. Natural adds no style. No scene intelligence/auto-adaptation has been implemented.
+
+NOT RUN: manual mouse dropdown opening and slider drag (CUA windowNotFoundAtPosition); user artistic approval; real cameraLog, valid unquantized full-frame/HDR oracle, Windows, broader actual8/16/ROI/downsample/gradeUndo/preview/concurrency/video checks. Those existing MVP obligations remain. AE showed a transient internal verification failure {no current context} before final UI review; an unsaved1px layer move was observed, then own-project Revert restored the exact saved setup and correct position. Cause unassigned; no forced termination or preference change, no save of unexpected state.
+
+**Limited development trial; full color MVP incomplete.** The metadata checkpoint below is retained historical Evidence, not blanket proof of the new candidate.
+
+---
+
+# Preserved metadata checkpoint — 2026-10-14
 
 Color-first scope: ordinary SDR grading and explicit Sony S-Log3/S-Gamut3.Cine normalization. Automatic read-only Sony camera metadata recognition is added. Restoration, denoise/detail/training/acceleration remain after MVP. Branch dev/ai-enhance-prototype; rules v11.1.0 /04b606845e0f73ab28b9807bb45682eae4d6ce34.
 

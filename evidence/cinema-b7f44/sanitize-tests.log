@@ -1,0 +1,99 @@
+Start testing: Oct 15 12:55 CEST
+----------------------------------------------------------
+1/6 Testing: camera_metadata_contracts
+1/6 Test: camera_metadata_contracts
+Command: "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/fstr_metadata_tests"
+Directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1
+"camera_metadata_contracts" start time: Oct 15 12:55 CEST
+Output:
+----------------------------------------------------------
+PASS 37 camera metadata contract assertions
+<end of output>
+Test time =   0.70 sec
+----------------------------------------------------------
+Test Passed.
+"camera_metadata_contracts" end time: Oct 15 12:55 CEST
+"camera_metadata_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/6 Testing: core_contracts
+2/6 Test: core_contracts
+Command: "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/fstr_core_tests"
+Directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1
+"core_contracts" start time: Oct 15 12:55 CEST
+Output:
+----------------------------------------------------------
+PASS 3433 bounded core assertions; AE/real-model validity not established
+<end of output>
+Test time =   0.40 sec
+----------------------------------------------------------
+Test Passed.
+"core_contracts" end time: Oct 15 12:55 CEST
+"core_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/6 Testing: color_contracts
+3/6 Test: color_contracts
+Command: "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/fstr_color_tests"
+Directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1
+"color_contracts" start time: Oct 15 12:55 CEST
+Output:
+----------------------------------------------------------
+PASS 2104 color-only assertions; AE/profile loader: NOT RUN
+<end of output>
+Test time =   0.34 sec
+----------------------------------------------------------
+Test Passed.
+"color_contracts" end time: Oct 15 12:55 CEST
+"color_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/6 Testing: cinema_look_contracts
+4/6 Test: cinema_look_contracts
+Command: "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/fstr_cinema_tests"
+Directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1
+"cinema_look_contracts" start time: Oct 15 12:55 CEST
+Output:
+----------------------------------------------------------
+PASS 21154 cinema/strength contract assertions; artistic/actual AE acceptance separate
+<end of output>
+Test time =   2.04 sec
+----------------------------------------------------------
+Test Passed.
+"cinema_look_contracts" end time: Oct 15 12:55 CEST
+"cinema_look_contracts" time elapsed: 00:00:02
+----------------------------------------------------------
+
+5/6 Testing: owned_native_callbacks
+5/6 Test: owned_native_callbacks
+Command: "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/fstr_ae_adapter_tests" "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/FSTR_LUT_Development.plugin/Contents/MacOS/FSTR_LUT_Development"
+Directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1
+"owned_native_callbacks" start time: Oct 15 12:55 CEST
+Output:
+----------------------------------------------------------
+PASS 118 owned native callback assertions; actual AE loader/MFR: NOT RUN
+<end of output>
+Test time =   2.26 sec
+----------------------------------------------------------
+Test Passed.
+"owned_native_callbacks" end time: Oct 15 12:55 CEST
+"owned_native_callbacks" time elapsed: 00:00:02
+----------------------------------------------------------
+
+6/6 Testing: owned_metadata_ui
+6/6 Test: owned_metadata_ui
+Command: "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/fstr_metadata_ui_tests" "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1/FSTR_LUT_Development.plugin/Contents/MacOS/FSTR_LUT_Development"
+Directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-cinema-sanitize-v1
+"owned_metadata_ui" start time: Oct 15 12:55 CEST
+Output:
+----------------------------------------------------------
+PASS 36 owned metadata UI assertions; actual AE display NOT RUN
+<end of output>
+Test time =   0.44 sec
+----------------------------------------------------------
+Test Passed.
+"owned_metadata_ui" end time: Oct 15 12:55 CEST
+"owned_metadata_ui" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 15 12:55 CEST

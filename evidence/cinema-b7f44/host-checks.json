@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "scope": "Actual AE25.6x101 new candidate, 16looks +0/200/300strength, old Warm persistence,3reopen outputs;23PSD8 exports. Not float camera or full video acceptance.",
+  "checks": [
+    {
+      "check": "saved-project repeat natural",
+      "max_error": 0.003921598196029663,
+      "tolerance": 0.00784313725490196,
+      "status": "PASS"
+    },
+    {
+      "check": "saved-project repeat teal-orange-v1",
+      "max_error": 0.003921598196029663,
+      "tolerance": 0.00784313725490196,
+      "status": "PASS"
+    },
+    {
+      "check": "saved-project repeat neon-pink-cyan-v1",
+      "max_error": 0.003921598196029663,
+      "tolerance": 0.00784313725490196,
+      "status": "PASS"
+    },
+    {
+      "check": "legacy saved Warm value2 unchanged",
+      "max_error": 0.003921598196029663,
+      "tolerance": 0.00784313725490196,
+      "status": "PASS"
+    },
+    {
+      "check": "Look Amount0 vs Natural",
+      "max_error": 0.003921598196029663,
+      "tolerance": 0.00784313725490196,
+      "status": "PASS"
+    },
+    {
+      "check": "Natural vs saved old Original",
+      "max_error": 0.0,
+      "tolerance": 0.00784313725490196,
+      "status": "PASS"
+    },
+    {
+      "check": "amplification200% differs from100%",
+      "mean_difference_levels": 10.965759381651878,
+      "status": "PASS"
+    },
+    {
+      "check": "amplification300% differs from100%",
+      "mean_difference_levels": 21.111015491187572,
+      "status": "PASS"
+    }
+  ],
+  "actual_export_count": 23,
+  "ui": {
+    "status": "PASS",
+    "scope": "Actual effect controls show Blockbuster Teal & Orange, Look Amount100%, neutral manual grades, SDR/gamma2.4, FX3 caption and full frame at25%; position restored1080,1920; project has no unsaved marker. Manual dropdown opening and slider drag NOT RUN due CUA coordinate routing failure.",
+    "negative_observation": "Before final inspection AE showed internal verification failure {no current context}. After dismissal, an unsaved1px layer-position change was observed. Cause unassigned; native File>Revert restored exact saved state; no save of that change. Original/saved AEP hash unchanged. No forced termination or preference changes."
+  },
+  "privacy": "User source, frames, project, full logs and their hashes retained locally outside Git."
+}

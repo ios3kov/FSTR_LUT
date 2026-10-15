@@ -39,4 +39,4 @@ AE separator syntax `(-` and its persistent menu index are documented in the [AE
 
 ## Status
 
-Implementation/verification in progress. Existing STATUS.md color, metadata, Log/HDR/Windows/video obligations are retained. No whole-product or film-match acceptance claimed.
+Implemented at158682d / BuildIDb7f44ed4ca0704d6. Scoped core/native/ASan and actual23export checks PASS; English value label100% and whole-frame view inspected. Physical popup opening/slider drag NOT RUN due CUA routing. Exact checks and separate artistic judgment: EVIDENCE_CINEMA_V1.json. Existing color/metadata/Log/HDR/Windows/video obligations remain in STATUS.md; no whole-product, user artistic approval or film-match acceptance claimed.

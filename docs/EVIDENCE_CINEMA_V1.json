@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-15T11:14:26.319562+00:00",
+  "candidate_source_commit": "158682d69567445980282b2d7dae70cb292c1bfd",
+  "branch": "dev/ai-enhance-prototype",
+  "rules": {
+    "version": "v11.1.0",
+    "sha": "04b606845e0f73ab28b9807bb45682eae4d6ce34"
+  },
+  "build_id": "b7f44ed4ca0704d6",
+  "environment": {
+    "cpp": 17,
+    "compiler": "AppleClang21",
+    "sdk": "AE25.6_61",
+    "ae": "25.6x101",
+    "target": "macOS arm64"
+  },
+  "source_sha256": {
+    "CMakeLists.txt": "ea440dc82ab84a5c7f8fba3f4770f5bea286e72f71a4fe1d7163ab04b187e113",
+    "assets/looks/blade-runner-neon-v1.cube": "64440476eb663916b31f55985d9df90dffcef183452ab95046212f05365a04d4",
+    "assets/looks/blue-yellow-v1.cube": "b14537eaacba4237e0209b3db14ecacf5dbc3e1d432da0940022d402a4e63b6a",
+    "assets/looks/cinema-library-v1.json": "4d72e8b1f49ddfc724aea71c193145f6054cd6626beb71334e05d8854d1ff0b1",
+    "assets/looks/dark-knight-steel-v1.cube": "462775ef5f6cdab83b251cce1e6801e0ae59c07d5a2102b8068f510006c0b9ec",
+    "assets/looks/dune-arrakis-v1.cube": "412e05799205786ad918cbeb42472b8c2642bdb3166d0103fde4fd98b639626d",
+    "assets/looks/emerald-rose-gold-v1.cube": "d24f92a33beffa74ae2b2b7fa38b08e4c25ca7b960f4bbbf1b24358abf972648",
+    "assets/looks/joker-gotham-v1.cube": "ee747e9f166b37a300e41b7ba6b06de63b057ceaf4494d60da57ce9d26359402",
+    "assets/looks/lavender-sage-v1.cube": "dff9df23735297d71f254e0c15a16677c8ecae4e9a05c3bdad48f3acbd41d02a",
+    "assets/looks/mad-max-desert-v1.cube": "b98a2955ac351db4a19b3598df93dfa6672eaa3dee6a7ad0bbf6d2110e458a7e",
+    "assets/looks/matrix-green-v1.cube": "52bbb2df9521d8a31a753857218e1be07695f45a0bcbec7194049ce3b159af04",
+    "assets/looks/navy-gold-v1.cube": "d844b496e3552cad1a4ccefd1a06b1a7cb198cfd09ba7137479b78b0160c2c14",
+    "assets/looks/neon-pink-cyan-v1.cube": "b9f2c4a35676347929b730a4076fa8f861116be9841a53db05efbe4bc44dbcc4",
+    "assets/looks/olive-dusty-pink-v1.cube": "b35ea0ff00d73614c971370efc09e4de8dc8eb939a0752fdf26f3da8ffd2c7aa",
+    "assets/looks/purple-gold-v1.cube": "0f21afe3876c0bd7da90ec0563ab2124d1def2efe3e8d742d0a3cc3e264166a6",
+    "assets/looks/red-mint-v1.cube": "97800cc0b8635eb5d8f9924d3c58661118000db017f654636065333721feb792",
+    "assets/looks/teal-orange-v1.cube": "7175a683a54d2652ac04c078b26e6c9c6638abef3c4f2785eeeb89d6dcbc74bc",
+    "assets/looks/warm-film-v1.cube": "ee9e15323b80514ab031a97c9c7d1583132dd96d49bfb6a8e9a6cc43077521b5",
+    "include/fstr/color.hpp": "9508c6841aa2687693869c34df5a21660c606a92918ce29f48aad36bccdafbb0",
+    "include/fstr/core.hpp": "627ee2a75af61c32a7a0e8f715fd2c369dc3b43e475f35761bc66ab2f4e44286",
+    "include/fstr/metadata.hpp": "ed1d862a7d5c8c429ea5f57500d30d2e3a39fb4b13c470becf7a3290670c3ca8",
+    "include/fstr/ort_backend.hpp": "ca024aca97359aa36ed296b3e143e3719238db3899f5337c6a77a250d4af59f2",
+    "src/ae/FSTR_LUT_PiPL.r": "670bd8971245ec5085f15483698a7d85565bc0d4e3e8427174d7dd769ff9a339",
+    "src/ae/Info.plist.in": "06d64039fd16c6f63d022c8a7a774a54fea57dc4117bb43f6ae038c5debb9f4e",
+    "src/ae/embedded_look.hpp.in": "3c5a8728ce31edbac9dea4cf02c0d73359e6b87053709fcabbde939010ced2c0",
+    "src/ae/metadata_ui.cpp": "b5a57c6c7cbec74047ede7cc384421cd815037be2739737ef0ae4cf3b6602bcb",
+    "src/ae/metadata_ui.hpp": "0c935e1e1c835320b1c357289bbbd8a546775fe84ee8bd36334c714c3a94371f",
+    "src/ae/plugin.cpp": "1b4f12ebacc22e30629d49264a3f51f754f5fd5610d3bf66c169f1b8ff027e94",
+    "src/ae/plugin.hpp": "c7aa6311bc70211ad8f98a2253fe3b28a7813bb618299fb44ff08bf92b1da450",
+    "src/color/frame.cpp": "175893ef1afd45b57b10a6ab7a07cedaf1496ea3f70db9d8c404eb34cb2e74c4",
+    "src/color/grade.cpp": "137a1cf7474da46d75d2cfc2ff880f3103c0880452656ccaa55fe29a33f55c75",
+    "src/color/pixel.cpp": "6aef20f9d33bfebed671123325da0edbc46864444dd5f2067cdac64fc45cf031",
+    "src/color/profiles.cpp": "72a3d94b122a9e720fba0fdbcd37c7558ea455fc11c2bc4a7d71045d45f68251",
+    "src/color/transfer.cpp": "350af5563af6240035c42887e5aad62d8371c33c5e6a3fa65d6ccb6346d595ea",
+    "src/looks/lut.cpp": "51fc840b614937df8870d982d42424089869f1eef66605543268e6f7065b6414",
+    "src/metadata/metadata.cpp": "bc9f0bf170481cb406afda7767e1e50e61fbbc521e7f3cbb3650a8e3da8715ed",
+    "tests/ae_adapter_tests.cpp": "910c4ae2d020f172d71d0d37a9461641d941a9f6da11d464cad96dccd0fc5210",
+    "tests/cinema_tests.cpp": "03a9c1e768101c6284b6eaa1013edfa86e94f5ed589cb8ac98d5fb80e003a9d0",
+    "tests/color_tests.cpp": "3f8ada57c69f34ce7e5c413e8a7f91f5970df20d8f673869716a8b685327291e",
+    "tests/core_tests.cpp": "d418e8887336ab42d39ba6949e9aff076d85ef08ac7ceab141b55d088355346a",
+    "tests/metadata_tests.cpp": "4cc8cf6e216debe58a5e5e9ab78230587169365fccdd2bb8f0acca235fdb96e1",
+    "tests/metadata_ui_tests.cpp": "96138199d02db4bcd1cf4d30ffa126ca51a1d5fdd9bfb4fef8d37a0e7a482e18",
+    "third_party/tinyxml2/LICENSE.txt": "9332252e9b9e46db8285d4a3f0bf25f139bf1dca6781b956d57f2302efca6432",
+    "third_party/tinyxml2/provenance.json": "7797f6edc9f89b02e79b8641478dc82fd948b2ab251475e0ecc57d2eddd45037",
+    "third_party/tinyxml2/tinyxml2.cpp": "95f64e4cb06c9e147d5b12e8860c88898944858dfbc38fed92ebf918f1436554",
+    "third_party/tinyxml2/tinyxml2.h": "0f3c6e5a91b6d65caca3cc7239926455f21e488cff80ac3d27c74f5262fd2602",
+    "tools/ae_host_runner/CMakeLists.txt": "73f26c4415200b29b3a45afd26ba0244aa7179d766bced4dd263e842eb252542",
+    "tools/ae_host_runner/Info.plist": "4a913c245f129cfdb227aa19e7066807c76be64c0e8a4e486fab27edccc74917",
+    "tools/ae_host_runner/README.md": "b3caeb86639c515ffc1c35e12f4cb697263712b55bda9790971066e07ae5ff45",
+    "tools/ae_host_runner/acceptance.jsx.in": "aa2e652e15cebc68e2545474b9c5817ad50303f66503526cdf97646bfd83a174",
+    "tools/ae_host_runner/camera.jsx.in": "98bbf511a499ac448dcfce2e4971469dfe872f627b62cbd2f07b8eed65d78e8d",
+    "tools/ae_host_runner/owned.hpp.in": "de536af6d69325f3821af3e2d0a0eb567f7951c88821f95a229db838e4760c11",
+    "tools/ae_host_runner/runner.cpp": "f7b63890ffa65689e20743ae557e27e9b6bed6f655e28aea21f3348ee6304577",
+    "tools/ae_host_runner/runner.r": "6dbd2abbb1fdcb1be78e8b20e8f1e9ac36990e6d2a9241fbba731e31a7ce5b74",
+    "tools/benchmark/color_main.cpp": "32e30dd5d44afe85226b0c1c64427000f86e4b5c8b532a0c2f0de930de7ddd97",
+    "tools/benchmark/generate_cinema_looks.py": "38174fed60c308a3f6cf2caae8f8eb18033731b895ec6d405e9875658e7f1a38",
+    "tools/metadata/main.cpp": "9114c02ad21562b33d19a07450ce5d4ef004e1e99d4f21aad25f2f9951d503f5"
+  },
+  "bundle_files": {
+    "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+    "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+    "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+    "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+    "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+  },
+  "zip": {
+    "name": "FSTR-LUT-dev-b7f44ed4ca0704d6.zip",
+    "sha256": "121dab91b73c53b857ddd810496ccba3568ce951643250ed2dac9fb8f40cfa1f",
+    "bytes": 8224367
+  },
+  "checks": {
+    "CIN01_natural_and_zero": {
+      "status": "PASS",
+      "scope": "Core/native exact bypass; actual Natural vs old Original max0; Look0 vs Natural max1/255 with fixed2/255 export tolerance"
+    },
+    "CIN02_library_and_appearance": {
+      "status": "PASS",
+      "scope": "16 selectable English names;48 core preview frames at1/2/4s; all16 actual AE styles at2s; separate visual judgment, no film-match or user artistic approval"
+    },
+    "CIN03_state_compatibility": {
+      "status": "PASS",
+      "scope": "Old frozen Warm value2 still renders within1/255; separator removes new selection; no diskID/order changes; source project byte-identical"
+    },
+    "CIN04_strength": {
+      "status": "PASS",
+      "scope": "Native schema soft0..100/default100/hard300, core finite[0,3], independent linear extrapolation and alpha tests. Actual new-default100,0/200/300 renders,300 saved/reopened. Physical slider drag NOT RUN"
+    },
+    "CIN05_immutable_assets": {
+      "status": "PASS",
+      "scope": "Catalog SHA256 validation, full library atomic publication at GlobalSetup, immutable render snapshot; frozen writer rejects changed existing bytes; no render filesystem/UI"
+    },
+    "CIN06_scoped_validation": {
+      "status": "PASS",
+      "scope": "Signed6suite checks,6ASan/UBSan suites, identified actual loaded image and23PSD8 exports/save-reopen; actual UI label100/whole frame25% inspected. Manual dropdown opening/slider drag NOT RUN due windowNotFoundAtPosition"
+    },
+    "manual_mouse_popup_and_drag": {
+      "status": "NOT RUN",
+      "reason": "CUA failed coordinate routing. Does not establish broken AE UI; standard constructor schema/native value display and actual scripted host parameter changes checked separately."
+    },
+    "visual_artistic_review": {
+      "status": "PASS",
+      "scope": "Root inspected actual AE film4x2 board1440x1472, palette3x3 board1080x2208, portrait-detail1440x1792, strength1800x704 and actual AE25% frame. English labels fit. Strong stylization intentionally tints faces; no skin-protection/film-recreation claim. User artistic approval remains open."
+    },
+    "source_final_review": {
+      "status": "PASS",
+      "scope": "Separate root review: immutable shared library publication and lifetimes, menu bounds, preserved stable slots/IDs, finite strength and linear units, neutral/premult/alpha0/extended behavior, CMake asset identity and deterministic recipes. UI transient recovered without saving unknown change."
+    },
+    "safe_install_and_package": {
+      "status": "PASS",
+      "scope": "AE absence before owned-only replacement; old5hashes archived; current5hashes verified and actual mapped module path observed; helper exact archive after completed callback; exact ZIP roundtrip and strict ad-hoc signature"
+    },
+    "wider_mvp": {
+      "status": "NOT RUN",
+      "scope": "Retain real cameraLog, valid unquantized full-frame/HDR oracle, Windows, broader actual8/16/ROI/downsample/Undo/RAMPreview/MFR concurrency and continuous-video obligations"
+    },
+    "release": {
+      "status": "NOT RUN",
+      "scope": "Local development trial only; no merge, main, release or public distribution"
+    },
+    "bounded_static_scan": {
+      "status": "PASS",
+      "exit_code": 0,
+      "scope": "Offline code scanner, no findings in scanned scope; unsupported asset formats and runtime not assessed",
+      "source_identity": {
+        "commit": "158682d69567445980282b2d7dae70cb292c1bfd",
+        "dirty": true
+      },
+      "inventory": {
+        "scope_digest": "1c9ea48dc11a53900ee37de467589e03a9e311ce04d7b981069062b03170f8c7",
+        "files": 315,
+        "bytes": 1269759,
+        "excluded_directories": 4,
+        "unsupported_files": 1571,
+        "omissions": []
+      },
+      "release_readiness": "not_assessed"
+    }
+  }
+}

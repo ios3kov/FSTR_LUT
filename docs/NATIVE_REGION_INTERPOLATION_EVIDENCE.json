@@ -1,0 +1,76 @@
+{
+  "base_commit": "8f666acf779878033aee60e27b931d335adf7feb",
+  "date": "2026-10-15",
+  "source_sha256": {
+    "CMakeLists.txt": "bffee69991e2e7589e8095ecdc4fe1435afa2138c71c32d9131884efc66292e2",
+    "include/fstr/regions.hpp": "0b23c2f37c9d756ab1406cb97cb69162baec8a76e6e6ddcfb511db810452dcdc",
+    "src/ae/plugin.cpp": "fdb8268fd0773368132c719789f463d7399253804a818f16d7ce828fdf02a4f5",
+    "src/analysis/regions.cpp": "4f580ac68f0d6a84ae145f35658c98783d4d8d55f92bfbedca12c5352e1f6158",
+    "tests/ae_adapter_tests.cpp": "09ded926b39ee39079b8d5971919b875672e8f4a0858ba37599b74d88e1a4874",
+    "tests/regions_tests.cpp": "fe7ca905042e42bdd906c583ab9ca600e3ac89ddfb107fe8276cfe945280808c",
+    "tools/benchmark/region_recovery_main.cpp": "85eab1c07375dc44a03dfe774977276c3b6b5e7706ee8480ebc9206e5eccf3cf"
+  },
+  "checks": {
+    "release_ctest": "PASS8/8",
+    "asan_ubsan_ctest": "PASS8/8",
+    "replay_frames": 156,
+    "new_regions": [
+      50,
+      116
+    ],
+    "frame_order_exact": true,
+    "real_module": "Real native Smart changes 563 pixels; Off repeat exact\nReal frame50 temporal recovery changed 504 pixels\nPASS 1036964 owned native callback assertions; actual AE loader/MFR: NOT RUN\n",
+    "color_review": {
+      "frames": [
+        49,
+        50,
+        51,
+        115,
+        116,
+        117
+      ],
+      "unchanged_anchor_outputs": true,
+      "all_finite_alpha1": true,
+      "changed_pixels": {
+        "50": 249,
+        "116": 277
+      },
+      "continuous_perception": "NOT RUN"
+    },
+    "scanner_exit": 0,
+    "actual_AE": "NOT RUN",
+    "continuous_perception": "NOT RUN",
+    "full_smart_quality": "INCOMPLETE; long detection gaps retained"
+  },
+  "bundle_sha256": {
+    "Contents/Info.plist": "040ee0d16ba4059d2936d73cbd4a1c51c361ba864d9cd3ef12458bfb145cb2e9",
+    "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+    "Contents/MacOS/FSTR_LUT_Development": "2a8fa1546790c79afb2af51e197c26d094c29c6a0f7e4c7379786f6f04939a29",
+    "Contents/Resources/FSTR_LUT_Development.rsrc": "17824101b9c95c9d360649de10a8d2562f0ee7d59050cb678f0ea0e75b26a33e"
+  },
+  "installed_preservation": {
+    "path": "/Users/os3kov/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/FSTR_LUT_Development_b7f44ed4ca0704d6.plugin",
+    "files": {
+      "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+      "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+    },
+    "unchanged": true
+  },
+  "artifacts": {
+    "color-review.png": "81a184f0f49b865d31a2c640d9721069ca14713a1e0772213ccddf95e1e7068b",
+    "recovered.txt": "a5260f6f34ee563e64ea88319e30f7d4e3494848dd801294627127457e97da87",
+    "native-module.log": "cc1fbf8ee30c822821e547d5379a2c84b14252a966a09ec9ff84823a5a7f526e",
+    "recovery-contact.png": "1c4aa8d7dab09b13a2681d723bbf7aea5dcba8e62767daebb72335488a1212b6",
+    "sanitizer-tests.log": "b10b19d227bfe818accd17636a3c655e22e0d9498f79a04c3ce7a7486ca0bee9",
+    "native-module-final.log": "cc1fbf8ee30c822821e547d5379a2c84b14252a966a09ec9ff84823a5a7f526e",
+    "regions.txt": "e2e33700c60df391f828ba47cfa7ce908a37e9fe15cf130a300dce53bad1962f",
+    "color-review.json": "e431628f65c8bac7b0ee684938affe47c63a382acee6e58ed60d0cd1203c78cd",
+    "tests.log": "8da4bf6a5362ebf1f3f00ecd478fc660cb57686a3daf4d82c18863e97500c826",
+    "scanner.json": "fa8fd72d6487395aa47474c29cc644a2f2031ec66d7abee5f891031a95c11874",
+    "build.log": "1fd88b0c5bcd47009292c2c48af0d569066de94f360eeb2dcf487e35c46cf065"
+  },
+  "review": "Senior raw threshold and intermediate competitor fixes included; root inspected six-frame color and mask panels; no full motion or AE acceptance claim."
+}

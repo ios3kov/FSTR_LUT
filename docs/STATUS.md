@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Native two-sided interpolation — bounded implementation
+
+SmartFX now uses explicit ±2frames to bridge at most two missing detections. Coarse color signatures and bounded position search must match both raw anchors; ambiguous/intersecting intermediate detections reject. Actual156frame replay restores50/116 only; real module frame50 confirms504changed pixels. Eight release and sanitizer targets pass. Long gaps54–56, complete motion quality and actual AE remain open. [Contract/results](NATIVE_REGION_INTERPOLATION.md), [evidence](NATIVE_REGION_INTERPOLATION_EVIDENCE.json). Installed plugin unchanged.
+
+
 ## Smart Color Grading On/Off — native candidate, not installed
 
 Checkbox defaultOff/diskID13, real macOS Vision regional protection, soft masks, bounded adjacent-frame geometry, full-input SmartFX and cancellation/error cleanup implemented. Eight release and sanitizer test targets pass; real module On changes563pixels on frame48 and Off restores plain LUT exactly. Native detector finds regions in78/156frames and misses visible blurred faces54–56: full Smart quality NOT ACCEPTED, gap/body fallback not yet ported. Actual AE/continuous perception NOT RUN. [Contract and checks](SMART_COLOR_NATIVE.md), [evidence](SMART_COLOR_NATIVE_EVIDENCE.json).

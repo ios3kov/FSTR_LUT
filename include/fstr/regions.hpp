@@ -9,5 +9,8 @@ std::vector<ColorRegion> detect_color_regions(const AnalysisImage&, double sourc
 // Coordinates normalized to the same complete layer frame, never output ROI.
 std::vector<ColorRegion> stabilize_color_regions(const std::vector<ColorRegion>& current,
     const std::vector<ColorRegion>& before,const std::vector<ColorRegion>& after);
+struct RegionFrame {int offset=0;AnalysisImage image;std::vector<ColorRegion> regions;};
+// Complete explicit window, offsets -2..2. Only raw detections are seeds.
+std::vector<ColorRegion> recover_color_regions(const std::vector<RegionFrame>&);
 double color_region_weight(double x,double y,double source_height,const std::vector<ColorRegion>&);
 }

@@ -18,7 +18,7 @@ thread_local Fixture* active=nullptr;
 struct Fixture {
     PF_InData in{};PF_OutData out{};SPBasicSuite basic{};PF_WorldSuite2 worlds{};
     std::array<PF_ParamDef,ParamCount> params{};
-    PF_EffectWorld input{},output{};
+    PF_EffectWorld input{},output{};std::array<PF_EffectWorld*,5> temporal{};
     int checkout=0,checkin=0,acquire=0,release=0,pixels_out=0,pixels_in=0,abort_calls=0;
     std::vector<int> layer_ids;std::vector<PF_LRect> requests;int fail_layer=-1,fail_pixel_id=-1;
     int fail_param=0;bool fail_suite=false,fail_output=false,fail_pixel_checkout=false,fail_format=false;
@@ -34,7 +34,7 @@ PF_Err abort_cb(PF_ProgPtr ref){auto& f=fixture(ref);++f.abort_calls;return f.ab
 SPErr acquire_cb(const char* name,int32 version,const void** suite){++active->acquire;if(active->fail_suite)return 76;if(std::strcmp(name,kPFWorldSuite)||version!=kPFWorldSuiteVersion2)return 77;*suite=&active->worlds;return 0;}
 SPErr release_cb(const char*,int32){++active->release;return active->fail_release?78:0;}
 PF_Err pixel_format(const PF_EffectWorld* world,PF_PixelFormat* format){if(active->fail_format)return 79;if(!world->width||!world->height)return 80;*format=static_cast<PF_PixelFormat>(reinterpret_cast<std::uintptr_t>(world->reserved0));return PF_Err_NONE;}
-PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;*world=&f.input;return PF_Err_NONE;}
+PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;*world=id>=0&&id<5&&f.temporal[id]?f.temporal[id]:&f.input;return PF_Err_NONE;}
 PF_Err checkout_output(PF_ProgPtr ref,PF_EffectWorld** world){auto& f=fixture(ref);if(f.fail_output)return 82;*world=&f.output;return PF_Err_NONE;}
 PF_Err checkin_pixels(PF_ProgPtr ref,A_long){auto& f=fixture(ref);++f.pixels_in;return f.fail_pixel_checkin?83:PF_Err_NONE;}
 Fixture::Fixture(){
@@ -109,13 +109,13 @@ void smart_requests(){
   auto err=effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe);
   if(mode==2){check(err==85&&!po.pre_render_data,"Pre-render failure leaked/succeeded");continue;}
   check(err==0,"Smart pre-render failed");
-  check(f.layer_ids==(mode==0?std::vector<int>{0}:std::vector<int>{1000,0,1,2}),"Unexpected temporal/full-frame requests");
+  check(f.layer_ids==(mode==0?std::vector<int>{0}:std::vector<int>{1000,0,1,2,3,4}),"Unexpected temporal/full-frame requests");
   check(po.result_rect.left==10&&po.result_rect.right==20,"Output ROI expanded");
   if(mode!=0)check(f.requests[1].left==0&&f.requests[1].right==96,"Analysis input remains cropped");
   std::vector<PF_Pixel> input(96*96,PF_Pixel{255,128,128,128}),output(1);
   set_world(f.input,input,96,96,96,PF_PixelFormat_ARGB32);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB32,10,10);
   // Zero Mix skips detection but exercises acquisition and every cleanup branch.
-  f.params[Mix].u.fs_d.value=0;if(mode==3)f.fail_pixel_id=2;if(mode==4)f.fail_output=true;if(mode==5)f.abort_now=true;
+  f.params[Mix].u.fs_d.value=0;if(mode==3)f.fail_pixel_id=4;if(mode==4)f.fail_output=true;if(mode==5)f.abort_now=true;
   PF_SmartRenderInput si{};si.pre_render_data=po.pre_render_data;PF_SmartRenderCallbacks sc{};sc.checkout_layer_pixels=checkout_pixels;sc.checkin_layer_pixels=checkin_pixels;sc.checkout_output=checkout_output;PF_SmartRenderExtra se{};se.input=&si;se.cb=&sc;
   err=effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&se);
   check((mode<2?err==0:err!=0),"Smart render failure propagation");
@@ -135,6 +135,20 @@ void real_smart(const char* path){
  check(changed>0&&changed<input.size()/10,"Smart protection absent or paints whole image");
  f.params[SmartColor].u.bd.value=FALSE;check(run(f,true)==0&&std::memcmp(off.data(),on.data(),off.size()*sizeof(PF_Pixel))==0,"Off does not restore original LUT output");
  std::cout<<"Real native Smart changes "<<changed<<" pixels; Off repeat exact\n";
+}
+void real_recovery(const char* path){
+ Fixture f;active=&f;constexpr int width=540,height=960;const std::size_t count=width*height;
+ std::ifstream file(path,std::ios::binary);std::array<std::vector<PF_Pixel>,5> pixels;std::array<PF_EffectWorld,5> worlds;
+ std::vector<unsigned char> bytes(count*4);int offsets[]{0,-1,1,-2,2};
+ for(int id=0;id<5;++id){file.seekg(std::size_t(50+offsets[id])*bytes.size());file.read(reinterpret_cast<char*>(bytes.data()),bytes.size());check(bool(file),"Sequence fixture read");pixels[id].resize(count);for(std::size_t j=0;j<count;++j)pixels[id][j]={255,bytes[j*4],bytes[j*4+1],bytes[j*4+2]};set_world(worlds[id],pixels[id],width,height,width,PF_PixelFormat_ARGB32);f.temporal[id]=&worlds[id];}
+ f.input=worlds[0];std::vector<PF_Pixel> raw(count),recovered(count);set_world(f.output,raw,width,height,width,PF_PixelFormat_ARGB32);
+ f.params[WorkingSpace].u.pd.value=2;f.params[Look].u.pd.value=3;f.params[LookAmount].u.fs_d.value=100;f.params[SmartColor].u.bd.value=TRUE;f.in.downsample_y={1,4};f.in.downsample_x={1,4};f.in.pixel_aspect_ratio={1,1};f.in.current_time=50;f.in.total_time=156;
+ check(run(f,true)==0,"Current-only real frame failed");
+ PF_PreRenderInput pi{};pi.output_request.rect={0,0,width,height};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Recovery pre-render failed");
+ PF_SmartRenderInput si{};si.pre_render_data=po.pre_render_data;PF_SmartRenderCallbacks sc{};sc.checkout_layer_pixels=checkout_pixels;sc.checkin_layer_pixels=checkin_pixels;sc.checkout_output=checkout_output;PF_SmartRenderExtra se{};se.input=&si;se.cb=&sc;set_world(f.output,recovered,width,height,width,PF_PixelFormat_ARGB32);
+ auto err=effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&se);po.delete_pre_render_data_func(po.pre_render_data);check(err==0,"Actual temporal recovery failed");
+ std::size_t changed=0;for(std::size_t i=0;i<count;++i){check(recovered[i].alpha==255,"Recovered alpha changed");if(std::memcmp(&raw[i],&recovered[i],sizeof(PF_Pixel)))++changed;}
+ check(changed>0&&changed<count/10,"Native temporal protection missing or global");check(f.pixels_in==f.pixels_out,"Real temporal checkout leak");std::cout<<"Real frame50 temporal recovery changed "<<changed<<" pixels\n";
 }
 void failures(){
     for(int mode=0;mode<10;++mode){
@@ -161,7 +175,7 @@ void failures(){
 }
 }
 int main(int argc,char** argv){try{
-    check(argc==2||argc==3,"Provide the actual built plugin executable");
+    check(argc>=2&&argc<=4,"Provide the actual built plugin executable");
     auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
@@ -171,7 +185,7 @@ int main(int argc,char** argv){try{
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
     formats(PF_PixelFormat_ARGB32,PF_Pixel{127,51,75,99});
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
-    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();if(argc==3)real_smart(argv[2]);
+    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();if(argc>=3)real_smart(argv[2]);if(argc==4)real_recovery(argv[3]);
     std::vector<std::future<bool>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==CameraInfo-1&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");

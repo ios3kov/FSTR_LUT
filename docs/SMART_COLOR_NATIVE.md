@@ -1,4 +1,6 @@
-# Native Smart Color Grading toggle — development checkpoint2026-10-15
+# Native Smart Color Grading toggle — initial checkpoint2026-10-15
+
+Superseded for short-gap behavior by [native interpolation](NATIVE_REGION_INTERPOLATION.md). The original no-recovery results below remain historical; full Smart/host acceptance is still open.
 
 User request: Off renders the previous plain LUT without face/object analysis; On enables automatic regional protection. Default Off preserves existing projects. This native candidate is implemented and locally exercised, but not installed or accepted for final motion quality.
 

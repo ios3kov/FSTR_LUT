@@ -140,13 +140,19 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
     double source_height=in.height;
     if(in_data->downsample_y.num>0&&in_data->downsample_y.den>0)source_height*=double(in_data->downsample_y.den)/in_data->downsample_y.num;
     if(enabled&&!processor.bypass()&&in.width>0&&in.height>0){
-        const auto current=analysis_image<P>(in_data,in,prepare,transfer);regions=fstr::detect_color_regions(current,source_height);
+        std::vector<fstr::RegionFrame> window;
+        auto current=analysis_image<P>(in_data,in,prepare,transfer);regions=fstr::detect_color_regions(current,source_height);
+        window.push_back({0,std::move(current),regions});
         std::vector<fstr::ColorRegion> left,right;
         for(const auto&n:neighbors){if(!n.world||n.world->width!=in.width||n.world->height!=in.height||n.world->origin_x!=in.origin_x||n.world->origin_y!=in.origin_y)continue;
-            auto image=analysis_image<P>(in_data,*n.world,prepare,transfer);if(!compatible_image(current,image))continue;
-            auto detected=fstr::detect_color_regions(image,source_height);if(n.offset<0)left=std::move(detected);else right=std::move(detected);
+            auto image=analysis_image<P>(in_data,*n.world,prepare,transfer);
+            auto detected=fstr::detect_color_regions(image,source_height);
+            if(compatible_image(window.front().image,image)){if(n.offset==-1)left=detected;else if(n.offset==1)right=detected;}
+            window.push_back({n.offset,std::move(image),std::move(detected)});
         }
-        regions=fstr::stabilize_color_regions(regions,left,right);
+        auto recovered=fstr::recover_color_regions(window);
+        auto stable=fstr::stabilize_color_regions(regions,left,right);
+        stable.insert(stable.end(),recovered.begin()+regions.size(),recovered.end());regions=std::move(stable);
     }
     const auto scale=channel_max<P>();
     // SmartFX origins are layer coordinates. Legacy does not change buffer size.
@@ -222,10 +228,10 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
     request.rect=result.max_result_rect;
     err=extra->cb->checkout_layer(in_data->effect_ref,Input,Input,&request,in_data->current_time,in_data->time_step,in_data->time_scale,&result);if(err)return err;
     auto data=std::make_unique<SmartPreData>();
-    if(in_data->time_step>0)for(int offset:{-1,1}){
+    if(in_data->time_step>0)for(int offset:{-1,1,-2,2}){
         const auto time=std::int64_t(in_data->current_time)+std::int64_t(offset)*in_data->time_step;
         if(time<0||time>=in_data->total_time||time>INT32_MAX)continue;
-        int id=offset<0?1:2;
+        int id=offset==-1?1:offset==1?2:offset==-2?3:4;
         err=extra->cb->checkout_layer(in_data->effect_ref,Input,id,&request,static_cast<A_long>(time),in_data->time_step,in_data->time_scale,&result);if(err)return err;
         data->frames.emplace_back(id,offset);
     }
@@ -234,8 +240,8 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
 }
 PF_Err smart_render(PF_InData* in_data,PF_SmartRenderExtra* extra) {
     PF_EffectWorld *input=nullptr,*output=nullptr;
-    std::vector<int> acquired;acquired.reserve(3);
-    std::vector<TemporalInput> neighbors;neighbors.reserve(2);
+    std::vector<int> acquired;acquired.reserve(5);
+    std::vector<TemporalInput> neighbors;neighbors.reserve(4);
     auto close=[&](){PF_Err first=PF_Err_NONE;for(auto i=acquired.rbegin();i!=acquired.rend();++i){auto e=extra->cb->checkin_layer_pixels(in_data->effect_ref,*i);if(!first)first=e;}acquired.clear();return first;};
     auto err=extra->cb->checkout_layer_pixels(in_data->effect_ref,Input,&input);if(err)return err;acquired.push_back(Input);
     try {

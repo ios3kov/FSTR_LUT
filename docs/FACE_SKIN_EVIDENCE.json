@@ -1,0 +1,1006 @@
+{
+  "schema_version": 1,
+  "date_local": "2026-10-15",
+  "timezone": "Europe/Podgorica",
+  "implementation_commit": "180304bfaf56ad2a671f7c8dc7b924bb45352614",
+  "baseline_commit": "1cc03ea55d6037640e4f31e042796c48d84e4a08",
+  "branch": "dev/ai-enhance-prototype",
+  "scope": "Research-only face skin selection; no body/hands, no AE install, no release",
+  "rules": "v11.1.0 /04b606845e0f73ab28b9807bb45682eae4d6ce34",
+  "environment": {
+    "hardware": "Apple M1 Pro /16GiB",
+    "os": "macOS26.6.2",
+    "python": "3.12 external research environment",
+    "dependencies": "tools/benchmark/smart-requirements-lock-macos-arm64.txt"
+  },
+  "source_sha256": {
+    "tools/benchmark/face_skin_analysis.py": "45c100508f809c64062d08976d91a7d62f9c7b07f75ea0842a6104cdfb8089a2",
+    "tools/benchmark/face_skin_scene_trial.py": "1db23579bdfd4e363ed4edae75e4efb7bdf832a0e45d0c4fdf5945a1f5c4d962",
+    "tools/benchmark/face_skin_motion_review.py": "3c17a59c71e8034afad4e37558282c0d84556c8cdb64f63092e9147838637740",
+    "tools/benchmark/smart_color_trial.py": "cff70015cdbe2f21b8fc3a8c6d24550b13c99051b993dcf891a20d6f805f3084",
+    "tools/benchmark/smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466",
+    "tools/benchmark/smart_color_main.cpp": "f2b1a0377524e88af1a2fdeaad72d777b4b3042b4159981b0765773308a215c8",
+    "tools/benchmark/smart-requirements-lock-macos-arm64.txt": "b7c0f5a6328c108de35e9dd9f166c7bd4ac92213e04d72ebf4632d91b7b23cd3",
+    "tests/face_skin_tests.py": "c2a2c3da908a5c9e9638eaf37d1e194974be6e57189eb9b80667ecb5a65b8d75",
+    "tests/smart_analysis_tests.py": "dab9a23451d0a8d88ceb04fe7f50f59cfffefe1a5b2586c1ee646c8c5a3547d7",
+    "tests/smart_cli_tests.py": "c11e1ee9b25f0c371a0cbcf23597b7880a7f3e4a5ca7e98aa003112fea226ca5",
+    "src/color/smart_color.cpp": "30dc285f4e987200bda2ba44593cfe41132f9dcf516a7801c0b1f62f61d5d131",
+    "include/fstr/smart_color.hpp": "fc2b2e0935197505beaf8e54e0dcd8f5e3e563a1085501d7b09690e652f45c0d",
+    "assets/models/face-skin-research-manifest.json": "47a3a438469800bf5ba941cce28789d492daa14cfa4b1db5ce0fadfaa046c28c"
+  },
+  "actual_models": {
+    "face_detection_yunet_2026may.onnx": {
+      "sha256": "ebafce4e3c118d6554634be5c27ab333b4c047a9a8c3faf1d7cf93101c22f0f0",
+      "bytes": 229738
+    },
+    "face_landmarker.task": {
+      "sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+      "bytes": 3758596
+    },
+    "selfie_multiclass_256x256.tflite": {
+      "sha256": "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
+      "bytes": 16371837
+    }
+  },
+  "renderer_sha256": "bc999e101ebd45001c71a3a0160834230fce92fbfea3885036797b42661da8dd",
+  "source_video_sha256": "8d227097b1ca016d0f6f8851f5cebd241067d9afb2e230ab3ae8f2d29ea370f6",
+  "look_sha256": "7175a683a54d2652ac04c078b26e6c9c6638abef3c4f2785eeeb89d6dcbc74bc",
+  "trial": {
+    "frame_count": 156,
+    "width": 360,
+    "height": 640,
+    "fps": 25,
+    "input_transfer": "gamma24",
+    "analysis_width": 720,
+    "analysis_height": 1280,
+    "code_sha256": {
+      "smart_color_trial.py": "cff70015cdbe2f21b8fc3a8c6d24550b13c99051b993dcf891a20d6f805f3084",
+      "face_skin_analysis.py": "45c100508f809c64062d08976d91a7d62f9c7b07f75ea0842a6104cdfb8089a2",
+      "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+    },
+    "metrics": {
+      "skin_weighted_selected_pixels": 28216,
+      "background_exact_equal": true,
+      "luminance_max_error": 6.786584854159838e-08,
+      "smart_display_out_of_range_fraction": 0.005105808181980057,
+      "lut_display_out_of_range_fraction": 0.0,
+      "skin_change_linear_mean": 0.02810409665107727,
+      "exposure_minmax": [
+        0.0,
+        0.0
+      ],
+      "gain_minmax": [
+        0.997163407786689,
+        1.0095793740301016
+      ],
+      "max_exposure_step": 0.0,
+      "cut_indices": [],
+      "model_repeated_reverse_requests": [
+        {
+          "frame": 155,
+          "max_error": 0.0
+        },
+        {
+          "frame": 0,
+          "max_error": 0.0
+        },
+        {
+          "frame": 78,
+          "max_error": 0.0
+        }
+      ],
+      "raw_mask_adjacent_mae": 0.0005735150771215558,
+      "stable_mask_adjacent_mae": 0.0005555350217036903
+    },
+    "native_timings": {
+      "lut": {
+        "frames": 156,
+        "elapsed_ms": 5597.43,
+        "ms_per_frame": 35.8809
+      },
+      "balanced": {
+        "frames": 156,
+        "elapsed_ms": 5696.54,
+        "ms_per_frame": 36.5163
+      },
+      "smart": {
+        "frames": 156,
+        "elapsed_ms": 5756.08,
+        "ms_per_frame": 36.8979
+      },
+      "spatial": {
+        "frames": 156,
+        "elapsed_ms": 5780.79,
+        "ms_per_frame": 37.0564
+      },
+      "prepared": {
+        "frames": 156,
+        "elapsed_ms": 1511.97,
+        "ms_per_frame": 9.69209
+      }
+    },
+    "inference_ms": {
+      "median": 266.40218698594254,
+      "p95": 352.0653224986745
+    },
+    "temporal_ms": {
+      "median": 199.04404199041892,
+      "p95": 224.91996851022122
+    },
+    "artifacts": {
+      "Comparison-2s.png": "acab3dcf2479ca1e7d282779e537507a731029acad685cfe7159a1d92d7915db",
+      "Comparison-4s.png": "5bd17a5223f0520750fbce4d114c64c8e44444dd3cb9fca5eeaa635a46fa430b",
+      "Temporal-comparison.mp4": "0d6ae031d01dfdc3aedf8b58e52dfd38f41b7ceed08f59766e3fc3965f1a9fa0",
+      "Smart-Color-comparison.mp4": "d7a75d51566f53e796b4e710d9b4b3ed3f67469606ad007f46fa257881f52176",
+      "Balance-2s.png": "34c22f1183f3af553fac8bbc14a64f457b4ca2789867f8c275a20a8d0aa6a049",
+      "Portrait-detail.png": "fe7c0b912c18f66e1469e6135c22b1086d8faf5d8d8a371538ccf65812be99c2",
+      "Temporal-2s.png": "7cc553f05a8d936e1910dc2626df5502bb790c4357d3dd29121e00e0299e43d1",
+      "Comparison-1s.png": "596279223359013ac4419b4d6255c62bf8bea4daf05ce0ab0d4463c337d5de40"
+    }
+  },
+  "trial_verification_sha256": "7c8ea5b9d99afd3d6eeea3abf49fa476891c3229456f309576f01378390c0f26",
+  "scene_report_sha256": "5e2bef9d36f1ac00217c42794f429f61f87657fb5a02c7cd4b1fce9999fbf694",
+  "scene_source_sha256": {
+    "face_skin_scene_trial.py": "1db23579bdfd4e363ed4edae75e4efb7bdf832a0e45d0c4fdf5945a1f5c4d962",
+    "face_skin_analysis.py": "45c100508f809c64062d08976d91a7d62f9c7b07f75ea0842a6104cdfb8089a2",
+    "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+  },
+  "scene_result": "FAIL overall coverage; baluster/beige false positives removed and side-lit face recovered; profile and frame-edge faces missed. Known-error regression, not blind holdout. No pixel truth.",
+  "scene_cases": [
+    {
+      "name": "train_day",
+      "face_count": 2,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "validation_lab",
+      "face_count": 0,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "validation_people",
+      "face_count": 3,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "test_night",
+      "face_count": 0,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "test_face",
+      "face_count": 1,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "test_action",
+      "face_count": 0,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "test_rooftop",
+      "face_count": 0,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "uniform_beige",
+      "face_count": 0,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "night_blue",
+      "face_count": 0,
+      "outside_support_max": 0.0
+    },
+    {
+      "name": "neutral_grey",
+      "face_count": 0,
+      "outside_support_max": 0.0
+    }
+  ],
+  "checks": {
+    "streams_equal_v2_v3": {
+      "input.rgba32f": true,
+      "balance.f64": true,
+      "lut.rgba32f": true,
+      "balanced.rgba32f": true,
+      "smart.rgba32f": true,
+      "spatial.rgba32f": true,
+      "prepared.rgba32f": true,
+      "stable-mask.f32": true,
+      "spatial-mask.f32": true,
+      "face-supports.npy": true
+    },
+    "artifacts_equal_v2_v3": {
+      "Comparison-2s.png": true,
+      "Comparison-4s.png": true,
+      "Temporal-comparison.mp4": true,
+      "Smart-Color-comparison.mp4": true,
+      "Balance-2s.png": true,
+      "Portrait-detail.png": true,
+      "Temporal-2s.png": true,
+      "Comparison-1s.png": true
+    },
+    "executed_source_matches": {
+      "smart_color_trial.py": true,
+      "face_skin_analysis.py": true,
+      "smart_analysis.py": true
+    },
+    "analysis_decoder_success": "PASS EOF and exit0; empty stderr",
+    "delivery": {
+      "Smart-Color-comparison.mp4": {
+        "stream": {
+          "width": 1440,
+          "height": 712,
+          "r_frame_rate": "25/1",
+          "duration": "6.240000",
+          "nb_read_frames": "156"
+        },
+        "decode": "PASS",
+        "sha256": "d7a75d51566f53e796b4e710d9b4b3ed3f67469606ad007f46fa257881f52176"
+      },
+      "Temporal-comparison.mp4": {
+        "stream": {
+          "width": 1440,
+          "height": 712,
+          "r_frame_rate": "25/1",
+          "duration": "6.240000",
+          "nb_read_frames": "156"
+        },
+        "decode": "PASS",
+        "sha256": "0d6ae031d01dfdc3aedf8b58e52dfd38f41b7ceed08f59766e3fc3965f1a9fa0"
+      }
+    }
+  },
+  "mask_contract_verification": {
+    "baseline_equal": {
+      "input.rgba32f": true,
+      "balance.f64": true,
+      "lut.rgba32f": true,
+      "balanced.rgba32f": true
+    },
+    "executed_source_matches": {
+      "smart_color_trial.py": true,
+      "face_skin_analysis.py": true,
+      "smart_analysis.py": true
+    },
+    "artifacts_match": {
+      "Comparison-2s.png": true,
+      "Comparison-4s.png": true,
+      "Temporal-comparison.mp4": true,
+      "Smart-Color-comparison.mp4": true,
+      "Balance-2s.png": true,
+      "Portrait-detail.png": true,
+      "Temporal-2s.png": true,
+      "Comparison-1s.png": true
+    },
+    "review_files_match": true,
+    "mask_finite_bounded": true,
+    "stable_inside_support": true,
+    "spatial_inside_support": true,
+    "zero_support_zero_mask": true,
+    "review_script_matches": true,
+    "renderer_matches": true,
+    "timings": {
+      "inference_ms": {
+        "median": 279.91358350845985,
+        "p95": 417.6881357343518
+      },
+      "temporal_ms": {
+        "median": 203.05385450774338,
+        "p95": 265.7601457540295
+      }
+    },
+    "scene_report_keys": [
+      "cases",
+      "attribution",
+      "source_url",
+      "rights_source",
+      "source_sha256",
+      "model_sha256",
+      "limitation"
+    ],
+    "transfer_to_final": "Exact v2/v3 streams and supports equality verified in checks above"
+  },
+  "visual_review": {
+    "every_frame_overview_and_detail": "PASS coverage only: actual static inspection of frames0..155",
+    "normal_speed_continuous_playback": "NOT RUN; static tool observations cannot establish perceptual motion acceptance",
+    "complete_native_scale_whole_frame_review": "NOT RUN; all overview frames180x320 and all96x96 crops enlarged2x; only four full-native-panel sheets additionally inspected, tool may resize sheet",
+    "temporal_quality": "FAIL acceptance: abrupt protection dropouts remain",
+    "reviewed_artifacts": [
+      {
+        "file": "full-036-041.jpg",
+        "frames": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41
+        ],
+        "sha256": "2817228585e7508ec5d97466c5531b8248f2241aa1b1515f8234162314eb47fa"
+      },
+      {
+        "file": "full-054-059.jpg",
+        "frames": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59
+        ],
+        "sha256": "7306ff25663bbe21d93e491461d6420c69873039f5c862162fd91729b5866584"
+      },
+      {
+        "file": "full-138-143.jpg",
+        "frames": [
+          138,
+          139,
+          140,
+          141,
+          142,
+          143
+        ],
+        "sha256": "b8f229db532a1fb358f16d80a46126e669751b77f2eaa4840acec512e635b767"
+      },
+      {
+        "file": "full-144-149.jpg",
+        "frames": [
+          144,
+          145,
+          146,
+          147,
+          148,
+          149
+        ],
+        "sha256": "e07ce04063695c4c58b37dd497376f2f9244a7b019fbae990e7ae9ea6a64a348"
+      },
+      {
+        "file": "detail-000-007.png",
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "sha256": "ad0404f21e50e97c5435373b0e8fe5957c317b7a8c0664368f1070a988f8f710"
+      },
+      {
+        "file": "detail-008-015.png",
+        "frames": [
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "sha256": "5d28eb207ab49b2673b819e2cd9f642e0d5a445c56155769bef5fcd0adc7b793"
+      },
+      {
+        "file": "detail-016-023.png",
+        "frames": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "sha256": "86a9b387545209ce593faaa1aeb15176af635ca8500f7f447f9b5450ab525be0"
+      },
+      {
+        "file": "detail-024-031.png",
+        "frames": [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "sha256": "d01e63fe814d615a83625ce83840a77818e3bf8d242ac1d2f20e07629fc2a680"
+      },
+      {
+        "file": "detail-032-039.png",
+        "frames": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "sha256": "4df63b0fc97eb43d9fbb5b0c1937934f1a94cca19738fcdb33dee1190aea2912"
+      },
+      {
+        "file": "detail-040-047.png",
+        "frames": [
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47
+        ],
+        "sha256": "65a199298dca290a6123f5f96d64d0fc4dd795e26fcf425e22237fbe494c34f1"
+      },
+      {
+        "file": "detail-048-055.png",
+        "frames": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        "sha256": "ebff1da44a9f2555d94af76de0a4bdff7cc7823d15bb642fa8cfdb6593af5284"
+      },
+      {
+        "file": "detail-056-063.png",
+        "frames": [
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63
+        ],
+        "sha256": "871d530d603646e4f27cef8d6fd6ccb0664c777e2b05883d0b9ae8b9c72e2e6f"
+      },
+      {
+        "file": "detail-064-071.png",
+        "frames": [
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        "sha256": "85dead7612bfe4dae5e2a1160d9f7b98ddcd4c65932c266cb962f93e634678a2"
+      },
+      {
+        "file": "detail-072-079.png",
+        "frames": [
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79
+        ],
+        "sha256": "0b2e1c37019f3a37d8520806257ad0e801cc401599649e4db7bc9ed07230fddb"
+      },
+      {
+        "file": "detail-080-087.png",
+        "frames": [
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87
+        ],
+        "sha256": "6c28d5125460df6d9a7dbc4f659fef54c16e12ce6414e898429798b67106e2ec"
+      },
+      {
+        "file": "detail-088-095.png",
+        "frames": [
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95
+        ],
+        "sha256": "4e527ef99b2c401cf015bff0dbfa761b17b4e09bbaa2eacc605013f17f865692"
+      },
+      {
+        "file": "detail-096-103.png",
+        "frames": [
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103
+        ],
+        "sha256": "8e440dd055a4db99b61f675c153532fe1453fa74059eb06eb661e91058d0fa32"
+      },
+      {
+        "file": "detail-104-111.png",
+        "frames": [
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111
+        ],
+        "sha256": "e0f7109f1264efbffe3d172cea19ccef45beafaf20cd8f55270ece69d39b0cd2"
+      },
+      {
+        "file": "detail-112-119.png",
+        "frames": [
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119
+        ],
+        "sha256": "71f0dceb62a1a32232120af16421cd7530fadc368484249726de96421d6fb75c"
+      },
+      {
+        "file": "detail-120-127.png",
+        "frames": [
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127
+        ],
+        "sha256": "25b17f3d603e68cf5b9d0f9da96646efb480ca11072054fdb448447ed0d29ae0"
+      },
+      {
+        "file": "detail-128-135.png",
+        "frames": [
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135
+        ],
+        "sha256": "70697d2b09549845aa84cf6ad44992579c65f9305803e7707dfe56ca89fb320a"
+      },
+      {
+        "file": "detail-136-143.png",
+        "frames": [
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143
+        ],
+        "sha256": "26b55745e29619a0c3f6ce3df41b45fb27a49e78d70e784747171d3a1b7e4a28"
+      },
+      {
+        "file": "detail-144-151.png",
+        "frames": [
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151
+        ],
+        "sha256": "5eeab950a0a0847d41d40d74573467be3c24497570517dce500e6abbede3ec5e"
+      },
+      {
+        "file": "detail-152-155.png",
+        "frames": [
+          152,
+          153,
+          154,
+          155
+        ],
+        "sha256": "0c26d1433971044eefb024fe8b0e5edf54260a95c8a91860fd935a6e02852c4f"
+      },
+      {
+        "file": "overview-000-023.png",
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "sha256": "1fc861eae7e1004c10d14c6d59934b32998defb6335d6c2d45d8ae5560fddbdc"
+      },
+      {
+        "file": "overview-024-047.png",
+        "frames": [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47
+        ],
+        "sha256": "221c3bcb692133b6b8e7272ed7871517fb427dba7d8bae255fd410c9fbfcd438"
+      },
+      {
+        "file": "overview-048-071.png",
+        "frames": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        "sha256": "3538cdde28d31300bf3faace35c2175a56c51751d1c66fa9ec5f7fca8a3033ff"
+      },
+      {
+        "file": "overview-072-095.png",
+        "frames": [
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95
+        ],
+        "sha256": "9d728c239fa782602b6cacfb0ae54d36e0e6587d476741c5edfd26e259fbdacf"
+      },
+      {
+        "file": "overview-096-119.png",
+        "frames": [
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119
+        ],
+        "sha256": "95ea248ecf837bd47bd35e22b1fba8d3e176b38a49c9c978a9982abcdf8e248a"
+      },
+      {
+        "file": "overview-120-143.png",
+        "frames": [
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135,
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143
+        ],
+        "sha256": "5b197a7bf421385144247eb6c5a4a27a4c66cb1af0e60221d267f91edd57ced0"
+      },
+      {
+        "file": "overview-144-155.png",
+        "frames": [
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155
+        ],
+        "sha256": "3b8e1b7f101eece285f3546c04c3b6f9beea97dac94e1d44d30a35e2ac3ca9e3"
+      }
+    ],
+    "review_transfer": "Inspected v2 sheets; all53 generated v3 sheets byte-identical after decoder/provenance repair; source/native outputs and comparison videos also byte-identical",
+    "all_generated_sheet_equality": {
+      "full-000-005.jpg": true,
+      "full-006-011.jpg": true,
+      "full-012-017.jpg": true,
+      "full-018-023.jpg": true,
+      "full-024-029.jpg": true,
+      "full-030-035.jpg": true,
+      "full-036-041.jpg": true,
+      "full-042-047.jpg": true,
+      "full-048-053.jpg": true,
+      "full-054-059.jpg": true,
+      "full-060-065.jpg": true,
+      "full-066-071.jpg": true,
+      "full-072-077.jpg": true,
+      "full-078-083.jpg": true,
+      "full-084-089.jpg": true,
+      "full-090-095.jpg": true,
+      "full-096-101.jpg": true,
+      "full-102-107.jpg": true,
+      "full-108-113.jpg": true,
+      "full-114-119.jpg": true,
+      "full-120-125.jpg": true,
+      "full-126-131.jpg": true,
+      "full-132-137.jpg": true,
+      "full-138-143.jpg": true,
+      "full-144-149.jpg": true,
+      "full-150-155.jpg": true,
+      "detail-000-007.png": true,
+      "detail-008-015.png": true,
+      "detail-016-023.png": true,
+      "detail-024-031.png": true,
+      "detail-032-039.png": true,
+      "detail-040-047.png": true,
+      "detail-048-055.png": true,
+      "detail-056-063.png": true,
+      "detail-064-071.png": true,
+      "detail-072-079.png": true,
+      "detail-080-087.png": true,
+      "detail-088-095.png": true,
+      "detail-096-103.png": true,
+      "detail-104-111.png": true,
+      "detail-112-119.png": true,
+      "detail-120-127.png": true,
+      "detail-128-135.png": true,
+      "detail-136-143.png": true,
+      "detail-144-151.png": true,
+      "detail-152-155.png": true,
+      "overview-000-023.png": true,
+      "overview-024-047.png": true,
+      "overview-048-071.png": true,
+      "overview-072-095.png": true,
+      "overview-096-119.png": true,
+      "overview-120-143.png": true,
+      "overview-144-155.png": true
+    },
+    "zero_mask_frames": [
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      55,
+      131,
+      132,
+      140,
+      141,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155
+    ],
+    "on_off_transitions": [
+      37,
+      45,
+      55,
+      56,
+      131,
+      133,
+      140,
+      142,
+      146
+    ],
+    "metric_limit": "Zero masks include face departure; effect jumps/adjacent MAE include true motion and are not perceptual flicker metrics",
+    "corpus_board_sha256": "4874eb79c8aa12a7bcee98b5472932281008015a60e19998f967de9800ec9bb3",
+    "corpus_board_inspected": true
+  },
+  "coverage_manifest_sha256": "4a727e9a2938cd46bc91d16717fedade59e35dcd451408f2097b78123fd19aec",
+  "tests": {
+    "face_geometry_analysis": "PASS both research suites",
+    "core_release": "PASS5/5",
+    "asan_ubsan": "PASS5/5 native/core only; model runtimes and AE not instrumented",
+    "native_cli": "PASS release and sanitized malformed/bypass/preservation cases",
+    "decoder_failure": {
+      "status": "PASS",
+      "scope": "Actual two-frame model analysis with isolated FFmpeg wrapper returning13 only after valid high-resolution bytes; trial rejects nonzero decoder exit before native render/evidence",
+      "returncode": 1,
+      "verification_absent": true,
+      "wrapper_sha256": "34a1f68a26096086f14e96b82e305de9b0fb601436bf548fa9b0a7905ded4569",
+      "source_sha256": "cff70015cdbe2f21b8fc3a8c6d24550b13c99051b993dcf891a20d6f805f3084"
+    },
+    "logs_sha256": {
+      "analysis-tests-final.log": "e5213039cce85af93a9ee8d369534a4f62cac1e747078f9bf874f6644af868bb",
+      "face-tests-final.log": "8816f8a0d43a2e3c4966b537156b6fb9282988e22fd8f57ff2ffaf0f2e722f2e",
+      "decoder-failure-check.json": "378b1b0164fef17fb5236f7dd203bb3f6f8cb409afbf29b1f55b4d88bea7ff0c",
+      "cli-tests.log": "52c1fa282c9e5abc75f830ea7ed73607fc1dfdb9d011d985c47f9a8f59f1cb0d",
+      "sanitize-tests.log": "b06e64884998a81b276906c90633c7fecfc36d66fffd265d67c5b84458dfcca7",
+      "cli-sanitize-tests.log": "52c1fa282c9e5abc75f830ea7ed73607fc1dfdb9d011d985c47f9a8f59f1cb0d",
+      "core-tests.log": "01014305520f8438aa4b358a1d6c7e030db092e120a319e378966765cae3747d"
+    },
+    "static_audit": {
+      "status": "PASS no findings in scanned code scope",
+      "report_sha256": "3611d7b2890d6ae67c13d0a36c557768541e5a27e8153e0e9efc4d8fc1cfe5a7",
+      "inventory": {
+        "scope_digest": "cf9e42572b74c467353a0fd9f2d468d4ccc6d4d5a00be374e83abd442cd5427e",
+        "files": 388,
+        "bytes": 1518766,
+        "excluded_directories": 4,
+        "unsupported_files": 1918,
+        "omissions": []
+      },
+      "source_commit": "180304bfaf56ad2a671f7c8dc7b924bb45352614",
+      "dirty": true,
+      "release_readiness": "not_assessed"
+    }
+  },
+  "installed_preservation": {
+    "installed_build_id": "b7f44ed4ca0704d6",
+    "files": {
+      "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+      "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+    },
+    "unchanged": true
+  },
+  "senior_review": {
+    "model": "GPT-6 Astra",
+    "scope": "Read-only source review; no actual model/video playback certification",
+    "findings_closed": "Corpus source snapshot before inference; successful decoder EOF/exit check; every used sheet input bound by hash",
+    "visual_boundary": "No continuous playback claim"
+  },
+  "final_review": {
+    "procedure": "Root reread changed face geometry, scale2 streaming, mask support and evidence; reviewed SF01..05 against actual results; revisited failed corpus and transition sheets; exact inputs/source/artifact equality verified",
+    "result": "Implementation contracts pass in stated scope; semantic/temporal quality not accepted; SF04 incomplete",
+    "preserved": "LUT assets, native code, installed bundle and projects unchanged"
+  },
+  "remaining_not_run": [
+    "continuous normal-speed perceptual playback",
+    "complete native-scale whole-frame inspection",
+    "unseen broad skin-tone/lighting corpus",
+    "real occluder ground truth",
+    "AE integration/ROI/MFR/alpha and source-space tests",
+    "real camera Log/HDR/Windows acceptance"
+  ],
+  "private_artifacts": [
+    "outputs/FSTR-LUT-Face-Skin-v3",
+    "outputs/FSTR-LUT-Face-Skin-Scenes-v2",
+    "work/smart-face-2026-10-15/trial-v1",
+    "work/smart-face-2026-10-15/trial-v2",
+    "work/smart-face-2026-10-15/trial-v3"
+  ]
+}

@@ -1,5 +1,11 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Face-supported follow-up — 2026-10-15
+
+User explicitly requested stronger skin selection including face confirmation and complete visual flicker inspection. Implemented independent face proposals + mesh confirmation + semantic skin intersection; real720×1280 analysis, same360×640 native comparison. Tested on all prior known errors and all156 supplied-video frames. [FACE_SKIN_REVIEW.md](FACE_SKIN_REVIEW.md) records exact coverage and failures. Architecture/background false positives improve, but profile/edge misses and abrupt protection dropouts prevent quality acceptance. Every-frame overview/detail review is complete; continuous25fps perceptual playback and complete native-scale whole-frame review are NOT RUN. Full flicker acceptance is not closed. No new plugin installation, release or publication.
+
+Next bounded quality work: address uncertain detection transitions without painting occluders/background, validate unseen scenes and motion/cut/occlusion cases, then actual continuous playback and remaining host gates. Do not substitute weaker acceptance or disappearance of all protection for successful skin selection. Prior work/negative probes remain preserved.
+
 ## Authorized Smart Color experiment — 2026-10-15
 
 User «делай» authorizes the proposed independent Auto Balance + semantic Skin Protection + temporal stability prototype before AE integration. Scope/criteria SC01..07: [SMART_COLOR.md](SMART_COLOR.md). This extends color work; restoration, training, GPU acceleration and publication remain deferred. Current plugin Natural/looks/state and installed b7f44 bytes are preserved. The first backend's semantic quality failed on independent scenes, so integration is gated on replacing/improving that backend and repeating acceptance; running inference or a passing numeric kernel is not sufficient. Current exact results are recorded in STATUS.md. Earlier MVP obligations below remain open.

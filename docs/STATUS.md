@@ -1,5 +1,20 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Face-supported skin follow-up — current research checkpoint
+
+Implementation `180304bfaf56ad2a671f7c8dc7b924bb45352614`. Independent YuNet proposals, IMAGE-mode face confirmation and semantic skin intersection implemented; face-only scope, no hands/body. Actual720×1280 source analysis feeds the same360×640 native color comparison. User's requested known-error and motion follow-up is recorded in [FACE_SKIN_REVIEW.md](FACE_SKIN_REVIEW.md), exact sources/artifacts in [FACE_SKIN_EVIDENCE.json](FACE_SKIN_EVIDENCE.json).
+
+**PASS in inspected scope:** prior baluster/beige false positives removed and side-lit face selected in the ten-case known-error comparison; all156 frames reviewed in overview and enlarged detail. Numeric checks preserve background/current support, baseline decode/LUT/balance and nonchronological repeatability. Five Release and five ASan/UBSan core suites, both native CLI checks, face/analysis tests pass. Actual high-resolution decoder completion checked; injected nonzero decoder exit is rejected before native render/evidence. Both final comparison MP4s decode156 frames at25fps/6.24s.
+
+**FAIL / not accepted:** visible profile and frame-edge faces remain missed; protection drops abruptly at37–44,55,131–132,140–141 and146 (later frames include face departure). Temporal smoothing does not fix these detection failures.23 zero-mask frames is not an accuracy score. Continuous normal-speed perceptual playback and complete whole-frame native-scale review are **NOT RUN**; the user's full flicker-acceptance requirement is still open. Exact coverage is seven overview sheets, twenty detail sheets and four selected native-panel sheets, not a claim that every generated artifact was inspected.
+
+Final local outputs: `outputs/FSTR-LUT-Face-Skin-v3` and `outputs/FSTR-LUT-Face-Skin-Scenes-v2` outside Git. Research timings on this Mac: face/skin analysis median266ms,p95352ms at720×1280; temporal199ms and native smart36.9ms at360×640. These are stage diagnostics, not1080p/AE/Fast results. Source/LUT/protection arithmetic leaves finite extended values; observed display out-of-range fraction0.511% includes unchanged preparation/look effects, not solely face protection. Gamut/artistic policy remains unaccepted.
+
+Current installed AE build remains **b7f44ed4ca0704d6**, five file hashes unchanged. No AE actions/install, model redistribution, release, merge or publication. Next work is reliable uncertain-face transitions and unseen-scene/occlusion validation, followed by actual continuous playback and remaining host gates. Earlier MVP/Log/HDR/Windows obligations and negative evidence below remain preserved.
+
+---
+
+
 ## Smart Color research checkpoint
 
 Implementation `95733b02309da422a926028f901641ad6bc798cd`. User-authorized independent prototype implemented: semantic skin masks from pinned MediaPipe256, full-frame plus four fixed overlapping views; conservative exposure/WB; explicit radius2 flow-gated masks and log-gain/stop smoothing; separate native C++ selective chroma protection. Scope/criteria: [SMART_COLOR.md](SMART_COLOR.md). Exact sources/artifacts and gate results: [SMART_COLOR_EVIDENCE.json](SMART_COLOR_EVIDENCE.json).

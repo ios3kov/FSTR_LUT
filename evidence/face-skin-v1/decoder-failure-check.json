@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "scope": "Actual two-frame model analysis with isolated FFmpeg wrapper returning13 only after valid high-resolution bytes; trial rejects nonzero decoder exit before native render/evidence",
+  "returncode": 1,
+  "verification_absent": true,
+  "wrapper_sha256": "34a1f68a26096086f14e96b82e305de9b0fb601436bf548fa9b0a7905ded4569",
+  "source_sha256": "cff70015cdbe2f21b8fc3a8c6d24550b13c99051b993dcf891a20d6f805f3084"
+}

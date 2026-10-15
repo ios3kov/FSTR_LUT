@@ -1,0 +1,643 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "cade3c9",
+  "model_sha256": "0ee938da54fe72f34916ec1456192c81efe40e846c03ad0a78cb460a3420f6a0",
+  "runtime": {
+    "torch": "2.8.0",
+    "mmseg": "1.2.2",
+    "mmcv": "2.1.0",
+    "device": "CPU",
+    "threads": 2
+  },
+  "source_hashes": {
+    "mmcv-v2.1.0.tar.gz": "4e9d28b42179404aff9ce4749e2cc5a3ad45fe76e3a0621608bcc8e144e917a1",
+    "setup-upstream.py": "c3fdf3cd5e94f435a63d5ca25b2ceb037f4dd6d778c6fd04d0ae7b06b13df6c0",
+    "mmcv-2.1.0/setup.py": "c35d80de7cf1a10673b0662de9f8ba6855e35beab17b26afe412aaf595a584ee",
+    "smoke.py": "809a53deb93a9d76cc7e6c455f80cbe10a5fed407d6ea57495ef14f6d663fad7",
+    "smoke.log": "ddca55db5d82afef63b39e5bcfa1529a6a046cdac732f5b40c76cd6ebdeb2bb5",
+    "probe.py": "48989d66cbf31a5cb79010d1e6c04802a12a95efbcdec5da0a72ed2d89516385",
+    "probe-v2.py": "96cf64f72593a069612e1bd2102085e7d13951fcefaac17e059765bfc4143a05",
+    "parity.py": "c204b1075227739dbc0b46ca41dc27baf302c1a527145cf18c0c419bdf2a9fd8",
+    "final_report": "d4fe18158b1d30c3347dfd238e4c04e784adb33d14ad1a69cf19eb2243b86ab0"
+  },
+  "extension_sha256": "44248470f696ccc37ba4d35be8c6cfd09eb9949143f8f38741d6c1cbc5e26e67",
+  "build_adjustment": "MPS auto-selection replaced by explicit FSTR_BUILD_MPS opt-in, default CPU; no operator/model source modifications",
+  "checks": {
+    "cpu_extension_build": "PASS",
+    "strict730_weight_match": "PASS",
+    "bgr_color_normalization": "PASS colored-red oracle",
+    "keep_ratio_resize": "PASS 1280x720 ->512x288",
+    "official_smoke": "PASS finite2x320x240 logits",
+    "visual_quality": "FAIL inspected visible-face omission",
+    "host": "NOT_RUN",
+    "full_sequence": "NOT_RUN",
+    "fixed32_cases64_masks": "PASS finite/bounded and support capped",
+    "geometry_parity": "PASS exact on2 cases explicit forward vs official API",
+    "repeat": "PASS bit exact2 cases",
+    "face_preservation": "FAIL; C2098 visible faces54/55/56/130/133 all discarded",
+    "semantic_occlusion": "NOT_ACCEPTED: planted patch zero also removes genuine face",
+    "installed_bundle_preservation": "PASS rehashed all5 recorded files",
+    "static_scanner": "PASS no findings; not runtime/quality proof"
+  },
+  "limitations": [
+    "Publisher single-scale baseline, not original multiscale flip benchmark",
+    "Old/new source review is not full numerical equivalence of runtimes",
+    "Initial crop256 then512 preparation superseded by direct512 v2",
+    "Frozen support cannot fix missing upstream face detection"
+  ],
+  "results": [
+    {
+      "name": "frame54",
+      "support_mass": 219.56515502929688,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            1016.5667080145795
+          ]
+        },
+        "box": {
+          "mass": 17.435861587524414,
+          "inference_ms": [
+            1682.3977909807581,
+            1524.6263330045622,
+            1287.6972919912077
+          ]
+        }
+      }
+    },
+    {
+      "name": "frame55",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            723.460042005172
+          ],
+          "interior_mean": 0.0
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1197.0612500153948
+          ],
+          "interior_mean": 0.0
+        }
+      }
+    },
+    {
+      "name": "frame56",
+      "support_mass": 225.00115966796875,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            740.7922910060734
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1211.1814170202706
+          ]
+        }
+      }
+    },
+    {
+      "name": "frame130",
+      "support_mass": 246.34764099121094,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            971.8764580029529
+          ]
+        },
+        "box": {
+          "mass": 4.338903903961182,
+          "inference_ms": [
+            1508.8375000050291
+          ]
+        }
+      }
+    },
+    {
+      "name": "frame131",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            805.3529580065515
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1361.2227499834262
+          ]
+        }
+      }
+    },
+    {
+      "name": "frame132",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            784.1269999917131
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1437.8468329960015
+          ]
+        }
+      }
+    },
+    {
+      "name": "frame133",
+      "support_mass": 259.7857360839844,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            845.8895420189947
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            2009.19799998519
+          ]
+        }
+      }
+    },
+    {
+      "name": "flat",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            933.2848749763798
+          ],
+          "interior_mean": 0.0
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1692.2977920039557
+          ],
+          "interior_mean": 0.0
+        }
+      }
+    },
+    {
+      "name": "texture",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            1031.335375009803
+          ],
+          "interior_mean": 0.0
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            2965.4547499958426
+          ],
+          "interior_mean": 0.0
+        }
+      }
+    },
+    {
+      "name": "train_day_first",
+      "support_mass": 1514.454833984375,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            2949.8912499984726
+          ]
+        },
+        "box": {
+          "mass": 888.60205078125,
+          "inference_ms": [
+            2628.873250010656,
+            1491.5950830036309
+          ]
+        }
+      }
+    },
+    {
+      "name": "train_day_last",
+      "support_mass": 364.81591796875,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            691.5216670022346
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            2440.8249580010306,
+            1799.684207973769
+          ]
+        }
+      }
+    },
+    {
+      "name": "validation_lab_first",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            831.5177079930436
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1585.188915982144
+          ]
+        }
+      }
+    },
+    {
+      "name": "validation_lab_last",
+      "support_mass": 20359.634765625,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            672.3810829862487
+          ],
+          "prop_mass": 0.0,
+          "forehead_mass": 0.0,
+          "cheek_mass": 0.0
+        },
+        "box": {
+          "mass": 12859.9990234375,
+          "inference_ms": [
+            1348.6834159994032
+          ],
+          "prop_mass": 0.0,
+          "forehead_mass": 989.2387084960938,
+          "cheek_mass": 878.9925537109375
+        }
+      }
+    },
+    {
+      "name": "validation_people_first",
+      "support_mass": 15691.0888671875,
+      "modes": {
+        "whole": {
+          "mass": 273.9691162109375,
+          "inference_ms": [
+            518.1323750002775
+          ]
+        },
+        "box": {
+          "mass": 15601.921875,
+          "inference_ms": [
+            1272.4854580010287,
+            1225.4418329976033,
+            1188.6971660132986
+          ]
+        }
+      }
+    },
+    {
+      "name": "validation_people_last",
+      "support_mass": 16889.794921875,
+      "modes": {
+        "whole": {
+          "mass": 252.0,
+          "inference_ms": [
+            518.5823329957202
+          ]
+        },
+        "box": {
+          "mass": 16755.82421875,
+          "inference_ms": [
+            1146.0821660002694,
+            1158.341834001476,
+            1117.8102919948287
+          ]
+        }
+      }
+    },
+    {
+      "name": "test_night_first",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            476.148916000966
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "test_night_last",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            479.95158401317894
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "test_face_first",
+      "support_mass": 14693.16796875,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            479.52925000572577
+          ]
+        },
+        "box": {
+          "mass": 14010.453125,
+          "inference_ms": [
+            1391.3525000098161
+          ]
+        }
+      }
+    },
+    {
+      "name": "test_face_last",
+      "support_mass": 13034.8935546875,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            559.8595000046771
+          ]
+        },
+        "box": {
+          "mass": 12048.1318359375,
+          "inference_ms": [
+            1482.8927910130005
+          ]
+        }
+      }
+    },
+    {
+      "name": "test_action_first",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            655.5002910026815
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "test_action_last",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            554.4546669989359
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "test_rooftop_first",
+      "support_mass": 2938.046630859375,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            638.7506249884609
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1405.0943750189617
+          ]
+        }
+      }
+    },
+    {
+      "name": "test_rooftop_last",
+      "support_mass": 6008.1962890625,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            649.7516660019755
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1151.280999998562
+          ]
+        }
+      }
+    },
+    {
+      "name": "beige",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            531.0895839938894
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "night_blue",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            487.87195899058133
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "grey",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            727.2241250029765
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "extra_90s",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            552.9946669994388
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "extra_210s",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            609.079040994402
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "extra_330s",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            588.3801660093013
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    },
+    {
+      "name": "extra_450s",
+      "support_mass": 5835.8017578125,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            490.2285410207696
+          ]
+        },
+        "box": {
+          "mass": 3153.7998046875,
+          "inference_ms": [
+            1493.2161250035278
+          ]
+        }
+      }
+    },
+    {
+      "name": "extra_570s",
+      "support_mass": 820.66796875,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            622.5742079841439
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": [
+            1645.728582981974,
+            1400.0176659901626
+          ]
+        }
+      }
+    },
+    {
+      "name": "extra_690s",
+      "support_mass": 0.0,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "inference_ms": [
+            677.5721669837367
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "inference_ms": []
+        }
+      }
+    }
+  ],
+  "parity": [
+    {
+      "name": "frame55",
+      "max_probability_error": 0.0,
+      "repeat_bit_exact": true
+    },
+    {
+      "name": "extra_450s",
+      "max_probability_error": 0.0,
+      "repeat_bit_exact": true
+    }
+  ],
+  "visually_inspected": [
+    "frame55",
+    "texture",
+    "validation_lab_last"
+  ],
+  "final_review": "Compared actual result against visible-face retention, semantic rejection and unchanged-host criteria; rejected candidate despite successful runtime; superseded crop trial disclosed; metadata/input-color additions remain plan-only."
+}

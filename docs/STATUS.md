@@ -1,5 +1,9 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## DeepLab follow-up — runtime resolved, quality rejected
+
+[Review](DEEPLAB_REVIEW.md), [evidence](DEEPLAB_EVIDENCE.json). Actual CPU MMCV build and strict model load PASS; channel/geometry oracle and2-case explicit-forward parity PASS. Final32-case direct512 trial fails face preservation:9/18 nonzero-support cases completely lost in crop mode;16/18 in whole-image. Not promoted; prior continuous review remains open. Non-Sony metadata and broader Log/non-camera input support recorded as planned requirements in PLAN.md, not implemented.
+
 ## Alternative model search — 2026-10-15
 
 [Research and selection](OCCLUSION_MODEL_SEARCH.md), [evidence](OCCLUSION_MODEL_SEARCH_EVIDENCE.json). XSeg3 actually executed on32 prior cases and two crop paths: better blur55 preservation, still accepts texture occluder; rejected for integration. DeepLabV3+/NatOcc selected next: publisher weights downloaded and safely inspected; training metadata covers hands with color transfer and objects. Local official runtime currently BLOCKED by missing compiled MMCV extension; DeepLab quality NOT RUN. SegFace secondary; S3POT/FOCUS heavier research alternatives. No plugin/default/code change, no claim of solved occlusion or continuous flicker.

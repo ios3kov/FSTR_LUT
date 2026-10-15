@@ -1,5 +1,15 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Broader input color interpretation — user request2026-10-15
+
+Support other camera Log/gamut pairs and non-camera encoded sources, not metadata alone. Scope candidates include ARRI LogC, Canon Log, Panasonic V-Log, Nikon N-Log, Fujifilm F-Log, Blackmagic Film, RED Log3G10, DJI D-Log, Apple Log, Cineon, ACEScc/ACEScct and linear CG/interchange sources. Treat each actual profile/version and gamut explicitly; names alone do not define transforms. PQ/HLG are separate HDR transfer functions, not camera Log. This list is a planning scope, not a claim of present support or verified official formulas.
+
+Before implementing each transform, use authoritative current definitions/test vectors, explicit code range/primaries/whitepoint, correct linear working conversion and documented display/output handling. Validate neutral/color/range/roundtrip cases and representative real exports. Metadata suggestion must refer to incoming pixels, never silently override already-transformed host footage. Preserve manual selection, legacy parameter IDs/state and existing project appearance. Planned, not implemented; current mask trial remains active.
+
+## Multi-vendor metadata follow-up — user request2026-10-15
+
+Extend read-only camera metadata recognition beyond Sony. Candidate coverage: Canon, Panasonic, Nikon, Fujifilm, Blackmagic and ARRI, conditional on documented accessible file metadata and real fixtures. Preserve separate manufacturer/model, gamma and gamut fields, provenance/conflict handling, manual input interpretation and no inferred profile from image appearance or generic Rec709 tags. Parsing metadata does not automatically add pixel-transform support for every camera Log/gamut or authorize silently changing already-converted AE pixels. Validate missing/conflicting metadata and representative real files per vendor. Planned, not implemented or verified; current DeepLab quality trial continues first.
+
 ## Skin-colored occlusion acceptance — 2026-10-15
 
 User requested closure of occlusion and continuous flicker.84 synthetic cases and actual FaceOcc planted-patch counterexamples expose remaining semantic failure. Correspondence guard is limited to temporal additions. Scope/results: [SKIN_OCCLUSION_ACCEPTANCE.md](SKIN_OCCLUSION_ACCEPTANCE.md). Next candidate must address semantic occluder rejection; no universal temporal veto or AE promotion on this evidence. Prior obligations retained.

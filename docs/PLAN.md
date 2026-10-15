@@ -121,3 +121,8 @@ User requested automatic useful embedded camera metadata reading. Implement META
 ## Authorized Cinema & Palettes addition — 2026-10-15
 
 User requests recognizable film-inspired looks and clear English names, Natural maximally natural, retired old Warm, Teal & Orange plus eight supplied pairs. See CINEMA_LOOKS.md for CIN-01..06 acceptance, source/reference limits and compatibility. Natural stays exact neutral value1; old Warm value2 is a nonselectable separator retaining legacy output. Six film interpretations and nine palettes append3..17. Look Amount defaults100%, slider0..100%, typed0..300%; active color core extrapolates in existing host-linear space. Original v3 six-look names are superseded for this library by this direct choice; all other retained obligations remain. No AI/restoration/GPU work, merge or release.
+
+
+## Size-adaptive face protection — authorized2026-10-15
+
+Implement prototype per ADAPTIVE_FACE_MASK.md:24/64/160source-pixel height bands, smooth transitions, explicit simple-mask permission, bounded temporal associations/gaps without previousFrame. Numeric contract implemented/tested; fresh detection and actual motion failures retained. Quality/occlusion/continuous review, blur confidence and native integration remain open. Metadata/non-Sony/non-camera plans remain unchanged.

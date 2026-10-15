@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Adaptive face masks and bounded tracking — research prototype
+
+[Contract/review](ADAPTIVE_FACE_MASK.md), [evidence](ADAPTIVE_FACE_MASK_EVIDENCE.json). Added source-height detail bands with smooth transitions and opt-in35% simple ellipse; explicit5frame conservative matching/flow and one/two-frame gap recovery with current evidence.15focused tests and existing blur/turn regressions PASS. Fresh detector20scale trial and real54–56 tracking executed: tiny/blurred faces still omitted; frame55tracking remains zero; lab prop false positives remain. FAIL visual acceptance; no AE promotion. Continuous review, automatic blur confidence and full preview-scale equivalence NOT RUN/not implemented.
+
+
 ## SegFace face-scale diagnostic — not accepted
 
 [Review](SEGFACE_SCALE_REVIEW.md), [evidence](SEGFACE_SCALE_EVIDENCE.json). Completed52cases × whole/crop paths, including20synthetic scale cases24/48/96/192/320px and23prior scene images. Strict load/input/bounds checks PASS. Clear-face crop improves medium-size case but tiny/blurred faces still vanish; skin-colored texture and lab prop remain false positives. FAIL robustness/occlusion; no AE promotion. Scale cases use known boxes and inherited support, not ground truth or end-to-end detector acceptance. Continuous visual motion remains open. Installed plugin unchanged.

@@ -1,0 +1,652 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "2c2babc",
+  "source_hashes": {
+    "tools/benchmark/adaptive_face_mask.py": "6a19ecdebdaa7466ba78d936bf06ebe7eb71b6ae5ae7004f1c2c1700b1506ba2",
+    "tests/adaptive_face_mask_tests.py": "caffb7954602fdd71fb90bc3f07236293119ed6160829b6a7aabdfcfd870b81e"
+  },
+  "private_root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/adaptive-face-2026-10-15",
+  "private_hashes": {
+    "trial.py": "8a969863bbcb7e3fd35d5a15b89f51ac7dc1db576099e9fb3d6ba5fd622c0cbc",
+    "motion.py": "711281d1918177602b3de5f3c59578fe5adcf80d8e675f25022edc96f653b4c0",
+    "boards.py": "bf51c083301b249a17315c49e0831216c9aff2f9612c764365cad6b16587e418",
+    "unit.log": "31f6891c95540fe3670e26fb4f16bdde84397353efcb61e802c8ff8ad58db833",
+    "blur-regression.log": "867d20010c42947c2c8069764d260dbfe7262db6f74b2b75e366ce29de35aa4e",
+    "turn-regression.log": "a2a00b35be6366e5a0c9e8f5e6ce5b0c61e5682aa7c6fbcca4368068ef3d747e",
+    "scanner-final.json": "94546b4a4fe842fe6ccb872e3962470a7ccd8416bf0f287989439b8533a2a987",
+    "scale-trial/report.json": "d6da2ecae9431d4375ee2b82ace3458bcdf293b6746f151c06cc7b28bf48caab",
+    "motion-trial/tracking.json": "f9aebbedb9a02e064aeafd219cc26215c54d50c42101aa3d8d4f1737ee081cdb"
+  },
+  "installed_files_unchanged": {
+    "Contents/Info.plist": true,
+    "Contents/PkgInfo": true,
+    "Contents/_CodeSignature/CodeResources": true,
+    "Contents/MacOS/FSTR_LUT_Development": true,
+    "Contents/Resources/FSTR_LUT_Development.rsrc": true
+  },
+  "scale_results": [
+    {
+      "name": "scale_frame54_024",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              349.4719543457031,
+              347.5975036621094,
+              368.8876647949219,
+              373.7402038574219
+            ],
+            "detector_score": 0.8801543116569519,
+            "scale_agreement": 1,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.7532623697916667,
+            "current_face_semantic_mean": 0.7833946881975447
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.0005448946612887084,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 9.744987487792969,
+      "peak": 0.054458752274513245,
+      "mesh_mass": 282.473388671875
+    },
+    {
+      "name": "scale_frame54_048",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              339.1382751464844,
+              332.9642028808594,
+              377.3104248046875,
+              381.7141418457031
+            ],
+            "detector_score": 0.9067725539207458,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.9021461535480156,
+            "current_face_semantic_mean": 0.8086227334384667
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.002455494599416852,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 209.67611694335938,
+      "peak": 0.31832635402679443,
+      "mesh_mass": 1272.9283447265625
+    },
+    {
+      "name": "scale_frame54_096",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              320.8506164550781,
+              306.787353515625,
+              397.8047180175781,
+              406.9378356933594
+            ],
+            "detector_score": 0.9073245525360107,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8935225352375469,
+            "current_face_semantic_mean": 0.812090768587404
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.010103835724294186,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 4635.87060546875,
+      "peak": 0.9073245525360107,
+      "mesh_mass": 5237.82861328125
+    },
+    {
+      "name": "scale_frame54_192",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              284.23309326171875,
+              255.96438598632812,
+              433.86407470703125,
+              450.83868408203125
+            ],
+            "detector_score": 0.9125301241874695,
+            "scale_agreement": 1,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8811281362945169,
+            "current_face_semantic_mean": 0.8115950462928649
+          },
+          {
+            "box": [
+              255.57461547851562,
+              281.9525451660156,
+              360.8462219238281,
+              426.4612731933594
+            ],
+            "detector_score": 0.7026492953300476,
+            "scale_agreement": 0,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8724560239779874,
+            "current_face_semantic_mean": 0.6753377698608086
+          }
+        ],
+        "proposals": 3,
+        "face_count": 2,
+        "area": 0.0404074601829052,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 2,
+        "mesh_faces": 2
+      },
+      "mass": 18252.84765625,
+      "peak": 0.9125301241874695,
+      "mesh_mass": 20947.2265625
+    },
+    {
+      "name": "scale_frame54_320",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              190.51356506347656,
+              177.99789428710938,
+              472.7028503417969,
+              520.908203125
+            ],
+            "detector_score": 0.7884105443954468,
+            "scale_agreement": 0,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.875795167917255,
+            "current_face_semantic_mean": 0.7719816440921546
+          },
+          {
+            "box": [
+              342.1416320800781,
+              156.8765106201172,
+              553.878662109375,
+              417.96435546875
+            ],
+            "detector_score": 0.6258258819580078,
+            "scale_agreement": 0,
+            "status": "mesh_disagreement",
+            "current_face_semantic_mean": 0.48416802310242846
+          }
+        ],
+        "proposals": 3,
+        "face_count": 1,
+        "area": 0.1064959466457367,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 2,
+        "mesh_faces": 1
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 55207.5
+    },
+    {
+      "name": "scale_frame55_024",
+      "detail": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_frame55_048",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              342.3952331542969,
+              336.3570861816406,
+              377.1200866699219,
+              382.9179382324219
+            ],
+            "detector_score": 0.8706400990486145,
+            "scale_agreement": 1,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.7615494668801344
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_frame55_096",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              326.2117004394531,
+              311.4972229003906,
+              395.0897216796875,
+              404.8163757324219
+            ],
+            "detector_score": 0.8766582012176514,
+            "scale_agreement": 1,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.7712705671640222
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_frame55_192",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              279.9090270996094,
+              264.24700927734375,
+              425.16656494140625,
+              445.31781005859375
+            ],
+            "detector_score": 0.8306596875190735,
+            "scale_agreement": 1,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.8010716719400613
+          },
+          {
+            "box": [
+              181.1253204345703,
+              232.5955047607422,
+              377.6702575683594,
+              481.64044189453125
+            ],
+            "detector_score": 0.7503066658973694,
+            "scale_agreement": 0,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.26666077337745514
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 2,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_frame55_320",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              92.75366973876953,
+              192.0800323486328,
+              362.2718200683594,
+              509.7408447265625
+            ],
+            "detector_score": 0.7150722742080688,
+            "scale_agreement": 0,
+            "status": "mesh_disagreement",
+            "current_face_semantic_mean": 0.31200402772869545
+          }
+        ],
+        "proposals": 1,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_test_face_first_024",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              352.5662536621094,
+              348.63165283203125,
+              369.42822265625,
+              370.6527404785156
+            ],
+            "detector_score": 0.7216150164604187,
+            "scale_agreement": 0,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.0
+          }
+        ],
+        "proposals": 1,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_test_face_first_048",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              342.35382080078125,
+              338.0314636230469,
+              377.028076171875,
+              381.3399658203125
+            ],
+            "detector_score": 0.8108735084533691,
+            "scale_agreement": 1,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8627005073586147,
+            "current_face_semantic_mean": 0.729721201256304
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.002291548065841198,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 150.24838256835938,
+      "peak": 0.2838057279586792,
+      "mesh_mass": 1187.9384765625
+    },
+    {
+      "name": "scale_test_face_first_096",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              317.9052734375,
+              308.707763671875,
+              398.2480773925781,
+              402.9690856933594
+            ],
+            "detector_score": 0.8996720910072327,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8683821006308996,
+            "current_face_semantic_mean": 0.725468906041944
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.00869554653763771,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 3909.052978515625,
+      "peak": 0.8996720910072327,
+      "mesh_mass": 4507.771484375
+    },
+    {
+      "name": "scale_test_face_first_192",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              273.8275451660156,
+              257.8645935058594,
+              427.9372253417969,
+              471.08685302734375
+            ],
+            "detector_score": 0.9040625691413879,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8616300254908441,
+            "current_face_semantic_mean": 0.7008498649792845
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.033946629613637924,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 15813.951171875,
+      "peak": 0.9040625691413879,
+      "mesh_mass": 17597.93359375
+    },
+    {
+      "name": "scale_test_face_first_320",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              215.1774139404297,
+              187.13714599609375,
+              478.2936096191406,
+              548.6458129882812
+            ],
+            "detector_score": 0.9097857475280762,
+            "scale_agreement": 1,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8719377064292824,
+            "current_face_semantic_mean": 0.6975841426277195
+          },
+          {
+            "box": [
+              216.40048217773438,
+              251.08810424804688,
+              368.9811096191406,
+              435.0191955566406
+            ],
+            "detector_score": 0.6156659722328186,
+            "scale_agreement": 0,
+            "status": "mesh_disagreement",
+            "current_face_semantic_mean": 0.8101215346876284
+          }
+        ],
+        "proposals": 3,
+        "face_count": 1,
+        "area": 0.09293773025274277,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 2,
+        "mesh_faces": 1
+      },
+      "mass": 43757.5546875,
+      "peak": 0.9097857475280762,
+      "mesh_mass": 48178.91796875
+    },
+    {
+      "name": "scale_validation_lab_last_024",
+      "detail": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_validation_lab_last_048",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              345.5631103515625,
+              336.8282470703125,
+              375.4883117675781,
+              371.2023010253906
+            ],
+            "detector_score": 0.7990190982818604,
+            "scale_agreement": 0,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.6000063960163738,
+            "current_face_semantic_mean": 0.4815487808056092
+          }
+        ],
+        "proposals": 1,
+        "face_count": 1,
+        "area": 0.0010868170065805316,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 563.4059448242188
+    },
+    {
+      "name": "scale_validation_lab_last_096",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              325.65911865234375,
+              309.4611511230469,
+              391.6607666015625,
+              392.3008728027344
+            ],
+            "detector_score": 0.8652700185775757,
+            "scale_agreement": 2,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.364983281002769
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 0
+      },
+      "mass": 0.0,
+      "peak": 0.0,
+      "mesh_mass": 0.0
+    },
+    {
+      "name": "scale_validation_lab_last_192",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              284.55474853515625,
+              242.18301391601562,
+              423.21112060546875,
+              440.606689453125
+            ],
+            "detector_score": 0.9097370505332947,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.7756487830315479,
+            "current_face_semantic_mean": 0.38085694599446246
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.022124841809272766,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 10434.033203125,
+      "peak": 0.9097370505332947,
+      "mesh_mass": 11469.517578125
+    },
+    {
+      "name": "scale_validation_lab_last_320",
+      "detail": {
+        "faces": [
+          {
+            "box": [
+              219.70591735839844,
+              173.33543395996094,
+              471.129638671875,
+              528.3480224609375
+            ],
+            "detector_score": 0.9251022934913635,
+            "scale_agreement": 1,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.7225518944172843,
+            "current_face_semantic_mean": 0.27261310161749985
+          }
+        ],
+        "proposals": 3,
+        "face_count": 1,
+        "area": 0.044190794229507446,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "mass": 21151.86328125,
+      "peak": 0.9251022934913635,
+      "mesh_mass": 22908.5078125
+    }
+  ],
+  "motion": {
+    "records": [
+      {
+        "status": "current",
+        "neighbors": 2
+      }
+    ],
+    "mass": 0.0,
+    "cuts": [
+      false,
+      false,
+      false
+    ],
+    "repeat_exact": true,
+    "source_scale_y": 3.0,
+    "source_rotation": 90
+  },
+  "checks": {
+    "unit15": "PASS",
+    "blur_regression": "PASS",
+    "turn_regression": "PASS",
+    "static_scanner": "PASS code scope only",
+    "real_scale_quality": "FAIL omissions and prop false positives",
+    "real_blur_tracking": "FAIL zero mask55",
+    "continuous_visual": "NOT_RUN",
+    "AE": "NOT_RUN",
+    "blur_confidence": "NOT_IMPLEMENTED"
+  }
+}

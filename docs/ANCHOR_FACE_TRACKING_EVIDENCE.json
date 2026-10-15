@@ -1,0 +1,300 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "f50e29a",
+  "source_hashes": {
+    "tools/benchmark/anchor_face_tracking.py": "3a65fb807eab3c331e730754c7c8fa2d9532fbbf14815848fa059652f67b845c",
+    "tests/anchor_face_tracking_tests.py": "3342a0b2da8ac122a6432da386331504e5867b9ff1ff95ee9cd8a4798f2c9c75"
+  },
+  "private_root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/anchor-face-2026-10-15",
+  "private_hashes": {
+    "trial-verified.py": "7690e0d076624ea74ef1470cf04ce6a12c37829bba624e6567a0aaef4fb6aa78",
+    "sequence-verified.py": "53338938dd6ad17eb934c2ff5e078c7e1b75ad33933ca870e9bebc600bb169e3",
+    "board.py": "f568a5d7bfe788b1c82fa07c7aa2fd9f4d1a9fc97296ccedd32f657901e7fdd2",
+    "unit-verified.log": "f56ffaeaf506dd7d33007446d6b259746b157ddcdbe872bd04e93444c2925196",
+    "adaptive-regression.log": "4fbe3fc9a703c80bc5667cede89525029e69ab67ece839a3790659fe49d851e1",
+    "blur-regression.log": "867d20010c42947c2c8069764d260dbfe7262db6f74b2b75e366ce29de35aa4e",
+    "scanner-verified.json": "f91c4fed89cfdc41550d19c32e6410a030d43de9bff7abb4ad81ee738093d460",
+    "trial-v4/report.json": "52d00b2f145922398510de42aa09c45837dfe32b9dc528f424128240b3fa80f3",
+    "sequence-v3/report.json": "418e5393148f6e990468c547a47765caf03237ff3425795eac5ef2b05aab3e7f",
+    "sequence-v3/masks.npy": "aa6d886ff36a871aeccc82834a13dd385e2b40913e794e7d89cbd68aa75d0e86",
+    "sequence-v3/comparison-square.png": "8a7d3ec7a46ee4e69445ad2a47e0f994aa474a3ca45d1944a79d74c9877d7621"
+  },
+  "installed_preservation": {
+    "Contents/Info.plist": true,
+    "Contents/PkgInfo": true,
+    "Contents/_CodeSignature/CodeResources": true,
+    "Contents/MacOS/FSTR_LUT_Development": true,
+    "Contents/Resources/FSTR_LUT_Development.rsrc": true
+  },
+  "changed_frames": [
+    55
+  ],
+  "trial": [
+    {
+      "kind": "original",
+      "detail": {
+        "status": "transferred",
+        "endpoints": [
+          0,
+          2
+        ],
+        "agreement": 0.8732663989067078,
+        "blur_weight": 1.0,
+        "detail_uncertain": true,
+        "sharpness_ratios": [
+          0.5667407892602532,
+          1.0192156938828287
+        ],
+        "tracking": [
+          {
+            "points": 40,
+            "scale": 1.0230547189712524,
+            "angle": -0.44209110736846924,
+            "motion": [
+              -4.8952901296502205,
+              -11.457291908899265
+            ]
+          },
+          {
+            "points": 57,
+            "scale": 0.9917744994163513,
+            "angle": -0.042446382343769073,
+            "motion": [
+              -2.1400697461328377,
+              21.62487679210608
+            ]
+          }
+        ],
+        "mass": 119.5341796875
+      },
+      "mass": 119.5341796875,
+      "patch_mean": 0.24587813019752502
+    },
+    {
+      "kind": "flat",
+      "detail": {
+        "status": "abstained",
+        "reason": "insufficient_current_evidence",
+        "tracking": [
+          {
+            "points": 13,
+            "scale": 1.0247926712036133,
+            "angle": 0.7935563325881958,
+            "motion": [
+              -4.80942282796002,
+              -11.190471269081627
+            ]
+          },
+          {
+            "points": 24,
+            "scale": 0.9933499693870544,
+            "angle": 0.3061653673648834,
+            "motion": [
+              -1.944599882197167,
+              21.579481375014893
+            ]
+          }
+        ]
+      },
+      "mass": 0.0,
+      "patch_mean": 0.0
+    },
+    {
+      "kind": "texture",
+      "detail": {
+        "status": "transferred",
+        "endpoints": [
+          0,
+          2
+        ],
+        "agreement": 0.7946776151657104,
+        "blur_weight": 1.0,
+        "detail_uncertain": true,
+        "sharpness_ratios": [
+          2.430166604407919,
+          3.212296242063257
+        ],
+        "tracking": [
+          {
+            "points": 21,
+            "scale": 1.0936408042907715,
+            "angle": -0.4054707884788513,
+            "motion": [
+              -2.6138482053842154,
+              -11.707976407848264
+            ]
+          },
+          {
+            "points": 28,
+            "scale": 1.0084173679351807,
+            "angle": 0.23070128262043,
+            "motion": [
+              -1.0207497366927782,
+              21.571691441748044
+            ]
+          }
+        ],
+        "mass": 23.975399017333984
+      },
+      "mass": 23.975399017333984,
+      "patch_mean": 0.05287319794297218
+    }
+  ],
+  "sequence": {
+    "records": [
+      {
+        "frame": 48,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 750.609619140625,
+        "after": 750.609619140625
+      },
+      {
+        "frame": 49,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 772.4720458984375,
+        "after": 772.4720458984375
+      },
+      {
+        "frame": 50,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 769.375244140625,
+        "after": 769.375244140625
+      },
+      {
+        "frame": 51,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 800.0945434570312,
+        "after": 800.0945434570312
+      },
+      {
+        "frame": 52,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 835.5687255859375,
+        "after": 835.5687255859375
+      },
+      {
+        "frame": 53,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 892.0594482421875,
+        "after": 892.0594482421875
+      },
+      {
+        "frame": 54,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 908.0626831054688,
+        "after": 908.0626831054688
+      },
+      {
+        "frame": 55,
+        "detail": {
+          "status": "transferred",
+          "endpoints": [
+            1,
+            3
+          ],
+          "agreement": 0.8795912265777588,
+          "blur_weight": 1.0,
+          "detail_uncertain": true,
+          "sharpness_ratios": [
+            0.6477610011765913,
+            1.164778127170768
+          ],
+          "tracking": [
+            {
+              "points": 40,
+              "scale": 1.0230547189712524,
+              "angle": -0.44209110736846924,
+              "motion": [
+                -4.8952901296502205,
+                -11.457291908899265
+              ]
+            },
+            {
+              "points": 57,
+              "scale": 0.9917744994163513,
+              "angle": -0.042446382343769073,
+              "motion": [
+                -2.1400697461328377,
+                21.62487679210608
+              ]
+            }
+          ],
+          "mass": 121.33299255371094
+        },
+        "before": 0.0,
+        "after": 121.33299255371094
+      },
+      {
+        "frame": 56,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 921.3031616210938,
+        "after": 921.3031616210938
+      },
+      {
+        "frame": 57,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 979.12353515625,
+        "after": 979.12353515625
+      },
+      {
+        "frame": 58,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 1021.163818359375,
+        "after": 1021.163818359375
+      },
+      {
+        "frame": 59,
+        "detail": {
+          "status": "current_anchor"
+        },
+        "before": 1026.503173828125,
+        "after": 1026.503173828125
+      }
+    ],
+    "reverse_repeat_exact": true,
+    "cuts": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "checks": {
+    "unit9": "PASS",
+    "adaptive15": "PASS",
+    "blur_regression": "PASS",
+    "static_scanner": "PASS code scope only",
+    "reverse_repeat": "PASS12frames",
+    "real55_nonzero_recovery": "PASS limited feasibility",
+    "semantic_occlusion": "FAIL texture leakage and flat global abstention",
+    "continuous_visual": "NOT_RUN",
+    "native_host": "NOT_RUN"
+  }
+}

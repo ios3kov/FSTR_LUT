@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Anchor-driven blur transfer — limited recovery demonstrated
+
+[Review](ANCHOR_FACE_TRACKING.md), [evidence](ANCHOR_FACE_TRACKING_EVIDENCE.json). Added independent two-anchor feature tracking, geometry agreement, continuous coarse/detail blending and preserved explicit occlusion exclusions.9new tests plus15adaptive/blur regressions PASS. Final actual55gets weak partial mask (sum119.534),12frame slice changes55only, reverse repeat exact. Texture-patch leakage0.052873 and patchy face protection remain; semantic/flicker acceptance NOT CLOSED. No native/installed change.
+
+
 ## Adaptive face masks and bounded tracking — research prototype
 
 [Contract/review](ADAPTIVE_FACE_MASK.md), [evidence](ADAPTIVE_FACE_MASK_EVIDENCE.json). Added source-height detail bands with smooth transitions and opt-in35% simple ellipse; explicit5frame conservative matching/flow and one/two-frame gap recovery with current evidence.15focused tests and existing blur/turn regressions PASS. Fresh detector20scale trial and real54–56 tracking executed: tiny/blurred faces still omitted; frame55tracking remains zero; lab prop false positives remain. FAIL visual acceptance; no AE promotion. Continuous review, automatic blur confidence and full preview-scale equivalence NOT RUN/not implemented.

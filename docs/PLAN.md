@@ -126,3 +126,8 @@ User requests recognizable film-inspired looks and clear English names, Natural 
 ## Size-adaptive face protection — authorized2026-10-15
 
 Implement prototype per ADAPTIVE_FACE_MASK.md:24/64/160source-pixel height bands, smooth transitions, explicit simple-mask permission, bounded temporal associations/gaps without previousFrame. Numeric contract implemented/tested; fresh detection and actual motion failures retained. Quality/occlusion/continuous review, blur confidence and native integration remain open. Metadata/non-Sony/non-camera plans remain unchanged.
+
+
+## Blurred-face anchors — authorized2026-10-15
+
+Implement ANCHOR_FACE_TRACKING.md independent of current detailed-face detection. Geometry, detail selection and current foreground veto separate. Bounded tracking/core and local experiments complete; general semantic occlusion/continuous graded-motion quality still open. Do not promote on the single restored55frame.

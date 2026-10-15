@@ -28,16 +28,18 @@ def box_iou(a, b):
     return overlap/union if union > 0 else 0.
 
 
-def select_boxes(proposals, shape):
+def select_boxes(proposals, shape, min_score=.8):
     """Stable score-order NMS. Bad model outputs fail, edge faces abstain."""
     h, w = shape
+    if not np.isfinite(min_score) or not .6 <= min_score <= 1:
+        raise ValueError('Invalid proposal threshold')
     valid = []
     for box, score in proposals:
         box = np.asarray(box, dtype=np.float64)
         if box.shape != (4,) or not np.isfinite(box).all() or not np.isfinite(score) or not 0 <= score <= 1:
             raise ValueError('Invalid face proposal')
         size = box[2:]-box[:2]
-        if (score < .8 or min(size) < 10 or box[0] < 0 or box[1] < 0
+        if (score < min_score or min(size) < 10 or box[0] < 0 or box[1] < 0
                 or box[2] > w or box[3] > h or not .3 < size[0]/size[1] < 2):
             continue
         valid.append((box, float(score)))
@@ -100,7 +102,13 @@ def stabilize_face_mask(images, masks, supports, center, cuts):
 
 
 class FaceSkinSegmenter:
-    def __init__(self, skin_model, face_model, detector_model):
+    def __init__(self, skin_model, face_model, detector_model, *, proposal_threshold=.8, minimum_semantic_mean=0.):
+        if not np.isfinite(proposal_threshold) or not .6 <= proposal_threshold <= .8:
+            raise ValueError('Invalid research proposal threshold')
+        self.proposal_threshold = proposal_threshold
+        if not np.isfinite(minimum_semantic_mean) or not 0 <= minimum_semantic_mean <= 1:
+            raise ValueError('Invalid semantic threshold')
+        self.minimum_semantic_mean = minimum_semantic_mean
         face_path = checked_model(face_model, FACE_SHA)
         detector_path = checked_model(detector_model, DETECTOR_SHA)
         self.skin = SkinSegmenter(Path(skin_model))
@@ -112,7 +120,7 @@ class FaceSkinSegmenter:
                     base_options=mp.tasks.BaseOptions(model_asset_path=face_path),
                     running_mode=mp.tasks.vision.RunningMode.IMAGE, num_faces=1,
                     min_face_detection_confidence=.5, min_face_presence_confidence=.5))
-            self.detector = cv2.FaceDetectorYN.create(detector_path, '', (320, 320), .8, .3, 5000)
+            self.detector = cv2.FaceDetectorYN.create(detector_path, '', (320, 320), proposal_threshold, .3, 5000)
             connections = mp.tasks.vision.FaceLandmarksConnections
             self.oval = [edge.start for edge in connections.FACE_LANDMARKS_FACE_OVAL]
             self.exclusions = [sorted({i for edge in getattr(connections, name) for i in (edge.start, edge.end)})
@@ -134,11 +142,12 @@ class FaceSkinSegmenter:
         if min(h, w) < 32 or max(h, w) > 2048 or h*w > 2097152:
             raise ValueError('Research face analysis requires 32..2048 sides and <=2MP')
         bgr = cv2.cvtColor(np.rint(rgb*255).astype(np.uint8), cv2.COLOR_RGB2BGR)
-        proposals = []
+        proposals = []; scale_boxes = {}
         # Two fixed whole-frame scales, no exploratory tile flood. Upscaling is
         # detector preparation, not recovered image detail. Cap runtime input.
         for scale in (min(1., 1536/max(h,w)), min(2., 1536/max(h,w))):
             size = (round(w*scale), round(h*scale))
+            scale_boxes.setdefault(size, [])
             sample = cv2.resize(bgr, size, interpolation=cv2.INTER_LINEAR)
             self.detector.setInputSize(size)
             _, detected = self.detector.detect(sample)
@@ -151,31 +160,39 @@ class FaceSkinSegmenter:
                 # Use actual rounded dimensions for coordinate conversion.
                 box = np.array([x*w/size[0],y*h/size[1],(x+bw)*w/size[0],(y+bh)*h/size[1]])
                 proposals.append((box, float(row[-1])))
-        faces = select_boxes(proposals, (h,w))
+                scale_boxes[size].append((box,float(row[-1])))
+        faces = select_boxes(proposals, (h,w), getattr(self,'proposal_threshold',.8))
+        # Profile agreement requires valid, strong proposals on both distinct
+        # scales. Raw out-of-frame/low-score boxes cannot confirm a profile.
+        strong_scales = [select_boxes(group,(h,w),.8) for group in scale_boxes.values()]
         mask = np.zeros((h,w),np.float32); support = mask.copy(); records = []
         for box, score in faces:
+            record = dict(box=box.tolist(),detector_score=score,
+                          scale_agreement=sum(any(box_iou(box,b)>.5 for b,_ in group) for group in strong_scales))
             x0,y0,x1,y1 = crop_box(box,(h,w),2.)
             sample = np.ascontiguousarray(np.rint(rgb[y0:y1,x0:x1]*255).astype(np.uint8))
             result = self.face.detect(self.skin.mp.Image(image_format=self.skin.mp.ImageFormat.SRGB, data=sample))
             if not result.face_landmarks:
-                records.append(dict(box=box.tolist(),detector_score=score,status='no_mesh')); continue
+                records.append(dict(**record,status='no_mesh')); continue
             mesh = np.asarray([[(p.x*(x1-x0)+x0),(p.y*(y1-y0)+y0)] for p in result.face_landmarks[0]])
             if mesh.shape != (478,2) or not np.isfinite(mesh).all():
                 raise ValueError('Invalid face mesh output')
             outline = mesh[self.oval]; meshbox = np.r_[outline.min(0),outline.max(0)]
             if box_iou(box,meshbox) < .35:
-                records.append(dict(box=box.tolist(),detector_score=score,status='mesh_disagreement')); continue
+                records.append(dict(**record,status='mesh_disagreement')); continue
             region = face_support(mesh,(h,w),self.oval,self.exclusions)
             if not region.any():
-                records.append(dict(box=box.tolist(),detector_score=score,status='invalid_or_edge_geometry')); continue
+                records.append(dict(**record,status='invalid_or_edge_geometry')); continue
             x0,y0,x1,y1 = crop_box(box,(h,w),2.6)
             semantic = self.skin._infer(rgb[y0:y1,x0:x1])
             weight = smoothstep(.45,.85,np.clip(semantic[...,2]+semantic[...,3],0,1))
             local = region[y0:y1,x0:x1]*weight
+            semantic_mean = float(local.sum()/max(1,(region>0).sum()))
+            if semantic_mean < getattr(self,'minimum_semantic_mean',0.):
+                records.append(dict(**record,status='semantic_rejected',semantic_mean_inside=semantic_mean)); continue
             mask[y0:y1,x0:x1] = np.maximum(mask[y0:y1,x0:x1],local)
             support = np.maximum(support,region)
-            records.append(dict(box=box.tolist(),detector_score=score,status='confirmed',
-                                semantic_mean_inside=float(local.sum()/max(1,(region>0).sum()))))
+            records.append(dict(**record,status='confirmed',semantic_mean_inside=semantic_mean))
         detail = dict(faces=records,proposals=len(proposals),face_count=sum(r['status']=='confirmed' for r in records),
                       area=float(mask.mean()),scope='face skin only; body/hands excluded')
         return mask,support,detail

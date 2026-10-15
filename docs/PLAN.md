@@ -1,5 +1,9 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Turn recovery continuation — 2026-10-15
+
+User authorized implementation of short-gap mask transport, profile support and confidence transitions. Scope/acceptance TR01..06: [TURN_RECOVERY.md](TURN_RECOVERY.md). Preserve prior candidate/defaults/evidence; research remains outside AE. Actual short-gap recovery must use raw mesh-confirmed two-sided seeds and current evidence, with explicit radius2 and no recursive neighbors. Profile fallback is separately measured and cannot become a recovery seed. Quality and continuous playback acceptance remain mandatory; no integration/release implied.
+
 ## Face-supported follow-up — 2026-10-15
 
 User explicitly requested stronger skin selection including face confirmation and complete visual flicker inspection. Implemented independent face proposals + mesh confirmation + semantic skin intersection; real720×1280 analysis, same360×640 native comparison. Tested on all prior known errors and all156 supplied-video frames. [FACE_SKIN_REVIEW.md](FACE_SKIN_REVIEW.md) records exact coverage and failures. Architecture/background false positives improve, but profile/edge misses and abrupt protection dropouts prevent quality acceptance. Every-frame overview/detail review is complete; continuous25fps perceptual playback and complete native-scale whole-frame review are NOT RUN. Full flicker acceptance is not closed. No new plugin installation, release or publication.

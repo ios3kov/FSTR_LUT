@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "baseline": "060b879",
+  "branch": "dev/ai-enhance-prototype",
+  "external_artifacts": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/scene-upernet-2026-10-15",
+  "source_sha256": {
+    "tools/benchmark/scene_analysis.py": "0cb438a23925a55b190053ccfef808253fcf3d9c88fc3d02f6771108d8a64307",
+    "tools/benchmark/scene_people.py": "78067a8b34b1863bd4e43c68fcdbcf8e2b823baa11defc0b531975d547c712ac",
+    "tools/benchmark/scene_people_probe.py": "a6ccb050499d5a23353c26d7efa88917798273e7e820bfd0061a58934941d686",
+    "tools/benchmark/scene_people_trial.py": "adb25df73d0de3ecc4584e8c7248e499906354f5a584f57f7dbb4e22b4d649ef",
+    "tools/benchmark/scene_bind_cache.py": "a831b4d59643d5f8bddb7089f049532990f2434be7cef1f56089d4b88250ffec",
+    "tools/benchmark/face_skin_analysis.py": "d95429afdf52a3e7a7b1150a80bb2d54395f304b99eff26321a0632b6bbc0637",
+    "tools/benchmark/scene_trial.py": "cf83fa489c953e9126b4ace9a9df3cf55c828d18feb762c24a150a4561524e30",
+    "tools/benchmark/scene_motion_review.py": "23eebb2bc4827f6e26092813b54e7a5f6514e4766193e0d8a131f78c7e32cb2e",
+    "tests/scene_people_tests.py": "42c4fa460fb41649b990c32309a82c916f5013c831ed11cf096ef1061247edaf"
+  },
+  "artifact_sha256": {
+    "combined-reviewed/evidence.json": "5ebd173ebaeee8f1ed21038fb78666f0baf227e312452afe471e7794c7b46afd",
+    "combined-reviewed/motion-review.json": "c7c5ade6fa46f01dc5c87163cc37b2de06f09ee8abd2f1827dc1a78cbd9fe13e",
+    "combined-reviewed/Scene-Smart-Comparison.mp4": "10a1dfadb75d82009453d3bd672b8ebc8627f3aa3ae043630c6cc78e3f7c2286",
+    "people-reviewed/evidence.json": "1257c2e3b0dfe2cdaa8f8d19572729f363c07ce8975856f7045eec1c1d5b83e4",
+    "processor-check.json": "e4d19ee4a0004e0b309690fcc032727aa103a655cf90bce84174a16bb6ccaf28",
+    "runtime-check.json": "3886a55e4b84e247388df64c56ddcaa1dbfa5ea69f5804242399e8a7f150240f",
+    "installed-check.json": "eb5d885dbfb45ba16bb9a26e5addc34dfe6c64a9bb812f9bf82f2fa05dfb8b46",
+    "scene-tests-final2.log": "b3fc7c891ff6852a84973edd5f790b7c46c1680f7416fec3a53db7a7d8b092c2",
+    "face-direct-tests.log": "8816f8a0d43a2e3c4966b537156b6fb9282988e22fd8f57ff2ffaf0f2e722f2e",
+    "turn-direct-tests.log": "a2a00b35be6366e5a0c9e8f5e6ce5b0c61e5682aa7c6fbcca4368068ef3d747e",
+    "audit-reviewed.json": "3b0f4676cbc0ec5eb50197e93d969f031e90601c37aba8d9def8224fa892eca0",
+    "full-trial/scene-cache-binding.json": "2abbdad875c65f6ad52a4630c7381d7660275ad1bd42a02453f5388a26beb471",
+    "audit-delivery.json": "c23e2b69b0a995e4804adf2b785188280dbc7f7019ba12f99ca6e716b6890e30"
+  },
+  "model": {
+    "repository": "openmmlab/upernet-convnext-tiny",
+    "revision": "876ffc56b819a829448f7e81e9f8606deef6fb65",
+    "files": {
+      "README.md": "fcd6b589ee354422b80f8036c985f6874d7888fdca51a30bd12396b0c418bc53",
+      "config.json": "c7f6a85a6b69d57f363505d5019e0e34f8d7e272f238d3fc88b2fde202b0d279",
+      "preprocessor_config.json": "6073ac6a37530ed2a19443d6a748f5579887b3ae48f6730073954b0b38cf3fd6",
+      "model.safetensors": "cd55b1d36c6602d34f8cd300d7f788ea0fa5c3ed928e9ac98f353ecb31c7fa1d"
+    },
+    "declared_license": "mit",
+    "use": "local evaluation; model card declares MIT; no redistribution in this experiment"
+  },
+  "checks": {
+    "cases": 166,
+    "all_off_exact": true,
+    "all_reverse_exact": true,
+    "max_luminance_delta": 2.9683113098150738e-08
+  },
+  "negative_skin_mass": {
+    "negative-beige": 0.0,
+    "negative-gray": 0.0,
+    "negative-blue": 0.0
+  },
+  "motion": {
+    "raw_mask_mae": 0.009238168621255505,
+    "stable_mask_mae": 0.007842407143494535,
+    "skin_raw_mae": 0.08194405281173638,
+    "skin_stable_mae": 0.06591450584309748,
+    "added_color_mae": 9.505154162217232e-05,
+    "skin_added_color_mae": 0.0005202569457241243,
+    "worst_skin_pairs": [
+      {
+        "frame": "motion-149",
+        "valid_pixels": 104895,
+        "skin_pixels": 1686,
+        "raw_mask_mae": 0.030171580612659454,
+        "stable_mask_mae": 0.030141139402985573,
+        "skin_raw_mae": 0.3415944278240204,
+        "skin_stable_mae": 0.3381737768650055,
+        "added_color_mae": 0.00014177151024341583,
+        "skin_added_color_mae": 0.002060618018731475
+      },
+      {
+        "frame": "motion-150",
+        "valid_pixels": 115546,
+        "skin_pixels": 1641,
+        "raw_mask_mae": 0.017180874943733215,
+        "stable_mask_mae": 0.014997807331383228,
+        "skin_raw_mae": 0.32690516114234924,
+        "skin_stable_mae": 0.31293413043022156,
+        "added_color_mae": 0.00011399634240660816,
+        "skin_added_color_mae": 0.001790128881111741
+      },
+      {
+        "frame": "motion-152",
+        "valid_pixels": 110841,
+        "skin_pixels": 1263,
+        "raw_mask_mae": 0.013282365165650845,
+        "stable_mask_mae": 0.013386552222073078,
+        "skin_raw_mae": 0.36403340101242065,
+        "skin_stable_mae": 0.3636510670185089,
+        "added_color_mae": 9.149355901172385e-05,
+        "skin_added_color_mae": 0.0016463100910186768
+      },
+      {
+        "frame": "motion-147",
+        "valid_pixels": 101661,
+        "skin_pixels": 2279,
+        "raw_mask_mae": 0.01702963002026081,
+        "stable_mask_mae": 0.01702963002026081,
+        "skin_raw_mae": 0.2020157128572464,
+        "skin_stable_mae": 0.2020157128572464,
+        "added_color_mae": 0.0001318171271122992,
+        "skin_added_color_mae": 0.0012013743398711085
+      },
+      {
+        "frame": "motion-144",
+        "valid_pixels": 104788,
+        "skin_pixels": 2715,
+        "raw_mask_mae": 0.018291767686605453,
+        "stable_mask_mae": 0.018291767686605453,
+        "skin_raw_mae": 0.15723535418510437,
+        "skin_stable_mae": 0.15723535418510437,
+        "added_color_mae": 0.00011475016799522564,
+        "skin_added_color_mae": 0.001109953736886382
+      }
+    ]
+  },
+  "skin_mask_mae_reduction_percent": 19.561574536063308,
+  "overall_mask_mae_reduction_percent": 15.108638248381311,
+  "runtime": {
+    "platform": "darwin",
+    "load_seconds": 5.32029670799966,
+    "frame_seconds": [
+      4.453662666986929,
+      3.4917071250092704,
+      3.864824500022223
+    ],
+    "ru_maxrss_native": 2252800000,
+    "unit": "bytes on this macOS process",
+    "scope": "CPU scene inference plus role refinement, cached parts; other local work may contend; excludes parts, pose, temporal, AE and native rendering; not Fast qualification"
+  },
+  "verification": {
+    "scene_unit_tests": "PASS24",
+    "person_head_regression": "PASS40",
+    "adaptive_face_regression": "PASS15",
+    "face_geometry_regression": "PASS direct script",
+    "turn_recovery_regression": "PASS direct script",
+    "native_release_ctest": "PASS9; unchanged C++",
+    "static_audit": "PASS0 findings",
+    "installed_original": "PASS5 hashes unchanged",
+    "known_test_face": "PASS limited visible recovery, not pixel-ground-truth accuracy",
+    "continuous_perceptual_flicker": "NOT RUN",
+    "full_scene_semantic_quality": "FAIL unresolved ambiguous objects and arm confidence changes under blur",
+    "new_native_AE": "NOT RUN",
+    "crowds_preview_scale_parity": "NOT RUN",
+    "sanitizers": "NOT RUN this Python-only change; prior C++ evidence unchanged"
+  },
+  "limitations": [
+    "Source size explicitly supplied from source dimensions; not actual AE preview validation",
+    "Legacy scene raw hashes captured after owned run, then checked before fusion",
+    "Final trial source changed only to add cache provenance metadata after render; metadata enriched afterward without pixel changes",
+    "Raw softmax and texture detail confidence are uncalibrated",
+    "Pose4/face16 caps; partial/occluded hands and ambiguous materials remain",
+    "CPU timing includes contention, excludes complete pipeline; no Fast claim",
+    "Full-scene time wrapper returned1 because macOS denied sysctl metrics after complete rendering; fresh Python resource probe recorded memory separately"
+  ]
+}

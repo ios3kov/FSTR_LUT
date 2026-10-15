@@ -28,18 +28,19 @@ def box_iou(a, b):
     return overlap/union if union > 0 else 0.
 
 
-def select_boxes(proposals, shape, min_score=.8):
+def select_boxes(proposals, shape, min_score=.8, minimum_box_size=10.):
     """Stable score-order NMS. Bad model outputs fail, edge faces abstain."""
     h, w = shape
     if not np.isfinite(min_score) or not .6 <= min_score <= 1:
         raise ValueError('Invalid proposal threshold')
+    if not np.isfinite(minimum_box_size) or not 1<=minimum_box_size<=10:raise ValueError('Invalid minimum box size')
     valid = []
     for box, score in proposals:
         box = np.asarray(box, dtype=np.float64)
         if box.shape != (4,) or not np.isfinite(box).all() or not np.isfinite(score) or not 0 <= score <= 1:
             raise ValueError('Invalid face proposal')
         size = box[2:]-box[:2]
-        if (score < min_score or min(size) < 10 or box[0] < 0 or box[1] < 0
+        if (score < min_score or min(size) < minimum_box_size or box[0] < 0 or box[1] < 0
                 or box[2] > w or box[3] > h or not .3 < size[0]/size[1] < 2):
             continue
         valid.append((box, float(score)))
@@ -102,9 +103,11 @@ def stabilize_face_mask(images, masks, supports, center, cuts):
 
 
 class FaceSkinSegmenter:
-    def __init__(self, skin_model, face_model, detector_model, *, proposal_threshold=.8, minimum_semantic_mean=0.):
+    def __init__(self, skin_model, face_model, detector_model, *, proposal_threshold=.8, minimum_semantic_mean=0., minimum_box_size=10.):
         if not np.isfinite(proposal_threshold) or not .6 <= proposal_threshold <= .8:
             raise ValueError('Invalid research proposal threshold')
+        if not np.isfinite(minimum_box_size) or not 1<=minimum_box_size<=10:raise ValueError('Invalid minimum box size')
+        self.minimum_box_size=minimum_box_size
         self.proposal_threshold = proposal_threshold
         if not np.isfinite(minimum_semantic_mean) or not 0 <= minimum_semantic_mean <= 1:
             raise ValueError('Invalid semantic threshold')
@@ -162,10 +165,10 @@ class FaceSkinSegmenter:
                 box = np.array([x*w/size[0],y*h/size[1],(x+bw)*w/size[0],(y+bh)*h/size[1]])
                 proposals.append((box, float(row[-1])))
                 scale_boxes[size].append((box,float(row[-1])))
-        faces = select_boxes(proposals, (h,w), getattr(self,'proposal_threshold',.8))
+        faces = select_boxes(proposals, (h,w), getattr(self,'proposal_threshold',.8), getattr(self,'minimum_box_size',10.))
         # Profile agreement requires valid, strong proposals on both distinct
         # scales. Raw out-of-frame/low-score boxes cannot confirm a profile.
-        strong_scales = [select_boxes(group,(h,w),.8) for group in scale_boxes.values()]
+        strong_scales = [select_boxes(group,(h,w),.8,getattr(self,'minimum_box_size',10.)) for group in scale_boxes.values()]
         mask = np.zeros((h,w),np.float32); support = mask.copy(); records = []
         for box, score in faces:
             record = dict(box=box.tolist(),detector_score=score,

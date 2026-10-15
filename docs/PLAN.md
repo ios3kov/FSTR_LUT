@@ -1,5 +1,12 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Combined scene + people — standalone prototype, not promoted to AE
+
+Added explicit local UperNet candidate (model-card MIT), independent existing pose/face/skin evidence, source-pixel detail bands and bounded probability fusion. Known test_face recovered;166cases including156consecutive frames render with exact Off and reverse-order equality.24scene +40person +15adaptive tests, face/turn regressions and9native checks pass. Skin mask motion MAE drops19.6%within this path; arm confidence still fluctuates under strong blur. Continuous perceptual approval, crowds/preview parity and new AE integration NOT RUN. Installed plugin preserved. [Combined path and limits](SMART_SCENE_PEOPLE.md), [evidence](SMART_SCENE_PEOPLE_EVIDENCE.json).
+
+Next: reduce the verified arm confidence fluctuation around frames144–152 without forcing unsupported long gaps; validate mixed objects/occlusion and continuous motion before native export or stronger look tuning. Broader camera/metadata obligations remain below.
+
+
 ## Whole-scene Smart — standalone slice implemented, not promoted to AE
 
 C++ TealOrange residual + automatic scene/person-part probabilities + soft spatial/explicit temporal fusion implemented.166case run includes156consecutive user frames;9release/9sanitizer/9Python checks pass. Motion-compensated mask error drops16.8%overall/18.7%skin; continuous perceptual approval NOT RUN. Fixed uniform-field false semantic confidence, final6case strict run passes inputs/provenance/negative controls. Complex-light skin and object misclassification remain FAIL; research-only model cannot ship. Existing installed plugin unchanged. [Implementation](SMART_SCENE_IMPLEMENTATION.md), [evidence](SMART_SCENE_EVIDENCE.json).

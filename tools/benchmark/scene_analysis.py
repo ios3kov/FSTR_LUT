@@ -47,19 +47,28 @@ def refine_weights(rgb,w):
 
 class SceneSegmenter:
     def __init__(self,path):
-        from transformers import SegformerImageProcessor,SegformerForSemanticSegmentation
+        from transformers import SegformerImageProcessor,SegformerForSemanticSegmentation,UperNetForSemanticSegmentation
         import torch
         self.torch=torch;torch.set_num_threads(4);path=Path(path)
         manifest=json.loads((path/'provenance.json').read_text())
+        if not {'config.json','preprocessor_config.json','model.safetensors'} <= manifest['files'].keys():
+            raise ValueError('Incomplete model provenance')
         for name,digest in manifest['files'].items():
             if Path(name).name!=name or hashlib.sha256((path/name).read_bytes()).hexdigest()!=digest:raise ValueError('Model bytes changed')
+        config=json.loads((path/'config.json').read_text())
+        implementations={'segformer':SegformerForSemanticSegmentation,'upernet':UperNetForSemanticSegmentation}
+        if config.get('model_type') not in implementations:raise ValueError('Unsupported scene model architecture')
         self.processor=SegformerImageProcessor.from_pretrained(path,local_files_only=True)
-        self.model=SegformerForSemanticSegmentation.from_pretrained(path,local_files_only=True,use_safetensors=True).eval()
+        self.model,self.loading_info=implementations[config['model_type']].from_pretrained(
+            path,local_files_only=True,use_safetensors=True,output_loading_info=True)
+        if any(self.loading_info.get(k) for k in ('missing_keys','unexpected_keys','mismatched_keys','error_msgs')):
+            raise ValueError('Incomplete or incompatible model weights')
+        self.model.eval()
         self.labels={int(k):v.strip() for k,v in self.model.config.id2label.items()}
         if len(self.labels)!=150 or self.labels.get(12)!='person':raise ValueError('Unsupported scene label schema')
     def analyze(self,rgb,person_parts=None):
         validate_image(rgb);h,w=rgb.shape[:2];torch=self.torch
-        data=self.processor(images=np.rint(rgb*255).astype(np.uint8),return_tensors='pt')
+        data=self.processor(images=np.rint(rgb*255).astype(np.uint8),return_tensors='pt',input_data_format='channels_last')
         with torch.inference_mode():
             logits=self.model(**data).logits
             probs=torch.nn.functional.interpolate(logits,size=(h,w),mode='bilinear',align_corners=False).softmax(1)[0].numpy()

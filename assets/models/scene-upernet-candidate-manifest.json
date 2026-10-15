@@ -1,0 +1,23 @@
+{
+  "repository": "openmmlab/upernet-convnext-tiny",
+  "revision": "876ffc56b819a829448f7e81e9f8606deef6fb65",
+  "files": {
+    "README.md": "fcd6b589ee354422b80f8036c985f6874d7888fdca51a30bd12396b0c418bc53",
+    "config.json": "c7f6a85a6b69d57f363505d5019e0e34f8d7e272f238d3fc88b2fde202b0d279",
+    "preprocessor_config.json": "6073ac6a37530ed2a19443d6a748f5579887b3ae48f6730073954b0b38cf3fd6",
+    "model.safetensors": "cd55b1d36c6602d34f8cd300d7f788ea0fa5c3ed928e9ac98f353ecb31c7fa1d"
+  },
+  "declared_license": "mit",
+  "use": "local evaluation; model card declares MIT; no redistribution in this experiment",
+  "schema": 1,
+  "status": "candidate_evaluation_not_integrated",
+  "license_url": "https://huggingface.co/openmmlab/upernet-convnext-tiny/blob/876ffc56b819a829448f7e81e9f8606deef6fb65/README.md",
+  "license_scope": "MIT declared in OpenMMLab-hosted model card written by Hugging Face; not a dataset or whole-product licensing audit",
+  "input": "RGB uint8 sRGB; explicit HWC; resize512x512 bilinear; rescale1/255; ImageNet mean/std from pinned processor",
+  "output": "150 ADE20K logits; bilinear resize align_corners=False then softmax; identical label schema to prior candidate",
+  "known_limits": [
+    "No skin labels; independent person-part inference required",
+    "Confidence is uncalibrated; shared thresholds do not establish equal probability calibration",
+    "No native export, device inference or AE evaluation"
+  ]
+}

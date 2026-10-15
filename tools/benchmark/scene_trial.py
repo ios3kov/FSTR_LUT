@@ -31,6 +31,8 @@ def main():
   images[name]=rgb;raw[name]=weights;labels[name]=label
   records.append(dict(name=name,person_parts=binding,seconds=time.perf_counter()-start,role_mass=dict(zip(ROLES,weights.mean((0,1)).astype(float))),unknown=float(1-weights.sum(-1).mean())))
   np.save(a.output/(name+'-raw.npy'),weights);print(name,records[-1]['seconds'],flush=True)
+  records[-1]['raw_sha256']=hashlib.sha256((a.output/(name+'-raw.npy')).read_bytes()).hexdigest()
+  Image.fromarray(label).save(a.output/(name+'-labels.png'))
  index={c['frame']:c['name'] for c in manifest['cases'] if 'frame' in c}
  palette=np.array([[1,.5,.35],[.5,.3,.7],[.8,.2,.6],[.15,.6,1],[.2,.9,.2],[.1,.8,.8],[.8,.8,.4],[1,1,1]],np.float32)
  temporal=[]
@@ -65,5 +67,5 @@ def main():
   if not writer.isOpened():raise RuntimeError('Video writer unavailable')
   for _,v in temporal:writer.write(cv2.cvtColor(v,cv2.COLOR_RGB2BGR))
   writer.release()
- (a.output/'evidence.json').write_text(json.dumps(dict(renderer_sha256=hashlib.sha256(a.renderer.read_bytes()).hexdigest(),lut_sha256=hashlib.sha256(a.lut.read_bytes()).hexdigest(),cases=records,sources=manifest,model=json.loads((a.model/'provenance.json').read_text()),limitations='Research only, no semantic ground truth. Raw softmax is not calibrated confidence. Automated motion/visual quality not certified.'),indent=2))
+ (a.output/'evidence.json').write_text(json.dumps(dict(renderer_sha256=hashlib.sha256(a.renderer.read_bytes()).hexdigest(),lut_sha256=hashlib.sha256(a.lut.read_bytes()).hexdigest(),loading_info=engine.loading_info,cases=records,sources=manifest,model=json.loads((a.model/'provenance.json').read_text()),limitations='Research only, no semantic ground truth. Raw softmax is not calibrated confidence. Automated motion/visual quality not certified.'),indent=2))
 if __name__=='__main__':main()

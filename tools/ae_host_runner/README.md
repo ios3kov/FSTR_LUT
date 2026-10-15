@@ -21,3 +21,7 @@ The idle callback marks the job started before calling AEGP_ExecuteScript. It ac
 Tests may change only the owned project and owned output module, never global color settings/output templates. A failing source transport calibration is a harness failure, not evidence of an effect defect. Read exact logs and saved state before another attempt. Script assertions, exported 8-bit PSDs, expression samples, and actual float render worlds have distinct scopes. Preserve negative attempts.
 
 Archive the exact helper after host work ends. It is not a product dependency. The distributed effect contains no Python, inference runtime, SDK helper or frame diagnostics.
+
+## Smart Color acceptance template
+
+`smart_acceptance.jsx.in` accepts one JSON replacement `FSTR_SMART_HOST_CONFIG_JSON` with `nonce`, `folder`, and `match` (extra provenance fields allowed). Use a fresh owned folder containing156opaque540x960 PNGs named `frames/frame000.png` through `frame155.png`, interpreted as sRGB25fps. It tests a distinctly named trial effect so the installed original remains untouched. It renders On/Off48/50/54/55/56 at8/16/32bpc, saves/reopens state, and exits only its nonce-owned empty process. Preserve exact source, bundle, output and PSD precision; a Photoshop8-bit export from16/32bpc includes conversion/dither. A separate pre-export Difference comparison is needed before attributing1LSB export differences to the effect. No normal-speed perceptual acceptance is implied.

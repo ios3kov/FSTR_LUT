@@ -1,0 +1,41 @@
+(function(){
+ var cfg=@FSTR_SMART_HOST_CONFIG_JSON@, owned=false, suppressed=false;
+ function record(s){var f=new File(cfg.folder+'/host-report.txt');f.encoding='UTF-8';if(!f.open('a'))throw Error('Report write');f.writeln(s);f.close();}
+ if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
+ if(app.project&&(app.project.file!==null||app.project.numItems!==0)){record('BLOCKED pre-existing project');return;}
+ try{
+ app.beginSuppressDialogs();suppressed=true;app.newProject();owned=true;app.project.workingSpace='';app.project.linearizeWorkingSpace=false;app.project.bitsPerChannel=32;
+ record('HOST '+app.version+' BUILD '+app.buildNumber);
+ var io=new ImportOptions(new File(cfg.folder+'/frames/frame000.png'));io.sequence=true;var footage=app.project.importFile(io);footage.mainSource.conformFrameRate=25;
+ record('SOURCE '+footage.width+'x'+footage.height+' duration '+footage.duration);
+ if(footage.width!==540||footage.height!==960||footage.duration<6.2)throw Error('Unexpected sequence');
+ var selected=[48,50,54,55,56],comps=[];
+ for(var j=0;j<selected.length;j++)for(var mode=0;mode<2;mode++){
+  var name=(mode?'ON_':'OFF_')+selected[j],comp=app.project.items.addComp(name,540,960,1,156/25,25),layer=comp.layers.add(footage),e=layer.property('ADBE Effect Parade').addProperty(cfg.match);
+  if(!e)throw Error('Trial effect missing');
+  if(e.property('Smart Color Grading').value!==0)throw Error('Smart default not Off');
+  e.property('AE Pixel Encoding').setValue(2);e.property('Look').setValue(3);e.property('Look Amount').setValue(100);e.property('Mix').setValue(100);e.property('Smart Color Grading').setValue(mode);
+  comp.time=selected[j]/25;comps.push(comp);record('CONTROL '+name+' SMART '+e.property('Smart Color Grading').value);
+ }
+ var project=new File(cfg.folder+'/smart-test.aep');if(project.exists)throw Error('Project already exists');app.project.save(project);record('SAVED');
+ app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);owned=false;app.open(project);owned=true;record('REOPENED');
+ for(var depthIndex=0;depthIndex<3;depthIndex++){
+  var depth=[8,16,32][depthIndex];app.project.bitsPerChannel=depth;
+  for(var k=1;k<=app.project.numItems;k++){
+   var comp=app.project.item(k);if(!(comp instanceof CompItem))continue;
+   var expected=comp.name.indexOf('ON_')===0?1:0;var effect=comp.layer(1).property('ADBE Effect Parade').property(cfg.match);
+   if(effect.property('Smart Color Grading').value!==expected||effect.property('Look').value!==3)throw Error('Reopened controls wrong');
+   var q=app.project.renderQueue.items.add(comp);q.timeSpanStart=Number(comp.name.split('_')[1])/25;q.timeSpanDuration=1/25;var om=q.outputModule(1);om.applyTemplate('Photoshop');om.file=new File(cfg.folder+'/'+depth+'_'+comp.name+'_[#####].psd');
+  }
+  record('RENDER_BEGIN '+depth);app.project.renderQueue.render();
+  for(var n=1;n<=app.project.renderQueue.numItems;n++)if(app.project.renderQueue.item(n).status!==RQItemStatus.DONE)throw Error('Incomplete render');
+  record('RENDER_PASS '+depth);
+  while(app.project.renderQueue.numItems)app.project.renderQueue.item(1).remove();
+ }
+ app.project.bitsPerChannel=32;app.project.save(project);record('PASS host_controls_save_reopen_render');
+ }catch(e){record('FAIL '+String(e));}
+ finally{
+ if(owned){app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);owned=false;}if(suppressed)app.endSuppressDialogs(false);
+ app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '"+cfg.nonce+"' && (!app.project || (app.project.file===null && app.project.numItems===0))) app.quit();",1000,false);
+ }
+})();

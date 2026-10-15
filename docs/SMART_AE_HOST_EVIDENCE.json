@@ -1,0 +1,247 @@
+{
+  "date": "2026-10-15",
+  "source_commit": "db23cfbea4a423e41cf94c5426353e2c154358bb",
+  "trial_identity_only_changes": [
+    "src/ae/plugin.cpp",
+    "src/ae/FSTR_LUT_PiPL.r",
+    "src/ae/Info.plist.in"
+  ],
+  "host": "25.6x101",
+  "trial_build_id": "e6e935e2c4727467",
+  "trial_bundle": {
+    "path": "/Users/os3kov/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/FSTR_LUT_Smart_Host_db23cfb.plugin",
+    "files": {
+      "Contents/Info.plist": "8ad025a54a251f4ef8293032dc3bf52186ef93ff6ecea424ecad1fd3074667ce",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "8cff15f3f15e7af42f8f2361f0e608be1dbe65213915d5456481f313b8a6bb60",
+      "Contents/MacOS/FSTR_LUT_Development": "fa112ad8cd06cf81b70827ebb997181bcd953cfe8881ef0e19994ad3ef8d1852",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "93cae35b29c709d5c372f8476a21e8eec5fb60987eb0ffae2e5cdf19fbdd60cb"
+    }
+  },
+  "checks": {
+    "host_controls_save_reopen": "PASS",
+    "project_depths": [
+      8,
+      16,
+      32
+    ],
+    "roi": {
+      "max_delta": 0,
+      "changed_pixels": 0
+    },
+    "on_off_exports": [
+      {
+        "depth": 8,
+        "frame": 48,
+        "changed_pixels": 560,
+        "max_delta": 31,
+        "alpha_equal": true
+      },
+      {
+        "depth": 8,
+        "frame": 50,
+        "changed_pixels": 495,
+        "max_delta": 22,
+        "alpha_equal": true
+      },
+      {
+        "depth": 8,
+        "frame": 54,
+        "changed_pixels": 0,
+        "max_delta": 0,
+        "alpha_equal": true
+      },
+      {
+        "depth": 8,
+        "frame": 55,
+        "changed_pixels": 0,
+        "max_delta": 0,
+        "alpha_equal": true
+      },
+      {
+        "depth": 8,
+        "frame": 56,
+        "changed_pixels": 0,
+        "max_delta": 0,
+        "alpha_equal": true
+      },
+      {
+        "depth": 16,
+        "frame": 48,
+        "changed_pixels": 352972,
+        "max_delta": 32,
+        "alpha_equal": true
+      },
+      {
+        "depth": 16,
+        "frame": 50,
+        "changed_pixels": 351461,
+        "max_delta": 23,
+        "alpha_equal": true
+      },
+      {
+        "depth": 16,
+        "frame": 54,
+        "changed_pixels": 348536,
+        "max_delta": 1,
+        "alpha_equal": true
+      },
+      {
+        "depth": 16,
+        "frame": 55,
+        "changed_pixels": 346276,
+        "max_delta": 1,
+        "alpha_equal": true
+      },
+      {
+        "depth": 16,
+        "frame": 56,
+        "changed_pixels": 344583,
+        "max_delta": 1,
+        "alpha_equal": true
+      },
+      {
+        "depth": 32,
+        "frame": 48,
+        "changed_pixels": 356578,
+        "max_delta": 32,
+        "alpha_equal": true
+      },
+      {
+        "depth": 32,
+        "frame": 50,
+        "changed_pixels": 354962,
+        "max_delta": 22,
+        "alpha_equal": true
+      },
+      {
+        "depth": 32,
+        "frame": 54,
+        "changed_pixels": 351355,
+        "max_delta": 1,
+        "alpha_equal": true
+      },
+      {
+        "depth": 32,
+        "frame": 55,
+        "changed_pixels": 349301,
+        "max_delta": 1,
+        "alpha_equal": true
+      },
+      {
+        "depth": 32,
+        "frame": 56,
+        "changed_pixels": 347812,
+        "max_delta": 1,
+        "alpha_equal": true
+      }
+    ],
+    "preexport_difference": [
+      {
+        "file": "DIFF_16_54_00054.psd",
+        "maximum": 0,
+        "nonzero": 0
+      },
+      {
+        "file": "DIFF_16_55_00055.psd",
+        "maximum": 0,
+        "nonzero": 0
+      },
+      {
+        "file": "DIFF_16_56_00056.psd",
+        "maximum": 0,
+        "nonzero": 0
+      },
+      {
+        "file": "DIFF_32_54_00054.psd",
+        "maximum": 0,
+        "nonzero": 0
+      },
+      {
+        "file": "DIFF_32_55_00055.psd",
+        "maximum": 0,
+        "nonzero": 0
+      },
+      {
+        "file": "DIFF_32_56_00056.psd",
+        "maximum": 0,
+        "nonzero": 0
+      }
+    ],
+    "motion_frames": 156,
+    "mfr_enabled_smoke": [
+      {
+        "frame": 48,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 49,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 50,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 51,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 52,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 53,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 54,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 55,
+        "max_delta": 0,
+        "changed_pixels": 0
+      },
+      {
+        "frame": 56,
+        "max_delta": 0,
+        "changed_pixels": 0
+      }
+    ],
+    "original_mp4": "PASS import and On/Off render; assumed Gamma2.4",
+    "continuous_perceptual_acceptance": "NOT RUN",
+    "undo": "NOT RUN",
+    "old_project_migration": "NOT RUN"
+  },
+  "cleanup": {
+    "helper_archived": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-ae-host-2026-10-15/final/archived-test-helper.plugin",
+    "trial_remains_installed": "/Users/os3kov/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/FSTR_LUT_Smart_Host_db23cfb.plugin",
+    "original_bundle_unchanged": true,
+    "original_user_process": "82247 Thu Oct 15 19:09:30 2026     /Applications/Adobe After Effects 2025/Adobe After Effects 2025.app/Contents/MacOS/After Effects\n",
+    "owned_test_processes_exited": true
+  },
+  "artifacts": {
+    "smart-ae-host-2026-10-15/host-report.txt": "c2b4b6c0cd7f3a9a9dee9a3bd0d1f90441b5b9a300025cb42273722db53f2695",
+    "smart-ae-host-2026-10-15/motion/host-report.txt": "bbe1885718de24da880f215276bc315793f7b939422795c39bf33f28c3d2f639",
+    "smart-ae-host-2026-10-15/final/host-report.txt": "47f2c734b1462f3ff8e4e2505fd902c517d01d1034c8bcc050b50b1f1b3a22eb",
+    "smart-ae-host-2026-10-15/mfr/aerender.log": "fb2a31c4511f8e16859b2b86899213562ca019af9c42a26a28248255b90c023e",
+    "smart-ae-host-2026-10-15/pixel-compare.json": "f906cff2a8470bfde1a29ea38073ce9094b70a2273a841ef0141062e81ba0ce5",
+    "smart-ae-host-2026-10-15/motion/difference-report.json": "00427356c4ebec2a040e322a4b4ede623828700d2610bc8cdadef43db390dda5",
+    "smart-ae-host-2026-10-15/final/roi-report.json": "0efaca6b636ed81fb7baa7afba454f0962bc71b3f6ff458251cb3d3542c67df0",
+    "smart-ae-host-2026-10-15/mfr/compare.json": "9af218c242cdf09686dc09abc0171d06a53927639129b6050ff06c319856752a",
+    "smart-ae-host-2026-10-15/cleanup.json": "f347e3808c58f0cfe93ddb5ec356d8bb4fc887f38d09b807e57a5944c177847d",
+    "smart-ae-host-2026-10-15/AE-Smart-On-Off.mp4": "a11a378c08cf242dac00e77b8a93e29f9a7388e773d417f84df8ed0aa5925ccb",
+    "smart-ae-host-2026-10-15/smart-test.aep": "c1114b06a1d8cfef09e2ea1e32fb8465033096a2c0d4cb8b365dfebf79899cfa",
+    "smart-ae-host-2026-10-15/final/smart-motion.aep": "47e7e8c4085e547556162ca0ae5ad12b3a0d4fc91281481eaab81c6513852b7d"
+  },
+  "trial_zip_sha256": "aaaeb9568818a8c76b29432cd7bdf5b3dc74002c7942e13fd8e95b24c74957fc",
+  "final_review": "Checked current source/name-only variant, reports, exact ROI/MFR pixels, long-gap Difference exports, selected color crops and four contact sheets. Host tests are separate from perceptual/production acceptance."
+}

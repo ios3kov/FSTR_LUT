@@ -1,5 +1,10 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Actual AE Smart trial — local functional checks passed
+
+AE25.6 loaded the isolated trial, saved/reopened Smart state and rendered8/16/32bpc. Short50recovers; long54–56falls back to plain LUT. ROI exact;156frame comparison exported; nine-frame MFR-enabled aerender matches. OriginalMP4 render passes at resolved path. Trial remains separately installed; original/userAE preserved, helper archived. Continuous perceptual approval, old-project migration and Undo remain NOT RUN. [Review](SMART_AE_HOST.md), [evidence](SMART_AE_HOST_EVIDENCE.json).
+
+
 ## Clarified long-gap fallback — ordinary LUT, short interpolation retained
 
 User narrowed fallback to complex long gaps. Cancel further forced long-gap tracking; preserve verified1–2frame interpolation. Actual module54/55/56 equals Smart Off byte-for-byte; short50still recovers504pixels. Existing runtime already conforms; regression and contract updated, no algorithm change. Continuous transition and actual AE remain NOT RUN. [Contract/evidence](LONG_GAP_FALLBACK.md), [hashes](LONG_GAP_FALLBACK_EVIDENCE.json).

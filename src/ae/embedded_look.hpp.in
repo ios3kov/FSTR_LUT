@@ -1,5 +1,12 @@
 #pragma once
+#include <array>
+#include <cstddef>
 namespace fstr {
-inline constexpr char embedded_warm_v1[]=R"FSTR_CUBE(@FSTR_WARM_CUBE@)FSTR_CUBE";
+struct EmbeddedLook { const char* key; const char* title; const char* cube; };
+inline constexpr std::size_t builtin_look_count=@FSTR_BUILTIN_COUNT@;
+inline constexpr std::array<EmbeddedLook,builtin_look_count> embedded_looks{{
+@FSTR_BUILTIN_ENTRIES@
+}};
+inline constexpr char builtin_look_menu[]="@FSTR_BUILTIN_MENU@";
 inline constexpr char color_build_id[]="@FSTR_COLOR_BUILD_ID@";
 }

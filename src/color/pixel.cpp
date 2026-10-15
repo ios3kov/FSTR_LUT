@@ -15,8 +15,10 @@ RGB shoulder(RGB v,double amount) {
 ColorProcessor::ColorProcessor(const ColorSettings& s,Transfer t,Primaries p,Alpha a)
     :settings_(s),transfer_(t),alpha_(a),bypass_(false) {
     validate_grade(s.grade);
-    for(double amount:{s.mix,s.shoulder,s.look_amount})
+    for(double amount:{s.mix,s.shoulder})
         if(!std::isfinite(amount)||amount<0||amount>1)throw std::invalid_argument("Color strength must be finite [0,1]");
+    if(!std::isfinite(s.look_amount)||s.look_amount<0||s.look_amount>3)
+        throw std::invalid_argument("Look strength must be finite [0,3]");
     bypass_=s.mix==0||(s.source==SourceProfile::Host&&grade_is_neutral(s.grade)&&s.shoulder==0&&(!s.look||s.look_amount==0));
     if(!bypass_&&(p!=Primaries::SRGB_Rec709||
        (t!=Transfer::SRGB&&t!=Transfer::Linear&&t!=Transfer::Gamma24)||

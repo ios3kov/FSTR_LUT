@@ -15,13 +15,19 @@ constexpr PF_OutFlags flags=PF_OutFlag_DEEP_COLOR_AWARE|PF_OutFlag_PIX_INDEPENDE
 constexpr PF_OutFlags2 flags2=PF_OutFlag2_SUPPORTS_SMART_RENDER|PF_OutFlag2_FLOAT_COLOR_AWARE|PF_OutFlag2_SUPPORTS_THREADED_RENDERING;
 static_assert(flags==0x02008440&&flags2==0x08001400,"PiPL flags must match runtime");
 static_assert(PF_VERSION(0,1,0,PF_Stage_DEVELOP,1)==32769,"PiPL version must match runtime");
-std::shared_ptr<const fstr::LUT> warm;
+using LookLibrary=std::array<std::shared_ptr<const fstr::LUT>,fstr::builtin_look_count>;
+std::shared_ptr<const LookLibrary> looks;
 std::mutex initialization;
 void initialize_look() {
     std::lock_guard<std::mutex> lock(initialization);
-    if(!std::atomic_load(&warm)) {
-        std::istringstream input(fstr::embedded_warm_v1);
-        std::atomic_store(&warm,std::shared_ptr<const fstr::LUT>(std::make_shared<fstr::LUT>(fstr::LUT::parse(input))));
+    if(!std::atomic_load(&looks)) {
+        auto library=std::make_shared<LookLibrary>();
+        for(std::size_t i=0;i<library->size();++i)if(fstr::embedded_looks[i].cube) {
+            std::istringstream input(fstr::embedded_looks[i].cube);
+            (*library)[i]=std::make_shared<const fstr::LUT>(fstr::LUT::parse(input));
+        }
+        // Publish the complete immutable library only after every parse succeeds.
+        std::atomic_store(&looks,std::shared_ptr<const LookLibrary>(std::move(library)));
     }
 }
 class Params final {
@@ -46,12 +52,17 @@ public:
 fstr::ColorSettings settings(const Params& p) {
     fstr::ColorSettings s;
     const auto source=p[Source].u.pd.value,look=p[Look].u.pd.value;
-    if(source<1||source>2||look<1||look>2)throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
+    if(source<1||source>2||look<1||look>static_cast<int>(fstr::builtin_look_count))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
     s.source=source==2?fstr::SourceProfile::SonySLog3Cine:fstr::SourceProfile::Host;
     s.grade={p[Exposure].u.fs_d.value,p[Contrast].u.fs_d.value,p[Saturation].u.fs_d.value/100};
     s.grade.temperature=p[Temperature].u.fs_d.value/100;s.grade.tint=p[Tint].u.fs_d.value/100;
     s.shoulder=p[Shoulder].u.fs_d.value/100;s.look_amount=p[LookAmount].u.fs_d.value/100;s.mix=p[Mix].u.fs_d.value/100;
-    if(look==2){s.look=std::atomic_load(&warm);if(!s.look)throw static_cast<PF_Err>(PF_Err_INTERNAL_STRUCT_DAMAGED);}
+    if(look>1) {
+        const auto library=std::atomic_load(&looks);
+        if(!library)throw static_cast<PF_Err>(PF_Err_INTERNAL_STRUCT_DAMAGED);
+        s.look=(*library)[static_cast<std::size_t>(look-1)];
+        if(!s.look)throw static_cast<PF_Err>(PF_Err_INTERNAL_STRUCT_DAMAGED);
+    }
     return s;
 }
 fstr::Transfer host_transfer(const Params& p) {
@@ -73,8 +84,9 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Contrast",.5,1.5,.5,1.5,1,PF_Precision_HUNDREDTHS,0,0,ContrastId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Saturation",0,200,0,200,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,SaturationId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Highlight Rolloff",0,100,0,100,0,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,ShoulderId);
-    AEFX_CLR_STRUCT(def);PF_ADD_POPUP("Look",2,1,"Neutral|Warm Film",LookId);
-    AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Look Amount",0,100,0,100,60,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,LookAmountId);
+    // Slot2 is a nonselectable separator; old projects keep their frozen Warm v1.
+    AEFX_CLR_STRUCT(def);PF_ADD_POPUP("Look",static_cast<A_short>(fstr::builtin_look_count),1,fstr::builtin_look_menu,LookId);
+    AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Look Amount",0,300,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,LookAmountId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Mix",0,100,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,MixId);
     AEFX_CLR_STRUCT(def);PF_ADD_POPUP("AE Pixel Encoding",4,1,"Choose pixel encoding...|sRGB|Linear Rec.709 / sRGB|Rec.709 Gamma 2.4",WorkingSpaceId);
     AEFX_CLR_STRUCT(def);def.ui_flags=PF_PUI_CONTROL|PF_PUI_DONT_ERASE_CONTROL;def.ui_width=300;def.ui_height=64;
@@ -170,7 +182,7 @@ extern "C" DllExport PF_Err EffectMain(PF_Cmd cmd,PF_InData* in_data,PF_OutData*
         switch(cmd) {
             case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT color MVP 0.1 development\rBuild %s\rSDR + Sony S-Log3 / S-Gamut3.Cine",fstr::color_build_id);break;
             case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
-            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&warm,std::shared_ptr<const fstr::LUT>{});fstr::ae::clear_all_metadata_cache();break;
+            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
             case PF_Cmd_SEQUENCE_SETUP:case PF_Cmd_SEQUENCE_SETDOWN:fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_PARAMS_SETUP:return params_setup(in_data,out_data);
             case PF_Cmd_EVENT:return fstr::ae::metadata_event(in_data,static_cast<PF_EventExtra*>(extra));

@@ -79,3 +79,8 @@ Clarification closed: both ordinary SDR grading and true camera Log processing; 
 ## Authorized metadata addition — 2026-10-14
 
 User requested automatic useful embedded camera metadata reading. Implement META-01..07 in METADATA.md as a scoped color-MVP addition: bounded independent Sony NRT MP4 reader, automatic read-only ECW recognition/recommendation, explicit existing render profile/encoding. Preserve old color checkpoints and all broader obligations. No render-time filesystem work, inferred gamut, silent Log normalization or private footage publication. Native UI12 is appended without changing diskIDs1..11. Actual source/host acceptance must bind the new candidate; old356 host evidence is a regression reference, not proof of new UI.
+
+
+## Authorized Cinema & Palettes addition — 2026-10-15
+
+User requests recognizable film-inspired looks and clear English names, Natural maximally natural, retired old Warm, Teal & Orange plus eight supplied pairs. See CINEMA_LOOKS.md for CIN-01..06 acceptance, source/reference limits and compatibility. Natural stays exact neutral value1; old Warm value2 is a nonselectable separator retaining legacy output. Six film interpretations and nine palettes append3..17. Look Amount defaults100%, slider0..100%, typed0..300%; active color core extrapolates in existing host-linear space. Original v3 six-look names are superseded for this library by this direct choice; all other retained obligations remain. No AI/restoration/GPU work, merge or release.

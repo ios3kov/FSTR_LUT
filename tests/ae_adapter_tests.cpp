@@ -74,6 +74,25 @@ void processing(){
     set_world(unknown.input,input,1,1,1,PF_PixelFormat_ARGB64);set_world(unknown.output,output,1,1,1,PF_PixelFormat_ARGB64);
     check(run(unknown,true)==PF_Err_BAD_CALLBACK_PARAM&&unknown.acquire==0&&unknown.checkin==CameraInfo-1&&unknown.pixels_in==1,"Unknown space error/resources wrong");
 }
+void cinema(){
+    Fixture ui;active=&ui;
+    check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Cinema schema setup failed");
+    check(ui.params[Look].u.pd.num_choices==17&&ui.params[Look].uu.id==6,"Cinema menu or persistent ID wrong");
+    check(std::strncmp(ui.params[Look].u.pd.u.namesptr,"Natural|(-|",11)==0,"Natural/retired Warm schema wrong");
+    check(ui.params[LookAmount].u.fs_d.dephault==100&&ui.params[LookAmount].u.fs_d.slider_max==100&&ui.params[LookAmount].u.fs_d.valid_max==300,"Strength soft/hard/default range wrong");
+    std::vector<PF_PixelFloat> input{{.5f,.15f,.22f,.3f}},output(1);
+    for(int look=1;look<=17;++look){
+        Fixture f;set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);
+        f.params[Look].u.pd.value=look;f.params[LookAmount].u.fs_d.value=200;
+        check(run(f,true)==PF_Err_NONE&&output[0].alpha==input[0].alpha,"Cinema choice/amplification failed");
+        if(look==1)check(std::memcmp(input.data(),output.data(),sizeof(PF_PixelFloat))==0,"Natural native pixels changed");
+        else check(std::memcmp(input.data(),output.data(),sizeof(PF_PixelFloat))!=0,"Selected LUT did not process native pixels");
+    }
+    for(int invalid:{0,18}){
+        Fixture f;set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Look].u.pd.value=invalid;
+        check(run(f,true)==PF_Err_BAD_CALLBACK_PARAM,"Invalid look menu value accepted");
+    }
+}
 void failures(){
     for(int mode=0;mode<10;++mode){
         Fixture f;std::vector<PF_Pixel> input{{255,10,20,30}},output(1);
@@ -109,7 +128,7 @@ int main(int argc,char** argv){try{
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
     formats(PF_PixelFormat_ARGB32,PF_Pixel{127,51,75,99});
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
-    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();failures();
+    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();
     std::vector<std::future<bool>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==CameraInfo-1&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");

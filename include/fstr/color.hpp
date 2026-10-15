@@ -26,7 +26,7 @@ double encode_host(double linear, Transfer);
 struct ColorSettings {
     SourceProfile source = SourceProfile::Host;
     GradeSettings grade;
-    double shoulder = 0.0, look_amount = 1.0, mix = 1.0;
+    double shoulder = 0.0, look_amount = 1.0, mix = 1.0; // Look[0,3], others[0,1].
     std::shared_ptr<const LUT> look; // Immutable, encoded sRGB/Rec709 contract.
 };
 struct ColorContext {

@@ -24,13 +24,19 @@ class TurnSkinSegmenter(FaceSkinSegmenter):
     def __init__(self,*args):
         super().__init__(*args,proposal_threshold=.6,minimum_semantic_mean=.25)
 
-    def analyze_turn(self,rgb):
-        mesh,support,detail=self.analyze_with_support(rgb)
+    def analyze_turn(self,rgb,minimum_mesh_height=0.):
+        mesh,support,detail=self.analyze_with_support(rgb,minimum_mesh_height)
         h,w=rgb.shape[:2];proposal=np.zeros((h,w),np.float32);semantic=proposal.copy();profile=proposal.copy()
         viable=[]
         for face in detail['faces']:
             box=np.array(face['box']);region=proposal_region(box,(h,w))
             if not region.any():continue
+            if face['status']=='small_region':
+                # Approximate head-color region: no mesh or skin inference.
+                proposal=np.maximum(proposal,region)
+                semantic=np.maximum(semantic,region)
+                face['coarse_region_only']=True
+                continue
             x0,y0,x1,y1=crop_box(box,(h,w),2.6)
             maps=self.skin._infer(rgb[y0:y1,x0:x1])
             # Use face class alone. Body-skin would directly accept hands.

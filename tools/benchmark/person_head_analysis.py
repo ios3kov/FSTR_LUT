@@ -9,8 +9,8 @@ import hashlib
 import cv2
 import numpy as np
 from smart_analysis import validate_rgb,smoothstep
-from face_skin_analysis import crop_box,box_iou
-from turn_skin_recovery import TurnSkinSegmenter
+from face_skin_analysis import crop_box,box_iou,MAX_FACES
+from turn_skin_recovery import TurnSkinSegmenter,proposal_region
 from anchor_face_tracking import FaceAnchor,transfer_blurred_face
 from blur_mask_recovery import structural_warp
 
@@ -22,11 +22,32 @@ HAND_SHA='fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1'
 class PersonEvidence:
     head: tuple
     nose: tuple
-    shoulders: tuple
+    shoulders: tuple | None
     person: np.ndarray
     skin: np.ndarray
     hands: np.ndarray
     anchor: FaceAnchor | None
+    source_height: float = 192.
+    light_region: bool = False
+
+
+def size_adaptive_region(person,detailed):
+    """Source-pixel bands. Tiny areas use soft photometric evidence, no mesh.
+
+    Only attenuates the detailed branch above64px. Small-region support must
+    already be automatically confirmed; brightness alone never creates it.
+    """
+    height=person.source_height
+    if not np.isfinite(height) or height<=0:raise ValueError('Invalid source face height')
+    box=np.asarray(person.anchor.box if person.anchor is not None else person.head);sigma=max(.8,(box[3]-box[1])*.1)
+    region=proposal_region(box,detailed.shape)
+    spot=cv2.GaussianBlur(region,(0,0),sigma)*region*.35
+    activation=float(smoothstep(24,32,height));medium=float(smoothstep(64,80,height))
+    detail=float(smoothstep(128,192,height))
+    # Blurring then capping cannot paint known excluded holes back in.
+    simple_detail=np.minimum(detailed,cv2.GaussianBlur(detailed,(0,0),sigma*.5))
+    result=activation*((1-medium)*spot+medium*((1-detail)*simple_detail+detail*detailed))
+    return np.minimum(result,1-person.hands).astype(np.float32)
 
 
 def head_geometry(points,shape):
@@ -63,14 +84,60 @@ def hand_exclusion(hands,shape):
 
 
 def same_person(reference,candidates):
-    """Local body/head association, deliberately abstains on competing people."""
-    r=np.asarray(reference.shoulders).reshape(2,2);span=np.linalg.norm(r[0]-r[1]);matches=[]
+    """Unique local association; face geometry works without visible shoulders.
+
+    Body coordinates refine body-to-body association. A face-only observation
+    uses box scale and center, never fabricated shoulder landmarks.
+    """
+    matches=[]
     for candidate in candidates:
-        p=np.asarray(candidate.shoulders).reshape(2,2);other=np.linalg.norm(p[0]-p[1])
-        if span<=0 or not .65<=other/span<=1.5:continue
-        if np.linalg.norm(p.mean(0)-r.mean(0))<=.5*span and np.linalg.norm(np.array(candidate.nose)-reference.nose)<=.65*span:
-            matches.append(candidate)
+        if reference.shoulders is not None and candidate.shoulders is not None:
+            r=np.asarray(reference.shoulders).reshape(2,2);p=np.asarray(candidate.shoulders).reshape(2,2)
+            span=np.linalg.norm(r[0]-r[1]);other=np.linalg.norm(p[0]-p[1])
+            accepted=(span>0 and .65<=other/span<=1.5 and
+                np.linalg.norm(p.mean(0)-r.mean(0))<=.5*span and
+                np.linalg.norm(np.array(candidate.nose)-reference.nose)<=.65*span)
+        else:
+            r=np.asarray(reference.anchor.box if reference.anchor is not None else reference.head)
+            p=np.asarray(candidate.anchor.box if candidate.anchor is not None else candidate.head)
+            rs=r[2:]-r[:2];ps=p[2:]-p[:2]
+            accepted=(np.all(rs>0) and np.all(ps>0) and np.all(ps/rs>=.65) and
+                np.all(ps/rs<=1.5) and np.linalg.norm((p[:2]+p[2:]-r[:2]-r[2:])/2)<=.5*min(rs[1],ps[1]))
+        if accepted:matches.append(candidate)
     return matches[0] if len(matches)==1 else None
+
+
+def independent_face_candidates(raw,people,shape):
+    """Return isolated confirmed faces not already represented by body evidence.
+
+    Existing global mesh is safe to crop only if another confirmed face does
+    not intersect that crop. Ambiguous overlaps abstain, never share an anchor.
+    """
+    contributors=[f for f in raw['detail']['faces'] if f['status']=='confirmed']
+    faces=[f for f in contributors if f['detector_score']>=.8]
+    candidates=[]
+    for face in faces:
+        b=np.asarray(face['box'],float)
+        if any(p.anchor is not None and box_iou(b,np.asarray(p.anchor.box))>.5 for p in people):continue
+        x0,y0,x1,y1=crop_box(b,shape,1.2)
+        region=np.array([x0,y0,x1,y1])
+        if any(f is not face and box_iou(region,np.asarray(f['box']))>0 for f in contributors):continue
+        support=np.zeros(shape,np.float32);support[y0:y1,x0:x1]=1
+        observed=(raw['mesh']*support).astype(np.float32)
+        if observed.sum()>=1:candidates.append((tuple(b),support,observed))
+    return candidates
+
+
+def stabilized_source_height(person,neighbors):
+    """Symmetric bounded-window size estimate; no history or render-order state.
+
+    Current evidence dominates. Only unique compatible tracks supply neighbors.
+    This does not estimate identity or recover an undetected head.
+    """
+    if not neighbors:return person.source_height
+    heights=np.asarray([p.source_height for p in neighbors],float)
+    if not np.isfinite(heights).all() or np.any(heights<=0):raise ValueError('Invalid neighboring size')
+    return float(.75*person.source_height+.25*np.median(heights))
 
 
 def capacity_status(detected,limit=4):
@@ -110,18 +177,25 @@ class PersonHeadAnalyzer:
 
     def _image(self,rgb):return self.mp.Image(image_format=self.mp.ImageFormat.SRGB,data=np.ascontiguousarray(np.rint(rgb*255).astype(np.uint8)))
 
-    def analyze(self,rgb):
+    def analyze(self,rgb,source_scale_y=1.):
         validate_rgb(rgb);h,w=rgb.shape[:2]
         if rgb.dtype!=np.float32 or min(h,w)<32 or max(h,w)>2048 or h*w>2097152:raise ValueError('Invalid research frame')
-        pose=self.pose.detect(self._image(rgb));raw=self.face.analyze_turn(rgb)
-        masks=pose.segmentation_masks or []
-        if len(masks)!=len(pose.pose_landmarks):raise ValueError('Pose mask count mismatch')
+        if not np.isfinite(source_scale_y) or source_scale_y<=0:raise ValueError('Invalid source scale')
+        raw=self.face.analyze_turn(rgb,minimum_mesh_height=64/source_scale_y)
+        small_only=bool(raw['detail']['faces']) and all((f['box'][3]-f['box'][1])*source_scale_y<80 for f in raw['detail']['faces'])
+        pose=None if small_only else self.pose.detect(self._image(rgb))
+        landmarks_list=[] if pose is None else pose.pose_landmarks
+        masks=[] if pose is None else (pose.segmentation_masks or [])
+        if len(masks)!=len(landmarks_list):raise ValueError('Pose mask count mismatch')
         people=[];details=[]
-        for landmarks,mask in zip(pose.pose_landmarks,masks):
+        small_faces=[f for f in raw['detail']['faces'] if (f['box'][3]-f['box'][1])*source_scale_y<80 and f['detector_score']>=.8]
+        for landmarks,mask in zip(landmarks_list,masks):
             points=np.array([[p.x*w,p.y*h,p.visibility,p.presence] for p in landmarks],np.float32)
             geometry=head_geometry(points,(h,w))
             if geometry is None:details.append(dict(status='head_unconfirmed'));continue
-            head,nose,shoulders=geometry;x0,y0,x1,y1=crop_box(np.array(head),(h,w),2.6)
+            head,nose,shoulders=geometry
+            if any(f['box'][0]<=nose[0]<=f['box'][2] and f['box'][1]<=nose[1]<=f['box'][3] for f in small_faces):continue
+            x0,y0,x1,y1=crop_box(np.array(head),(h,w),2.6)
             sample=rgb[y0:y1,x0:x1];hand=self.hand.detect(self._image(sample));hands=[]
             for pts in hand.hand_landmarks:
                 hands.append(np.array([[p.x*(x1-x0)+x0,p.y*(y1-y0)+y0] for p in pts],np.float32))
@@ -142,6 +216,35 @@ class PersonHeadAnalyzer:
                 if not competitors and observed.sum()>=1:anchor=FaceAnchor(tuple(b),observed,exclusion=veto)
             people.append(PersonEvidence(head,nose,shoulders,person,skin,veto,anchor))
             details.append(dict(status='person_head',head=head,nose=nose,shoulders=shoulders,hands=len(hands),anchor=anchor is not None))
+        # Face-only path: no shoulder/pose requirement. Reuse the confirmed
+        # mesh, but collect hand evidence around each automatic face crop.
+        for box,support,observed in independent_face_candidates(raw,people,(h,w)):
+            x0,y0,x1,y1=crop_box(np.asarray(box),(h,w),2.6)
+            sample=rgb[y0:y1,x0:x1];hand=self.hand.detect(self._image(sample))
+            hands=[np.array([[p.x*(x1-x0)+x0,p.y*(y1-y0)+y0] for p in pts],np.float32) for pts in hand.hand_landmarks]
+            veto=hand_exclusion(hands,(h,w));skin=np.zeros((h,w),np.float32)
+            skin[y0:y1,x0:x1]=smoothstep(.45,.85,self.face.skin._infer(sample)[...,3])
+            nose=tuple((np.asarray(box[:2])+box[2:])/2)
+            # A pose lacking an anchor at this face is superseded by the
+            # stronger confirmed face; retain all its detected hand exclusions.
+            displaced=[p for p in people if p.anchor is None and box[0]<=p.nose[0]<=box[2] and box[1]<=p.nose[1]<=box[3]]
+            for old in displaced:veto=np.maximum(veto,old.hands)
+            people=[p for p in people if not any(p is old for old in displaced)]
+            people.append(PersonEvidence(box,nose,None,support,skin*support,veto,FaceAnchor(box,observed,exclusion=veto)))
+        # Small faces need only an approximate detected head box. No mesh,
+        # shoulder requirement or fine skin classifier in this branch.
+        for f in raw['detail']['faces']:
+            b=np.asarray(f['box']);height=float((b[3]-b[1])*source_scale_y)
+            if not (24<=height<80 and f['detector_score']>=.8):continue
+            if any(p.anchor is not None and box_iou(b,np.asarray(p.anchor.box))>.5 for p in people):continue
+            region=proposal_region(b,(h,w));center=tuple((b[:2]+b[2:])/2)
+            # Overlapping detections cannot share photometric support.
+            if any(q is not f and box_iou(b,np.asarray(q['box']))>0 for q in raw['detail']['faces']):continue
+            represented=[p for p in people if p.anchor is None and b[0]<=p.nose[0]<=b[2] and b[1]<=p.nose[1]<=b[3]]
+            veto=np.maximum.reduce([p.hands for p in represented]) if represented else np.zeros((h,w),np.float32)
+            people=[p for p in people if not any(p is old for old in represented)]
+            people.append(PersonEvidence(tuple(b),center,None,region,raw['semantic']*region,veto,None,height,True))
+        people=[replace(p,source_height=float(((p.anchor.box if p.anchor is not None else p.head)[3]-(p.anchor.box if p.anchor is not None else p.head)[1])*source_scale_y)) for p in people]
         all_hands=np.maximum.reduce([p.hands for p in people]) if people else np.zeros((h,w),np.float32)
         final=[]
         for p in people:
@@ -151,8 +254,50 @@ class PersonHeadAnalyzer:
                 if any(q is not p and b[0]<=q.nose[0]<=b[2] and b[1]<=q.nose[1]<=b[3] for q in people):anchor=None
                 else:anchor=replace(anchor,exclusion=all_hands)
             final.append(replace(p,hands=all_hands,anchor=anchor))
-        for entry,p in zip((d for d in details if d['status']=='person_head'),final):entry['anchor']=p.anchor is not None
-        return final,dict(poses=len(pose.pose_landmarks),capacity=capacity_status(len(pose.pose_landmarks)),people=details,raw_faces=raw['detail'])
+        details=[dict(status='face_only' if p.shoulders is None else 'person_head',head=p.head,nose=p.nose,shoulders=p.shoulders,anchor=p.anchor is not None,source_height=p.source_height,light_region=p.light_region,hand_pixels=int((p.hands>.5).sum())) for p in final]
+        return final,dict(poses=len(landmarks_list),capacity=capacity_status(len(landmarks_list)),face_capacity=capacity_status(len(raw['detail']['faces']),MAX_FACES),people=details,raw_faces=raw['detail'])
+
+
+def recover_coarse_regions(images,people,center,cuts):
+    """Bridge <=2 missing coarse observations using boxes and patch appearance.
+
+    Two independent endpoint detections; never a recovered seed. Approximate
+    color matching is not a skin or occlusion classifier.
+    """
+    result=np.zeros(images[center].shape[:2],np.float32);records=[];claimed=[]
+    def box(p):return np.asarray(p.anchor.box if p.anchor is not None else p.head,float)
+    def patch(rgb,b):
+        size=b[2:]-b[:2];middle=(b[:2]+b[2:])/2
+        sample=cv2.getRectSubPix(rgb,(max(2,round(size[0])),max(2,round(size[1]))),tuple(map(float,middle)))
+        return cv2.resize(sample,(16,16))
+    for lo in range(center-1,max(-1,center-3),-1):
+        for left in people[lo]:
+            if not (left.light_region or (left.anchor is not None and left.anchor.confirmed)) or left.source_height>=80:continue
+            if any(box_iou(box(left),b)>.2 for b in claimed):continue
+            for hi in range(center+1,min(len(images),center+3)):
+                if hi-lo>3 or any(cuts[lo:hi]):continue
+                right=same_person(left,people[hi])
+                if right is None or same_person(right,people[lo]) is not left or right.source_height>=80:continue
+                if not (right.light_region or (right.anchor is not None and right.anchor.confirmed)):continue
+                t=(center-lo)/(hi-lo);b=(1-t)*box(left)+t*box(right)
+                # An observed current person or an ambiguous intermediate
+                # proposal in this region must not receive a second mask.
+                if any(any(box_iou(b,box(p))>.1 for p in people[j]) for j in range(lo+1,hi)):continue
+                current=patch(images[center],b)
+                error=max(float(np.abs(current-patch(images[j],box(p))).mean()) for j,p in ((lo,left),(hi,right)))
+                if error>.08:continue
+                height=(1-t)*left.source_height+t*right.source_height
+                zero=np.zeros_like(result);veto=zero.copy()
+                for endpoint in (left,right):
+                    known=endpoint.hands
+                    if endpoint.anchor is not None and endpoint.anchor.exclusion is not None:known=np.maximum(known,endpoint.anchor.exclusion)
+                    source=box(endpoint);scale=(b[2:]-b[:2])/(source[2:]-source[:2]);offset=b[:2]-scale*source[:2]
+                    transform=np.array([[scale[0],0,offset[0]],[0,scale[1],offset[1]]],np.float32)
+                    veto=np.maximum(veto,cv2.warpAffine(known,transform,(result.shape[1],result.shape[0]),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT))
+                p=PersonEvidence(tuple(b),tuple((b[:2]+b[2:])/2),None,zero,zero,veto,None,height,True)
+                result=np.maximum(result,size_adaptive_region(p,zero));claimed.append(b)
+                records.append(dict(status='coarse_gap',endpoints=[lo,hi],source_height=height,appearance_error=error));break
+    return result,records
 
 
 def automatic_window(images,people,center,cuts):
@@ -162,13 +307,13 @@ def automatic_window(images,people,center,cuts):
     shape=images[center].shape[:2]
     for rgb,entries in zip(images,people):
         validate_rgb(rgb)
-        if (rgb.dtype!=np.float32 or rgb.shape!=images[center].shape or len(entries)>4
+        if (rgb.dtype!=np.float32 or rgb.shape!=images[center].shape or len(entries)>MAX_FACES+4
                 or min(shape)<32 or max(shape)>2048 or shape[0]*shape[1]>2097152):raise ValueError('Invalid frame/people')
         for person in entries:
             for m in (person.person,person.skin,person.hands):
                 if m.shape!=shape or m.dtype!=np.float32 or not np.isfinite(m).all() or m.min()<0 or m.max()>1:raise ValueError('Invalid person evidence')
-            geometry=np.asarray((*person.head,*person.nose,*person.shoulders),float)
-            if geometry.shape!=(10,) or not np.isfinite(geometry).all():raise ValueError('Invalid person geometry')
+            geometry=np.asarray((*person.head,*person.nose,*(person.shoulders or ())),float)
+            if geometry.shape!=((6,) if person.shoulders is None else (10,)) or not np.isfinite(geometry).all():raise ValueError('Invalid person geometry')
             b=np.asarray(person.head)
             if b.min()<0 or b[2]>shape[1] or b[3]>shape[0] or np.any(b[2:]<=b[:2]):raise ValueError('Invalid head')
             if person.anchor is not None:
@@ -194,6 +339,11 @@ def automatic_window(images,people,center,cuts):
                     continue
                 if same_person(candidate,people[center]) is not person:break
                 neighbors.append((j,candidate));break
+        effective_height=stabilized_source_height(person,[p for _,p in neighbors])
+        policy_person=replace(person,source_height=effective_height)
+        if person.light_region:
+            result=np.maximum(result,size_adaptive_region(policy_person,np.zeros(shape,np.float32)))
+            records.append(dict(status='light_region',source_height=person.source_height,effective_height=effective_height,tracked_neighbors=len(neighbors),face_geometry_tracking=False));continue
         bracketing=len(neighbors)==2 and neighbors[0][0]<center<neighbors[1][0]
         if bracketing:
             hand_left=structural_warp(images[center],images[neighbors[0][0]],neighbors[0][1].hands)
@@ -209,7 +359,9 @@ def automatic_window(images,people,center,cuts):
                 gates=[structural_warp(images[center],images[j],p.anchor.mask) for j,p in neighbors]
                 current=np.minimum(current,np.minimum(*gates));checked=True
             if not checked:current*=.35
-            result=np.maximum(result,current);records.append(dict(status='current_anchor',two_sided_verified=checked,unchecked_strength_cap=None if checked else .35));continue
+            current=size_adaptive_region(policy_person,current)
+            current=np.minimum(current,1-veto)
+            result=np.maximum(result,current);records.append(dict(status='current_anchor',source_height=person.source_height,effective_height=effective_height,tracked_neighbors=len(neighbors),two_sided_verified=checked,unchecked_strength_cap=None if checked else .35));continue
         matched=[];ambiguous=[]
         for index,candidates in enumerate(people):
             candidate=same_person(person,candidates)
@@ -224,5 +376,10 @@ def automatic_window(images,people,center,cuts):
         # Current person/head confines transferred masks; body evidence alone
         # must never create an ellipse or claim visible skin.
         headmask=np.zeros(shape,np.float32);x0,y0,x1,y1=crop_box(np.array(person.head),shape,1.2);headmask[y0:y1,x0:x1]=1
-        result=np.maximum(result,np.minimum(transferred,person.person)*headmask);records.append(detail)
+        transferred=np.minimum(transferred,person.person)*headmask
+        # Coarse regions are already handled independently above. Recovery
+        # must never create a new spot from absent correspondence.
+        result=np.maximum(result,np.minimum(transferred,size_adaptive_region(policy_person,transferred)));records.append(detail)
+    recovered,trace=recover_coarse_regions(images,people,center,cuts)
+    result=np.maximum(result,recovered);records.extend(trace)
     return np.minimum(result,1-all_hands),records

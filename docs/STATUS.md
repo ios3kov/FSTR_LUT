@@ -1,5 +1,9 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Approximate head regions and dynamic mask detail
+
+Automatic face-only path protects the three-face group without requiring bodies. Small heads use weak soft regions without mesh/skin checks; source-height bands24/64/160 with smooth transitions. Unique bounded associations stabilize size; short coarse detection gaps have a two-sided box/appearance recovery.40focused tests PASS. Detailed-face object rejection still FAIL; continuous visual and AE integration NOT RUN. Installed plugin preserved. [Review](DYNAMIC_FACE_REGIONS.md), [evidence](DYNAMIC_FACE_REGIONS_EVIDENCE.json).
+
 ## Automatic person/head support — not accepted for promotion
 
 17 new tests and24 regressions PASS. Fresh12-frame analysis completed; frame55 weak/patchy, skin-texture occlusion FAIL. Group control detects3faces but0poses and loses all protection. Four-person cap is explicit, not crowd support. Continuous flicker/AE integration NOT RUN; installed files unchanged. [Review](PERSON_HEAD_AUTOMATION.md), [evidence](PERSON_HEAD_AUTOMATION_EVIDENCE.json).

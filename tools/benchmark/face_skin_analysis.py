@@ -136,8 +136,9 @@ class FaceSkinSegmenter:
         finally:
             self.skin.close()
 
-    def analyze_with_support(self, rgb):
+    def analyze_with_support(self, rgb, minimum_mesh_height=0.):
         validate_rgb(rgb)
+        if not np.isfinite(minimum_mesh_height) or minimum_mesh_height<0:raise ValueError('Invalid mesh height')
         h, w = rgb.shape[:2]
         if min(h, w) < 32 or max(h, w) > 2048 or h*w > 2097152:
             raise ValueError('Research face analysis requires 32..2048 sides and <=2MP')
@@ -169,6 +170,8 @@ class FaceSkinSegmenter:
         for box, score in faces:
             record = dict(box=box.tolist(),detector_score=score,
                           scale_agreement=sum(any(box_iou(box,b)>.5 for b,_ in group) for group in strong_scales))
+            if box[3]-box[1]<minimum_mesh_height:
+                records.append(dict(**record,status='small_region'));continue
             x0,y0,x1,y1 = crop_box(box,(h,w),2.)
             sample = np.ascontiguousarray(np.rint(rgb[y0:y1,x0:x1]*255).astype(np.uint8))
             result = self.face.detect(self.skin.mp.Image(image_format=self.skin.mp.ImageFormat.SRGB, data=sample))

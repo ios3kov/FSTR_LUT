@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "204d836",
+  "scope": "research only; approximate small head regions and dynamic size transitions",
+  "source_sha256": {
+    "tools/benchmark/person_head_analysis.py": "146a6ecf1edfec9b60e1b6e83a5b6969f8152ab60d900dd035da59361700e10d",
+    "tools/benchmark/face_skin_analysis.py": "9b4d771e241a86649fb2c5f7cf4de28053e65299c35d8b53caab9e28179647da",
+    "tools/benchmark/turn_skin_recovery.py": "10c004394d99d53ec8069ca5b126c00f488708db7ab5a1c2d211c555cff89d17",
+    "tests/person_head_tests.py": "9c0cf37833db6519533c42509d194a8dd134e3e76c969e8b1723b86c75e3f22a"
+  },
+  "private_artifacts": {
+    "trial-v15/report.json": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/trial-v15/report.json",
+      "sha256": "e71866e91e8b22f31a1414046771567bbe1c9519b833bfc74c6d05fac88407cd"
+    },
+    "size-matrix-v5/report.json": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/size-matrix-v5/report.json",
+      "sha256": "689b8b5c3ae7e320a38499b3e5ec9f16d97c6d6bbc5e96f0fb589763fc0d4c94"
+    },
+    "approach-retreat-v3/report.json": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/approach-retreat-v3/report.json",
+      "sha256": "bb888aa7886013d12bd80d1a04f757afa7df30cb692e8cef3e9bdb7bcd3c0fd0"
+    },
+    "unit-reviewed.log": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/unit-reviewed.log",
+      "sha256": "06ab2bcda6c511c542efb181085766d729708b01edace30416fa453ce9831594"
+    },
+    "face_skin-reviewed.log": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/face_skin-reviewed.log",
+      "sha256": "8816f8a0d43a2e3c4966b537156b6fb9282988e22fd8f57ff2ffaf0f2e722f2e"
+    },
+    "turn_recovery-reviewed.log": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/turn_recovery-reviewed.log",
+      "sha256": "a2a00b35be6366e5a0c9e8f5e6ce5b0c61e5682aa7c6fbcca4368068ef3d747e"
+    },
+    "blur_mask-reviewed.log": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/blur_mask-reviewed.log",
+      "sha256": "867d20010c42947c2c8069764d260dbfe7262db6f74b2b75e366ce29de35aa4e"
+    },
+    "anchor_face_tracking-reviewed.log": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/anchor_face_tracking-reviewed.log",
+      "sha256": "cd42d6b1b4c7a320612202825646bd739c89a3d3adaea7cbd34feeec8f28d316"
+    },
+    "adaptive_face_mask-reviewed.log": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/adaptive_face_mask-reviewed.log",
+      "sha256": "ba8b59ca3f04d6cdbdb7b3602394eeea61f46ea3bcc83071752ccd9571c575af"
+    },
+    "scanner-reviewed.json": {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/scanner-reviewed.json",
+      "sha256": "72deb716dcb3aae409d34d25f08efe92dc03e8aba41a7ea301ef41b9f63c06cd"
+    }
+  },
+  "unit_tests": {
+    "person_head": 40,
+    "anchor": 9,
+    "adaptive": 15,
+    "direct_regression_scripts": [
+      "face_skin",
+      "turn_recovery",
+      "blur_mask"
+    ],
+    "result": "PASS"
+  },
+  "approach_retreat": {
+    "frames": 27,
+    "zero_output_frames": 0,
+    "gap_frames": [
+      2,
+      24
+    ],
+    "reverse_exact": true,
+    "scope": "synthetic zoom, not real approaching person"
+  },
+  "scale_matrix": {
+    "cases": 20,
+    "note": "matrix-v5 predates isolated gap-helper additions; uses empty neighbor lists so that helper cannot recover anything"
+  },
+  "fresh_clip": {
+    "frames": 12,
+    "reverse_exact": true,
+    "model_repeat_frames": [
+      55,
+      48,
+      59
+    ],
+    "frame55_mass": 104.07759094238281
+  },
+  "controls": [
+    {
+      "name": "flat",
+      "mass": 0.0,
+      "patch_mean": 0.0
+    },
+    {
+      "name": "texture",
+      "mass": 349.6710205078125,
+      "patch_mean": 0.3134092092514038
+    },
+    {
+      "name": "validation_lab_last",
+      "mass": 19946.15234375,
+      "patch_mean": null
+    },
+    {
+      "name": "validation_people_last",
+      "mass": 14393.744140625,
+      "patch_mean": null
+    },
+    {
+      "name": "test_face_first",
+      "mass": 12548.8095703125,
+      "patch_mean": null
+    },
+    {
+      "name": "beige",
+      "mass": 0.0,
+      "patch_mean": null
+    }
+  ],
+  "visual_review": {
+    "control_masks_equal_inspected_trial_v13": true,
+    "dynamic_masks_equal_inspected_v2": true,
+    "continuous_playback": "NOT RUN"
+  },
+  "installed_files_unchanged": {
+    "Contents/Info.plist": true,
+    "Contents/PkgInfo": true,
+    "Contents/_CodeSignature/CodeResources": true,
+    "Contents/MacOS/FSTR_LUT_Development": true,
+    "Contents/Resources/FSTR_LUT_Development.rsrc": true
+  },
+  "semantic_occlusion": "FAIL",
+  "native_integration": "NOT RUN",
+  "real_crowd_crossing": "NOT RUN"
+}

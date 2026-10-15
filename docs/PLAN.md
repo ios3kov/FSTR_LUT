@@ -1,5 +1,9 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Dynamic coarse-to-detailed regions — implemented research slice
+
+User accepted approximate heads for wide shots and requested dynamic detail during approach/recede. Implemented source-height bands, independent face observations, bounded size smoothing and short coarse-box recovery. Validate actual camera approach/recede and crowded crossings, continuous perceptual motion and remaining detailed skin occlusion before AE promotion. Do not replace these checks with synthetic zoom or unit success. [Review](DYNAMIC_FACE_REGIONS.md), [evidence](DYNAMIC_FACE_REGIONS_EVIDENCE.json).
+
 ## Automatic multi-person protection — next step
 
 No manual selection. Implement independent face tracks with optional body/head support; mandatory body confirmation failed group/close-up controls. Isolate ambiguous tracks, preserve global hand veto and bounded deterministic windows. Validate crossings, entry/exit, overlapping hands and many small faces. Semantic occlusion and continuous flicker remain open. [Review](PERSON_HEAD_AUTOMATION.md), [evidence](PERSON_HEAD_AUTOMATION_EVIDENCE.json).

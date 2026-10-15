@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "b8d80bb8b54246bf3703d9bf538d376996ce1792",
+  "branch": "dev/ai-enhance-prototype",
+  "source_sha256": {
+    "CMakeLists.txt": "e8092e477cee79ab698736f4cc6063a190397f4958b0578d96279777e002e5c8",
+    "include/fstr/color.hpp": "ba9f25d9d63233d5aa914dd1275bdaaac39d7c0dfd627326a59ad01e074cd43a",
+    "src/ae/FSTR_LUT_PiPL.r": "cf7c2bf919d96cf86928fe7461017110f168baa9a57c63d8d8bfaafb387ae6ad",
+    "src/ae/plugin.cpp": "bea438778db67176781bcf97cb0830df1cf3070c89f2ad9dc70684aa93347302",
+    "src/ae/plugin.hpp": "2aa6e1d6987ae988e7491270844823628c5e7daaba65450c101c346a9715ded1",
+    "src/color/pixel.cpp": "81506d458effbce8170a6d8a914b16bf9aeaca5e4f6b680a03b707fd97306901",
+    "tests/ae_adapter_tests.cpp": "53e58a9b520724d214922d08ecd062a359b446f68c8e661759ff8ee5df790067",
+    "tools/benchmark/person_head_analysis.py": "1091f27aad9e8fd4dd1660b22e786d3c6aadc8ef9b43e793149dc05a1e3dddcb",
+    "include/fstr/regions.hpp": "4558125a64a98351746e1788a303675495e14490ae1d209b895c0b42ab0f9b31",
+    "src/analysis/regions.cpp": "5136c5b1738e32db52e27e913d7c58ceb941e6da3e288b884a79ee543d0a63a9",
+    "src/analysis/vision_regions.mm": "9e539784711775f84eaffa2001534f0b4ad38b0c5631690e00b111685cc27370",
+    "tests/color_region_tests.py": "a888c1675e3f3cf1db044274f35c79169fdf12b83c44f734f485f8728b768731",
+    "tests/regions_tests.cpp": "b0fb256aa6f23a938b96e38f93df9cc7da9140713b1509baba27df9adcf247de",
+    "tools/benchmark/color_region_tracking.py": "00f2ca9fdfdb10c1392812953a80cc54903eb50fa40f6659a3c3f645b867ca99",
+    "tools/benchmark/regions_main.cpp": "90b119dbb8b05cfd0adc097d25b5b91f96ef543e5eac1053d766bb0d230f6961"
+  },
+  "bundle_sha256": {
+    "Contents/Info.plist": "b723a8ad31f506aa8fa9e3a52118154fc7c887f9a491c47c021bc2641740e09c",
+    "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+    "Contents/MacOS/FSTR_LUT_Development": "91937313629ba234173d24c707869203a335df035ec7d18e2a6855712021011a",
+    "Contents/Resources/FSTR_LUT_Development.rsrc": "17824101b9c95c9d360649de10a8d2562f0ee7d59050cb678f0ea0e75b26a33e"
+  },
+  "environment": {
+    "machine": "arm64",
+    "macos": "26.6.2",
+    "sdk": "25.6 external"
+  },
+  "checks": {
+    "release_ctest": "PASS 8/8",
+    "asan_ubsan_ctest": "PASS 8/8",
+    "appearance_unit": "PASS 11",
+    "strict_regression": "PASS 40",
+    "scanner_findings": 0,
+    "actual_module_frame48": "PASS On changed563pixels; Off exact restoration; alpha preserved",
+    "native_detection_coverage": {
+      "frames": 156,
+      "nonempty": 78,
+      "known_visible_misses": [
+        54,
+        55,
+        56
+      ],
+      "verdict": "NOT ACCEPTED for full Smart motion quality"
+    },
+    "actual_AE": "NOT RUN",
+    "continuous_perceptual_motion": "NOT RUN",
+    "old_project_reopen": "NOT RUN"
+  },
+  "motion_research": {
+    "frames": 156,
+    "reverse_exact": true,
+    "valid_pairs": 145,
+    "mean": {
+      "old_mask_mae": 0.10414428705799168,
+      "new_mask_mae": 0.0869401660458795,
+      "old_color_delta_mae": 0.00493035630949227,
+      "new_color_delta_mae": 0.005081263592402483,
+      "old_effect_mean": 0.013602072888070011,
+      "new_effect_mean": 0.013087228695251819
+    },
+    "verdict": "Mixed metrics; flicker not closed"
+  },
+  "installed_preservation": {
+    "path": "/Users/os3kov/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/FSTR_LUT_Development_b7f44ed4ca0704d6.plugin",
+    "files": {
+      "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+      "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+    },
+    "unchanged": true
+  },
+  "artifacts": {
+    "smart-native-2026-10-15/python-regions.log": "c1a51b271f6781c935203932e2c50b4cb3ec39c45f71d700646398680ff5e59d",
+    "smart-native-2026-10-15/frame54.json": "9bcdcd8e7340350480abf05c4edbe9b8a8ef04e77258d462167b598589354902",
+    "smart-native-2026-10-15/large48.json": "f0870ace71d1ffc59490e87eb2a84774cf498c89c12b7324b57c878e7667a1d3",
+    "smart-native-2026-10-15/large130.json": "cc59653f50f1271642d4769a90776fb04f59c2945b053445407187bb2f66a895",
+    "smart-native-2026-10-15/native-real.log": "9a5ae2087a7e00e25f8f8496053f1301ebe90f2c1478b41aefc4f98f44f528e2",
+    "smart-native-2026-10-15/native-regions.jpg": "6985ae6979231b1b5cef65ba7465b677c7fa895a14013e99657ad8d4b5a125c6",
+    "smart-native-2026-10-15/scanner-final.json": "b2254f45b5cb5531bef36082e0c248bf33b408c2e6bffbc208f8a6215dd92549",
+    "smart-native-2026-10-15/large54.json": "9bcdcd8e7340350480abf05c4edbe9b8a8ef04e77258d462167b598589354902",
+    "smart-native-2026-10-15/sanitizer-tests.log": "3f183a818e9c377de1a726ddd28bef58f407dd454ea5bd683284cd4a479507da",
+    "smart-native-2026-10-15/native-real-final.log": "9a5ae2087a7e00e25f8f8496053f1301ebe90f2c1478b41aefc4f98f44f528e2",
+    "smart-native-2026-10-15/large55.json": "9bcdcd8e7340350480abf05c4edbe9b8a8ef04e77258d462167b598589354902",
+    "smart-native-2026-10-15/large80.json": "dd80fe60ee4ce463e64f74b31bab7b4f5cfbcfa2f2485bb07f4f698c16e0b06a",
+    "smart-native-2026-10-15/python-strict.log": "d10bf8d19b605f287308f768192f95bfbf300ad2dc5c6d656d6805be48726d6e",
+    "smart-native-2026-10-15/large56.json": "9bcdcd8e7340350480abf05c4edbe9b8a8ef04e77258d462167b598589354902",
+    "smart-native-2026-10-15/native-sequence.json": "967a7668480c09ed8cd813d5aad1f668ad3a89d08e0fb2fa7825d8e8fb4a0970",
+    "smart-native-2026-10-15/sequence.log": "3cf384d40025dee4a66c3b993c22045ee61b03db9d4b5619205d20d9fc94b5ea",
+    "smart-native-2026-10-15/scanner.json": "2f0d8ab68a49351e79f93fa5fe6cebda1b61f26afaeae738f69d4a19f44d771f",
+    "smart-native-2026-10-15/release-tests.log": "74f12b5c7aeb7878a0532fc7e9b5b483f19f9adebbd430930df918318d87db0b",
+    "smart-native-2026-10-15/build.log": "1797706caa035d68d5a696dc6e7682c3c15ae89b162f3893283f3789eb3392c6"
+  },
+  "review": "Senior found PAR/preview geometry and missing Smart callbacks tests; fixed. Separate root final review preserves quality gaps, no full Smart acceptance. PAR math source-reviewed; real non-square-PAR host test NOT RUN."
+}

@@ -40,7 +40,7 @@ class ColorProcessor final {
 public:
     ColorProcessor(const ColorSettings&,Transfer,Primaries,Alpha);
     bool bypass() const noexcept {return bypass_;}
-    std::array<float,4> apply(std::array<float,4> rgba) const;
+    std::array<float,4> apply(std::array<float,4> rgba,double color_protection=0) const;
 private:
     ColorSettings settings_;
     Transfer transfer_;

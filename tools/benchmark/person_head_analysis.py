@@ -29,6 +29,7 @@ class PersonEvidence:
     anchor: FaceAnchor | None
     source_height: float = 192.
     light_region: bool = False
+    approximate_only: bool = False
 
 
 def size_adaptive_region(person,detailed):
@@ -177,7 +178,7 @@ class PersonHeadAnalyzer:
 
     def _image(self,rgb):return self.mp.Image(image_format=self.mp.ImageFormat.SRGB,data=np.ascontiguousarray(np.rint(rgb*255).astype(np.uint8)))
 
-    def analyze(self,rgb,source_scale_y=1.):
+    def analyze(self,rgb,source_scale_y=1.,allow_approximate=False):
         validate_rgb(rgb);h,w=rgb.shape[:2]
         if rgb.dtype!=np.float32 or min(h,w)<32 or max(h,w)>2048 or h*w>2097152:raise ValueError('Invalid research frame')
         if not np.isfinite(source_scale_y) or source_scale_y<=0:raise ValueError('Invalid source scale')
@@ -244,6 +245,14 @@ class PersonHeadAnalyzer:
             veto=np.maximum.reduce([p.hands for p in represented]) if represented else np.zeros((h,w),np.float32)
             people=[p for p in people if not any(p is old for old in represented)]
             people.append(PersonEvidence(tuple(b),center,None,region,raw['semantic']*region,veto,None,height,True))
+        if allow_approximate:
+            for f in raw['detail']['faces']:
+                b=np.asarray(f['box']);height=float((b[3]-b[1])*source_scale_y)
+                if f['detector_score']<.8 or height<24:continue
+                if any(box_iou(b,np.asarray(p.anchor.box if p.anchor is not None else p.head))>.2 for p in people):continue
+                if any(q is not f and box_iou(b,np.asarray(q['box']))>.1 for q in raw['detail']['faces']):continue
+                region=proposal_region(b,(h,w));zero=np.zeros((h,w),np.float32)
+                people.append(PersonEvidence(tuple(b),tuple((b[:2]+b[2:])/2),None,region,zero,zero,None,height,True,True))
         people=[replace(p,source_height=float(((p.anchor.box if p.anchor is not None else p.head)[3]-(p.anchor.box if p.anchor is not None else p.head)[1])*source_scale_y)) for p in people]
         all_hands=np.maximum.reduce([p.hands for p in people]) if people else np.zeros((h,w),np.float32)
         final=[]
@@ -258,7 +267,7 @@ class PersonHeadAnalyzer:
         return final,dict(poses=len(landmarks_list),capacity=capacity_status(len(landmarks_list)),face_capacity=capacity_status(len(raw['detail']['faces']),MAX_FACES),people=details,raw_faces=raw['detail'])
 
 
-def recover_coarse_regions(images,people,center,cuts):
+def recover_coarse_regions(images,people,center,cuts,appearance=False):
     """Bridge <=2 missing coarse observations using boxes and patch appearance.
 
     Two independent endpoint detections; never a recovered seed. Approximate
@@ -272,12 +281,12 @@ def recover_coarse_regions(images,people,center,cuts):
         return cv2.resize(sample,(16,16))
     for lo in range(center-1,max(-1,center-3),-1):
         for left in people[lo]:
-            if not (left.light_region or (left.anchor is not None and left.anchor.confirmed)) or left.source_height>=80:continue
+            if not (left.light_region or (left.anchor is not None and left.anchor.confirmed)) or (not appearance and left.source_height>=80):continue
             if any(box_iou(box(left),b)>.2 for b in claimed):continue
             for hi in range(center+1,min(len(images),center+3)):
                 if hi-lo>3 or any(cuts[lo:hi]):continue
                 right=same_person(left,people[hi])
-                if right is None or same_person(right,people[lo]) is not left or right.source_height>=80:continue
+                if right is None or same_person(right,people[lo]) is not left or (not appearance and right.source_height>=80):continue
                 if not (right.light_region or (right.anchor is not None and right.anchor.confirmed)):continue
                 t=(center-lo)/(hi-lo);b=(1-t)*box(left)+t*box(right)
                 # An observed current person or an ambiguous intermediate
@@ -288,14 +297,18 @@ def recover_coarse_regions(images,people,center,cuts):
                 if error>.08:continue
                 height=(1-t)*left.source_height+t*right.source_height
                 zero=np.zeros_like(result);veto=zero.copy()
-                for endpoint in (left,right):
+                for endpoint in (() if appearance else (left,right)):
                     known=endpoint.hands
                     if endpoint.anchor is not None and endpoint.anchor.exclusion is not None:known=np.maximum(known,endpoint.anchor.exclusion)
                     source=box(endpoint);scale=(b[2:]-b[:2])/(source[2:]-source[:2]);offset=b[:2]-scale*source[:2]
                     transform=np.array([[scale[0],0,offset[0]],[0,scale[1],offset[1]]],np.float32)
                     veto=np.maximum(veto,cv2.warpAffine(known,transform,(result.shape[1],result.shape[0]),flags=cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT))
                 p=PersonEvidence(tuple(b),tuple((b[:2]+b[2:])/2),None,zero,zero,veto,None,height,True)
-                result=np.maximum(result,size_adaptive_region(p,zero));claimed.append(b)
+                if appearance:
+                    region=proposal_region(b,result.shape)
+                    mask=.65*float(smoothstep(24,32,height))*cv2.GaussianBlur(region,(0,0),max(.8,(b[3]-b[1])*.06))*region
+                else:mask=size_adaptive_region(p,zero)
+                result=np.maximum(result,mask);claimed.append(b)
                 records.append(dict(status='coarse_gap',endpoints=[lo,hi],source_height=height,appearance_error=error));break
     return result,records
 

@@ -1,5 +1,12 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Smart Color Grading On/Off — native candidate, not installed
+
+Checkbox defaultOff/diskID13, real macOS Vision regional protection, soft masks, bounded adjacent-frame geometry, full-input SmartFX and cancellation/error cleanup implemented. Eight release and sanitizer test targets pass; real module On changes563pixels on frame48 and Off restores plain LUT exactly. Native detector finds regions in78/156frames and misses visible blurred faces54–56: full Smart quality NOT ACCEPTED, gap/body fallback not yet ported. Actual AE/continuous perception NOT RUN. [Contract and checks](SMART_COLOR_NATIVE.md), [evidence](SMART_COLOR_NATIVE_EVIDENCE.json).
+
+Appearance research now permits same-colored props inside regions and uses soft blobs for blurred heads.156frame reverse-order equality passes, but added-color instability mean slightly increases despite lower mask MAE. Flicker remains open; see [motion review](COLOR_REGION_MOTION.md). Earlier semantic failures remain historical evidence under their original contract.
+
+
 ## Dynamic coarse-to-detailed regions — implemented research slice
 
 User accepted approximate heads for wide shots and requested dynamic detail during approach/recede. Implemented source-height bands, independent face observations, bounded size smoothing and short coarse-box recovery. Validate actual camera approach/recede and crowded crossings, continuous perceptual motion and remaining detailed skin occlusion before AE promotion. Do not replace these checks with synthetic zoom or unit success. [Review](DYNAMIC_FACE_REGIONS.md), [evidence](DYNAMIC_FACE_REGIONS_EVIDENCE.json).

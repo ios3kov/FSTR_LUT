@@ -1,5 +1,12 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Smart Color Grading On/Off — native candidate, not installed
+
+Checkbox defaultOff/diskID13, real macOS Vision regional protection, soft masks, bounded adjacent-frame geometry, full-input SmartFX and cancellation/error cleanup implemented. Eight release and sanitizer test targets pass; real module On changes563pixels on frame48 and Off restores plain LUT exactly. Native detector finds regions in78/156frames and misses visible blurred faces54–56: full Smart quality NOT ACCEPTED, gap/body fallback not yet ported. Actual AE/continuous perception NOT RUN. [Contract and checks](SMART_COLOR_NATIVE.md), [evidence](SMART_COLOR_NATIVE_EVIDENCE.json).
+
+Appearance research now permits same-colored props inside regions and uses soft blobs for blurred heads.156frame reverse-order equality passes, but added-color instability mean slightly increases despite lower mask MAE. Flicker remains open; see [motion review](COLOR_REGION_MOTION.md). Earlier semantic failures remain historical evidence under their original contract.
+
+
 ## Approximate head regions and dynamic mask detail
 
 Automatic face-only path protects the three-face group without requiring bodies. Small heads use weak soft regions without mesh/skin checks; source-height bands24/64/160 with smooth transitions. Unique bounded associations stabilize size; short coarse detection gaps have a two-sided box/appearance recovery.40focused tests PASS. Detailed-face object rejection still FAIL; continuous visual and AE integration NOT RUN. Installed plugin preserved. [Review](DYNAMIC_FACE_REGIONS.md), [evidence](DYNAMIC_FACE_REGIONS_EVIDENCE.json).

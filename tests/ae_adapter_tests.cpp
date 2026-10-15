@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <vector>
 #include <dlfcn.h>
+#include <fstream>
 
 namespace {
 int checks=0;
@@ -19,6 +20,7 @@ struct Fixture {
     std::array<PF_ParamDef,ParamCount> params{};
     PF_EffectWorld input{},output{};
     int checkout=0,checkin=0,acquire=0,release=0,pixels_out=0,pixels_in=0,abort_calls=0;
+    std::vector<int> layer_ids;std::vector<PF_LRect> requests;int fail_layer=-1,fail_pixel_id=-1;
     int fail_param=0;bool fail_suite=false,fail_output=false,fail_pixel_checkout=false,fail_format=false;
     bool fail_checkin=false,fail_pixel_checkin=false,fail_release=false,abort_now=false;
     Fixture();
@@ -32,7 +34,7 @@ PF_Err abort_cb(PF_ProgPtr ref){auto& f=fixture(ref);++f.abort_calls;return f.ab
 SPErr acquire_cb(const char* name,int32 version,const void** suite){++active->acquire;if(active->fail_suite)return 76;if(std::strcmp(name,kPFWorldSuite)||version!=kPFWorldSuiteVersion2)return 77;*suite=&active->worlds;return 0;}
 SPErr release_cb(const char*,int32){++active->release;return active->fail_release?78:0;}
 PF_Err pixel_format(const PF_EffectWorld* world,PF_PixelFormat* format){if(active->fail_format)return 79;if(!world->width||!world->height)return 80;*format=static_cast<PF_PixelFormat>(reinterpret_cast<std::uintptr_t>(world->reserved0));return PF_Err_NONE;}
-PF_Err checkout_pixels(PF_ProgPtr ref,A_long,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout)return 81;*world=&f.input;return PF_Err_NONE;}
+PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;*world=&f.input;return PF_Err_NONE;}
 PF_Err checkout_output(PF_ProgPtr ref,PF_EffectWorld** world){auto& f=fixture(ref);if(f.fail_output)return 82;*world=&f.output;return PF_Err_NONE;}
 PF_Err checkin_pixels(PF_ProgPtr ref,A_long){auto& f=fixture(ref);++f.pixels_in;return f.fail_pixel_checkin?83:PF_Err_NONE;}
 Fixture::Fixture(){
@@ -77,6 +79,7 @@ void processing(){
 void cinema(){
     Fixture ui;active=&ui;
     check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Cinema schema setup failed");
+    check(ui.params[SmartColor].uu.id==13&&ui.params[SmartColor].u.bd.dephault==FALSE&&ui.params[CameraInfo].uu.id==12,"Smart default/legacy IDs wrong");
     check(ui.params[Look].u.pd.num_choices==17&&ui.params[Look].uu.id==6,"Cinema menu or persistent ID wrong");
     check(std::strncmp(ui.params[Look].u.pd.u.namesptr,"Natural|(-|",11)==0,"Natural/retired Warm schema wrong");
     check(ui.params[LookAmount].u.fs_d.dephault==100&&ui.params[LookAmount].u.fs_d.slider_max==100&&ui.params[LookAmount].u.fs_d.valid_max==300,"Strength soft/hard/default range wrong");
@@ -92,6 +95,46 @@ void cinema(){
         Fixture f;set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Look].u.pd.value=invalid;
         check(run(f,true)==PF_Err_BAD_CALLBACK_PARAM,"Invalid look menu value accepted");
     }
+}
+PF_Err checkout_layer(PF_ProgPtr ref,PF_ParamIndex,A_long id,const PF_RenderRequest* request,A_long,A_long,A_u_long,PF_CheckoutResult* result){
+ auto&f=fixture(ref);f.layer_ids.push_back(id);f.requests.push_back(request->rect);if(id==f.fail_layer)return 85;
+ result->result_rect=request->rect;result->max_result_rect={0,0,96,96};return PF_Err_NONE;
+}
+void smart_requests(){
+ for(int mode=0;mode<6;++mode){
+  Fixture f;active=&f;f.in.current_time=10;f.in.total_time=100;
+  f.params[SmartColor].u.bd.value=mode!=0;f.params[Look].u.pd.value=3;
+  PF_PreRenderInput pi{};pi.output_request.rect={10,10,20,20};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;
+  PF_PreRenderExtra pe{&pi,&po,&pc};if(mode==2)f.fail_layer=2;
+  auto err=effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe);
+  if(mode==2){check(err==85&&!po.pre_render_data,"Pre-render failure leaked/succeeded");continue;}
+  check(err==0,"Smart pre-render failed");
+  check(f.layer_ids==(mode==0?std::vector<int>{0}:std::vector<int>{1000,0,1,2}),"Unexpected temporal/full-frame requests");
+  check(po.result_rect.left==10&&po.result_rect.right==20,"Output ROI expanded");
+  if(mode!=0)check(f.requests[1].left==0&&f.requests[1].right==96,"Analysis input remains cropped");
+  std::vector<PF_Pixel> input(96*96,PF_Pixel{255,128,128,128}),output(1);
+  set_world(f.input,input,96,96,96,PF_PixelFormat_ARGB32);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB32,10,10);
+  // Zero Mix skips detection but exercises acquisition and every cleanup branch.
+  f.params[Mix].u.fs_d.value=0;if(mode==3)f.fail_pixel_id=2;if(mode==4)f.fail_output=true;if(mode==5)f.abort_now=true;
+  PF_SmartRenderInput si{};si.pre_render_data=po.pre_render_data;PF_SmartRenderCallbacks sc{};sc.checkout_layer_pixels=checkout_pixels;sc.checkin_layer_pixels=checkin_pixels;sc.checkout_output=checkout_output;PF_SmartRenderExtra se{};se.input=&si;se.cb=&sc;
+  err=effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&se);
+  check((mode<2?err==0:err!=0),"Smart render failure propagation");
+  check(f.pixels_in==f.pixels_out-(mode==3?1:0),"Temporal input cleanup imbalance");
+  if(po.pre_render_data)po.delete_pre_render_data_func(po.pre_render_data);
+ }
+}
+void real_smart(const char* path){
+ std::ifstream stream(path,std::ios::binary);std::vector<unsigned char> bytes(540*960*4);stream.read(reinterpret_cast<char*>(bytes.data()),bytes.size());check(bool(stream),"Real fixture missing");
+ std::vector<PF_Pixel> input(540*960),off(input.size()),on(input.size());
+ for(std::size_t i=0;i<input.size();++i)input[i]={255,bytes[4*i],bytes[4*i+1],bytes[4*i+2]};
+ Fixture f;set_world(f.input,input,540,960,540,PF_PixelFormat_ARGB32);set_world(f.output,off,540,960,540,PF_PixelFormat_ARGB32);
+ f.in.downsample_y={1,4};f.in.downsample_x={1,4};f.in.pixel_aspect_ratio={1,1};f.params[WorkingSpace].u.pd.value=2;f.params[Look].u.pd.value=3;f.params[LookAmount].u.fs_d.value=100;
+ check(run(f,true)==0,"Real Smart Off failed");f.params[SmartColor].u.bd.value=TRUE;set_world(f.output,on,540,960,540,PF_PixelFormat_ARGB32);
+ check(run(f,true)==0,"Real Smart On failed");std::size_t changed=0;
+ for(std::size_t i=0;i<input.size();++i){check(on[i].alpha==255,"Smart changed alpha");if(std::memcmp(&off[i],&on[i],sizeof(PF_Pixel)))++changed;}
+ check(changed>0&&changed<input.size()/10,"Smart protection absent or paints whole image");
+ f.params[SmartColor].u.bd.value=FALSE;check(run(f,true)==0&&std::memcmp(off.data(),on.data(),off.size()*sizeof(PF_Pixel))==0,"Off does not restore original LUT output");
+ std::cout<<"Real native Smart changes "<<changed<<" pixels; Off repeat exact\n";
 }
 void failures(){
     for(int mode=0;mode<10;++mode){
@@ -118,17 +161,17 @@ void failures(){
 }
 }
 int main(int argc,char** argv){try{
-    check(argc==2,"Provide the actual built plugin executable");
+    check(argc==2||argc==3,"Provide the actual built plugin executable");
     auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
-    check(setup.out.out_flags==0x02008440&&setup.out.out_flags2==0x08001400&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
+    check(setup.out.out_flags==0x02008042&&setup.out.out_flags2==0x08021400&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
     Fixture ui;active=&ui;check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE&&ui.out.num_params==ParamCount,"Native control schema failed");
     check(ui.params[Contrast].uu.id==3&&ui.params[WorkingSpace].uu.id==9&&ui.params[Temperature].uu.id==10&&ui.params[Tint].uu.id==11,"Persistent IDs changed with UI order");
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
     formats(PF_PixelFormat_ARGB32,PF_Pixel{127,51,75,99});
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
-    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();
+    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();if(argc==3)real_smart(argv[2]);
     std::vector<std::future<bool>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==CameraInfo-1&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");

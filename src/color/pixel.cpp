@@ -26,7 +26,8 @@ ColorProcessor::ColorProcessor(const ColorSettings& s,Transfer t,Primaries p,Alp
        (s.source!=SourceProfile::Host&&s.source!=SourceProfile::SonySLog3Cine)))
         throw UnsupportedColorProfile("Explicit host Rec709 and supported source profile required");
 }
-std::array<float,4> ColorProcessor::apply(std::array<float,4> pixel) const {
+std::array<float,4> ColorProcessor::apply(std::array<float,4> pixel,double color_protection) const {
+    if(!std::isfinite(color_protection)||color_protection<0||color_protection>1)throw std::invalid_argument("Invalid color protection");
     if(bypass_)return pixel;
     const auto& s=settings_;const double alpha=pixel[3];
     if(!std::isfinite(alpha)||alpha<0||alpha>1)throw std::invalid_argument("Invalid color alpha");
@@ -38,9 +39,11 @@ std::array<float,4> ColorProcessor::apply(std::array<float,4> pixel) const {
     else work={decode_host(raw.r,transfer_),decode_host(raw.g,transfer_),decode_host(raw.b,transfer_)};
     work=shoulder(grade_linear(work,s.grade),s.shoulder);
     if(s.look&&s.look_amount>0) {
+        const RGB before=work;
         auto mapped=s.look->sample({encode_host(work.r,Transfer::SRGB),encode_host(work.g,Transfer::SRGB),encode_host(work.b,Transfer::SRGB)});
         RGB looked{decode_host(mapped.r,Transfer::SRGB),decode_host(mapped.g,Transfer::SRGB),decode_host(mapped.b,Transfer::SRGB)};
         work={work.r+s.look_amount*(looked.r-work.r),work.g+s.look_amount*(looked.g-work.g),work.b+s.look_amount*(looked.b-work.b)};
+        if(color_protection>0){const RGB d{work.r-before.r,work.g-before.g,work.b-before.b};const double y=.2126*d.r+.7152*d.g+.0722*d.b;work={work.r-color_protection*(d.r-y),work.g-color_protection*(d.g-y),work.b-color_protection*(d.b-y)};}
     }
     if(s.mix<1) {
         RGB base{decode_host(raw.r,transfer_),decode_host(raw.g,transfer_),decode_host(raw.b,transfer_)};

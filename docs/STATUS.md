@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## SegFace face-scale diagnostic — not accepted
+
+[Review](SEGFACE_SCALE_REVIEW.md), [evidence](SEGFACE_SCALE_EVIDENCE.json). Completed52cases × whole/crop paths, including20synthetic scale cases24/48/96/192/320px and23prior scene images. Strict load/input/bounds checks PASS. Clear-face crop improves medium-size case but tiny/blurred faces still vanish; skin-colored texture and lab prop remain false positives. FAIL robustness/occlusion; no AE promotion. Scale cases use known boxes and inherited support, not ground truth or end-to-end detector acceptance. Continuous visual motion remains open. Installed plugin unchanged.
+
+
 ## DeepLab follow-up — runtime resolved, quality rejected
 
 [Review](DEEPLAB_REVIEW.md), [evidence](DEEPLAB_EVIDENCE.json). Actual CPU MMCV build and strict model load PASS; channel/geometry oracle and2-case explicit-forward parity PASS. Final32-case direct512 trial fails face preservation:9/18 nonzero-support cases completely lost in crop mode;16/18 in whole-image. Not promoted; prior continuous review remains open. Non-Sony metadata and broader Log/non-camera input support recorded as planned requirements in PLAN.md, not implemented.

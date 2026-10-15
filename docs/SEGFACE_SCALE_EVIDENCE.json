@@ -1,0 +1,544 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "5439a6901182dd7f5a24f4f0017c8f5b39cf9423",
+  "model_sha256": "320b1c167191804913323b229a5256b1fc71f1987161fc54dc440e59af45dae8",
+  "private_root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/segface-trial-2026-10-15",
+  "hashes": {
+    "adapter.py": "9677c88e2e81bc754cf4537194abc521b4a5539606ec231895198ac6cc368624",
+    "probe.py": "84fa9615e0d66421351a3ba465d8805034f1aa87e6b13deeeddf41534e341bfd",
+    "probe-v2.py": "4a0c27229654d336641afe154688f7d4e5ac31e12cc134ca3abda334aabecd98",
+    "boards.py": "c6fab50d9d84b7d4b4cff2e1c6e57f56f360a76d7d5a413a9f6d36e5f41abdcd",
+    "source.tar.gz": "76b1f465fd569e770eed939fa35ba00cbeeb43e7e8290257e6273e4261aea6e4",
+    "SegFace-main/network/models/segface_celeb.original.txt": "9258ad3e8f102dfb4d0cbbd4bc41b83f5eeaa011a79c71c001355b3d107f33c4",
+    "SegFace-main/network/models/segface_celeb.py": "68ae8acaf3ab89641cc0cae65ae74054b429393b826425ac52ef9f52285c4ad8",
+    "trial-v2/report.json": "9f30d1e842832ae9ecd3cc745a12b7ac65775887ddb580409503aa67c727ba50",
+    "trial-v2/scale-cases.json": "cf2cc11e8eb61413c368c681f85f01643e4bf2cf1ab275b7d8d232eac0afbe4c",
+    "trial-v2/raw-index.json": "10da0bfac9582c6f95a964153c6f92fc9d109a78993ba518644da0a8deea6dc8",
+    "scanner.json": "0e0aa680560262539e2a55f761322e5c6b7b10f15eafdbf9826a9c7ead985f21",
+    "installed-check.json": "eb5d885dbfb45ba16bb9a26e5addc34dfe6c64a9bb812f9bf82f2fa05dfb8b46"
+  },
+  "checks": {
+    "safe_strict_load": "PASS",
+    "rgb_input_oracle": "PASS",
+    "finite_19class_inference": "PASS",
+    "52cases104_mask_outputs": "PASS bounds and support cap",
+    "42case_repeat_mass": "PASS exact scalar equality v1/v2; not full tensor parity",
+    "face_scale_quality": "FAIL inspected omissions",
+    "occlusion_rejection": "FAIL planted texture and lab prop",
+    "installed_preservation": "PASS five files rehashed",
+    "static_scanner": "PASS repository unchanged code scope only",
+    "continuous_flicker": "NOT_RUN; prior user review inconclusive",
+    "detector_at_each_scale": "NOT_RUN oracle boxes",
+    "AE_integration": "NOT_RUN"
+  },
+  "scale_results": [
+    {
+      "name": "scale_frame54_024",
+      "support_mass": 319.2919616699219,
+      "modes": {
+        "whole": {
+          "mass": 319.2919616699219,
+          "retained_support_fraction": 1.0,
+          "inference_ms": [
+            661.2311670032796
+          ]
+        },
+        "box": {
+          "mass": 214.1005401611328,
+          "retained_support_fraction": 0.6705478429794312,
+          "inference_ms": [
+            696.5699580032378
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame54_048",
+      "support_mass": 1277.56103515625,
+      "modes": {
+        "whole": {
+          "mass": 305.3087463378906,
+          "retained_support_fraction": 0.2389778196811676,
+          "inference_ms": [
+            1000.9781249973457
+          ]
+        },
+        "box": {
+          "mass": 1161.3236083984375,
+          "retained_support_fraction": 0.9090161323547363,
+          "inference_ms": [
+            693.1471249845345
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame54_096",
+      "support_mass": 5109.640625,
+      "modes": {
+        "whole": {
+          "mass": 5109.05859375,
+          "retained_support_fraction": 0.9998860955238342,
+          "inference_ms": [
+            682.0567499962635
+          ]
+        },
+        "box": {
+          "mass": 4744.5615234375,
+          "retained_support_fraction": 0.9285508990287781,
+          "inference_ms": [
+            644.1217909741681
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame54_192",
+      "support_mass": 20436.982421875,
+      "modes": {
+        "whole": {
+          "mass": 19328.33984375,
+          "retained_support_fraction": 0.9457530975341797,
+          "inference_ms": [
+            867.8156249807216
+          ]
+        },
+        "box": {
+          "mass": 18976.8046875,
+          "retained_support_fraction": 0.9285522103309631,
+          "inference_ms": [
+            1094.34362500906
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame54_320",
+      "support_mass": 56773.84375,
+      "modes": {
+        "whole": {
+          "mass": 52654.671875,
+          "retained_support_fraction": 0.9274459481239319,
+          "inference_ms": [
+            756.1810000042897
+          ]
+        },
+        "box": {
+          "mass": 52757.0078125,
+          "retained_support_fraction": 0.9292484521865845,
+          "inference_ms": [
+            739.0670829918236
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame55_024",
+      "support_mass": 213.04910278320312,
+      "modes": {
+        "whole": {
+          "mass": 213.04373168945312,
+          "retained_support_fraction": 0.99997478723526,
+          "inference_ms": [
+            662.2767079970799
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "retained_support_fraction": 0.0,
+          "inference_ms": [
+            636.6713749885093
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame55_048",
+      "support_mass": 851.3134155273438,
+      "modes": {
+        "whole": {
+          "mass": 4.138550758361816,
+          "retained_support_fraction": 0.0048613715916872025,
+          "inference_ms": [
+            684.7489170031622
+          ]
+        },
+        "box": {
+          "mass": 0.0,
+          "retained_support_fraction": 0.0,
+          "inference_ms": [
+            642.3608330078423
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame55_096",
+      "support_mass": 3401.697021484375,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "retained_support_fraction": 0.0,
+          "inference_ms": [
+            798.5142910038121
+          ]
+        },
+        "box": {
+          "mass": 73.25164794921875,
+          "retained_support_fraction": 0.02153385430574417,
+          "inference_ms": [
+            708.2027080177795
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame55_192",
+      "support_mass": 13614.396484375,
+      "modes": {
+        "whole": {
+          "mass": 10811.1904296875,
+          "retained_support_fraction": 0.7940998673439026,
+          "inference_ms": [
+            1040.0165419850964
+          ]
+        },
+        "box": {
+          "mass": 208.57081604003906,
+          "retained_support_fraction": 0.01531987264752388,
+          "inference_ms": [
+            640.6054999970365
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_frame55_320",
+      "support_mass": 37811.44921875,
+      "modes": {
+        "whole": {
+          "mass": 36779.734375,
+          "retained_support_fraction": 0.9727142453193665,
+          "inference_ms": [
+            645.9512079891283
+          ]
+        },
+        "box": {
+          "mass": 1376.3297119140625,
+          "retained_support_fraction": 0.03639981523156166,
+          "inference_ms": [
+            640.747666999232
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_test_face_first_024",
+      "support_mass": 267.3659362792969,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "retained_support_fraction": 0.0,
+          "inference_ms": [
+            721.3260830030777
+          ]
+        },
+        "box": {
+          "mass": 4.932753562927246,
+          "retained_support_fraction": 0.01844944804906845,
+          "inference_ms": [
+            661.257542000385
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_test_face_first_048",
+      "support_mass": 1081.8992919921875,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "retained_support_fraction": 0.0,
+          "inference_ms": [
+            645.0699999986682
+          ]
+        },
+        "box": {
+          "mass": 1009.737548828125,
+          "retained_support_fraction": 0.9333008527755737,
+          "inference_ms": [
+            705.1978750096168
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_test_face_first_096",
+      "support_mass": 4292.38232421875,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "retained_support_fraction": 0.0,
+          "inference_ms": [
+            654.8435000004247
+          ]
+        },
+        "box": {
+          "mass": 4082.835693359375,
+          "retained_support_fraction": 0.9511817693710327,
+          "inference_ms": [
+            648.4066670236643
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_test_face_first_192",
+      "support_mass": 17170.41015625,
+      "modes": {
+        "whole": {
+          "mass": 16960.513671875,
+          "retained_support_fraction": 0.9877756834030151,
+          "inference_ms": [
+            650.3319579933304
+          ]
+        },
+        "box": {
+          "mass": 16244.80078125,
+          "retained_support_fraction": 0.9460927844047546,
+          "inference_ms": [
+            647.2017919877544
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_test_face_first_320",
+      "support_mass": 47744.53125,
+      "modes": {
+        "whole": {
+          "mass": 45567.9609375,
+          "retained_support_fraction": 0.9544121623039246,
+          "inference_ms": [
+            683.5776670195628
+          ]
+        },
+        "box": {
+          "mass": 45217.44921875,
+          "retained_support_fraction": 0.9470707774162292,
+          "inference_ms": [
+            641.2910830113105
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_validation_lab_last_024",
+      "support_mass": 143.1536865234375,
+      "modes": {
+        "whole": {
+          "mass": 0.0,
+          "retained_support_fraction": 0.0,
+          "inference_ms": [
+            657.2719590039924
+          ]
+        },
+        "box": {
+          "mass": 47.063232421875,
+          "retained_support_fraction": 0.32876017689704895,
+          "inference_ms": [
+            704.1451669938397
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_validation_lab_last_048",
+      "support_mass": 557.6200561523438,
+      "modes": {
+        "whole": {
+          "mass": 386.71771240234375,
+          "retained_support_fraction": 0.6935147047042847,
+          "inference_ms": [
+            711.2543749972247
+          ]
+        },
+        "box": {
+          "mass": 161.73397827148438,
+          "retained_support_fraction": 0.29004332423210144,
+          "inference_ms": [
+            690.8775839838199
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_validation_lab_last_096",
+      "support_mass": 2239.26171875,
+      "modes": {
+        "whole": {
+          "mass": 492.46258544921875,
+          "retained_support_fraction": 0.21992185711860657,
+          "inference_ms": [
+            652.4370409897529
+          ]
+        },
+        "box": {
+          "mass": 2199.975830078125,
+          "retained_support_fraction": 0.982455849647522,
+          "inference_ms": [
+            651.1851249961182
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_validation_lab_last_192",
+      "support_mass": 8957.046875,
+      "modes": {
+        "whole": {
+          "mass": 8699.7529296875,
+          "retained_support_fraction": 0.9712746739387512,
+          "inference_ms": [
+            784.0718750085216
+          ]
+        },
+        "box": {
+          "mass": 8798.6396484375,
+          "retained_support_fraction": 0.9823147654533386,
+          "inference_ms": [
+            660.2004580199718
+          ]
+        }
+      }
+    },
+    {
+      "name": "scale_validation_lab_last_320",
+      "support_mass": 24927.283203125,
+      "modes": {
+        "whole": {
+          "mass": 24244.98046875,
+          "retained_support_fraction": 0.9726282954216003,
+          "inference_ms": [
+            642.0417499903124
+          ]
+        },
+        "box": {
+          "mass": 24371.423828125,
+          "retained_support_fraction": 0.9777007699012756,
+          "inference_ms": [
+            665.0292499980424
+          ]
+        }
+      }
+    }
+  ],
+  "controls": [
+    {
+      "name": "frame55",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "whole": {
+          "mass": 177.5237579345703,
+          "retained_support_fraction": 0.9774446487426758,
+          "inference_ms": [
+            655.5902499821968
+          ],
+          "interior_mean": 0.8832416534423828
+        },
+        "box": {
+          "mass": 16.181272506713867,
+          "retained_support_fraction": 0.08909397572278976,
+          "inference_ms": [
+            656.8219999899156
+          ],
+          "interior_mean": 0.011363636702299118
+        }
+      }
+    },
+    {
+      "name": "flat",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "whole": {
+          "mass": 181.0568389892578,
+          "retained_support_fraction": 0.9968977570533752,
+          "inference_ms": [
+            734.284915990429
+          ],
+          "interior_mean": 0.9003844857215881
+        },
+        "box": {
+          "mass": 2.0,
+          "retained_support_fraction": 0.011011986993253231,
+          "inference_ms": [
+            690.5273750016931
+          ],
+          "interior_mean": 0.0
+        }
+      }
+    },
+    {
+      "name": "texture",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "whole": {
+          "mass": 109.04304504394531,
+          "retained_support_fraction": 0.6003902554512024,
+          "inference_ms": [
+            673.8502079970203
+          ],
+          "interior_mean": 0.43875738978385925
+        },
+        "box": {
+          "mass": 171.10751342773438,
+          "retained_support_fraction": 0.9421168565750122,
+          "inference_ms": [
+            679.8149590031244
+          ],
+          "interior_mean": 0.7943004369735718
+        }
+      }
+    },
+    {
+      "name": "validation_lab_last",
+      "support_mass": 20359.634765625,
+      "modes": {
+        "whole": {
+          "mass": 19707.1171875,
+          "retained_support_fraction": 0.9679504036903381,
+          "inference_ms": [
+            653.7069159967359
+          ],
+          "prop_mass": 547.068115234375,
+          "forehead_mass": 928.6499633789062,
+          "cheek_mass": 892.9925537109375
+        },
+        "box": {
+          "mass": 19992.44921875,
+          "retained_support_fraction": 0.9819650053977966,
+          "inference_ms": [
+            641.6456249717157
+          ],
+          "prop_mass": 547.068115234375,
+          "forehead_mass": 941.2387084960938,
+          "cheek_mass": 892.9925537109375
+        }
+      }
+    }
+  ],
+  "inspected": [
+    "frame55.png",
+    "texture.png",
+    "validation_lab_last.png",
+    "frame55-scale-detail.png",
+    "test_face_first-scale-detail.png",
+    "validation_lab_last-scale-detail.png"
+  ],
+  "limitations": [
+    "Retention is prior mask agreement, not skin recall or GT.",
+    "C2098 enlarged views contain no new detail.",
+    "Source archive hash identifies inspected code; captured GitHub revision9416628 not archive commit equivalence proof.",
+    "Research private weights; no redistribution approval or host change."
+  ]
+}

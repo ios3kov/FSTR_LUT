@@ -1,0 +1,274 @@
+{
+  "baseline_commit": "1c304f88c64be46c567c75baa54cacfe605e9a78",
+  "scope": "C2098 frames 140-155; automatic same arm seeds 141 and 153; prepared sRGB, actual camera profile unknown",
+  "artifacts": {
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/manifest.json": "18c0875839fe3c3f6524ace0fa32bb1264e75dbe5a79a64f5d32c67f8505d295",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/sam2-final/evidence.json": "d2670ac7a226e9693b90696484f4dacd5c188eb5efb4fb74034a4d0dd65b7130",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/flow-neighbor/evidence.json": "c3cbba33ea38a8643d9cb63dfe599ee69ecb9d2bb549e8414c922bdff2a30fab",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/comparison-reviewed/evidence.json": "23b4a1513c7ea72f005b047a2118caa10acecc6b02f39aa20ca77cc12366ec3c",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/comparison-reviewed/metrics.json": "e6351c553a768fcdcf9dc1836773ecbde6817ced41899b1aad9763001c6a7103",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/comparison-reviewed/comparison.mp4": "53598745f2f0626cef1720d9a9adcdb5485e00363adaea9690fba7214def8479",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/tests-resume.log": "1ad62c1c44596d39df2c44cc21d031995127d2b4d7d61a5f5eef515ba76c33a3",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/audit-resume.json": "04aafb996803d422e0130d6309df506ea7e6f730e8cabac8219858ce392d6dc5"
+  },
+  "source_sha256": {
+    "tools/benchmark/video_anchor_analysis.py": "13bb2e2128d1009865d1a041eb1c7447b82cb73658f2fc7ed45ee55f36df97d2",
+    "tools/benchmark/video_anchor_compare.py": "323f04ef060f686a201e3a5ce62e5ba3f8f13839eec7ae9f41b5449eaf6d7bda",
+    "tools/benchmark/video_anchor_prepare.py": "dc27df8c5c970225553a2b2bfec1ea00b6e016aa7f55751c569c4000f9995bcd",
+    "tools/benchmark/video_anchor_report.py": "bbf8c1db4eb0fdbac6020a5b2f750c65bf6a64e945a498ff7f1716c00302af9e",
+    "tools/benchmark/video_flow_trial.py": "91cae2353c364065305670b1748bf8465af120ea7114dbcbeee2f48784852212",
+    "tools/benchmark/video_sam2_trial.py": "7b55c3b1b691546f9adb71821df5193438780cf5c10af35d90cd56582c9f21bb"
+  },
+  "metrics": {
+    "description": "Same SAM consensus region across methods. Model-selected diagnostic, not ground truth or a flicker score. Thresholds tuned on this clip.",
+    "comparison_evidence_sha256": "23b4a1513c7ea72f005b047a2118caa10acecc6b02f39aa20ca77cc12366ec3c",
+    "frames": [
+      {
+        "frame": 141,
+        "common_roi_pixels": 892,
+        "baseline": 0.7979506254196167,
+        "flow": 0.7979575991630554,
+        "sam2": 0.8255293369293213,
+        "hybrid": 0.8255296945571899,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 142,
+        "common_roi_pixels": 1050,
+        "baseline": 0.44513970613479614,
+        "flow": 0.4451417326927185,
+        "sam2": 0.7642188668251038,
+        "hybrid": 0.7642188668251038,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 143,
+        "common_roi_pixels": 1102,
+        "baseline": 0.690060019493103,
+        "flow": 0.6900758147239685,
+        "sam2": 0.8220534920692444,
+        "hybrid": 0.8220531940460205,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 144,
+        "common_roi_pixels": 1112,
+        "baseline": 0.6830358505249023,
+        "flow": 0.6830281615257263,
+        "sam2": 0.8265453577041626,
+        "hybrid": 0.8265450596809387,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 145,
+        "common_roi_pixels": 1236,
+        "baseline": 0.5761550068855286,
+        "flow": 0.5761584639549255,
+        "sam2": 0.8260576128959656,
+        "hybrid": 0.8260574340820312,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 146,
+        "common_roi_pixels": 1288,
+        "baseline": 0.6968388557434082,
+        "flow": 0.6968380808830261,
+        "sam2": 0.8235719799995422,
+        "hybrid": 0.8235718011856079,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 147,
+        "common_roi_pixels": 1522,
+        "baseline": 0.37675830721855164,
+        "flow": 0.376764714717865,
+        "sam2": 0.8214620351791382,
+        "hybrid": 0.8214619159698486,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 148,
+        "common_roi_pixels": 1731,
+        "baseline": 0.28165483474731445,
+        "flow": 0.28166094422340393,
+        "sam2": 0.710105299949646,
+        "hybrid": 0.7101052403450012,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 149,
+        "common_roi_pixels": 1511,
+        "baseline": 0.6729309558868408,
+        "flow": 0.6729298233985901,
+        "sam2": 0.8250771164894104,
+        "hybrid": 0.8250770568847656,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 150,
+        "common_roi_pixels": 1318,
+        "baseline": 0.2527664005756378,
+        "flow": 0.2527725100517273,
+        "sam2": 0.7536081075668335,
+        "hybrid": 0.7536079287528992,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 151,
+        "common_roi_pixels": 1287,
+        "baseline": 0.21674016118049622,
+        "flow": 0.21674297749996185,
+        "sam2": 0.6442033052444458,
+        "hybrid": 0.6442033052444458,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 152,
+        "common_roi_pixels": 1331,
+        "baseline": 0.7627276182174683,
+        "flow": 0.7627274394035339,
+        "sam2": 0.8256152868270874,
+        "hybrid": 0.8256152868270874,
+        "flow_contribution_pixels_over_001": 0
+      },
+      {
+        "frame": 153,
+        "common_roi_pixels": 1160,
+        "baseline": 0.8561636805534363,
+        "flow": 0.8561634421348572,
+        "sam2": 0.8273312449455261,
+        "hybrid": 0.8273312449455261,
+        "flow_contribution_pixels_over_001": 0
+      }
+    ]
+  },
+  "sam2_runtime": {
+    "model": {
+      "repository": "facebook/sam2.1-hiera-tiny",
+      "revision": "de431c4043854a71d8101e17995dfe596bf101a5",
+      "files": {
+        "README.md": "dfa401b1b9358b9650ae487dd2f2bb336fd745c3609e3244adf2e97a22343857",
+        "sam2.1_hiera_tiny.pt": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69"
+      }
+    },
+    "device": "mps",
+    "torch": "2.8.0",
+    "runs": [
+      {
+        "direction": "forward",
+        "frames": 15,
+        "seconds": 13.244510458986042
+      },
+      {
+        "direction": "backward",
+        "frames": 14,
+        "seconds": 42.476269875012804
+      }
+    ],
+    "total_seconds": 60.73838712499128,
+    "maxrss_native": 831930368,
+    "manifest_sha256": "18c0875839fe3c3f6524ace0fa32bb1264e75dbe5a79a64f5d32c67f8505d295",
+    "source_sha256": {
+      "build_sam.py": "856d64d71e44407401297b551884fb4cd1aba8082de0ff5fc60fac3dd42f094d",
+      "automatic_mask_generator.py": "66df266dbe14412305ae3398f0ec1bb21b303a93216b102d767e6c4ee5d4c3d7",
+      "sam2_video_predictor_legacy.py": "e0c054112f21bfa63620f2026c8bb2e0f4e284b138d09426a08d39f2e882c3f2",
+      "benchmark.py": "9b7a3506b88842ec09031fb7cd0fc1d3fed82e137ce06dbca10495e6c180dda9",
+      "sam2_video_predictor.py": "912555920a77f72ded07839efa33fcceecc79f3523abbec783f0be46ee2c55c2",
+      "sam2_hiera_s.yaml": "6fff1ab952d4ff7bc4bf8bb480f6283bcf12a763057f5bb697b25151a20f7608",
+      "sam2_hiera_t.yaml": "4ba0a249a1da9a6cc4070d47894808f206f67249d0c6fda21c6280af692dd77e",
+      "__init__.py": "b87ca1e95cd54b81766e8c74acf0e937952639529e40d2b4088693286f49419e",
+      "sam2_image_predictor.py": "f13e5f9d94e5c8d9d2c3622dab20c8f334c089ef2ee5ea8e199da7d332b029ba",
+      "sam2_hiera_b+.yaml": "212887bd5b1d90c07a3439a911593ec6ec8a586cce0b12799f1ebec38bbe401d",
+      "sam2_hiera_l.yaml": "0e313563f8f467c382c81192a0e2aff4624dda2b23218f1a78df30ebe4b4eb1a",
+      "utils/amg.py": "b7b33090e2af72e04dbb815c8f32aff41a4ed1abf9668f62b59f1bdd640ca5d8",
+      "utils/transforms.py": "ba3a64f4600c62f209206a6df3b40e3fcf133edae32fad658831bb0c2a6d1146",
+      "utils/misc.py": "01600c01c161cd079d7106fb1d4da845cf91aa31ab2bcecaf8cb151b6d6d20a2",
+      "utils/__init__.py": "34bd8069c54764e7b8d73a78905dbe6467140a2f73170875128f6ca4d8cdd0aa",
+      "modeling/sam2_utils.py": "e35bbf13bc2e544a0272cd3f9539af38a752676ac3cd744be31cd8220afee804",
+      "modeling/position_encoding.py": "b51404718c0d38f381293c8e5e00a15d129651b7f09b1158002d8974a30967b5",
+      "modeling/memory_attention.py": "07358cb7f58ec3788e88ff4e6415f8a9d628a3963529d6e2c915494a5347c8e2",
+      "modeling/sam2_base.py": "69a46b44e8625f509791352bd09beaafe589cd7d872721384e63d37f9fdc6e41",
+      "modeling/__init__.py": "34bd8069c54764e7b8d73a78905dbe6467140a2f73170875128f6ca4d8cdd0aa",
+      "modeling/memory_encoder.py": "73f7089ae5fdacdfcaaf3deca1ca6d9f84d89e7deb9cf97589622a9ef17ba42f",
+      "modeling/sam/__init__.py": "34bd8069c54764e7b8d73a78905dbe6467140a2f73170875128f6ca4d8cdd0aa",
+      "modeling/sam/transformer.py": "cda19052331e775190ce8b1159efcb828a4632d931a6d8bd4d47109f121782f1",
+      "modeling/sam/prompt_encoder.py": "4965ccb4a4504aa4d7246b2ad66ffeacd2626415c86a261dc1c65ffd8ae1d40d",
+      "modeling/sam/mask_decoder.py": "ca3523c58365574faddf1bfb54f374e4b4beba05127185ea2b17d22b916e099a",
+      "modeling/backbones/__init__.py": "34bd8069c54764e7b8d73a78905dbe6467140a2f73170875128f6ca4d8cdd0aa",
+      "modeling/backbones/utils.py": "c4a0657db2a92bda2a7ff116cd4017f6b1c59af6408093d8874eb08a0df476ad",
+      "modeling/backbones/image_encoder.py": "16eaad232220386f510ca8dfab8655e63699977149a4daf9ce9c6f374e6777a9",
+      "modeling/backbones/hieradet.py": "03785581ca304d0451ae0df7a08ee0bf1e1dbe66fad285066e6b9ffc0d88d64f",
+      "configs/sam2.1_training/sam2.1_hiera_b+_MOSE_finetune.yaml": "d96919e157527116c3a80c6ec961151bda98e5eb988ae4dd85be6e7efbd2b51f",
+      "configs/sam2.1/sam2.1_hiera_l.yaml": "1dbd6cb6dfebeaf588c7006ee222c6efbfa9049a7ad472a3cdfb2f5d919e8107",
+      "configs/sam2.1/sam2.1_hiera_t.yaml": "f932eac1c6241e910031b2f000a81cd9f8a8d4896e2277ab5ffb721f378b188d",
+      "configs/sam2.1/sam2.1_hiera_s.yaml": "0f36b91e86e58d06c87e42997166212468b88b98b60e4d816d5e4d4d088b6f55",
+      "configs/sam2.1/sam2.1_hiera_b+.yaml": "37d6c56b07a7f8d08baaa314315c60dc3aabe2edc66cd92bac6d1ed50038e788",
+      "configs/sam2/sam2_hiera_s.yaml": "20e0ade957a4ab5e8138c93c346a8d8965c0b00d1a05fa0e79ce477985904188",
+      "configs/sam2/sam2_hiera_t.yaml": "33399c73cd13bbc3d0c1cea843fa2fc255fdb20139fe07f042743e046ac46b6b",
+      "configs/sam2/sam2_hiera_b+.yaml": "644d1a9aaa7e14183802246dee4f43627e067d77dd89f1f40d83657db18d038b",
+      "configs/sam2/sam2_hiera_l.yaml": "0ee9f2037fd98489212bb0b78a56f33ac82eb177cf5e52c88be3714cb84eea26"
+    },
+    "postprocessing": false,
+    "output_sha256": {
+      "backward-001.npy": "2575de0f8084c5f7dd4b519453d7d5e0b77a8fe0c5c0bc909ab4f538eea6a620",
+      "forward-015.npy": "66b73725911de263ce6c19aca061f98b04c37f14d7f123f376a4e755a81ca3e3",
+      "forward-001.npy": "a2ba59524c4a3bc998492ae7bc9da5c147614575eb6d9240f3f043c756f73af0",
+      "forward-014.npy": "dda42b50e48791b7a3d15c9af2449cd4e16d570180f0819974caa6d0244942db",
+      "backward-000.npy": "37455beebbccd2767699d3bab2715ed01987cbc91dca4de2cb84599e5f80a78c",
+      "backward-002.npy": "e9b6131b3518d58da73e48fd7100b460e3348c19dd53095e5d34457c8f4530b3",
+      "forward-002.npy": "d609aa391587bb9cddaf23202846d46dd9f1d61c8217dd12725d484ad596a457",
+      "forward-003.npy": "4127382b9fc39efd0ff7c6db77d9e649ab992d42b0077ca64ce2685ba869bf8a",
+      "backward-003.npy": "aa60b2d8b54a5be0a6af3d0cedd20fa0b1c57bc05c9d1ee2153f15fb6aadcc1d",
+      "backward-007.npy": "538ee0c29d3c88418153bea9b4fded2305580f0666265d1158f93f726ace3098",
+      "backward-013.npy": "b993394c1240b4ff54896cf6d8ca87e03d3f908d1954223b0d75995923843e1c",
+      "forward-007.npy": "b4744423301710afba38297cf1116bed19a112b2c4b07c0390f5b5edf07916c4",
+      "forward-013.npy": "920f835e7a567167edfbddac5f62f78389d8e2c92707fd4ade4300e0707a7ff2",
+      "forward-012.npy": "b4d55cef0ced2e8f6acdd0d52edc55e985841305f54e4e1bb0bf57840ed3b534",
+      "forward-006.npy": "9cd42ec26db1ac0daf772ed8301af2ea7b843ef960f8c83a1fed448254f70b8d",
+      "backward-012.npy": "86c4c1c969f3b644c0d1d83ea0ac8b2c5049fdfe221fb721bf5c08a58da8cf2c",
+      "backward-006.npy": "3f92d7bab4ae0f217334d87a834edf6dee5ca8d18e7bc112260a6a4dab15dc5f",
+      "backward-010.npy": "ded5d826970a48b7a202e4f3b686ecd90a61b74452806cea24d3465ed116cb79",
+      "backward-004.npy": "1661aa4b1445c5c1e33ca78b697a2650ac3ec894dabfb6379c41fdd45bc5ae47",
+      "forward-010.npy": "b6e09284936f71ccdccc10e7972a01a213a7cf65e61a403610969d55c0f9b9ef",
+      "forward-004.npy": "ecf54fca7a41fac2d4fd9439242df793afd25f8898109f9090fdde162b65c689",
+      "forward-005.npy": "2dcc1bdae3b2c26518531efb1c71e402d63ef731cca51e9bea3eae30bf0f6353",
+      "forward-011.npy": "cdad99082f7349b3fdd4c52cc44d1545f450685c68068baa7d18f717f14d23a1",
+      "backward-005.npy": "d65c0cd9b35597c02cc47ce7e2d4963f67b985e7fbbdac72b8a2a4879747b467",
+      "backward-011.npy": "b6a13c242e7a5d7b7ec1a4a4bab216c417754bdf1b7af1fed787587c7f27b96d",
+      "backward-008.npy": "0e8ef73833f94c4373a5cfbf05b63a1e64721a25e0a4b02c60daa004c4d377ba",
+      "forward-008.npy": "eb97e003680808902623a1562b6c06ad96f403d7fdd3bcbe825d21e34e750cc3",
+      "forward-009.npy": "d13348ef3a32bffe8d880e115e9f2298c7f84f7b0ad74e8d648434ba603dbd7b",
+      "backward-009.npy": "55a367034d896d35a2f14ddf1a94f147601e76263b0ada545c6ade409988dba6"
+    },
+    "mps_fallback_enabled": true,
+    "limitations": "One automatically selected skin component; no general multi-object identity solution. SAM2 is a geometry predictor, not a skin classifier."
+  },
+  "repeat_run_probability_mae": {
+    "mean": 0.001574756510066287,
+    "max_frame": 0.006583130918443203,
+    "status": "NOT_BIT_EXACT; cause not diagnosed; current inference is not determinism-qualified"
+  },
+  "checks": {
+    "unit_tests": "PASS 17",
+    "native_tests": "PASS 9 in preceding uninterrupted experiment block; native source/binary unchanged",
+    "native_baseline": "PASS exact all 16 frames",
+    "render_finite_alpha": "PASS 64 renders",
+    "video_decode": "PASS 16 frames at 25fps, 0.64 seconds",
+    "visual": "Reviewed snapshots including 141,145,148,150,151,153; NOT RUN continuous perceptual acceptance",
+    "full_video_crowds_occlusions": "NOT RUN",
+    "AE_integration": "NOT RUN",
+    "scanner": "PASS no findings in scanned text scope"
+  },
+  "installed_preservation": {
+    "path": "/Users/os3kov/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/FSTR_LUT_Development_b7f44ed4ca0704d6.plugin",
+    "files": {
+      "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+      "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+    },
+    "unchanged": true
+  },
+  "decision": "Keep combined research path; observed benefit from SAM2 plus semantic anchors. Flow refinement implemented but no meaningful gain on this clip. Not ready for AE promotion."
+}

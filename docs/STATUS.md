@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Offline semantic + SAM2 + motion comparison
+
+Automatic skin anchors and independent SAM2 directions now feed a bounded hybrid with optional reliable optical flow. The16frame difficult-arm trial improves mask strength stability; flow adds no meaningful gain here.17tests pass,64native comparison renders preserve the16frame baseline exactly. No new AE installation. Full-clip/multi-object quality, perceptual flicker, and inference repeatability remain open. [Result and next boundary](SMART_VIDEO_ANALYSIS.md), [exact evidence](SMART_VIDEO_ANALYSIS_EVIDENCE.json).
+
+
 ## Combined scene + people — standalone prototype, not promoted to AE
 
 Added explicit local UperNet candidate (model-card MIT), independent existing pose/face/skin evidence, source-pixel detail bands and bounded probability fusion. Known test_face recovered;166cases including156consecutive frames render with exact Off and reverse-order equality.24scene +40person +15adaptive tests, face/turn regressions and9native checks pass. Skin mask motion MAE drops19.6%within this path; arm confidence still fluctuates under strong blur. Continuous perceptual approval, crowds/preview parity and new AE integration NOT RUN. Installed plugin preserved. [Combined path and limits](SMART_SCENE_PEOPLE.md), [evidence](SMART_SCENE_PEOPLE_EVIDENCE.json).

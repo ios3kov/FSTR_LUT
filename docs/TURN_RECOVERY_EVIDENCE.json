@@ -1,0 +1,1968 @@
+{
+  "schema_version": 1,
+  "date_local": "2026-10-15",
+  "timezone": "Europe/Podgorica",
+  "implementation_commit": "695235a7d8e91491e68e5e0967d6313dfd1623f1",
+  "baseline_commit": "559f184a3b0590568d76af719a3b43c0c3fb0e9b",
+  "branch": "dev/ai-enhance-prototype",
+  "scope": "Independent offline research; no installed AE change or release",
+  "rules": "v11.1.0 / 04b606845e0f73ab28b9807bb45682eae4d6ce34",
+  "environment": "M1 Pro / 16 GiB / macOS26.6.2; Python3.12 research runtime",
+  "trial": {
+    "frame_count": 156,
+    "width": 360,
+    "height": 640,
+    "fps": 25,
+    "input_transfer": "gamma24",
+    "analysis_width": 720,
+    "analysis_height": 1280,
+    "code_sha256": {
+      "turn_skin_recovery.py": "d5f119e823a60737cf0cf349d5f25ce5c20804d2f74d430276bfde1ec0206f6b",
+      "face_skin_analysis.py": "2b9e6f3261798415934926c9e1a76661cea9f9309d867d9fda8821a918daad82",
+      "turn_recovery_trial.py": "817aa2efc045225f464e5200de68d19094083460762339f8995c95fdbcf7f115",
+      "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+    },
+    "baseline_verification_sha256": "7c8ea5b9d99afd3d6eeea3abf49fa476891c3229456f309576f01378390c0f26",
+    "source_sha256": "8d227097b1ca016d0f6f8851f5cebd241067d9afb2e230ab3ae8f2d29ea370f6",
+    "renderer_sha256": "bc999e101ebd45001c71a3a0160834230fce92fbfea3885036797b42661da8dd",
+    "look_sha256": "7175a683a54d2652ac04c078b26e6c9c6638abef3c4f2785eeeb89d6dcbc74bc",
+    "models": {
+      "model": "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
+      "face_model": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+      "detector_model": "ebafce4e3c118d6554634be5c27ab333b4c047a9a8c3faf1d7cf93101c22f0f0"
+    },
+    "metrics": {
+      "mesh": {
+        "zero_mask_frames": [
+          40,
+          41,
+          55,
+          131,
+          132,
+          140,
+          141,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155
+        ],
+        "background_exact": true,
+        "luma_max_error": 6.85930252075943e-08
+      },
+      "spatial": {
+        "zero_mask_frames": [
+          40,
+          41,
+          131,
+          132,
+          140,
+          141,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155
+        ],
+        "background_exact": true,
+        "luma_max_error": 6.85930252075943e-08
+      },
+      "recovered": {
+        "zero_mask_frames": [
+          40,
+          41,
+          131,
+          132,
+          140,
+          141,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155
+        ],
+        "background_exact": true,
+        "luma_max_error": 6.85930252075943e-08
+      },
+      "smart": {
+        "zero_mask_frames": [
+          40,
+          41,
+          131,
+          132,
+          140,
+          141,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155
+        ],
+        "background_exact": true,
+        "luma_max_error": 6.85930252075943e-08
+      }
+    },
+    "model_repeats": [
+      {
+        "frame": 155,
+        "max_error": 0.0
+      },
+      {
+        "frame": 0,
+        "max_error": 0.0
+      },
+      {
+        "frame": 78,
+        "max_error": 0.0
+      }
+    ],
+    "old_default_checks": [
+      {
+        "frame": 0,
+        "max_error": 0.0
+      },
+      {
+        "frame": 55,
+        "max_error": 0.0
+      },
+      {
+        "frame": 78,
+        "max_error": 0.0
+      },
+      {
+        "frame": 155,
+        "max_error": 0.0
+      }
+    ],
+    "inference_ms": {
+      "median": 447.2492500062799,
+      "p95": 713.8246457325295
+    },
+    "temporal_ms": {
+      "median": 442.2908540000208,
+      "p95": 600.2745627483819
+    },
+    "native_timings": {
+      "mesh": {
+        "frames": 156,
+        "elapsed_ms": 6041.26,
+        "ms_per_frame": 38.7261
+      },
+      "spatial": {
+        "frames": 156,
+        "elapsed_ms": 5588.11,
+        "ms_per_frame": 35.8212
+      },
+      "recovered": {
+        "frames": 156,
+        "elapsed_ms": 6199.3,
+        "ms_per_frame": 39.7391
+      },
+      "smart": {
+        "frames": 156,
+        "elapsed_ms": 6240.36,
+        "ms_per_frame": 40.0023
+      }
+    },
+    "artifacts": {
+      "Turn-recovery-comparison.mp4": "5142a1a743c30a503a72bc7b3479738fe3dcedaef92763b8d949fba77c9fa0e6",
+      "Turn-040.png": "15d31be02a731b7cafa480d2f1c3b025169293d35471c7549ccd7508dc6acb57",
+      "Turn-041.png": "0ee8df11abb8f09f05cc1f382c85b2a1d7d04b9ab30013fe65d0500dde809176",
+      "Turn-055.png": "1fab9f666eb4bd6e02b34ad65801ca52590bb3b6776a11f2d10b9f1e278dd488",
+      "Turn-132.png": "4e5fc12f471d6da285caf9364281dbfd4ee7885dbc3ee26fc4eec04359a02a4e",
+      "Recovery-only-comparison.mp4": "0f5963d24c527aa9fc5b3d271e448f5bcc5c289445667b8e7ae131f1fe4faa8a",
+      "Turn-131.png": "d03fab442071ee3fd47d820414f9617c25bcbe0a7cab893d484cfa2a3796c60f",
+      "Turn-037.png": "040382ad19dacf5644cd6adaec5edde8cf844c369964ff1f08f781802597ea37",
+      "Turn-140.png": "2605dce4a4467ead74ccf3170c89992e245a8a463f5050c544ec8d143f7b8707",
+      "Turn-141.png": "671e8aafa7154b8de1c841dfbd965d0681b38f04e4e0d03276f873199d016737",
+      "Turn-146.png": "93d13b907208b577c9ecabad4a211ea6339097c0c1f6ec280ee11c5b3e521e50"
+    }
+  },
+  "recovery_events": [
+    {
+      "frame": 55,
+      "status": "temporal_recovery",
+      "endpoints": [
+        54,
+        56
+      ],
+      "pixels": 220
+    }
+  ],
+  "remaining_absent_reasons": {
+    "40": {
+      "status": "abstained",
+      "reason": "current_evidence_absent_or_ambiguous"
+    },
+    "41": {
+      "status": "abstained",
+      "reason": "proposal_motion_disagreement"
+    },
+    "131": {
+      "status": "abstained",
+      "reason": "two_sided_mask_disagreement"
+    },
+    "132": {
+      "status": "abstained",
+      "reason": "two_sided_mask_disagreement"
+    },
+    "140": {
+      "status": "abstained",
+      "reason": "current_evidence_absent_or_ambiguous"
+    },
+    "141": {
+      "status": "abstained",
+      "reason": "proposal_motion_disagreement"
+    },
+    "146": {
+      "status": "abstained",
+      "reason": "current_evidence_absent_or_ambiguous"
+    }
+  },
+  "trial_verification_sha256": "5bb5ad1bd914b43c7e039a7c699e2b68a8083270d4a3bf1d37fcadc31be276cb",
+  "scene_report_sha256": "bad6c993b29733e2b76fb8998a80140509ecdce174475c03ef60f433e74e30be",
+  "scene_sources": {
+    "turn_skin_recovery.py": "d5f119e823a60737cf0cf349d5f25ce5c20804d2f74d430276bfde1ec0206f6b",
+    "turn_scene_trial.py": "13226d64d4673b77672275537674ec75dae15863477a62ec0a6c6b1d8a6dba48",
+    "face_skin_analysis.py": "2b9e6f3261798415934926c9e1a76661cea9f9309d867d9fda8821a918daad82",
+    "turn_recovery_trial.py": "817aa2efc045225f464e5200de68d19094083460762339f8995c95fdbcf7f115",
+    "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+  },
+  "scene_cases": [
+    {
+      "name": "train_day_first",
+      "source": {
+        "file": "train_day/001.png",
+        "sha256": "c45b857f909e0d3b252c5835813ba01808e2b13535e101b8c73b583806617c5f"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              242.0123748779297,
+              40.81292724609375,
+              276.4497375488281,
+              82.94667053222656
+            ],
+            "detector_score": 0.9490195512771606,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8858229407733288
+          },
+          {
+            "box": [
+              465.1211853027344,
+              54.9798469543457,
+              494.9353942871094,
+              98.37892150878906
+            ],
+            "detector_score": 0.9161574840545654,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8729926785167191
+          }
+        ],
+        "proposals": 4,
+        "face_count": 2,
+        "area": 0.006162332370877266,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              242.0123748779297,
+              40.81292724609375,
+              276.4497375488281,
+              82.94667053222656
+            ],
+            "detector_score": 0.9490195512771606,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8858229407733288,
+            "current_face_semantic_mean": 0.8131270693592816
+          },
+          {
+            "box": [
+              465.1211853027344,
+              54.9798469543457,
+              494.9353942871094,
+              98.37892150878906
+            ],
+            "detector_score": 0.9161574840545654,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8729926785167191,
+            "current_face_semantic_mean": 0.77390227999006
+          }
+        ],
+        "proposals": 4,
+        "face_count": 2,
+        "area": 0.006162332370877266,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 2,
+        "mesh_faces": 2
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "train_day_last",
+      "source": {
+        "file": "train_day/024.png",
+        "sha256": "8826d24f47e4d332df74d6de6fe13fd667c7fb953502cf74bdf9337831d56dcc"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              428.83349609375,
+              52.263023376464844,
+              454.0884704589844,
+              93.86705017089844
+            ],
+            "detector_score": 0.9150598049163818,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.7982842843955142
+          },
+          {
+            "box": [
+              266.77484130859375,
+              46.29230499267578,
+              292.7801513671875,
+              84.793701171875
+            ],
+            "detector_score": 0.8966462016105652,
+            "scale_agreement": 2,
+            "status": "no_mesh"
+          }
+        ],
+        "proposals": 4,
+        "face_count": 1,
+        "area": 0.0014844398247078061,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              428.83349609375,
+              52.263023376464844,
+              454.0884704589844,
+              93.86705017089844
+            ],
+            "detector_score": 0.9150598049163818,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.7982842843955142,
+            "current_face_semantic_mean": 0.6937614865348329
+          },
+          {
+            "box": [
+              266.77484130859375,
+              46.29230499267578,
+              292.7801513671875,
+              84.793701171875
+            ],
+            "detector_score": 0.8966462016105652,
+            "scale_agreement": 2,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.4789242531755845
+          }
+        ],
+        "proposals": 4,
+        "face_count": 1,
+        "area": 0.0014844398247078061,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 2,
+        "mesh_faces": 1
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "validation_lab_first",
+      "source": {
+        "file": "validation_lab/001.png",
+        "sha256": "cf0c8330ebc10d3a1d56911ca15ea585f009de93d2f739d794026deb78bdf296"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              251.22962951660156,
+              3.04681396484375,
+              466.3199462890625,
+              278.171630859375
+            ],
+            "detector_score": 0.9113370180130005,
+            "scale_agreement": 1,
+            "status": "invalid_or_edge_geometry"
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              251.22962951660156,
+              3.04681396484375,
+              466.3199462890625,
+              278.171630859375
+            ],
+            "detector_score": 0.9113370180130005,
+            "scale_agreement": 1,
+            "status": "invalid_or_edge_geometry",
+            "current_face_semantic_mean": 0.005655850151196174
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "validation_lab_last",
+      "source": {
+        "file": "validation_lab/012.png",
+        "sha256": "191b131583eec8402f35cb4b2aee5f23c3e9bbda48c63e1cbe21e65603efc51e"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              264.00830078125,
+              0.9167022705078125,
+              473.1009826660156,
+              290.05816650390625
+            ],
+            "detector_score": 0.926485538482666,
+            "scale_agreement": 1,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.6046637986880401
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.08284356445074081,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              264.00830078125,
+              0.9167022705078125,
+              473.1009826660156,
+              290.05816650390625
+            ],
+            "detector_score": 0.926485538482666,
+            "scale_agreement": 1,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.6046637986880401,
+            "current_face_semantic_mean": 0.18047674720851803
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.08284356445074081,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 1
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "validation_people_first",
+      "source": {
+        "file": "validation_people/001.png",
+        "sha256": "ce8b04b70bd8907cbf2044642e6b221dbd0e73c40a00adbfe41ec4994656b8bd"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              571.3712768554688,
+              150.978515625,
+              649.83251953125,
+              263.482421875
+            ],
+            "detector_score": 0.936573326587677,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8991105959236676
+          },
+          {
+            "box": [
+              341.345703125,
+              44.227149963378906,
+              427.3880920410156,
+              170.31463623046875
+            ],
+            "detector_score": 0.9295267462730408,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8599677324432144
+          },
+          {
+            "box": [
+              87.9301528930664,
+              56.173683166503906,
+              160.41751098632812,
+              157.09014892578125
+            ],
+            "detector_score": 0.9291216731071472,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.9085382383554905
+          }
+        ],
+        "proposals": 6,
+        "face_count": 3,
+        "area": 0.06384720653295517,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              571.3712768554688,
+              150.978515625,
+              649.83251953125,
+              263.482421875
+            ],
+            "detector_score": 0.936573326587677,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8991105959236676,
+            "current_face_semantic_mean": 0.8081366034481001
+          },
+          {
+            "box": [
+              341.345703125,
+              44.227149963378906,
+              427.3880920410156,
+              170.31463623046875
+            ],
+            "detector_score": 0.9295267462730408,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8599677324432144,
+            "current_face_semantic_mean": 0.7659010612169479
+          },
+          {
+            "box": [
+              87.9301528930664,
+              56.173683166503906,
+              160.41751098632812,
+              157.09014892578125
+            ],
+            "detector_score": 0.9291216731071472,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.9085382383554905,
+            "current_face_semantic_mean": 0.8124414794007491
+          }
+        ],
+        "proposals": 6,
+        "face_count": 3,
+        "area": 0.06384720653295517,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 3,
+        "mesh_faces": 3
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "validation_people_last",
+      "source": {
+        "file": "validation_people/012.png",
+        "sha256": "6ca3d72c16bb9e8327e3630e5db76047cd3d7489b89b69457f1cc0cbd1b90df4"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              593.12646484375,
+              150.33294677734375,
+              670.8340454101562,
+              257.98760986328125
+            ],
+            "detector_score": 0.935637891292572,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8971765790100468
+          },
+          {
+            "box": [
+              106.4851303100586,
+              58.840087890625,
+              186.1202392578125,
+              173.26641845703125
+            ],
+            "detector_score": 0.9306736588478088,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.9095329313989239
+          },
+          {
+            "box": [
+              296.9825134277344,
+              41.356109619140625,
+              382.9716491699219,
+              170.99502563476562
+            ],
+            "detector_score": 0.9235774278640747,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.9012105790169544
+          }
+        ],
+        "proposals": 6,
+        "face_count": 3,
+        "area": 0.06872475147247314,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              593.12646484375,
+              150.33294677734375,
+              670.8340454101562,
+              257.98760986328125
+            ],
+            "detector_score": 0.935637891292572,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8971765790100468,
+            "current_face_semantic_mean": 0.8113602286303169
+          },
+          {
+            "box": [
+              106.4851303100586,
+              58.840087890625,
+              186.1202392578125,
+              173.26641845703125
+            ],
+            "detector_score": 0.9306736588478088,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.9095329313989239,
+            "current_face_semantic_mean": 0.811815248270751
+          },
+          {
+            "box": [
+              296.9825134277344,
+              41.356109619140625,
+              382.9716491699219,
+              170.99502563476562
+            ],
+            "detector_score": 0.9235774278640747,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.9012105790169544,
+            "current_face_semantic_mean": 0.7745776222053502
+          }
+        ],
+        "proposals": 6,
+        "face_count": 3,
+        "area": 0.06872475147247314,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 3,
+        "mesh_faces": 3
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "test_night_first",
+      "source": {
+        "file": "test_night/001.png",
+        "sha256": "8ab75bd8fe410f777992d15d0009022d6db3d994bfa020ec03b34b0869818cdd"
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "test_night_last",
+      "source": {
+        "file": "test_night/012.png",
+        "sha256": "772fe65db9f28f97e2951b4623c8325ab3efd024592f5e0c833bdb72c65cd811"
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "test_face_first",
+      "source": {
+        "file": "test_face/001.png",
+        "sha256": "514ebc163af6e7c7030c6836732ab564aeec91314232ca7291e4a0e70dea9c65"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              213.513671875,
+              39.615028381347656,
+              357.5038146972656,
+              217.17166137695312
+            ],
+            "detector_score": 0.9056582450866699,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8467220635480897
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.05978665500879288,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              213.513671875,
+              39.615028381347656,
+              357.5038146972656,
+              217.17166137695312
+            ],
+            "detector_score": 0.9056582450866699,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8467220635480897,
+            "current_face_semantic_mean": 0.6091587316952971
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.05978665500879288,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "test_face_last",
+      "source": {
+        "file": "test_face/012.png",
+        "sha256": "5b04af67be9695c41cbca176794edeea021ff5fd2611f4f5f5358d4c308b25d2"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              216.9562225341797,
+              39.587432861328125,
+              360.6864013671875,
+              221.40774536132812
+            ],
+            "detector_score": 0.8975107073783875,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8172859461212302
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.05303911864757538,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              216.9562225341797,
+              39.587432861328125,
+              360.6864013671875,
+              221.40774536132812
+            ],
+            "detector_score": 0.8975107073783875,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8172859461212302,
+            "current_face_semantic_mean": 0.610587176724138
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.05303911864757538,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "test_action_first",
+      "source": {
+        "file": "test_action/001.png",
+        "sha256": "3644ffa077883d56784d2903678e6e65c34d656faedfcee16b2ecda795a8f0f2"
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "test_action_last",
+      "source": {
+        "file": "test_action/012.png",
+        "sha256": "a5f17d254cf154db65e4525f14dc3a2d79c642d2ac9cd6af69c56d549904eef1"
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "test_rooftop_first",
+      "source": {
+        "file": "test_rooftop/001.png",
+        "sha256": "f64a9dd5176643cfff6062e52a459c0154492a183a88064fb17c1e1a2fc0aaa8"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              385.6205749511719,
+              93.5921859741211,
+              455.0367736816406,
+              197.34475708007812
+            ],
+            "detector_score": 0.8071890473365784,
+            "scale_agreement": 2,
+            "status": "no_mesh"
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              385.6205749511719,
+              93.5921859741211,
+              455.0367736816406,
+              197.34475708007812
+            ],
+            "detector_score": 0.8071890473365784,
+            "scale_agreement": 2,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.5873743764213065,
+            "profile_fallback": true
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 3733
+    },
+    {
+      "name": "test_rooftop_last",
+      "source": {
+        "file": "test_rooftop/012.png",
+        "sha256": "d90e816a57fdbf2e6454ba208e2410976ffb35e3c1c96b7ca1eae3f1c85c2436"
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              396.2120666503906,
+              74.1528091430664,
+              488.6046142578125,
+              198.67330932617188
+            ],
+            "detector_score": 0.8960884809494019,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8978177359627166
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.02444741316139698,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              396.2120666503906,
+              74.1528091430664,
+              488.6046142578125,
+              198.67330932617188
+            ],
+            "detector_score": 0.8960884809494019,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.8978177359627166,
+            "current_face_semantic_mean": 0.80488768551749
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.02444741316139698,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "beige",
+      "source": {
+        "source": "authored control"
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "night_blue",
+      "source": {
+        "source": "authored control"
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "grey",
+      "source": {
+        "source": "authored control"
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "extra_90s",
+      "source": {
+        "movie_sha256": "328253280a05e6b14a92f1f43d818d9b7d38ab5d3f6d5d98606198fd3daef2ff",
+        "second": 90
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "extra_210s",
+      "source": {
+        "movie_sha256": "328253280a05e6b14a92f1f43d818d9b7d38ab5d3f6d5d98606198fd3daef2ff",
+        "second": 210
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "extra_330s",
+      "source": {
+        "movie_sha256": "328253280a05e6b14a92f1f43d818d9b7d38ab5d3f6d5d98606198fd3daef2ff",
+        "second": 330
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "extra_450s",
+      "source": {
+        "movie_sha256": "328253280a05e6b14a92f1f43d818d9b7d38ab5d3f6d5d98606198fd3daef2ff",
+        "second": 450
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              283.73577880859375,
+              51.573081970214844,
+              387.8341369628906,
+              193.17578125
+            ],
+            "detector_score": 0.912017822265625,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.6582968155139594
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.023745937272906303,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              283.73577880859375,
+              51.573081970214844,
+              387.8341369628906,
+              193.17578125
+            ],
+            "detector_score": 0.912017822265625,
+            "scale_agreement": 2,
+            "status": "confirmed",
+            "semantic_mean_inside": 0.6582968155139594,
+            "current_face_semantic_mean": 0.5890660231869622
+          }
+        ],
+        "proposals": 2,
+        "face_count": 1,
+        "area": 0.023745937272906303,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 1
+      },
+      "profile_pixels": 0
+    },
+    {
+      "name": "extra_570s",
+      "source": {
+        "movie_sha256": "328253280a05e6b14a92f1f43d818d9b7d38ab5d3f6d5d98606198fd3daef2ff",
+        "second": 570
+      },
+      "baseline": {
+        "faces": [
+          {
+            "box": [
+              275.7196960449219,
+              134.11282348632812,
+              311.0738525390625,
+              182.5658416748047
+            ],
+            "detector_score": 0.8841589093208313,
+            "scale_agreement": 2,
+            "status": "no_mesh"
+          }
+        ],
+        "proposals": 2,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [
+          {
+            "box": [
+              275.7196960449219,
+              134.11282348632812,
+              311.0738525390625,
+              182.5658416748047
+            ],
+            "detector_score": 0.8841589093208313,
+            "scale_agreement": 2,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.6890579082703611,
+            "profile_fallback": true
+          },
+          {
+            "box": [
+              432.660400390625,
+              115.7779541015625,
+              453.9907531738281,
+              143.9964599609375
+            ],
+            "detector_score": 0.6748270392417908,
+            "scale_agreement": 0,
+            "status": "no_mesh",
+            "current_face_semantic_mean": 0.02297753379458473
+          }
+        ],
+        "proposals": 3,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 1,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 982
+    },
+    {
+      "name": "extra_690s",
+      "source": {
+        "movie_sha256": "328253280a05e6b14a92f1f43d818d9b7d38ab5d3f6d5d98606198fd3daef2ff",
+        "second": 690
+      },
+      "baseline": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded"
+      },
+      "candidate": {
+        "faces": [],
+        "proposals": 0,
+        "face_count": 0,
+        "area": 0.0,
+        "scope": "face skin only; body/hands excluded",
+        "viable_proposals": 0,
+        "mesh_faces": 0
+      },
+      "profile_pixels": 0
+    }
+  ],
+  "scene_attribution": "Tears of Steel, Blender Foundation / Blender Institute, mango.blender.org, CC BY 3.0",
+  "scene_rights_source": "https://mango.blender.org/about/",
+  "final_checks": {
+    "sources": {
+      "turn_skin_recovery.py": "d5f119e823a60737cf0cf349d5f25ce5c20804d2f74d430276bfde1ec0206f6b",
+      "face_skin_analysis.py": "2b9e6f3261798415934926c9e1a76661cea9f9309d867d9fda8821a918daad82",
+      "turn_recovery_trial.py": "817aa2efc045225f464e5200de68d19094083460762339f8995c95fdbcf7f115",
+      "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+    },
+    "source_video_sha256": "8d227097b1ca016d0f6f8851f5cebd241067d9afb2e230ab3ae8f2d29ea370f6",
+    "renderer_sha256": "bc999e101ebd45001c71a3a0160834230fce92fbfea3885036797b42661da8dd",
+    "models": {
+      "model": "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
+      "face_model": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+      "detector_model": "ebafce4e3c118d6554634be5c27ab333b4c047a9a8c3faf1d7cf93101c22f0f0"
+    },
+    "shared_streams": {
+      "input.rgba32f": "1e5f88fe96f10e76f7ae95a263b150ff8df56f0fd8ade0781b7499649809ac97",
+      "balance.f64": "e16c77959c96d5cba1a1ae1520a6433f26dcc9d3b66eb71e4613e006b1ccf872",
+      "identity.f64": "4f862096fe1224e77378b7516e7934d58d5d6373518ebe47b3b4ad87ab9d1de1",
+      "balanced.rgba32f": "b31ef81b0fd0cb1a3bf50de016e03bcb35353a853822ba1b8198864d5ca9beca",
+      "lut.rgba32f": "7e87a3ef87c430ac7c187b59db2ce37af2984f135b7dc6ebec08f5d56083b1b1",
+      "prepared.rgba32f": "f4f33bf5f809cdc0b02232d0ceb4f41c0a3dba4803d1705b4dfda85fe9a10d18"
+    },
+    "historical_baseline_inputs_unchanged": true,
+    "review_inputs_artifacts_match": true,
+    "installed_preservation": {
+      "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+      "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+    },
+    "videos": {
+      "Recovery-only-comparison.mp4": {
+        "stream": {
+          "width": 1440,
+          "height": 712,
+          "r_frame_rate": "25/1",
+          "duration": "6.240000",
+          "nb_read_frames": "156"
+        },
+        "decode": "PASS",
+        "sha256": "0f5963d24c527aa9fc5b3d271e448f5bcc5c289445667b8e7ae131f1fe4faa8a",
+        "perceptual_playback": "NOT RUN"
+      },
+      "Turn-recovery-comparison.mp4": {
+        "stream": {
+          "width": 1440,
+          "height": 712,
+          "r_frame_rate": "25/1",
+          "duration": "6.240000",
+          "nb_read_frames": "156"
+        },
+        "decode": "PASS",
+        "sha256": "5142a1a743c30a503a72bc7b3479738fe3dcedaef92763b8d949fba77c9fa0e6",
+        "perceptual_playback": "NOT RUN"
+      }
+    }
+  },
+  "visual_review": {
+    "reviewed": [
+      {
+        "file": "detail-000-007.png",
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "sha256": "e62ac9d5ff34e941a46bbce19bc19b95a2f493cd966d85a3599d7f1b9252e7d3"
+      },
+      {
+        "file": "detail-008-015.png",
+        "frames": [
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "sha256": "6814a15f19e78a4c0f04995e7dae409801dbe6250f56d1825ac2f5ab9e77e3d4"
+      },
+      {
+        "file": "detail-016-023.png",
+        "frames": [
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "sha256": "1266460accf65492272c215c559519cbdbfc359147d8b10e57df314b919d1402"
+      },
+      {
+        "file": "detail-024-031.png",
+        "frames": [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "sha256": "4b46fd18f395c3f1c89ffd86e8d2a60187d5b3263be66cbbd719fc17d3906f48"
+      },
+      {
+        "file": "detail-032-039.png",
+        "frames": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "sha256": "81d7dc8e9329f6d0917c7b8f28f684279c8ddb75c197b2a88c3f140239b16c53"
+      },
+      {
+        "file": "detail-040-047.png",
+        "frames": [
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47
+        ],
+        "sha256": "d3dcac161b553c30218cc676ef3917f061b80c03a066eaddb143fd218dcde42b"
+      },
+      {
+        "file": "detail-048-055.png",
+        "frames": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        "sha256": "ab742714b7d593d9e196327ecee8c2f7b53db4cea9e8659c23fc2e367cf58afb"
+      },
+      {
+        "file": "detail-056-063.png",
+        "frames": [
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63
+        ],
+        "sha256": "6e95aed014c2ebeda27d7f3fee09e7b90f73912de675042138d71701e73db93c"
+      },
+      {
+        "file": "detail-064-071.png",
+        "frames": [
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        "sha256": "8659b83109aba570cd1f5d97006f76be366b414e7a6bba11628c2fcab4fa9d8d"
+      },
+      {
+        "file": "detail-072-079.png",
+        "frames": [
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79
+        ],
+        "sha256": "74dd650ba6d67b19134d53a74da061c6bca192f925b8501aeb289274e44322d1"
+      },
+      {
+        "file": "detail-080-087.png",
+        "frames": [
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87
+        ],
+        "sha256": "73289ae00d0b0fbeacd3379608d04f7b7ff2ac4c13cc63a718db2c11c5ee5aed"
+      },
+      {
+        "file": "detail-088-095.png",
+        "frames": [
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95
+        ],
+        "sha256": "d9810bab3923c577895c25a4892f01d38d92819b0bd9a9c0325adaf7ddea9eb9"
+      },
+      {
+        "file": "detail-096-103.png",
+        "frames": [
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103
+        ],
+        "sha256": "8ef2aae637b3061b075b9e8a70b6264ac899af71c651453c6734631523a1f99c"
+      },
+      {
+        "file": "detail-104-111.png",
+        "frames": [
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111
+        ],
+        "sha256": "f156c3296a8b5251bbf13a463285d01e20e8164d155fa6fe1b4d5487dfc40be1"
+      },
+      {
+        "file": "detail-112-119.png",
+        "frames": [
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119
+        ],
+        "sha256": "51c956a8b667e3cf45b3aedbc0773caa4662edec315ac7d7439a43a939e16e3f"
+      },
+      {
+        "file": "detail-120-127.png",
+        "frames": [
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127
+        ],
+        "sha256": "446ddb8b6ec67c060e78bf03df10fdf75e97b935bf1c24e974e374d1c2ceb7bb"
+      },
+      {
+        "file": "detail-128-135.png",
+        "frames": [
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135
+        ],
+        "sha256": "8914670b63b465e2f18bf17199cc93cb9e334e345db2c167a9a0bd83149ddb5b"
+      },
+      {
+        "file": "detail-136-143.png",
+        "frames": [
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143
+        ],
+        "sha256": "cfb70767c7da410cd0f6100d633153782d9f705a99c1426195c4b560170f882a"
+      },
+      {
+        "file": "detail-144-151.png",
+        "frames": [
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151
+        ],
+        "sha256": "1bb7d3d4df28a73b4adbebd8404927c9acac2a1bb994f9620ca334d98f3cbec4"
+      },
+      {
+        "file": "detail-152-155.png",
+        "frames": [
+          152,
+          153,
+          154,
+          155
+        ],
+        "sha256": "d21f35ecf4f1e8209ed90eb716b5d8623991274628d95d674930c03b298badd7"
+      },
+      {
+        "file": "masks-000-023.png",
+        "frames": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "sha256": "57e509875da8d5b6c275670064ecf05dbf265c026ddd31ccfbd4d78d06e2efeb"
+      },
+      {
+        "file": "masks-024-047.png",
+        "frames": [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47
+        ],
+        "sha256": "15319df5cccf458e2d0f462498b0a2955c9faac3b3b49f398f7cda5b23887b87"
+      },
+      {
+        "file": "masks-048-071.png",
+        "frames": [
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        "sha256": "dd5b72bddf368ad723bcf358c7e1927ce544b06466a8dfa0359164fd2ccbaa62"
+      },
+      {
+        "file": "masks-072-095.png",
+        "frames": [
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95
+        ],
+        "sha256": "b97ca64559eca2be1e0e50f3b50e532c0fb1591cf12ff1d7d510b78da2d0c0f7"
+      },
+      {
+        "file": "masks-096-119.png",
+        "frames": [
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119
+        ],
+        "sha256": "487263c8f760b27b336ee933d382251f9ad1009688908b7093b0803d2b69b462"
+      },
+      {
+        "file": "masks-120-143.png",
+        "frames": [
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135,
+          136,
+          137,
+          138,
+          139,
+          140,
+          141,
+          142,
+          143
+        ],
+        "sha256": "288cedfbd15f1caa786f939505f6549c8d3ffb9f1f052d3c4785d51382b859af"
+      },
+      {
+        "file": "masks-144-155.png",
+        "frames": [
+          144,
+          145,
+          146,
+          147,
+          148,
+          149,
+          150,
+          151,
+          152,
+          153,
+          154,
+          155
+        ],
+        "sha256": "c846abcb1e73836df6b2052938d2e706e70698353bff79c8097d84da53441325"
+      },
+      {
+        "file": "full-037.png",
+        "frames": [
+          37
+        ],
+        "sha256": "021ecfee1aa499b2153da4486efa7ff70273eb9df7a904e84a4d7ad580c2c2c8"
+      },
+      {
+        "file": "full-040.png",
+        "frames": [
+          40
+        ],
+        "sha256": "c41db4a36be31754c8a1248a3e23cf4b85765de83f5cc9fc2210fa6acffb0230"
+      },
+      {
+        "file": "full-054.png",
+        "frames": [
+          54
+        ],
+        "sha256": "00b2b5bece48904454a61ddd48e1f14db4b969ea65abe1ce5a63692291764eb7"
+      },
+      {
+        "file": "full-055.png",
+        "frames": [
+          55
+        ],
+        "sha256": "2bc4957067416cffd7d9c217e99be0e9f2c27b423bc84dcad38df4a7612040f5"
+      },
+      {
+        "file": "full-056.png",
+        "frames": [
+          56
+        ],
+        "sha256": "078af01fc78b65703f1cd6ee901ae36e876307cb97939a6992b6572b446ff3f5"
+      },
+      {
+        "file": "full-131.png",
+        "frames": [
+          131
+        ],
+        "sha256": "c46ffd289a70c84f31374a87a93dff3ac4105e8d98572962083a825ba3810298"
+      },
+      {
+        "file": "full-132.png",
+        "frames": [
+          132
+        ],
+        "sha256": "a6e3e81fc31ee69196460ae8e94efc7042f72510b85db49436de1828607c791a"
+      },
+      {
+        "file": "full-140.png",
+        "frames": [
+          140
+        ],
+        "sha256": "eb6acf64c45cc3f4978a3528db63a2d98d174de81319701ca425267810cc4046"
+      },
+      {
+        "file": "full-141.png",
+        "frames": [
+          141
+        ],
+        "sha256": "08703c5b3b8cab38221185fed94e5dc05ad3ba38c4a59365a021860488e14966"
+      },
+      {
+        "file": "full-146.png",
+        "frames": [
+          146
+        ],
+        "sha256": "1703734f7261cb66c52b48fe348d77c57850ffa21b0521afa449e46aa19fd1b4"
+      }
+    ],
+    "scene_boards": {
+      "Scenes-10.png": "9d0bc4471525e3f882454a540a65e6371ce9e2e5e19465a8c5ef5e39d095f4c1",
+      "Scenes-05.png": "7edd1c5391300974abd0ec6dd13c841480a944b4fc812523004e7c418934fc0f",
+      "Scenes-15.png": "359d598b9a679a4977bb717ed2f1c559dbe8b60997f193dd3de31c3a1924abc3",
+      "Scenes-00.png": "fde8dd68b75c1896962ecb2c08bb6077b1cb79b997218d483aeece760bf45063",
+      "Scenes-20.png": "7d64b0306c702f8a51f28ce4ba4360a3d68e127ded954e63fae0ce648081b2ed"
+    },
+    "scope": "All156 overview frames at reduced whole-frame scale and20 detail sheets of96x96 source crops enlarged2x;10 selected full-frame360x640 panels. Five scene boards23cases inspected, plus enlarged validation_lab_last occluder crop. Not every generated full-frame sheet inspected.",
+    "positive": "37-39 and42-44 gain mesh face protection;55 gains profile and independently short-gap protection. Rooftop profile and seated face at570s selected in scene stills.",
+    "negative": "Remaining visible-face absence40/41/131/132/140/141/146. Existing validation_lab_last brain prop overlapping lower face remains selected; train_day_last male profile and frame-edge lab face still missed.",
+    "extra_frames": "Six additional fixed timestamps;90s overlaps prior night scene, not six independent scenes or representative held-out benchmark.",
+    "normal_speed_perceptual_playback": "NOT RUN",
+    "whole_frame_native_scale_all156": "NOT RUN",
+    "quality_acceptance": "FAIL known misses and occluder leak; do not promote"
+  },
+  "coverage_manifest_sha256": "c94cebeafde58ef6e3c312e2fef850339ca7fe42f361075a2fe99e98d416e228",
+  "tests": {
+    "python_behavior": "PASS face, analysis and turn recovery suites",
+    "core_release": "PASS5/5",
+    "native_sanitized": "PASS5/5; AE and Python model runtime not instrumented",
+    "model_order": "PASS actual155/0/78 exact",
+    "old_default_parity": "PASS actual0/55/78/155 exact",
+    "temporal_order": "PASS actual155/55/41/0/132/78 exact; synthetic nearest outside-window +/-3 mutation exact",
+    "decoder_failure_injection": "NOT RUN for this new runner; successful actual EOF/exit validated; prior runner injection remains historical",
+    "logs_sha256": {
+      "analysis-tests-final.log": "e5213039cce85af93a9ee8d369534a4f62cac1e747078f9bf874f6644af868bb",
+      "turn-tests-final.log": "a2a00b35be6366e5a0c9e8f5e6ce5b0c61e5682aa7c6fbcca4368068ef3d747e",
+      "core-sanitize-final.log": "4d408906d2804ad2a13b55fc68f358c553ac2c4b557e7e3e64de7c080d18a34a",
+      "face-tests-final.log": "8816f8a0d43a2e3c4966b537156b6fb9282988e22fd8f57ff2ffaf0f2e722f2e",
+      "core-release-final.log": "455d375897f642f593bc7862e164e71736bb708d8a80333cb702a1ddb96f1993",
+      "final-checks.json": "5e1f3914137cc64a455acb0d1dc55fddc69aa5cdc9f3e2f470255cc546ba1791"
+    },
+    "static_audit": {
+      "status": "PASS no findings in scanned code scope",
+      "report_sha256": "a7c1cae83be3aca943c7cdb6e93573b582c6b8d5ff0907ab61e193889058f577",
+      "inventory": {
+        "scope_digest": "463f94cc90f1b6f9b3d7391e70e1a2f1f654358586e26448a94f50032fc5ac6a",
+        "files": 396,
+        "bytes": 1619851,
+        "excluded_directories": 4,
+        "unsupported_files": 1923,
+        "omissions": []
+      },
+      "source_identity": {
+        "commit": "695235a7d8e91491e68e5e0967d6313dfd1623f1",
+        "dirty": true
+      },
+      "release_readiness": "not_assessed"
+    }
+  },
+  "senior_review": {
+    "reviewer": "Existing smart_color_review agent / GPT-6 Astra; read-only",
+    "closed": "Strong scale agreement rejects invalid/weak proposals; outside-window test moved to nearest +/-3; spatial label clarified; final current stream hashes verified against historical input manifest and independent v2 copies.",
+    "boundary": "Source review does not establish visual or host acceptance"
+  },
+  "final_review": {
+    "procedure": "Root reread changed code and TR01..06; compared actual coverage, defects and ablation results; verified source/model/artifact/baseline/installed hashes; refused unsafe local-crop probe promotion.",
+    "TR01": "PASS inspected bounded/order contract",
+    "TR02": "PASS synthetic admission/refusal and actual frame55; not general occlusion or identity safety",
+    "TR03": "PASS separate profile branch/default preservation; no general profile accuracy claim",
+    "TR04": "PARTIAL improvement; FAIL broad visual quality due retained misses/prop leak",
+    "TR05": "PARTIAL static coverage; continuous playback NOT RUN",
+    "TR06": "PASS evidence/preservation in inspected scope; no release readiness",
+    "outcome": "Research checkpoint saved; user flicker acceptance remains open"
+  },
+  "remaining": [
+    "Actual normal-speed perceptual playback",
+    "More reliable face parsing under profile, frame-edge, blur and skin-colored occlusion",
+    "Multi-person temporal association",
+    "Real AE smart backend integration, MFR/ROI/alpha/packaging",
+    "Existing real Log/HDR/Windows and color acceptance obligations"
+  ],
+  "private_artifacts": [
+    "outputs/FSTR-LUT-Turn-Recovery-v1",
+    "outputs/FSTR-LUT-Turn-Scenes-v1",
+    "work/smart-turn-recovery-2026-10-15"
+  ],
+  "unpromoted_probe": "Local-crop re-detection found40, remained no-mesh41/55/132, weak ambiguous geometry131, no motion support140/141. Not part of candidate or accepted fix.",
+  "performance": "Concurrent scene work overlapped run; stage timings diagnostic only, no comparative speed or Fast claim."
+}

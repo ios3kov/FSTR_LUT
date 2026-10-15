@@ -1,0 +1,58 @@
+{
+  "sources": {
+    "turn_skin_recovery.py": "d5f119e823a60737cf0cf349d5f25ce5c20804d2f74d430276bfde1ec0206f6b",
+    "face_skin_analysis.py": "2b9e6f3261798415934926c9e1a76661cea9f9309d867d9fda8821a918daad82",
+    "turn_recovery_trial.py": "817aa2efc045225f464e5200de68d19094083460762339f8995c95fdbcf7f115",
+    "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+  },
+  "source_video_sha256": "8d227097b1ca016d0f6f8851f5cebd241067d9afb2e230ab3ae8f2d29ea370f6",
+  "renderer_sha256": "bc999e101ebd45001c71a3a0160834230fce92fbfea3885036797b42661da8dd",
+  "models": {
+    "model": "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
+    "face_model": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+    "detector_model": "ebafce4e3c118d6554634be5c27ab333b4c047a9a8c3faf1d7cf93101c22f0f0"
+  },
+  "shared_streams": {
+    "input.rgba32f": "1e5f88fe96f10e76f7ae95a263b150ff8df56f0fd8ade0781b7499649809ac97",
+    "balance.f64": "e16c77959c96d5cba1a1ae1520a6433f26dcc9d3b66eb71e4613e006b1ccf872",
+    "identity.f64": "4f862096fe1224e77378b7516e7934d58d5d6373518ebe47b3b4ad87ab9d1de1",
+    "balanced.rgba32f": "b31ef81b0fd0cb1a3bf50de016e03bcb35353a853822ba1b8198864d5ca9beca",
+    "lut.rgba32f": "7e87a3ef87c430ac7c187b59db2ce37af2984f135b7dc6ebec08f5d56083b1b1",
+    "prepared.rgba32f": "f4f33bf5f809cdc0b02232d0ceb4f41c0a3dba4803d1705b4dfda85fe9a10d18"
+  },
+  "historical_baseline_inputs_unchanged": true,
+  "review_inputs_artifacts_match": true,
+  "installed_preservation": {
+    "Contents/Info.plist": "ab27a860e36657394ad58299937d2b90931d95bf6ef6f1c5bec617df855cf25d",
+    "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+    "Contents/_CodeSignature/CodeResources": "fb26457a9ef0cc3940573455547822d590e327e91d9750a007e63bdc21529d37",
+    "Contents/MacOS/FSTR_LUT_Development": "9db564f3122207061f971bbe1bbf1f08c16e9274bc4c1db32b93dfa928f2cec6",
+    "Contents/Resources/FSTR_LUT_Development.rsrc": "df6eec1320169a30e4c290fab2f18bbf576e2a64541d03518ceaea799b4691ce"
+  },
+  "videos": {
+    "Recovery-only-comparison.mp4": {
+      "stream": {
+        "width": 1440,
+        "height": 712,
+        "r_frame_rate": "25/1",
+        "duration": "6.240000",
+        "nb_read_frames": "156"
+      },
+      "decode": "PASS",
+      "sha256": "0f5963d24c527aa9fc5b3d271e448f5bcc5c289445667b8e7ae131f1fe4faa8a",
+      "perceptual_playback": "NOT RUN"
+    },
+    "Turn-recovery-comparison.mp4": {
+      "stream": {
+        "width": 1440,
+        "height": 712,
+        "r_frame_rate": "25/1",
+        "duration": "6.240000",
+        "nb_read_frames": "156"
+      },
+      "decode": "PASS",
+      "sha256": "5142a1a743c30a503a72bc7b3479738fe3dcedaef92763b8d949fba77c9fa0e6",
+      "perceptual_playback": "NOT RUN"
+    }
+  }
+}

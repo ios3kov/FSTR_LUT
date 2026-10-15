@@ -16,3 +16,30 @@ First bounded candidate uses a lower proposal threshold only with independent me
 Recovery is conservative intersection of directly warped original mesh masks from both sides with current semantic/proposal support. Per-side forward/backward motion consistency, image agreement and local texture checks reject unreliable correspondence. No recovered or fallback mask can seed another recovery. Initial recovery is restricted to a single unambiguous face per relevant frame; multiple-face scenes retain spatial masks but abstain from recovery. This is a bounded research limitation, not general multi-person tracking.
 
 Occluding hands may resemble faces and pass semantic/photometric tests. These checks are hypotheses to validate on actual examples, not a proof of occlusion safety. A failing candidate must be retained as negative evidence, not silently promoted or hidden by a zero mask.
+
+## Measured checkpoint — 2026-10-15
+
+Implementation `695235a7d8e91491e68e5e0967d6313dfd1623f1`. Exact artifacts and inspected coverage: [TURN_RECOVERY_EVIDENCE.json](TURN_RECOVERY_EVIDENCE.json). This is an offline research checkpoint, not an installed AE feature.
+
+The new detector/mesh path restores C2098 frames37–39 and42–44. Frame55 is recovered from mesh seeds54/56; the independent profile branch also selects it. Seven previously absent masks now cover visible faces. The old23 zero-mask frames become16; this is not an accuracy measure, because later frames include actual face departure. Four actual old-default checks and three reverse-order model checks are exact. Native color variants keep zero-mask background exact and linear luminance error below6.86e-8.
+
+Profile fallback additionally selects the rooftop profile and the seated face in the570s corpus still. The23-case comparison contains first/last frames from seven known scenes, three controls and six additional fixed timestamps. The90s sample overlaps a known night scene; this is not six independent new scenes or a representative accuracy benchmark. Inspected balusters/beige/night/grey negatives stay excluded.
+
+**FAIL / not accepted:** visible-face masks still disappear at40/41,131/132,140/141 and146. The existing lab case selects a brain prop overlapping the lower face; this is an inherited occlusion defect, not resolved by recovery. Male train profile and frame-edge lab face remain missed. Skin-colored hands, occlusion, eye/lip exclusion in the profile fallback and general multi-person association are not guaranteed. Admission gates are heuristic and still produce abrupt protection changes when they refuse. Soft per-pixel confidence does not solve temporal appearance/disappearance.
+
+**PASS in tested scope:** three Python behavior suites;5/5 Release and5/5 ASan/UBSan native core suites; bounded radius2/order checks; actual models/source hashes and unchanged old input manifests; all four native ablations; both MP4s completely decode156 frames,25fps,6.24s,1440x712. The new runner's injected decoder-failure path was not executed; earlier failure injection belongs to the old runner. No full host acceptance follows from these checks.
+
+**Visual coverage:** all156 frames inspected in seven reduced whole-frame mask sheets and twenty enlarged detail sheets; ten selected full-frame sheets at360x640 panel resolution (37,40,54,55,56,131,132,140,141,146). All five scene boards inspected. Continuous normal-speed perceptual playback and whole-frame native-scale inspection of every frame are **NOT RUN**. The user's full flicker acceptance remains open.
+
+Stage timings were collected while scene analysis overlapped the run, so they are diagnostics, not speed-comparison or1080p/Fast evidence. Installed b7f44 five-file hashes remain unchanged. No model/media redistribution, AE installation, merge, push or release.
+
+A separate local-crop probe found frame40 but returned weak/ambiguous geometry on131; it is retained outside the accepted candidate. Next bounded work should address profile/occlusion parsing on these exact failures before promoting a backend, then complete actual normal-speed review and host gates. No weakened thresholds or zeroed masks were used to hide the known failure.
+
+| Gate | Result |
+|---|---|
+| TR01 | PASS explicit radius2 and repeatability in inspected tests |
+| TR02 | PASS bounded synthetic admission/refusal and actual55; broader occlusion safety unproved |
+| TR03 | PASS separate fallback/default contracts; profile accuracy remains incomplete |
+| TR04 | PARTIAL gains; FAIL remaining misses and occluder leak |
+| TR05 | PARTIAL static coverage; continuous playback NOT RUN |
+| TR06 | PASS local evidence/preservation; no release readiness |

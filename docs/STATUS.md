@@ -1,5 +1,15 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Turn recovery — current research checkpoint
+
+Implementation `695235a7d8e91491e68e5e0967d6313dfd1623f1`. Added profile fallback and nonrecursive short-gap transport in the independent prototype; installed AE is unchanged. Scope and results: [TURN_RECOVERY.md](TURN_RECOVERY.md), exact evidence: [TURN_RECOVERY_EVIDENCE.json](TURN_RECOVERY_EVIDENCE.json).
+
+**PASS in inspected scope:** six small-face detector misses restored; frame55 recovered from neighbors54/56 (also independently selected by profile fallback). Seven previously absent masks restored,23→16 absent frames including actual face departure. Model/default repeatability exact, radius2 contract tested, zero-mask background exact. Three Python suites, five Release and five ASan/UBSan native suites pass; both156-frame comparison MP4s decode fully. Installed b7f44 five hashes unchanged.
+
+**FAIL / not accepted:** visible faces still missed on40/41,131/132,140/141,146; inherited lab prop occlusion leak persists. Profile/edge coverage incomplete. All156 frames inspected in overview/detail, ten selected native-scale full-frame sheets and23 scene cases reviewed. Continuous normal-speed playback and full native-scale review of all frames **NOT RUN**; user's flicker acceptance remains open. Output: `outputs/FSTR-LUT-Turn-Recovery-v1` and `outputs/FSTR-LUT-Turn-Scenes-v1`. No AE integration, Fast claim or release. Earlier evidence/obligations below remain historical and preserved.
+
+---
+
 ## Face-supported skin follow-up — current research checkpoint
 
 Implementation `180304bfaf56ad2a671f7c8dc7b924bb45352614`. Independent YuNet proposals, IMAGE-mode face confirmation and semantic skin intersection implemented; face-only scope, no hands/body. Actual720×1280 source analysis feeds the same360×640 native color comparison. User's requested known-error and motion follow-up is recorded in [FACE_SKIN_REVIEW.md](FACE_SKIN_REVIEW.md), exact sources/artifacts in [FACE_SKIN_EVIDENCE.json](FACE_SKIN_EVIDENCE.json).

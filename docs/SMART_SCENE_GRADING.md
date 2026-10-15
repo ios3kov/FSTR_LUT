@@ -2,6 +2,8 @@
 
 2026-10-15. Source baseline `75fa1ed`, branch `dev/ai-enhance-prototype`. Direct user steering: automatic discovery; actively grade skin within the chosen look, not preserve original skin; apply scene understanding to ALL frame objects. No manual object selection. Quality before speed. This supersedes a face-only endpoint; no claim of implemented semantic scene grading.
 
+Current implementation and executed checks: [SMART_SCENE_IMPLEMENTATION.md](SMART_SCENE_IMPLEMENTATION.md). Initial statuses below describe the research checkpoint and are superseded by the scoped implementation evidence.
+
 ## Research decision
 
 Adopt a coherent scene look plus bounded, confidence-weighted material/region adjustments. A class label alone cannot determine the desired color. A red coat is not automatically orange; blue light on skin is not automatically a white-balance error. Keep illumination, relative complexion, texture, highlights and inter-object relationships. Automated estimates are uncertain evidence, not ground truth. No universal skin target, no per-frame gray-world normalization and no independent hard recoloring of every detected object.

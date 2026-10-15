@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "baseline": "345c14f",
+  "branch": "dev/ai-enhance-prototype",
+  "status": "standalone_research_implemented_not_host_ready",
+  "source_sha256": {
+    "CMakeLists.txt": "44f54b81ce9ebae3ae993098408f5df9bcc60c737fd80c9c42e1d12a81f9a16c",
+    "include/fstr/scene_color.hpp": "b9d0bb59d08744ba37c6adb52171707e64d18f3ee1642d3b0322e7137335dc91",
+    "src/color/scene_color.cpp": "34e65d3198cc0c749cdcab9ef0a7e3a77120fdaa4094fef7f057145421e94bd9",
+    "tests/scene_color_tests.cpp": "f6f53cc8a2debfbf03ba103cf01a6facc35a1b4a56fd578c1eedc78cd25825bb",
+    "tests/scene_analysis_tests.py": "71bc503bb3c79cfd410a5721ac6cdcd7cddb9c3f76e69d9f21a216800d414b8e",
+    "tools/benchmark/scene_analysis.py": "05ce0f3a2b2ed7abf3a6444e4cd77f763b64b069b240734cd83fe0561ff69ae5",
+    "tools/benchmark/scene_color_main.cpp": "a982f1898af3f0609ae9e1ff2d026d7a2bd205837fe18e6e871ca7a199619751",
+    "tools/benchmark/scene_skin_probe.py": "cef1e4bfdff5fdbab17bfb9fb03fba10b50692843563ee89ce0ad6d3705493e2",
+    "tools/benchmark/scene_trial.py": "cc9410403fe74607e0350b7e56595978927ea0b1b8a2c4592b8a605629a6d376",
+    "tools/benchmark/scene_motion_review.py": "23eebb2bc4827f6e26092813b54e7a5f6514e4766193e0d8a131f78c7e32cb2e",
+    "assets/models/scene-segmentation-research-manifest.json": "68959082995bdcb3df405333a6b259c95d158324c12adac0fea507ce79dbf481"
+  },
+  "renderer_sha256": "36fdaa186f6ee300f733b70c79acbec7d66f85990692b94b7cf5bb7a5e6202d3",
+  "checks": {
+    "release": "PASS9/9",
+    "asan_ubsan": "PASS9/9",
+    "python": "PASS9/9",
+    "cli_output_preservation": "PASS",
+    "static": "PASS0",
+    "RGB_processor": "PASS",
+    "source": "contracts.json in job"
+  },
+  "full_trial": {
+    "cases": 166,
+    "video_frames": 156,
+    "reverse_exact": true,
+    "max_luminance_delta": 2.9563903808587953e-08,
+    "scope": "Executed prior to input-provenance/geometry/opaque guards and uniform abstention. Numerical path for163 real images unchanged; support1 confirmed for every real input. Executed scripts preserved in external job."
+  },
+  "final_strict_trial": {
+    "cases": 6,
+    "source_provenance": "per-case input/parts/model SHA and label schema, renderer and LUT SHA recorded",
+    "uniform_controls": "PASS3/3 exact ordinary LUT",
+    "evidence_sha256": "080df69afb86e9970d645cffaedffeafe05ec620ecabd6472991ca74a8551e93"
+  },
+  "motion": {
+    "raw_mask_mae": 0.00808935544393476,
+    "stable_mask_mae": 0.00673051418421129,
+    "skin_raw_mae": 0.0890376490059084,
+    "skin_stable_mae": 0.07242269496722469,
+    "added_color_mae": 6.121547535698365e-05,
+    "skin_added_color_mae": 0.0005126694534957441,
+    "worst_skin_pairs": [
+      {
+        "frame": "motion-149",
+        "valid_pixels": 104895,
+        "skin_pixels": 1555,
+        "raw_mask_mae": 0.01880759187042713,
+        "stable_mask_mae": 0.018643831834197044,
+        "skin_raw_mae": 0.3297468423843384,
+        "skin_stable_mae": 0.3268580138683319,
+        "added_color_mae": 9.060178854269907e-05,
+        "skin_added_color_mae": 0.0020035002380609512
+      },
+      {
+        "frame": "motion-150",
+        "valid_pixels": 115546,
+        "skin_pixels": 1508,
+        "raw_mask_mae": 0.018935831263661385,
+        "stable_mask_mae": 0.017388848587870598,
+        "skin_raw_mae": 0.3294806182384491,
+        "skin_stable_mae": 0.32022470235824585,
+        "added_color_mae": 8.908100426197052e-05,
+        "skin_added_color_mae": 0.001859728479757905
+      },
+      {
+        "frame": "motion-152",
+        "valid_pixels": 110841,
+        "skin_pixels": 576,
+        "raw_mask_mae": 0.012487761676311493,
+        "stable_mask_mae": 0.012631184421479702,
+        "skin_raw_mae": 0.3991438150405884,
+        "skin_stable_mae": 0.39580219984054565,
+        "added_color_mae": 7.496502803405747e-05,
+        "skin_added_color_mae": 0.001507091918028891
+      },
+      {
+        "frame": "motion-051",
+        "valid_pixels": 119619,
+        "skin_pixels": 235,
+        "raw_mask_mae": 0.00899761077016592,
+        "stable_mask_mae": 0.007095671258866787,
+        "skin_raw_mae": 0.3082529306411743,
+        "skin_stable_mae": 0.26054292917251587,
+        "added_color_mae": 5.938664617133327e-05,
+        "skin_added_color_mae": 0.00138037686701864
+      },
+      {
+        "frame": "motion-138",
+        "valid_pixels": 113891,
+        "skin_pixels": 759,
+        "raw_mask_mae": 0.008594649843871593,
+        "stable_mask_mae": 0.008594649843871593,
+        "skin_raw_mae": 0.24047626554965973,
+        "skin_stable_mae": 0.24047626554965973,
+        "added_color_mae": 6.0710430261678994e-05,
+        "skin_added_color_mae": 0.0013200624380260706
+      }
+    ]
+  },
+  "visual": {
+    "status": "FAIL overall semantic acceptance",
+    "inspected": [
+      "motion048,054,055,056",
+      "train_day",
+      "validation_people",
+      "validation_lab",
+      "test_face",
+      "test_rooftop",
+      "negative-beige final"
+    ],
+    "observations": [
+      "Useful automatic built/vegetation/person role support",
+      "Incomplete complex-light skin",
+      "Some objects assigned built-surface role incorrectly",
+      "Uniform-field false sky fixed with information abstention"
+    ],
+    "continuous_playback": "NOT RUN"
+  },
+  "ae_whole_scene": "NOT RUN",
+  "deployment": "No installation; evaluation-only scene model, no release",
+  "original_plugin": {
+    "Contents/Info.plist": true,
+    "Contents/PkgInfo": true,
+    "Contents/_CodeSignature/CodeResources": true,
+    "Contents/MacOS/FSTR_LUT_Development": true,
+    "Contents/Resources/FSTR_LUT_Development.rsrc": true
+  },
+  "artifacts": {
+    "job": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/scene-smart-2026-10-15",
+    "video": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/scene-smart-2026-10-15/full-trial/Scene-Smart-Comparison.mp4",
+    "evidence": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/scene-smart-2026-10-15/full-trial/evidence.json"
+  }
+}

@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Whole-scene Smart — standalone slice implemented, not promoted to AE
+
+C++ TealOrange residual + automatic scene/person-part probabilities + soft spatial/explicit temporal fusion implemented.166case run includes156consecutive user frames;9release/9sanitizer/9Python checks pass. Motion-compensated mask error drops16.8%overall/18.7%skin; continuous perceptual approval NOT RUN. Fixed uniform-field false semantic confidence, final6case strict run passes inputs/provenance/negative controls. Complex-light skin and object misclassification remain FAIL; research-only model cannot ship. Existing installed plugin unchanged. [Implementation](SMART_SCENE_IMPLEMENTATION.md), [evidence](SMART_SCENE_EVIDENCE.json).
+
+
 ## Smart grading of the entire scene — revised scope, research complete
 
 User requires automatic preset-directed toning of all objects/materials, with skin as one part; original-hue protection is superseded. Professional-source review rejects fixed skin warmth as a sufficient Smart implementation. Preserve light/material relationships, soft confidence-weighted regional adjustments and temporal coherence. User reports small-face hard boundaries and mask toggling: visual acceptance remains FAIL. Unvalidated paired-grade draft archived outside product; runtime unchanged. [Research, revised contract and next experiment](SMART_SCENE_GRADING.md). No new host/model/visual PASS.

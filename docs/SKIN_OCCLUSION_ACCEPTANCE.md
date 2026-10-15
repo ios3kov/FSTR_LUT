@@ -20,14 +20,24 @@ Initial private image probe had incorrect timestamps after frame selection and d
 
 ## Continuous review
 
-QuickTime successfully opened exact comparison and playback advanced; tools provide sampled screenshots, not a continuous visual stream. User initially reported: "трудно сказать. лицо очень маленькое. вроде не видно". This is preliminary, not PASS. Created and started a5x face-crop comparison, three full25fps repeats (468frames,18.72s). No artificial sharpness/detail enhancement; labels explicitly state enlarged source resolution. User follow-up requested for perceptual review. A player start, screenshots and full decoder pass do not close that check.
+QuickTime successfully opened exact comparison and playback advanced; tools provide sampled screenshots, not a continuous visual stream. User initially reported: "трудно сказать. лицо очень маленькое. вроде не видно". This is preliminary, not PASS. Created and started a5x face-crop comparison, three full25fps repeats (468frames,18.72s). No artificial sharpness/detail enhancement; labels explicitly state enlarged source resolution. User subsequently answered the enlarged review: "Пока не могу оценить". No reliable perceptual verdict is available; do not keep asking in this block. A player start, screenshots and full decoder pass do not close that check.
 
-Known numerical continuity failures persist: mask disappears at40–41,131–132,140–141 and146. These do not by themselves quantify perceptual flicker, but cannot be removed from acceptance. Continuous visual verdict is pending explicit evaluation; full AE runtime NOT RUN.
+Known numerical continuity failures persist: mask disappears at40–41,131–132,140–141 and146. These do not by themselves quantify perceptual flicker, but cannot be removed from acceptance. Continuous visual verdict remains inconclusive after the user could not assess the enlarged preview; full AE runtime NOT RUN.
 
 ## Final decision and next boundary
 
-Temporal-recovery regression: improved with measured losses. General skin-colored occlusion: FAIL. Continuous visual review: pending human closeup assessment; never infer acceptance from silence. AE integration withheld due semantic failure irrespective of playback response.
+Temporal-recovery regression: improved with measured losses. General skin-colored occlusion: FAIL. Continuous visual review: no reliable verdict after enlarged preview; never infer acceptance from silence. AE integration withheld due semantic failure irrespective of playback response.
 
 Next defensible implementation is an independent candidate for semantic occluder rejection, comparing stationary/longer-than-window/co-moving/entering/leaving objects and genuine face turns/blur. Do not expand the current correspondence heuristic into a universal face-mask veto or continue tuning solely to frame55. Existing MVP/OC/BR requirements remain open.
 
 Exact evidence: [SKIN_OCCLUSION_ACCEPTANCE_EVIDENCE.json](SKIN_OCCLUSION_ACCEPTANCE_EVIDENCE.json). Private outputs `outputs/FSTR-LUT-Structure-Recovery-v2`; private trials `work/smart-acceptance-2026-10-15`.
+
+## Additional fixed input-contract ablation — rejected
+
+Executed32 cases (seven actual source frames, both planted occluders,23 existing scenes) with unchanged modernized weights and0.5 threshold: current max-of-three-rolls, same crop single orientation, and pinned upstream POS geometry adapted to YuNet five points. Source/template at https://github.com/mertakinstd/FaceOcc/tree/8d86c9a2c1a0094dbc1a1e5467413b49f8936b32/face_align . Scale/translation and inverse mapping passed an independent projected-landmark oracle. This is a YuNet adaptation, not reproduction of original3DDFA landmark generation. Modernized ImageNet normalization retained. SciPy1.16.2 installed only into isolated private research deps to read the MAT template; no runtime/plugin dependency changed.
+
+Single orientation still admits the textured patch (interior0.7521), despite improvement on flat patch0.0439. Aligned output removes both patches by deleting face support: flat case has no matched YuNet proposal, texture case entire mask is zero. On genuine frame56 it retains18.85 mask mass versus183.31 current (~90% loss). This fails visible-face preservation. Neither variant promoted. No further crop/roll/threshold tuning applied.
+
+Inspected both planted cases,frame56,and lab prop/side-lit face/people scene boards. Corrected those scene review boards to preserve aspect ratio; numeric arrays unchanged. Geometry and all32 numeric results are recorded; other generated boards were not claimed visually inspected. Initial private run failed with list/array IoU type mismatch before results; corrected rerun uses explicit array and a fresh output directory.
+
+Private reproducible source and all results: `work/smart-acceptance-2026-10-15/alignment/probe.py` and `alignment/result-v2`. Exact source/template hashes in evidence. This closes the input-preparation hypothesis as unsuitable on tested cases, not the semantic-occlusion requirement. Next candidate must improve the semantic model/path with independent occluder/skin ground truth. Current AE transfer remains blocked by known quality failures.

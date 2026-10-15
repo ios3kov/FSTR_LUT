@@ -2467,7 +2467,7 @@
   ],
   "baseline": "af88cb0",
   "decision": "FAIL semantic occlusion; no AE promotion",
-  "visual_user_report": "Small face: difficult to assess, seemingly no flicker. Closeup assessment pending.",
+  "visual_user_report": "Overview: difficult to assess, face small, seemingly no flicker. Enlarged 3-loop closeup: \u041f\u043e\u043a\u0430 \u043d\u0435 \u043c\u043e\u0433\u0443 \u043e\u0446\u0435\u043d\u0438\u0442\u044c.",
   "extra_sources": {
     "tools/benchmark/skin_occlusion_stress.py": "4a3965700c205944b4799d3c0b6283de40f46d7cfe409ef1b27cba901c67e2cc",
     "tools/benchmark/skin_occlusion_image_probe.py": "22788bfd1616143ce596ec3bcccd3489041d91bea53c5ef31b7fd0ced16f4840",
@@ -2506,5 +2506,626 @@
     "sha256": "990bc92f0cd3accd71b1403f56a43fba9bb8b4e7cb2a65b16becfcc87307626c"
   },
   "final_code_review": "PASS limited implementation contracts; semantic acceptance FAIL; static scanner no findings; losses explicitly retained",
-  "playback": "QuickTime exact file opened, playback observed advancing. Overview user report inconclusive. Enlarged comparison started; human response pending."
+  "playback": "Exact comparison and closeup opened and started in QuickTime. No reliable continuous perceptual verdict; completed acceptance NOT RUN. No further question pending.",
+  "alignment_ablation": {
+    "cases": [
+      {
+        "name": "frame54",
+        "support_mass": 219.56517028808594,
+        "modes": {
+          "current": {
+            "mass": 212.15768432617188,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 211.2770233154297,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 209.7156219482422,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "frame55",
+        "support_mass": 181.62026977539062,
+        "modes": {
+          "current": {
+            "mass": 1.3415346145629883,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.009290914982557297
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.0
+          }
+        }
+      },
+      {
+        "name": "frame56",
+        "support_mass": 225.0011749267578,
+        "modes": {
+          "current": {
+            "mass": 183.3065185546875,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 160.68856811523438,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 18.854646682739258,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "frame130",
+        "support_mass": 246.34765625,
+        "modes": {
+          "current": {
+            "mass": 229.31629943847656,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 223.2210693359375,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 214.01611328125,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "frame131",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "frame132",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "frame133",
+        "support_mass": 259.7857666015625,
+        "modes": {
+          "current": {
+            "mass": 251.25782775878906,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 251.25782775878906,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 249.4035186767578,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "flat",
+        "support_mass": 181.62026977539062,
+        "modes": {
+          "current": {
+            "mass": 142.2281951904297,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.7521324753761292
+          },
+          "single": {
+            "mass": 23.41425895690918,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.043886955827474594
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 1,
+            "interior_mean": 0.0
+          }
+        }
+      },
+      {
+        "name": "texture",
+        "support_mass": 181.62026977539062,
+        "modes": {
+          "current": {
+            "mass": 155.15672302246094,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.8258676528930664
+          },
+          "single": {
+            "mass": 133.64694213867188,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.7521169781684875
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0,
+            "interior_mean": 0.0
+          }
+        }
+      },
+      {
+        "name": "train_day_first",
+        "support_mass": 1514.45458984375,
+        "modes": {
+          "current": {
+            "mass": 1499.9534912109375,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 1497.0628662109375,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 1481.1715087890625,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "train_day_last",
+        "support_mass": 364.81591796875,
+        "modes": {
+          "current": {
+            "mass": 359.4793701171875,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 357.98724365234375,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "validation_lab_first",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "validation_lab_last",
+        "support_mass": 20359.634765625,
+        "modes": {
+          "current": {
+            "mass": 13297.3076171875,
+            "missing_alignment_proposals": 0,
+            "prop_mass": 0.0,
+            "forehead_mass": 989.2387084960938,
+            "cheek_mass": 872.9925537109375
+          },
+          "single": {
+            "mass": 13163.2080078125,
+            "missing_alignment_proposals": 0,
+            "prop_mass": 0.0,
+            "forehead_mass": 989.2387084960938,
+            "cheek_mass": 865.9925537109375
+          },
+          "aligned": {
+            "mass": 13126.865234375,
+            "missing_alignment_proposals": 0,
+            "prop_mass": 0.0,
+            "forehead_mass": 989.2387084960938,
+            "cheek_mass": 867.9925537109375
+          }
+        }
+      },
+      {
+        "name": "validation_people_first",
+        "support_mass": 15691.0888671875,
+        "modes": {
+          "current": {
+            "mass": 15688.912109375,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 15667.64453125,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 15642.8271484375,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "validation_people_last",
+        "support_mass": 16889.794921875,
+        "modes": {
+          "current": {
+            "mass": 16860.294921875,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 16836.130859375,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 16811.296875,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_night_first",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_night_last",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_face_first",
+        "support_mass": 14693.1669921875,
+        "modes": {
+          "current": {
+            "mass": 13590.7109375,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 13572.0703125,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 13584.3046875,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_face_last",
+        "support_mass": 13034.8935546875,
+        "modes": {
+          "current": {
+            "mass": 11820.9091796875,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 11811.02734375,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 11816.5947265625,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_action_first",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_action_last",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_rooftop_first",
+        "support_mass": 2938.046630859375,
+        "modes": {
+          "current": {
+            "mass": 2938.046630859375,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 2938.046630859375,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 2199.28955078125,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "test_rooftop_last",
+        "support_mass": 6008.19677734375,
+        "modes": {
+          "current": {
+            "mass": 6007.7958984375,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 6007.01708984375,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 6007.55810546875,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "beige",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "night_blue",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "grey",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "extra_90s",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "extra_210s",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "extra_330s",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "extra_450s",
+        "support_mass": 5835.8017578125,
+        "modes": {
+          "current": {
+            "mass": 5833.4697265625,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 5821.0673828125,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 5816.22998046875,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "extra_570s",
+        "support_mass": 820.6679077148438,
+        "modes": {
+          "current": {
+            "mass": 811.3063354492188,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 811.3063354492188,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 814.3208618164062,
+            "missing_alignment_proposals": 0
+          }
+        }
+      },
+      {
+        "name": "extra_690s",
+        "support_mass": 0.0,
+        "modes": {
+          "current": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "single": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          },
+          "aligned": {
+            "mass": 0.0,
+            "missing_alignment_proposals": 0
+          }
+        }
+      }
+    ],
+    "provenance": {
+      "alignment": "YuNet adaptation of pinned FaceOcc POS, not3DDFA",
+      "geometry_oracle": "PASS",
+      "source_sha256": "25c7ea178cf8caae2e012acf4e962d5287a673a2ac3c16dc707671a2c6a53004",
+      "template_sha256": "53b83ce6e35c50ddc3e97603650cef4970320c157e75c241c844f29c1dcba65a",
+      "upstream": "8d86c9a2c1a0094dbc1a1e5467413b49f8936b32",
+      "modes": [
+        "current max rolls",
+        "single same crop",
+        "adapted POS single"
+      ]
+    },
+    "upstream_source_sha256": "9a8dac999dd2ac23c5d37796981fd14f8706e1caf454fd5783b62011853b4a69",
+    "reviewed": [
+      "flat",
+      "texture",
+      "frame56",
+      "review-validation_lab_last",
+      "review-test_face_last",
+      "review-validation_people_last"
+    ],
+    "decision": "REJECT: no aligned proposal on flat patch; whole-face deletion on texture; ~90% real face mask loss on56; single orientation retains texture false positive",
+    "private_source": "../smart-acceptance-2026-10-15/alignment/probe.py"
+  }
 }

@@ -4,7 +4,7 @@
 
 [Scope and negative evidence](SKIN_OCCLUSION_ACCEPTANCE.md), [exact report](SKIN_OCCLUSION_ACCEPTANCE_EVIDENCE.json). Added structural correspondence guard against false temporal recovery.84 paired synthetic cases improve skin-colored texture rejection, with measured loss of valid surrounding support.156-frame native masks/render and23 static scene results unchanged from af88cb0; installed plugin unchanged.
 
-**FAIL semantic occlusion:** actual pinned FaceOcc accepts planted skin-colored patches in real footage before recovery (interior mean0.752/0.826). This cannot be fixed by relaxing recovery thresholds. No AE promotion. **Continuous visual review pending:** user could not confidently assess the small-face overview; enlarged three-loop preview created and started in QuickTime. Tool snapshots are not continuous perception. Earlier missing-mask intervals persist. Do not mark either requested gate closed without evidence.
+**FAIL semantic occlusion:** actual pinned FaceOcc accepts planted skin-colored patches in real footage before recovery (interior mean0.752/0.826). This cannot be fixed by relaxing recovery thresholds. No AE promotion. **Continuous visual review inconclusive:** user could not assess either overview or enlarged three-loop preview started in QuickTime. Additional32-case same-weight alignment ablation rejected: removing the false object also deletes genuine face protection (~90% loss on56). Tool snapshots are not continuous perception. Earlier missing-mask intervals persist. Do not mark either requested gate closed without evidence.
 
 ---
 

@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "a95f43ab48a2b53773fa3e997ce31f5804ea4de8",
+  "test_source_sha256": "57d012a0453919edfee45eb78fbebe2321ae60980060f11102dc476c30ace0f5",
+  "bundle_sha256": "2a8fa1546790c79afb2af51e197c26d094c29c6a0f7e4c7379786f6f04939a29",
+  "runtime_unchanged": true,
+  "actual_module_result": "Real native Smart changes 563 pixels; Off repeat exact\nReal frame50 temporal recovery changed 504 pixels\nReal frame54 long-gap vs Smart Off changed 0 pixels\nReal frame55 long-gap vs Smart Off changed 0 pixels\nReal frame56 long-gap vs Smart Off changed 0 pixels\nPASS 2592194 owned native callback assertions; actual AE loader/MFR: NOT RUN\n",
+  "ctest": "PASS8/8",
+  "installed_unchanged": true,
+  "actual_AE": "NOT RUN",
+  "continuous_transition": "NOT RUN",
+  "artifacts": {
+    "native.log": "0d182303d5a1202d0b7145d8c32803f7733de93cd265b6a7c6fd645687943ea2",
+    "tests.log": "a62468b6f17ad4e6f8e23109427979dd0dfce6e91fee8962ae9d3d17e7178bc2"
+  }
+}

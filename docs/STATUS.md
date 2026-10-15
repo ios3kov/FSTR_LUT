@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Clarified long-gap fallback — ordinary LUT, short interpolation retained
+
+User narrowed fallback to complex long gaps. Cancel further forced long-gap tracking; preserve verified1–2frame interpolation. Actual module54/55/56 equals Smart Off byte-for-byte; short50still recovers504pixels. Existing runtime already conforms; regression and contract updated, no algorithm change. Continuous transition and actual AE remain NOT RUN. [Contract/evidence](LONG_GAP_FALLBACK.md), [hashes](LONG_GAP_FALLBACK_EVIDENCE.json).
+
+
 ## Native two-sided interpolation — bounded implementation
 
 SmartFX now uses explicit ±2frames to bridge at most two missing detections. Coarse color signatures and bounded position search must match both raw anchors; ambiguous/intersecting intermediate detections reject. Actual156frame replay restores50/116 only; real module frame50 confirms504changed pixels. Eight release and sanitizer targets pass. Long gaps54–56, complete motion quality and actual AE remain open. [Contract/results](NATIVE_REGION_INTERPOLATION.md), [evidence](NATIVE_REGION_INTERPOLATION_EVIDENCE.json). Installed plugin unchanged.

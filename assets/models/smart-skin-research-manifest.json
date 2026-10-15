@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "name": "MediaPipe SelfieMulticlass 256",
+  "status": "research_only_quality_gate_failed",
+  "model_url": "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/1/selfie_multiclass_256x256.tflite",
+  "sha256": "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
+  "model_card": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20Multiclass%20Segmentation.pdf",
+  "license_declared_by_model_card": "Apache-2.0",
+  "weights_in_repository_or_plugin": false,
+  "backend_tested": "mediapipe 1.1.1 IMAGE mode, TensorFlow Lite XNNPACK CPU, macOS arm64",
+  "input": {
+    "semantic": "opaque display sRGB, Rec709 primaries, RGB uint8 [0,255] supplied to MediaPipe task",
+    "tensor_layout": "NHWC",
+    "tensor_type": "float32",
+    "tensor_shape": [1, 256, 256, 3],
+    "normalization_by_task_from_verified_model_metadata": {"mean": [127.5], "std": [127.5]},
+    "camera_log_policy": "Not supported by this research runner; explicit SDR input transfer required"
+  },
+  "output": {
+    "tensor_shape": [1, 256, 256, 6],
+    "tensor_type": "float32",
+    "task_resamples_masks_to_input_image_dimensions": true,
+    "labels_verified_from_embedded_labels_txt": ["background", "hair", "body-skin", "face-skin", "clothes", "others"],
+    "skin_channels_zero_based": [2, 3],
+    "scale": 1,
+    "confidence_is_not_calibrated_accuracy": true
+  },
+  "context": "IMAGE mode without recurrent state; full frame plus four fixed overlapping semantic views; explicit radius2 temporal processing is separate",
+  "known_failures": [
+    "Small or occluded faces can be missed",
+    "Light architectural balusters mistaken for skin in independent movie scenes",
+    "One dark-skinned character in complex light missed in inspected test_face image; no general skin-tone acceptance",
+    "Small false-positive weight on a uniformly beige authored field"
+  ],
+  "deployment_decision": "Do not integrate or install this backend in AE until semantic quality and temporal behavior pass representative acceptance"
+}

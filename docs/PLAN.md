@@ -1,5 +1,9 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Authorized Smart Color experiment — 2026-10-15
+
+User «делай» authorizes the proposed independent Auto Balance + semantic Skin Protection + temporal stability prototype before AE integration. Scope/criteria SC01..07: [SMART_COLOR.md](SMART_COLOR.md). This extends color work; restoration, training, GPU acceleration and publication remain deferred. Current plugin Natural/looks/state and installed b7f44 bytes are preserved. The first backend's semantic quality failed on independent scenes, so integration is gated on replacing/improving that backend and repeating acceptance; running inference or a passing numeric kernel is not sufficient. Current exact results are recorded in STATUS.md. Earlier MVP obligations below remain open.
+
 Current scope: user's color-first MVP steering, recorded in MVP_COLOR.md, takes precedence over the original v3 sequence below. V3 remains the broader post-MVP contract unless superseded by a direct decision. Initial GitHub repository was empty; preserved baseline b21b571. Branch dev/ai-enhance-prototype. No main/release/publication authorized.
 
 ## Discovery and delta

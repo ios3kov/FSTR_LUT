@@ -28,9 +28,16 @@ def main():
     parser=argparse.ArgumentParser()
     for arg in ('source','model','renderer','look','job','output'):
         parser.add_argument('--'+arg,type=Path,required=True)
+    parser.add_argument('--analysis-scale',type=int,choices=(1,2),default=1)
+    parser.add_argument('--face-model',type=Path)
+    parser.add_argument('--detector-model',type=Path)
     parser.add_argument('--input-transfer',choices=('gamma24','srgb'),required=True)
     args=parser.parse_args()
-    for name in ('source','model','renderer','look'):
+    if args.analysis_scale!=1 and not args.face_model:
+        raise ValueError('Separate analysis scale is scoped to face-supported trial')
+    if bool(args.face_model) != bool(args.detector_model):
+        raise ValueError('Both face and detector models are required together')
+    for name in ('source','model','renderer','look')+ (('face_model','detector_model') if args.face_model else ()):
         path=getattr(args,name).resolve(strict=True)
         if not path.is_file():raise ValueError('Expected input file: '+name)
         setattr(args,name,path)
@@ -38,7 +45,7 @@ def main():
         raise ValueError('This comparison trial is explicitly Teal & Orange; use a separate labeled trial for another look')
     args.job.mkdir(parents=True,exist_ok=False);args.output.mkdir(parents=True,exist_ok=False)
     snapshot=args.job/'source';snapshot.mkdir()
-    for name in ('smart_color_trial.py','smart_analysis.py'):
+    for name in ('smart_color_trial.py','smart_analysis.py')+(('face_skin_analysis.py',) if args.face_model else ()):
         path=Path(__file__).parent/name
         (snapshot/name).write_bytes(path.read_bytes())
     code_sha256={p.name:sha(p) for p in snapshot.iterdir()}
@@ -60,22 +67,63 @@ def main():
     rgba=np.ones((count,h,w,4),np.float32);rgba[...,:3]=linear
     rgba.tofile(args.job/'input.rgba32f');del rgba,encoded,decoded
     print(f'DECODE {count} frames {w}x{h} at{fps}fps; explicit {args.input_transfer}',flush=True)
-    model=SkinSegmenter(args.model)
+    if args.face_model:
+        from face_skin_analysis import FaceSkinSegmenter,stabilize_face_mask
+        model=FaceSkinSegmenter(args.model,args.face_model,args.detector_model)
+    else:
+        model=SkinSegmenter(args.model)
+    supports=[]
+    high_process=None;high_errors=None;repeat_images={}
     masks=[];details=[];balances=[];inference_ms=[]
     try:
+        if args.analysis_scale==2:
+            high_errors=(args.job/'analysis-decode.log').open('wb')
+            high_cmd=cmd.copy();high_cmd[high_cmd.index('-vf')+1]=high_cmd[high_cmd.index('-vf')+1].replace('scale=360:640','scale=720:1280')
+            high_process=subprocess.Popen(high_cmd,stdout=subprocess.PIPE,stderr=high_errors)
         for i,rgb in enumerate(images):
-            start=time.perf_counter();mask,detail=model.analyze(rgb)
+            if high_process is not None:
+                raw=high_process.stdout.read(w*h*4*3)
+                if len(raw)!=w*h*4*3:raise ValueError('Incomplete full-detail analysis frame')
+                high=np.frombuffer(raw,np.uint8).reshape(h*2,w*2,3).astype(np.float32)/255
+                rgb=encode_srgb(high**2.4 if args.input_transfer=='gamma24' else decode_srgb(high)).astype(np.float32)
+            if i in (count-1,0,count//2):repeat_images[i]=rgb.copy()
+            start=time.perf_counter()
+            if args.face_model:
+                mask,support,detail=model.analyze_with_support(rgb)
+                if high_process is not None:
+                    mask=cv2.resize(mask,(w,h),interpolation=cv2.INTER_AREA)
+                    support=cv2.resize(support,(w,h),interpolation=cv2.INTER_AREA)
+                supports.append(support)
+            else:
+                mask,detail=model.analyze(rgb)
             inference_ms.append((time.perf_counter()-start)*1000)
-            balance,bdetail=estimate_balance(rgb)
+            balance,bdetail=estimate_balance(images[i])
             masks.append(mask);balances.append(balance);details.append(dict(segmentation=detail,balance=bdetail))
             if i%25==0:print(f'ANALYSIS {i+1}/{count}; skin_area={mask.mean():.4f}',flush=True)
+        if high_process is not None:
+            if high_process.stdout.read(1):raise ValueError('Unexpected extra analysis frame data')
+            if high_process.wait(timeout=30)!=0:
+                raise RuntimeError('Full-detail analysis decoder failed; see analysis-decode.log')
         # Same actual model in deliberately nonchronological IMAGE requests.
         repeated=[]
         for i in [count-1,0,count//2]:
-            again,_=model.analyze(images[i]);error=float(np.abs(again-masks[i]).max())
+            again,_=model.analyze(repeat_images[i])
+            if high_process is not None:again=cv2.resize(again,(w,h),interpolation=cv2.INTER_AREA)
+            error=float(np.abs(again-masks[i]).max())
             if error>1e-6:raise ValueError('Model inference depends on call order')
             repeated.append(dict(frame=i,max_error=error))
-    finally:model.close()
+    finally:
+        try:model.close()
+        finally:
+            try:
+                if high_process is not None:
+                    high_process.stdout.close()
+                    if high_process.poll() is None:high_process.terminate()
+                    try:high_process.wait(timeout=15)
+                    except subprocess.TimeoutExpired:
+                        high_process.kill();high_process.wait()
+            finally:
+                if high_errors is not None:high_errors.close()
     masks=np.asarray(masks);balances=np.asarray(balances)
     np.save(args.job/'spatial-masks.npy',masks);np.save(args.job/'balance-raw.npy',balances)
     (args.job/'analysis.json').write_text(json.dumps(dict(details=details,inference_ms=inference_ms,repeated=repeated),indent=2)+'\n')
@@ -83,12 +131,15 @@ def main():
     stable=[];stabilized=[];temporal_ms=[]
     for i in range(count):
         start=time.perf_counter()
-        stable.append(stabilize_mask(images,masks,i,cuts));stabilized.append(stabilize_balance(balances,i,cuts))
+        stable.append(stabilize_face_mask(images,masks,supports,i,cuts) if args.face_model else stabilize_mask(images,masks,i,cuts))
+        stabilized.append(stabilize_balance(balances,i,cuts))
         temporal_ms.append((time.perf_counter()-start)*1000)
         if i%25==0:print(f'TEMPORAL {i+1}/{count}',flush=True)
     stable=np.asarray(stable);stabilized=np.asarray(stabilized)
+    if args.face_model:
+        np.save(args.job/'face-supports.npy',np.asarray(supports))
     for i in [count-1,0,count//2]:
-        if not np.array_equal(stable[i],stabilize_mask(images,masks,i,cuts)):raise ValueError('Temporal order dependency')
+        if not np.array_equal(stable[i],stabilize_face_mask(images,masks,supports,i,cuts) if args.face_model else stabilize_mask(images,masks,i,cuts)):raise ValueError('Temporal order dependency')
     stable.tofile(args.job/'stable-mask.f32');masks.tofile(args.job/'spatial-mask.f32')
     stabilized.astype(np.float64).tofile(args.job/'balance.f64')
     identity=np.tile([0.,1.,1.,1.],(count,1));identity.tofile(args.job/'identity.f64')
@@ -115,7 +166,7 @@ def main():
         overlay=source.astype(float);p=stable[i][...,None]*.65
         overlay=np.rint(overlay*(1-p)+np.array([40,240,130])*p).astype(np.uint8)
         return [source,to_u8(outputs['lut'][i,...,:3]),to_u8(outputs['smart'][i,...,:3]),overlay]
-    titles=['Original','Teal & Orange / LUT','Smart / Skin Protection 80%','Skin mask / green overlay']
+    titles=['Original','Teal & Orange / LUT','Face Skin Protection 80%' if args.face_model else 'Smart / Skin Protection 80%','Face mask / green overlay' if args.face_model else 'Skin mask / green overlay']
     for sec in (1,2,4):
         i=min(count-1,sec*fps);board=Image.new('RGB',(w*4,h+72),(19,21,25));draw=ImageDraw.Draw(board)
         for k,arr in enumerate(panels(i)):
@@ -183,7 +234,9 @@ def main():
     # Adjacent MAE includes actual motion. No automatic temporal-quality PASS.
     report=dict(scope='Independent opaque SDR prototype; not AE render or artistic approval',
                 frame_count=count,width=w,height=h,fps=fps,input_transfer=args.input_transfer,
-                model_sha256=MODEL_SHA,source_sha256=sha(args.source),look_sha256=sha(args.look),code_sha256=code_sha256,
+                analysis_width=w*args.analysis_scale,analysis_height=h*args.analysis_scale,
+                model_sha256=MODEL_SHA,face_model_sha256=sha(args.face_model) if args.face_model else None,
+                detector_model_sha256=sha(args.detector_model) if args.detector_model else None,source_sha256=sha(args.source),look_sha256=sha(args.look),code_sha256=code_sha256,
                 renderer_sha256=sha(args.renderer),metrics=metrics,native_timings=timings,
                 inference_ms=dict(median=float(np.median(inference_ms)),p95=float(np.percentile(inference_ms,95))),
                 temporal_ms=dict(median=float(np.median(temporal_ms)),p95=float(np.percentile(temporal_ms,95))),
@@ -191,7 +244,8 @@ def main():
     (args.job/'verification.json').write_text(json.dumps(report,indent=2)+'\n')
     (args.output/'README-RU.md').write_text('Исследовательский Smart Color, не новая сборка AE.\n\n'
         'Сравнение: исходник, обычный Teal & Orange 100%, умеренная подготовка + защита кожи80%, маска.\n'
-        f'{count} кадров при{fps}fps,{w}×{h}; вход явно принят {args.input_transfer} SDR.\n'
+        f'{count} кадров при{fps}fps,{w}×{h}; вход явно принят {args.input_transfer} SDR.\n'+
+        ('Проверка только кожи лица; руки и тело не защищены.\n' if args.face_model else '')+
         'Зелёная маска — результат модели, не ручная эталонная разметка. Качество на других людях/свете не доказано.\n'
         'Модель и видео обрабатываются локально. Установленный плагин не изменён.\n')
     print(json.dumps(dict(metrics=metrics,inference_ms=report['inference_ms'],temporal_ms=report['temporal_ms']),indent=2),flush=True)

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "research_only_not_integrated",
+  "pipeline": "YuNet whole-frame proposals at 1x/2x (max1536), FaceLandmarker IMAGE confirmation, semantic skin intersection inside feathered outline excluding eyes/lips",
+  "scope": "opaque SDR face skin only; no body/hands or identity recognition",
+  "models": [
+    {
+      "name": "OpenCV Zoo YuNet 2026may dynamic-input export",
+      "url": "https://media.githubusercontent.com/media/opencv/opencv_zoo/main/models/face_detection_yunet/face_detection_yunet_2026may.onnx",
+      "sha256": "ebafce4e3c118d6554634be5c27ab333b4c047a9a8c3faf1d7cf93101c22f0f0",
+      "bytes": 229738,
+      "license": "MIT; directory LICENSE inspected; no weights redistribution in this block",
+      "source": "https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet",
+      "input": "OpenCV FaceDetectorYN BGR uint8; explicit 1x/2x sample dimensions; score0.8 NMS0.3 topK5000; additional deterministic NMS0.35 max16",
+      "output": "N x15: x,y,w,h,5 keypoint pairs,score; finite validation; bounds and minimum10px gates",
+      "runtime": "existing OpenCV5.0.0.93 Python research environment; dynamic shape export chosen per upstream README"
+    },
+    {
+      "name": "MediaPipe Face Landmarker float16 v1",
+      "url": "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+      "sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+      "license": "Detector/FaceMesh model cards declare Apache2.0; bundled blendshape unused; no bundle redistribution in this block",
+      "guide": "https://developers.google.com/edge/mediapipe/solutions/vision/face_landmarker/python",
+      "model_card": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Face%20Mesh%20V2.pdf",
+      "input": "opaque sRGB RGB uint8 cropped around each independent detector proposal; task handles preprocessing; IMAGE mode, num_faces1, detection/presence thresholds0.5",
+      "output": "478 normalized landmarks translated into input image pixel coordinates; finite and geometry validation; not a confidence score or visible-skin matte",
+      "context": "no VIDEO mode/previousFrame; explicit radius2 external window only"
+    },
+    {
+      "name": "MediaPipe SelfieMulticlass256",
+      "manifest": "smart-skin-research-manifest.json",
+      "sha256": "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
+      "input": "face-centered crop2.6x detection size; same verified RGB/normalization contract",
+      "output": "sum channels2+3; smoothstep0.45..0.85; multiplied by confirmed face support; no filled-face fallback"
+    }
+  ],
+  "uncertainty": "no proposal, missing mesh, partial frame-edge geometry or missing semantic skin returns zero protection; missed faces remain quality failures",
+  "data": "all footage/model inference local; weights and footage external to repository and plugin",
+  "limitations": ["profile and edge faces missed", "occluded anatomy may be inferred; semantic intersection is not an occlusion proof", "detector threshold crossings may cause temporal color jumps", "regression scenes used during selection are not a blind holdout"]
+}

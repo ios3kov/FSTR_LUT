@@ -1,5 +1,9 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Automatic multi-person protection — next step
+
+No manual selection. Implement independent face tracks with optional body/head support; mandatory body confirmation failed group/close-up controls. Isolate ambiguous tracks, preserve global hand veto and bounded deterministic windows. Validate crossings, entry/exit, overlapping hands and many small faces. Semantic occlusion and continuous flicker remain open. [Review](PERSON_HEAD_AUTOMATION.md), [evidence](PERSON_HEAD_AUTOMATION_EVIDENCE.json).
+
 ## Broader input color interpretation — user request2026-10-15
 
 Support other camera Log/gamut pairs and non-camera encoded sources, not metadata alone. Scope candidates include ARRI LogC, Canon Log, Panasonic V-Log, Nikon N-Log, Fujifilm F-Log, Blackmagic Film, RED Log3G10, DJI D-Log, Apple Log, Cineon, ACEScc/ACEScct and linear CG/interchange sources. Treat each actual profile/version and gamut explicitly; names alone do not define transforms. PQ/HLG are separate HDR transfer functions, not camera Log. This list is a planning scope, not a claim of present support or verified official formulas.

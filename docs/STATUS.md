@@ -1,5 +1,9 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Automatic person/head support — not accepted for promotion
+
+17 new tests and24 regressions PASS. Fresh12-frame analysis completed; frame55 weak/patchy, skin-texture occlusion FAIL. Group control detects3faces but0poses and loses all protection. Four-person cap is explicit, not crowd support. Continuous flicker/AE integration NOT RUN; installed files unchanged. [Review](PERSON_HEAD_AUTOMATION.md), [evidence](PERSON_HEAD_AUTOMATION_EVIDENCE.json).
+
 ## Anchor-driven blur transfer — limited recovery demonstrated
 
 [Review](ANCHOR_FACE_TRACKING.md), [evidence](ANCHOR_FACE_TRACKING_EVIDENCE.json). Added independent two-anchor feature tracking, geometry agreement, continuous coarse/detail blending and preserved explicit occlusion exclusions.9new tests plus15adaptive/blur regressions PASS. Final actual55gets weak partial mask (sum119.534),12frame slice changes55only, reverse repeat exact. Texture-patch leakage0.052873 and patchy face protection remain; semantic/flicker acceptance NOT CLOSED. No native/installed change.

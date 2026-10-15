@@ -1,0 +1,81 @@
+{
+  "base_commit": "1d6adf1",
+  "scope": "research only",
+  "source_sha256": {
+    "tools/benchmark/person_head_analysis.py": "62c1e2348eb147121357a54db2b837fd1252d172c5e9500ee2f610447aac8df5",
+    "tests/person_head_tests.py": "a80ee1a5ab235f1387dfd6c26b5815289c84a45063bd5dcf8e13f331897dd085"
+  },
+  "private_report": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/person-head-2026-10-15/trial-v7/report.json",
+  "report_sha256": "231a98339fdc85880bc743314f1df70bf552df41634a7640f2510b4fdef10ba0",
+  "tests": {
+    "person_head": 17,
+    "anchor": 9,
+    "adaptive": 15,
+    "result": "PASS"
+  },
+  "controls": [
+    {
+      "name": "flat",
+      "mass": 0.0,
+      "patch_mean": 0.0,
+      "poses": 1,
+      "faces": 0
+    },
+    {
+      "name": "texture",
+      "mass": 500.94671630859375,
+      "patch_mean": 0.40931522846221924,
+      "poses": 1,
+      "faces": 1
+    },
+    {
+      "name": "validation_lab_last",
+      "mass": 0.0,
+      "patch_mean": null,
+      "poses": 1,
+      "faces": 1
+    },
+    {
+      "name": "validation_people_last",
+      "mass": 0.0,
+      "patch_mean": null,
+      "poses": 0,
+      "faces": 3
+    },
+    {
+      "name": "test_face_first",
+      "mass": 0.0,
+      "patch_mean": null,
+      "poses": 0,
+      "faces": 1
+    },
+    {
+      "name": "beige",
+      "mass": 0.0,
+      "patch_mean": null,
+      "poses": 0,
+      "faces": 0
+    }
+  ],
+  "render_reverse_exact": true,
+  "model_repeat_frames": [
+    55,
+    48,
+    59
+  ],
+  "installed_files_unchanged": {
+    "Contents/Info.plist": true,
+    "Contents/PkgInfo": true,
+    "Contents/_CodeSignature/CodeResources": true,
+    "Contents/MacOS/FSTR_LUT_Development": true,
+    "Contents/Resources/FSTR_LUT_Development.rsrc": true
+  },
+  "semantic_acceptance": "FAIL",
+  "real_crowd_crossings": "NOT RUN",
+  "continuous_visual_flicker": "NOT RUN",
+  "AE_integration": "NOT RUN",
+  "model_sha256": {
+    "pose_landmarker_full.task": "4eaa5eb7a98365221087693fcc286334cf0858e2eb6e15b506aa4a7ecdcec4ad",
+    "hand_landmarker.task": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+  }
+}

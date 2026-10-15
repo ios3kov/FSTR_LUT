@@ -1,5 +1,23 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Smart Color research checkpoint
+
+Implementation `95733b02309da422a926028f901641ad6bc798cd`. User-authorized independent prototype implemented: semantic skin masks from pinned MediaPipe256, full-frame plus four fixed overlapping views; conservative exposure/WB; explicit radius2 flow-gated masks and log-gain/stop smoothing; separate native C++ selective chroma protection. Scope/criteria: [SMART_COLOR.md](SMART_COLOR.md). Exact sources/artifacts and gate results: [SMART_COLOR_EVIDENCE.json](SMART_COLOR_EVIDENCE.json).
+
+PASS: five core Release suites and five ASan/UBSan suites; research analysis tests including translated texture/mask direction, photo rejection, uncertain-center identity, invalid masks, supplied cut barriers and reverse order; actual CLI malformed-stream/bypass/preservation checks in both builds. 156 supplied-video frames at360x640/25fps rendered through native core in five variants. Model repeat requests on frames155/0/78 were exact. Zero-mask pixels exactly equal balance+LUT; linear luminance max difference7.68e-8 after float storage. Source snapshots/current renderer and unchanged installed b7f44 five-file hashes verified.
+
+**FAIL semantic quality / do not promote:** independent seven-scene movie corpus + three authored controls exposed architectural balusters selected as skin and a visible face missed under complex side lighting. Uniform beige field has a small false-positive mask. Selected C2098 stills improve local skin color compared with unprotected LUT as an editorial judgment, but masks remain incomplete; confidence scores are not mask-accuracy evidence. The strong skin blend can produce out-of-range display RGB (~0.584% of pixels on this trial); the native float kernel intentionally preserves those values. A production gamut/skin policy is not accepted.
+
+Two6.24s comparison MP4s and inspected1/2/4s boards/portrait/independent-scenes sheet are local under `outputs/FSTR-LUT-Smart-Color-v3` and `outputs/FSTR-LUT-Smart-Scenes-v1` outside Git. Numerical video processing and selected still inspection are complete; continuous subjective playback/flicker acceptance NOT RUN. Global adjacent-mask differences include real motion and are not a quality verdict. Known cut heuristic misses some similar-color cuts. Complete occlusion ground-truth validation NOT RUN.
+
+Research CPU medians on this Mac: segmentation five views~699ms, temporal~196ms, native smart transform~38ms per360x640 frame. These are diagnostic stage timings under this run, not1080p/AE/Fast measurements. No acceleration claim.
+
+Current AE installation remains **b7f44ed4ca0704d6**, unchanged; no Smart Color UI/backend has been installed. AE/alpha/ROI/MFR/native model packaging and broad skin-tone/realLog/HDR/Windows acceptance remain NOT RUN. Decision: retain this experiment and its negative evidence; next bounded step is a different semantic backend or face-supported mask candidate evaluated on the same negative cases before any AE integration. Existing color MVP obligations below remain open; no release, main change or publication.
+
+---
+
+## Installed Cinema & Palettes checkpoint
+
 Implementation158682d69567445980282b2d7dae70cb292c1bfd; signed Mac BuildID **b7f44ed4ca0704d6**. Natural plus15 original Cinema & Palettes looks with clear English names,0–100% slider/default100%, typed strength up to300%. Old Warm removed from new selection; stable value2 is a separator retaining frozen old-project appearance. No changed diskIDs/order. Current scope/acceptance: [CINEMA_LOOKS.md](CINEMA_LOOKS.md); exact artifact/Evidence: [EVIDENCE_CINEMA_V1.json](EVIDENCE_CINEMA_V1.json).
 
 PASS:6signed Release suites and6ASan/UBSan suites; 23actual AE25.6x101 PSD8 exports,16new-default100% styles,0/200/300%, old Warm and3reopen comparisons. Natural vs saved Original is exact in the inspected export; repeat/legacy/zero comparisons max1/255 at fixed2/255 tolerance. Actual loaded module path and5installed hashes verified. Actual controls show Teal & Orange100%, FX3/SDR and whole frame25%. Old project unchanged; previous plugin and completed one-shot helper fully archived outside MediaCore. Local ZIP8,224,367bytes roundtrip/strict signature PASS.

@@ -1,0 +1,16 @@
+Internal ctest changing into directory: /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-smart-sanitize
+Test project /Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/FSTR_LUT/build-smart-sanitize
+    Start 1: smart_color_contracts
+1/5 Test #1: smart_color_contracts ............   Passed    0.55 sec
+    Start 2: camera_metadata_contracts
+2/5 Test #2: camera_metadata_contracts ........   Passed    0.03 sec
+    Start 3: core_contracts
+3/5 Test #3: core_contracts ...................   Passed    0.13 sec
+    Start 4: color_contracts
+4/5 Test #4: color_contracts ..................   Passed    0.02 sec
+    Start 5: cinema_look_contracts
+5/5 Test #5: cinema_look_contracts ............   Passed    3.25 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Total Test time (real) =   3.98 sec

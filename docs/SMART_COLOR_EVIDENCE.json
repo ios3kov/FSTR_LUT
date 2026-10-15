@@ -1,0 +1,711 @@
+{
+  "schema_version": 1,
+  "date_local": "2026-10-15",
+  "timezone": "Europe/Podgorica",
+  "implementation_commit": "95733b02309da422a926028f901641ad6bc798cd",
+  "branch": "dev/ai-enhance-prototype",
+  "scope": "Independent opaque SDR research prototype; not linked into installed AE plugin",
+  "rules": "AE-Development-Rules v11.1.0 /04b606845e0f73ab28b9807bb45682eae4d6ce34",
+  "source_sha256": {
+    "CMakeLists.txt": "60da6d9cf9658641c87043d559090955eab29563abe8cec2a2b1c5208eeb19f1",
+    "include/fstr/smart_color.hpp": "fc2b2e0935197505beaf8e54e0dcd8f5e3e563a1085501d7b09690e652f45c0d",
+    "src/color/smart_color.cpp": "30dc285f4e987200bda2ba44593cfe41132f9dcf516a7801c0b1f62f61d5d131",
+    "tools/benchmark/smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466",
+    "tools/benchmark/smart_color_main.cpp": "f2b1a0377524e88af1a2fdeaad72d777b4b3042b4159981b0765773308a215c8",
+    "tools/benchmark/smart_color_trial.py": "f72e450d742d8d6a58347fd20bdf515838d5c996af6b8279d7cc90ed20aa1cee",
+    "tools/benchmark/smart_scene_trial.py": "4bfbd4cbf17b805dca04ef8d7ac8dba3bea9bf2a70adf5551e2961f647696509",
+    "tools/benchmark/smart-requirements-lock-macos-arm64.txt": "b7c0f5a6328c108de35e9dd9f166c7bd4ac92213e04d72ebf4632d91b7b23cd3",
+    "tests/smart_analysis_tests.py": "dab9a23451d0a8d88ceb04fe7f50f59cfffefe1a5b2586c1ee646c8c5a3547d7",
+    "tests/smart_cli_tests.py": "c11e1ee9b25f0c371a0cbcf23597b7880a7f3e4a5ca7e98aa003112fea226ca5",
+    "tests/smart_color_tests.cpp": "03468c958e63dae843ba4914a055dbd4387d0db29687e04e5af4c1f5a6cb4ddd",
+    "assets/models/smart-skin-research-manifest.json": "96665f43735aa7313c739675afaca7ed3c1d0c0bc71e6d7a36f3316fa71382a0"
+  },
+  "renderer_sha256": "bc999e101ebd45001c71a3a0160834230fce92fbfea3885036797b42661da8dd",
+  "model_sha256": "c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0",
+  "python_execution_snapshot_sha256": {
+    "smart_color_trial.py": "f72e450d742d8d6a58347fd20bdf515838d5c996af6b8279d7cc90ed20aa1cee",
+    "smart_analysis.py": "e4248d815af2af747c81505a7a1efb0f903470553b64d906e124ae1c74672466"
+  },
+  "tests": {
+    "release_ctest": "PASS 5/5",
+    "asan_ubsan_ctest": "PASS 5/5; host/model runtime not instrumented",
+    "analysis_contracts": "PASS explicit bounds, identity refusal, supplied cut barriers, translated texture/mask direction, photometric rejection, reverse requests",
+    "native_stream_release_and_sanitizers": "PASS exact bypass, output/input preservation, malformed dimensions/masks/gains/alpha rejection",
+    "logs_sha256": {
+      "tests-final.log": "0b8cb827e2cfa2915a0f43a78aca9cf9575a5c049e057180c71b8576dfd28459",
+      "sanitize-tests-final.log": "d25ec6294dc871da842887e87b8c2a29199543d27f895ea0698ac5419b2a8d36",
+      "analysis-tests-final.log": "e5213039cce85af93a9ee8d369534a4f62cac1e747078f9bf874f6644af868bb",
+      "cli-tests-final.log": "52c1fa282c9e5abc75f830ea7ed73607fc1dfdb9d011d985c47f9a8f59f1cb0d",
+      "cli-sanitize-tests-final.log": "52c1fa282c9e5abc75f830ea7ed73607fc1dfdb9d011d985c47f9a8f59f1cb0d"
+    }
+  },
+  "source_clip_trial": {
+    "frames": 156,
+    "width": 360,
+    "height": 640,
+    "fps": 25,
+    "explicit_input_transfer": "gamma24",
+    "variants": [
+      "LUT",
+      "balanced LUT",
+      "spatial protection",
+      "temporal protection",
+      "prepared base"
+    ],
+    "metrics": {
+      "skin_weighted_selected_pixels": 102357,
+      "background_exact_equal": true,
+      "luminance_max_error": 7.67469406127725e-08,
+      "smart_display_out_of_range_fraction": 0.005843126780626781,
+      "lut_display_out_of_range_fraction": 0.0,
+      "skin_change_linear_mean": 0.025446929037570953,
+      "exposure_minmax": [
+        0.0,
+        0.0
+      ],
+      "gain_minmax": [
+        0.997163407786689,
+        1.0095793740301016
+      ],
+      "max_exposure_step": 0.0,
+      "cut_indices": [],
+      "model_repeated_reverse_requests": [
+        {
+          "frame": 155,
+          "max_error": 0.0
+        },
+        {
+          "frame": 0,
+          "max_error": 0.0
+        },
+        {
+          "frame": 78,
+          "max_error": 0.0
+        }
+      ],
+      "raw_mask_adjacent_mae": 0.002441025571897626,
+      "stable_mask_adjacent_mae": 0.002306050853803754
+    },
+    "inference_ms": {
+      "median": 698.8776040088851,
+      "p95": 776.1364899852197
+    },
+    "temporal_ms": {
+      "median": 195.93812500534113,
+      "p95": 217.96245873701992
+    },
+    "native_timings": {
+      "lut": {
+        "frames": 156,
+        "elapsed_ms": 5792.26,
+        "ms_per_frame": 37.1299
+      },
+      "balanced": {
+        "frames": 156,
+        "elapsed_ms": 6823.38,
+        "ms_per_frame": 43.7396
+      },
+      "smart": {
+        "frames": 156,
+        "elapsed_ms": 5873.95,
+        "ms_per_frame": 37.6535
+      },
+      "spatial": {
+        "frames": 156,
+        "elapsed_ms": 6228.01,
+        "ms_per_frame": 39.9232
+      },
+      "prepared": {
+        "frames": 156,
+        "elapsed_ms": 1280.95,
+        "ms_per_frame": 8.21119
+      }
+    },
+    "crops": "full frame plus four fixed overlapping semantic crops; raw and temporally stabilized masks",
+    "quality": "PARTIAL selected-still review; general semantic gate FAIL elsewhere; continuous subjective playback NOT RUN"
+  },
+  "independent_corpus": {
+    "source": "Tears of Steel, Blender Foundation / Blender Institute, mango.blender.org, CC BY 3.0",
+    "source_url": "https://media.xiph.org/tearsofsteel/tears_of_steel_1080p.webm",
+    "case_count": 10,
+    "status": "FAIL semantic acceptance",
+    "observations": [
+      "test_face: substantial visible face missed; baluster selected",
+      "test_rooftop: face partially selected plus false-positive balusters",
+      "uniform_beige: small nonzero false-positive weight",
+      "day/lab/multiple-person scenes: useful but incomplete masks"
+    ],
+    "cases": [
+      {
+        "name": "train_day",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.9474952220916748,
+          "refined_peak": 0.9564113616943359,
+          "area": 0.020060261711478233
+        },
+        "balance": [
+          0.0,
+          0.9998466968536377,
+          0.9986293911933899,
+          1.0140286684036255
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.09405517578125,
+          "cells": 9,
+          "wb_applied": true,
+          "q05": 0.03439602440286428,
+          "q50": 0.23706818440929056,
+          "q90": 0.46703486706972125,
+          "q98": 0.7525393200063706
+        },
+        "protected_area_above_half": 0.020100911458333332,
+        "peak": 1.0
+      },
+      {
+        "name": "validation_lab",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.9175518155097961,
+          "refined_peak": 0.937645673751831,
+          "area": 0.0910339429974556
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.0,
+          "cells": 0,
+          "wb_applied": false,
+          "q05": 0.026057723130071535,
+          "q50": 0.17739641505014153,
+          "q90": 0.688421281181574,
+          "q98": 0.9010963142373563
+        },
+        "protected_area_above_half": 0.09026285807291666,
+        "peak": 1.0
+      },
+      {
+        "name": "validation_people",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.940045952796936,
+          "refined_peak": 0.9422956109046936,
+          "area": 0.07229838520288467
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.01898193359375,
+          "cells": 4,
+          "wb_applied": false,
+          "q05": 0.026799161725295707,
+          "q50": 0.13518527034670116,
+          "q90": 0.3341855943664908,
+          "q98": 0.5826525440056325
+        },
+        "protected_area_above_half": 0.07199300130208333,
+        "peak": 1.0
+      },
+      {
+        "name": "test_night",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.08003269135951996,
+          "refined_peak": 0.1402585357427597,
+          "area": 0.0
+        },
+        "balance": [
+          0.20616358742089225,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "bounded-shadow-exposure",
+          "neutral_support": 0.00091552734375,
+          "cells": 0,
+          "wb_applied": false,
+          "q05": 0.023778730984465216,
+          "q50": 0.035331222725473344,
+          "q90": 0.26953282056093214,
+          "q98": 0.37339830237376687
+        },
+        "protected_area_above_half": 0.0,
+        "peak": 0.0
+      },
+      {
+        "name": "test_face",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.9250736236572266,
+          "refined_peak": 0.9356080293655396,
+          "area": 0.03233429044485092
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.03314208984375,
+          "cells": 8,
+          "wb_applied": false,
+          "q05": 0.0321273986043781,
+          "q50": 0.2572936800971627,
+          "q90": 0.612427764493227,
+          "q98": 0.702856241373539
+        },
+        "protected_area_above_half": 0.03368326822916667,
+        "peak": 1.0
+      },
+      {
+        "name": "test_action",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.7046746611595154,
+          "refined_peak": 0.7046746611595154,
+          "area": 0.00010967584967147559
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.01898193359375,
+          "cells": 3,
+          "wb_applied": false,
+          "q05": 0.019657979066371917,
+          "q50": 0.03587406340911985,
+          "q90": 0.1789709541843832,
+          "q98": 0.5757217614215016
+        },
+        "protected_area_above_half": 4.8828125e-05,
+        "peak": 0.699922502040863
+      },
+      {
+        "name": "test_rooftop",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.9369308948516846,
+          "refined_peak": 0.9369308948516846,
+          "area": 0.04383234679698944
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.018798828125,
+          "cells": 3,
+          "wb_applied": false,
+          "q05": 0.02034691445042379,
+          "q50": 0.15630594416633248,
+          "q90": 0.4074394453203678,
+          "q98": 0.5877174685240983
+        },
+        "protected_area_above_half": 0.04429931640625,
+        "peak": 1.0
+      },
+      {
+        "name": "uniform_beige",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.5668792724609375,
+          "refined_peak": 0.5668792724609375,
+          "area": 0.001342459232546389
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.0,
+          "cells": 0,
+          "wb_applied": false,
+          "q05": 0.2282297901883721,
+          "q50": 0.2282297901883721,
+          "q90": 0.22822979126423595,
+          "q98": 0.22822979126423595
+        },
+        "protected_area_above_half": 0.0,
+        "peak": 0.20624373853206635
+      },
+      {
+        "name": "night_blue",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.06734256446361542,
+          "refined_peak": 0.06735309213399887,
+          "area": 0.0
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 0.0,
+          "cells": 0,
+          "wb_applied": false,
+          "q05": 0.0016251853508874774,
+          "q50": 0.0016251854155154431,
+          "q90": 0.001625185480143409,
+          "q98": 0.001625185480143409
+        },
+        "protected_area_above_half": 0.0,
+        "peak": 0.0
+      },
+      {
+        "name": "neutral_grey",
+        "segmentation": {
+          "crops": [
+            [
+              0,
+              0,
+              512,
+              213
+            ],
+            [
+              256,
+              0,
+              768,
+              213
+            ],
+            [
+              0,
+              107,
+              512,
+              320
+            ],
+            [
+              256,
+              107,
+              768,
+              320
+            ]
+          ],
+          "coarse_peak": 0.18102240562438965,
+          "refined_peak": 0.18102240562438965,
+          "area": 0.0
+        },
+        "balance": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "balance_diagnostics": {
+          "reason": "identity",
+          "neutral_support": 1.0,
+          "cells": 16,
+          "wb_applied": false,
+          "q05": 0.13286836445331573,
+          "q50": 0.13286836445331573,
+          "q90": 0.13286836445331573,
+          "q98": 0.13286836445331573
+        },
+        "protected_area_above_half": 0.0,
+        "peak": 0.0
+      }
+    ]
+  },
+  "visual_review": {
+    "inspected": [
+      "C2098 Comparison2s/4s, Portrait-detail, Balance2s",
+      "source motion samples0/1/4/6s",
+      "fixed-crop mask samples0/1/2/4/6s",
+      "independent10case sheet"
+    ],
+    "findings": [
+      "Masks remain incomplete at small sizes and complex lighting",
+      "Skin chroma mitigation can create extended RGB; display preview clips explicitly",
+      "No claim of exact matte, comprehensive skin-tone coverage or improved continuous motion"
+    ]
+  },
+  "review": {
+    "root": "Separate criteria/code/actual-still review completed; no observed unresolved core arithmetic defect",
+    "senior": "GPT-6 Astra read-only review; four analysis/evidence findings corrected and affected tests rerun; no code edits by reviewer",
+    "quality_gate": "FAIL; do not install this semantic backend"
+  },
+  "static_scan": {
+    "exit_code": 0,
+    "verdict": "no_findings_in_scanned_scope",
+    "release_readiness": "not_assessed",
+    "sha256": "e60796f6b167ff5a471f9f2738d8080c75324a9f8ad4c0d46a81cd0b1e610154",
+    "note": "Scanned source unchanged by subsequent implementation commit; scanner head metadata predates commit"
+  },
+  "preservation": {
+    "installed_build": "b7f44ed4ca0704d6",
+    "all_five_file_hashes": "PASS unchanged",
+    "ae_source_and_parameters": "unchanged",
+    "models_media_uploaded_or_committed": false
+  },
+  "not_run": [
+    "AE integration/UI/runtime/ROI/alpha/MFR/native model packaging",
+    "continuous subjective playback/flicker acceptance",
+    "complete occlusion ground truth",
+    "real Log/HDR/Windows and broader skin-tone coverage",
+    "1080p/Fast performance acceptance"
+  ],
+  "artifact_sha256": {
+    "Comparison-2s.png": "4f145520194465a2aec83032e967b0fe4e853b969b8145ebb24e68f724cdce56",
+    "Comparison-4s.png": "04e15661ecd4ec7ac1ed56a152d10e03a7291408b69b5c5cedf55ca0fc264aaf",
+    "Temporal-comparison.mp4": "26cbe1882acf53dbbe17c11101d35ab098126639c955f86d07ff679b4ac48d3d",
+    "Smart-Color-comparison.mp4": "2d56dbdebe867857eb882ccf8c9716e175be47e471d38807d53bf3ff65b6ea1e",
+    "Balance-2s.png": "34c22f1183f3af553fac8bbc14a64f457b4ca2789867f8c275a20a8d0aa6a049",
+    "Portrait-detail.png": "59887327184ddc17e118e570950d883d0d63770d8f975f829259b8949edf5632",
+    "Temporal-2s.png": "a05d7c93e01d3d84fa3a3084469b6b111e82007aee51b65edfd73b38206dc0e9",
+    "Comparison-1s.png": "c40c80d1667e4d7535c8d401938cd8961daee25e8140c960fbcb925a17b4bcb8"
+  },
+  "independent_board_sha256": "7b813339e7ccf845a5d27b2c240272e9571495f7bdb62a8a42cc2f7d8969d10a",
+  "next_step": "Evaluate a different semantic backend or face-supported candidate against the same failure cases before AE integration."
+}

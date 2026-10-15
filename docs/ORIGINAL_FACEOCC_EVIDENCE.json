@@ -1,0 +1,830 @@
+{
+  "date": "2026-10-15",
+  "base_commit": "1b1eacf",
+  "scope": "Original FaceOcc checkpoint fixed32-case ablation; no native or AE change",
+  "upstream_commit": "e75d4a83a696bd7379128319244ef6e5e7885fc8",
+  "upstream": "https://github.com/face3d0725/FaceExtraction",
+  "checkpoint_source": "https://drive.google.com/file/d/11cOc1KJnkR6hNp1l0vnMmCDxGTOCtsEb/view",
+  "runtime": {
+    "torch": "2.8.0",
+    "smp": "0.5.0",
+    "device": "CPU",
+    "threads": 2,
+    "load": "weights_only=True; remove module prefix; strict=True all182 keys matched",
+    "input": "RGB float[0,1], no ImageNet normalization",
+    "threshold": "sigmoid >=0.5 after inverse interpolation; not exact upstream pixel raster evaluation",
+    "alignment": "same existing crop and roll hypotheses or YuNet-adapted POS; not original3DDFA"
+  },
+  "sha256": {
+    "epoch_16_best.ckpt": "01d3c3939c28e47a45acb9a5ea8f8ee460e5ecf046c0caa8404e05915e10901b",
+    "probe.py": "61ef9e5726725e6107bf0763a0c11c3b1b43a1ac26358f10c5e44c8b3f8d4edb",
+    "upstream-evaluation.py": "ba67e90f4522de0a1692541884f65f4526bda4f85bcf0eacd5c3da8cdf6ccce9",
+    "upstream-README.md": "6eba0acb7fdf711bdda58533fdd391157abc821d1f3f7f766567320a7ca2f95d",
+    "result-v1/report.json": "57ce5ecc065ce0a7cae1daa41425bac5260fa44f96f8e91796c69287a224bf2b",
+    "result-v1/provenance.json": "e1fdb6c2e6a85332b88843fe693a656b718277f71e567b12d73c46fc944b0251"
+  },
+  "cases": [
+    {
+      "name": "frame54",
+      "support_mass": 219.56517028808594,
+      "modes": {
+        "current": {
+          "mass": 209.5694580078125,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 209.39874267578125,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 154.98695373535156,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "frame55",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "current": {
+          "mass": 22.920257568359375,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.06488236039876938
+        },
+        "single": {
+          "mass": 17.676721572875977,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.042328834533691406
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.0
+        }
+      }
+    },
+    {
+      "name": "frame56",
+      "support_mass": 225.0011749267578,
+      "modes": {
+        "current": {
+          "mass": 94.54037475585938,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 75.33614349365234,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "frame130",
+      "support_mass": 246.34765625,
+      "modes": {
+        "current": {
+          "mass": 224.24095153808594,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 217.69081115722656,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 210.05201721191406,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "frame131",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "frame132",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "frame133",
+      "support_mass": 259.7857666015625,
+      "modes": {
+        "current": {
+          "mass": 250.70668029785156,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 250.48989868164062,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 86.43927001953125,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "flat",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "current": {
+          "mass": 160.92578125,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.9003844857215881
+        },
+        "single": {
+          "mass": 26.05607795715332,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.020135175436735153
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 1,
+          "interior_mean": 0.0
+        }
+      }
+    },
+    {
+      "name": "texture",
+      "support_mass": 181.62026977539062,
+      "modes": {
+        "current": {
+          "mass": 104.08087158203125,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.5429725050926208
+        },
+        "single": {
+          "mass": 70.87220764160156,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.34397220611572266
+        },
+        "aligned": {
+          "mass": 11.411779403686523,
+          "missing_alignment_proposals": 0,
+          "interior_mean": 0.07820746302604675
+        }
+      }
+    },
+    {
+      "name": "train_day_first",
+      "support_mass": 1514.45458984375,
+      "modes": {
+        "current": {
+          "mass": 1498.611328125,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 1498.111328125,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 1012.4277954101562,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "train_day_last",
+      "support_mass": 364.81591796875,
+      "modes": {
+        "current": {
+          "mass": 312.32464599609375,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 312.12005615234375,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "validation_lab_first",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "validation_lab_last",
+      "support_mass": 20359.634765625,
+      "modes": {
+        "current": {
+          "mass": 14290.5,
+          "missing_alignment_proposals": 0,
+          "prop_mass": 0.0,
+          "forehead_mass": 989.2387084960938,
+          "cheek_mass": 880.9925537109375
+        },
+        "single": {
+          "mass": 13827.7001953125,
+          "missing_alignment_proposals": 0,
+          "prop_mass": 0.0,
+          "forehead_mass": 989.2387084960938,
+          "cheek_mass": 873.9925537109375
+        },
+        "aligned": {
+          "mass": 13603.783203125,
+          "missing_alignment_proposals": 0,
+          "prop_mass": 0.0,
+          "forehead_mass": 989.2387084960938,
+          "cheek_mass": 875.9925537109375
+        }
+      }
+    },
+    {
+      "name": "validation_people_first",
+      "support_mass": 15691.0888671875,
+      "modes": {
+        "current": {
+          "mass": 15669.341796875,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 15648.0263671875,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 15644.0791015625,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "validation_people_last",
+      "support_mass": 16889.794921875,
+      "modes": {
+        "current": {
+          "mass": 16860.341796875,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 16833.84765625,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 16825.4609375,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_night_first",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_night_last",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_face_first",
+      "support_mass": 14693.1669921875,
+      "modes": {
+        "current": {
+          "mass": 13592.416015625,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 13582.5576171875,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 13589.357421875,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_face_last",
+      "support_mass": 13034.8935546875,
+      "modes": {
+        "current": {
+          "mass": 11834.134765625,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 11824.390625,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 11822.634765625,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_action_first",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_action_last",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_rooftop_first",
+      "support_mass": 2938.046630859375,
+      "modes": {
+        "current": {
+          "mass": 2677.007080078125,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 2538.84228515625,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 1297.0606689453125,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "test_rooftop_last",
+      "support_mass": 6008.19677734375,
+      "modes": {
+        "current": {
+          "mass": 5953.4287109375,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 5867.7216796875,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 5847.57177734375,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "beige",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "night_blue",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "grey",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "extra_90s",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "extra_210s",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "extra_330s",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "extra_450s",
+      "support_mass": 5835.8017578125,
+      "modes": {
+        "current": {
+          "mass": 5814.38916015625,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 5814.3203125,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 5832.84130859375,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "extra_570s",
+      "support_mass": 820.6679077148438,
+      "modes": {
+        "current": {
+          "mass": 820.6519165039062,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 820.6519165039062,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 764.6132202148438,
+          "missing_alignment_proposals": 0
+        }
+      }
+    },
+    {
+      "name": "extra_690s",
+      "support_mass": 0.0,
+      "modes": {
+        "current": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "single": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        },
+        "aligned": {
+          "mass": 0.0,
+          "missing_alignment_proposals": 0
+        }
+      }
+    }
+  ],
+  "comparison_frame56": {
+    "modernized_mass": 183.3065185546875,
+    "original_mass": 94.54037475585938
+  },
+  "checks": {
+    "case_count_order": "PASS",
+    "finite_bounded_masks": "PASS",
+    "semantic_occlusion": "FAIL",
+    "face_preservation": "FAIL",
+    "continuous_perceptual_review": "NOT_RUN",
+    "full156_native_repeat": "NOT_RUN: candidate already fails bounded semantic and face-preservation gate",
+    "AE": "NOT_RUN",
+    "installed_five_bundle_files": "PASS: rehashed unchanged",
+    "native_renderer": "PASS: rehashed unchanged",
+    "static_scanner": "PASS: no findings; not runtime or quality acceptance"
+  },
+  "visual_inspected": [
+    "flat.png",
+    "texture.png",
+    "frame56.png"
+  ],
+  "limitations": [
+    "Known cases, not untouched benchmark",
+    "Planted patches, not actual hand ground truth",
+    "Zero inherited support at131/132 cannot evaluate gate quality",
+    "No acceptance threshold tuning",
+    "No redistribution or plugin install"
+  ],
+  "mode_names": {
+    "current": "original checkpoint, existing3-roll crop path",
+    "single": "original checkpoint, same crop without roll",
+    "aligned": "original checkpoint, YuNet-adapted upstreamPOS"
+  },
+  "independent_review": "Read-only senior review: no validated local semantic path; do not promote failed masks. Inspect raw six-channel MediaPipe output as diagnosis only.",
+  "raw_channel_diagnostic": {
+    "scope": "raw six-channel diagnostic; fixed existing crop; no thresholds fitted",
+    "results": [
+      {
+        "name": "frame54",
+        "labels": [
+          "background",
+          "hair",
+          "body-skin",
+          "face-skin",
+          "clothes",
+          "others"
+        ],
+        "interior_mean": [
+          0.016691986471414566,
+          0.017899809405207634,
+          0.01782551407814026,
+          0.9139527678489685,
+          0.01680709607899189,
+          0.016822829842567444
+        ],
+        "interior_argmax_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "crop": [
+          342,
+          521,
+          447,
+          626
+        ]
+      },
+      {
+        "name": "frame55",
+        "labels": [
+          "background",
+          "hair",
+          "body-skin",
+          "face-skin",
+          "clothes",
+          "others"
+        ],
+        "interior_mean": [
+          0.016696449369192123,
+          0.017117401584982872,
+          0.018957557156682014,
+          0.9136037826538086,
+          0.01681453548371792,
+          0.016810251399874687
+        ],
+        "interior_argmax_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "crop": [
+          331,
+          504,
+          448,
+          621
+        ]
+      },
+      {
+        "name": "frame56",
+        "labels": [
+          "background",
+          "hair",
+          "body-skin",
+          "face-skin",
+          "clothes",
+          "others"
+        ],
+        "interior_mean": [
+          0.016498621553182602,
+          0.024510793387889862,
+          0.1704559326171875,
+          0.3467835485935211,
+          0.42466673254966736,
+          0.017084414139389992
+        ],
+        "interior_argmax_fraction": [
+          0.0,
+          0.0,
+          0.17687074829931973,
+          0.35714285714285715,
+          0.46598639455782315,
+          0.0
+        ],
+        "crop": [
+          334,
+          483,
+          449,
+          599
+        ]
+      },
+      {
+        "name": "flat",
+        "labels": [
+          "background",
+          "hair",
+          "body-skin",
+          "face-skin",
+          "clothes",
+          "others"
+        ],
+        "interior_mean": [
+          0.05275769159197807,
+          0.029670922085642815,
+          0.13681668043136597,
+          0.04252151772379875,
+          0.021340148523449898,
+          0.7168930768966675
+        ],
+        "interior_argmax_fraction": [
+          0.01020408163265306,
+          0.0,
+          0.12244897959183673,
+          0.0,
+          0.0,
+          0.8673469387755102
+        ],
+        "crop": [
+          331,
+          504,
+          448,
+          621
+        ]
+      },
+      {
+        "name": "texture",
+        "labels": [
+          "background",
+          "hair",
+          "body-skin",
+          "face-skin",
+          "clothes",
+          "others"
+        ],
+        "interior_mean": [
+          0.016937589272856712,
+          0.017288919538259506,
+          0.025447405874729156,
+          0.9059708714485168,
+          0.01711212657392025,
+          0.017243027687072754
+        ],
+        "interior_argmax_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "crop": [
+          331,
+          504,
+          448,
+          621
+        ]
+      }
+    ],
+    "source_sha256": "3881bfca0fdce4a3b9b29483350200b2df02e712afb431c6480586c8b6884d25",
+    "selection": "Proposal nearest fixed patch center390,563; crop factor2.6; same crop for original55/flat/texture; frozen image ROI, not tracked skin ground truth on54/56",
+    "report_sha256": "b67ef5f66612dfd80f03ee0c9e03931a830376fe36afdc53cc9cd61ba994f4e7",
+    "interpretation": "Flat patch is mostly others; texture patch is face-skin mean0.906 vs source55 0.914. Face-only cannot reject this texture. FaceOcc planted cases isolate gate with frozen support and are not entire recomputed pipeline results."
+  }
+}

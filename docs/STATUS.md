@@ -1,5 +1,9 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Original FaceOcc follow-up — rejected
+
+Fixed32-case comparison with original weights and verified original RGB[0,1] input completed. Strict loading and96 finite/bounded masks PASS. Skin-colored occlusion FAIL: flat/texture false acceptance0.900/0.543 in existing roll path; true face56 mask falls about48% versus previous gate. Single and adapted alignment also fail. [Exact evidence](ORIGINAL_FACEOCC_EVIDENCE.json). Raw six-channel follow-up distinguishes flat patch but calls texture face-skin0.906 (original55 region0.914); face-only channel does not resolve it. No production code/install change. Required continuous visual verdict remains unresolved. This is a rejected research candidate, not completed Smart Skin.
+
 ## Skin-colored occlusion acceptance — current research checkpoint
 
 [Scope and negative evidence](SKIN_OCCLUSION_ACCEPTANCE.md), [exact report](SKIN_OCCLUSION_ACCEPTANCE_EVIDENCE.json). Added structural correspondence guard against false temporal recovery.84 paired synthetic cases improve skin-colored texture rejection, with measured loss of valid surrounding support.156-frame native masks/render and23 static scene results unchanged from af88cb0; installed plugin unchanged.

@@ -1,5 +1,10 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Occlusion follow-up — 2026-10-15
+
+User authorized visible-face/hand/prop separation after turn recovery. ScopeOC01..05: [OCCLUSION_REVIEW.md](OCCLUSION_REVIEW.md). Independent pinned FaceOcc gate; compare face retention and rejected occluder separately. No automatic promotion to AE; repeat full supplied sequence and prior23scene cases, preserve failed candidates. Continuous playback and prior acceptance remain required.
+
+
 ## Turn recovery continuation — 2026-10-15
 
 User authorized implementation of short-gap mask transport, profile support and confidence transitions. Scope/acceptance TR01..06: [TURN_RECOVERY.md](TURN_RECOVERY.md). Preserve prior candidate/defaults/evidence; research remains outside AE. Actual short-gap recovery must use raw mesh-confirmed two-sided seeds and current evidence, with explicit radius2 and no recursive neighbors. Profile fallback is separately measured and cannot become a recovery seed. Quality and continuous playback acceptance remain mandatory; no integration/release implied.

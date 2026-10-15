@@ -1,5 +1,15 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Visible-face occlusion — current research checkpoint
+
+Implemented independent pinned FaceOcc gate with fixed roll hypotheses and strict input contracts. [Review and open criteria](OCCLUSION_REVIEW.md), [exact evidence](OCCLUSION_EVIDENCE.json).
+
+**PASS in inspected scope:** lab prop false coverage removed while forehead/cheek diagnostic regions retain100%/97.76% of previous support; no new background coverage. Actual156 frames and23 scene cases processed; four Python suites and static scanner pass, five installed bundle hashes unchanged. Comparison MP4 fully decodes.
+
+**FAIL / not accepted:** blurred frame55 loses99.26% of previous support; some tilted faces lose partial support and inherited profile/edge misses remain. All156 face crops,23 scene cases and five full-frame panels inspected. Continuous normal-speed flicker review and all-frame native-scale review remain **NOT RUN**. No AE integration, installation, Fast claim, weights redistribution or release. Next investigation is motion-compensated neighbor agreement with explicit occluder rejection, not unconditional mask blur. Prior requirements and evidence below remain preserved.
+
+---
+
 ## Turn recovery — current research checkpoint
 
 Implementation `695235a7d8e91491e68e5e0967d6313dfd1623f1`. Added profile fallback and nonrecursive short-gap transport in the independent prototype; installed AE is unchanged. Scope and results: [TURN_RECOVERY.md](TURN_RECOVERY.md), exact evidence: [TURN_RECOVERY_EVIDENCE.json](TURN_RECOVERY_EVIDENCE.json).

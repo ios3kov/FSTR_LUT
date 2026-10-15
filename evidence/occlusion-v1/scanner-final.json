@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "tool_version": "2.0.0",
+  "time_utc": "2026-10-15T13:06:15.586728+00:00",
+  "source_identity": {
+    "commit": "4dce5f59492a6f2b8244e869c207d77dacd71d8b",
+    "dirty": true
+  },
+  "profile": "code",
+  "release_readiness": "not_assessed",
+  "inventory": {
+    "scope_digest": "dcee380ad394d3dc8ea33f771e9ce6f3e0b8fb9a3b9b3ed38647b298a0c97927",
+    "files": 400,
+    "bytes": 1638227,
+    "excluded_directories": 4,
+    "unsupported_files": 1923,
+    "omissions": []
+  },
+  "checks": [
+    {
+      "id": "inventory",
+      "status": "completed",
+      "reason": "Bounded text scope inventoried."
+    },
+    {
+      "id": "core.static",
+      "status": "completed"
+    },
+    {
+      "id": "git.index",
+      "status": "completed"
+    },
+    {
+      "id": "vibe.check_config",
+      "status": "completed"
+    },
+    {
+      "id": "vibe.check_platform_flags",
+      "status": "completed"
+    },
+    {
+      "id": "vibe.check_rate_limit_and_ai",
+      "status": "completed"
+    },
+    {
+      "id": "vibe.check_authz",
+      "status": "completed"
+    },
+    {
+      "id": "vibe.check_platform_configs",
+      "status": "completed"
+    },
+    {
+      "id": "supply_chain.github_actions",
+      "status": "not_applicable",
+      "reason": "No GitHub Actions workflows in scope."
+    }
+  ],
+  "findings": [],
+  "not_assessed": [
+    "Git history",
+    "runtime headers/cookies",
+    "browser flows and accessibility",
+    "authorization and E2EE",
+    "performance under load",
+    "backup restore and rollback",
+    "legal applicability",
+    "dependency vulnerabilities"
+  ],
+  "scope_note": "Generated/dependency directories and unsupported file types excluded. No finding is a safety guarantee.",
+  "exit_code": 0,
+  "verdict": "no_findings_in_scanned_scope"
+}

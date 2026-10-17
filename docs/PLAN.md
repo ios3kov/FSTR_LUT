@@ -1,5 +1,10 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## MASK-CACHE-001 — agreed addition, 2026-10-17 (not implemented)
+
+User explicitly requested remembering this for later implementation. Maintain an analysis cache independent of Smart On/Off, look choice and look intensity. Smart Off skips analysis while retaining existing masks; On reuses compatible cached masks. LUT changes regrade without repeating detection/propagation. Invalidate affected entries when upstream pixels/time mapping, input interpretation or analysis/model settings/version change. Bound memory use; add a versioned validated disk cache for reuse across AE sessions. Concurrent requests must share in-flight analysis where safe; cancellation and cache failure must not yield false successful analysis. Acceptance must verify detector/propagation invocation counts through On→Off→On and LUT changes, plus stale-cache rejection and memory/disk limits. Current native AE path has no dedicated analysis-mask cache; standalone research artifacts do not establish native cache integration.
+
+
 ## Shot analysis reliability follow-up — 2026-10-17
 
 Added two-sided endpoint validation and exact rejection of unreliable flow.26contracts pass. Two fixed-setting independent MPS runs remain non-bit-exact; actual native color differs by>1/255 on at most12pixels/frame on this16frame trial. Repeatability mechanism, independent multi-person/occlusion footage and continuous perception remain open. No AE promotion. [Measured evidence](SMART_VIDEO_RELIABILITY_EVIDENCE.json).

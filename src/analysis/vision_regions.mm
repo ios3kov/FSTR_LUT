@@ -1,4 +1,5 @@
 #include "fstr/regions.hpp"
+#include "fstr/region_cache.hpp"
 #import <Vision/Vision.h>
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
@@ -6,8 +7,9 @@
 #include <cmath>
 #include <mutex>
 #include <stdexcept>
+#include <cstdlib>
 namespace fstr {
-std::vector<ColorRegion> detect_color_regions(const AnalysisImage& image, double source_height){
+std::vector<ColorRegion> detect_color_regions_uncached(const AnalysisImage& image, double source_height){
  if(!std::isfinite(source_height)||source_height<=0||image.width<1||image.height<1||image.width>2048||image.height>2048||image.rgba.size()!=std::size_t(image.width)*image.height*4)throw std::invalid_argument("Invalid analysis image");
  static std::mutex device;std::lock_guard<std::mutex> guard(device);
  @autoreleasepool {
@@ -56,4 +58,24 @@ std::vector<ColorRegion> detect_color_regions(const AnalysisImage& image, double
  } @catch(NSException* exception){throw std::runtime_error("Native analysis exception");}
  }
 }
+namespace {
+RegionCache& native_cache(){
+ static RegionCache cache([]{
+  @autoreleasepool {
+   if(const char* override_path=std::getenv("FSTR_LUT_ANALYSIS_CACHE")){if(override_path[0]=='/')return std::string(override_path);}
+   NSArray<NSString*>* paths=NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask,YES);
+   if(!paths.count)return std::string{};
+   NSString* path=[paths.firstObject stringByAppendingPathComponent:@"FSTR.Tools/FSTR_LUT/native-regions-v1"];
+   return std::string(path.fileSystemRepresentation);
+  }
+ }(),64);
+ return cache;
+}
+}
+void prepare_region_cache(){(void)native_cache();}
+std::vector<ColorRegion> detect_color_regions(const AnalysisImage& image,double source_height){
+ static const std::string revision=std::string(FSTR_REGION_ALGORITHM_ID)+"/"+NSProcessInfo.processInfo.operatingSystemVersionString.UTF8String;
+ return native_cache().get(image,source_height,revision,[&]{return detect_color_regions_uncached(image,source_height);});
+}
+
 }

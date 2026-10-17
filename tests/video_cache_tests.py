@@ -56,6 +56,18 @@ class CacheTests(unittest.TestCase):
             run=subprocess.run([sys.executable,str(RUNNER.with_name('video_anchor_report.py')),str(root)],capture_output=True,text=True)
             self.assertNotEqual(run.returncode,0);self.assertIn('ROI cache does not match rendered comparison',run.stderr)
 
+    def test_multi_person_seed_refuses_rebound_observation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);source=root/'source';(source/'combined').mkdir(parents=True);(source/'people-reviewed').mkdir()
+            image=root/'image.png';image.write_bytes(b'fixture');digest=hashlib.sha256(b'fixture').hexdigest()
+            cases=[dict(name='frame-'+str(i),frame=i,path=str(image),sha256=digest) for i in range(6)]
+            expected=dict(source_sha256=digest,evidence_sha256=digest)
+            records=[dict(name=c['name'],people=expected,raw_sha256=digest) for c in cases]
+            (source/'combined/evidence.json').write_text(json.dumps(dict(sources=dict(cases=cases),cases=records)))
+            (source/'people-reviewed/frame-0.json').write_text(json.dumps(dict(source_sha256='other-frame',evidence_sha256=digest)))
+            run=subprocess.run([sys.executable,str(RUNNER.with_name('video_people_prepare.py')),str(source),str(root/'trial')],capture_output=True,text=True)
+            self.assertNotEqual(run.returncode,0);self.assertIn('Changed source evidence',run.stderr)
+
     def test_wrong_input_manifest(self):
         self.reject('manifest','Prediction belongs to different inputs')
 

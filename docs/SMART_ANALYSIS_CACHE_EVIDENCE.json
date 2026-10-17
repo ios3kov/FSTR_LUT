@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-17",
+  "requirement": "MASK-CACHE-001",
+  "scope": "Native Vision observation cache, not SAM2/whole-scene backend",
+  "artifacts": {
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/host-report.txt": "71f1680d932e255f268f6b378c8824d85fff8710c74ad372ced213b7f2b08993",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/host-restart-report.txt": "02ebe1bef84dea2c7eb83bd729cd05c715e5fc891ae08b84ccb9afec4a58615d",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/tests.log": "abd7b9f7a3bd2df31710a9600d0775ac6a268378a3f43a85b94b78e77ed5463b",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/sanitize-tests.log": "0537469466ade67f9dbf8150210fc959aaefbd299a59fd353d958d8e6988ee0f",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/cache-test.aep": "a5e18f34fcfcf8255b564d15660bb6c250794ec218b3f1bd4afeceea323d9ee8",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/cache-test.jsx": "52995fb53a2f6aeafbf744e30d59b4e5f527ad20fe0ce8f5f5562d973ce524d6",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/cache-restart.jsx": "cd6c63e17e6bff3a77e421df25653f631c91aec6cc0b42c95b03a8605de741f6"
+  },
+  "installed_trial": {
+    "path": "/Users/os3kov/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/FSTR_LUT_Cache_Test_20261017.plugin",
+    "files": {
+      "Contents/Info.plist": "189cd85debbb3608d3537880a4902d9d199ce4bf13f99253d3755d520e6d7696",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "cbe2ac016f5a949116027154070e998833771b24358776912eeef3f98b5c8508",
+      "Contents/MacOS/FSTR_LUT_Development": "1b215fabeca239bf6cfda08f1cc5b8dcabeaffa17185f01f26f61010330adf00",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "b0ec853c53b00710ae7c27c552fc8377ef61f9cb6066b15be8eb32869a98fe58"
+    }
+  },
+  "source": {
+    "src/analysis/region_cache.cpp": "c04c4100b0ec234576cd497255046b5bfca9d70b718da1c69974af4b7564c003",
+    "include/fstr/region_cache.hpp": "52ecdd4ea73b604b7d1f568390bb6d83098e91b1a4e84645e4d0f4680ca09d03",
+    "src/analysis/vision_regions.mm": "9993db5821c27d5219b69bbedce0fad0f8fa9445bd44794633124ab602a65f81",
+    "src/ae/plugin.cpp": "1f714bb508ce958e133a9435d68210cff28523c0fb8b8a6d84e2c2c26e2e2716",
+    "CMakeLists.txt": "0428b75f56b8cc89f24cf25d8faf98c375a89138189b925742c2fe5eba03ca4b",
+    "tests/region_cache_tests.cpp": "7a7e041e6c50dcd9dc3df2381cc7b9a9088bce20d52ee8072c2b5b981279e622"
+  },
+  "original_preserved": true,
+  "checks": {
+    "native_release": "PASS 10",
+    "native_sanitizers": "PASS 10",
+    "AE_32bpc_switch_lut_strength_upstream": "PASS 7 renders, cache file snapshots",
+    "AE_restart_disk_reuse": "PASS 6 renders, cache snapshots",
+    "whole_scene_SAM2_in_AE": "NOT RUN",
+    "AE_MFR_call_counters": "NOT RUN",
+    "continuous_quality": "NOT RUN"
+  }
+}

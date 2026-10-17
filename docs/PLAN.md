@@ -1,8 +1,13 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
-## MASK-CACHE-001 — agreed addition, 2026-10-17 (not implemented)
+## Current Smart completion block — 2026-10-17
 
-User explicitly requested remembering this for later implementation. Maintain an analysis cache independent of Smart On/Off, look choice and look intensity. Smart Off skips analysis while retaining existing masks; On reuses compatible cached masks. LUT changes regrade without repeating detection/propagation. Invalidate affected entries when upstream pixels/time mapping, input interpretation or analysis/model settings/version change. Bound memory use; add a versioned validated disk cache for reuse across AE sessions. Concurrent requests must share in-flight analysis where safe; cancellation and cache failure must not yield false successful analysis. Acceptance must verify detector/propagation invocation counts through On→Off→On and LUT changes, plus stale-cache rejection and memory/disk limits. Current native AE path has no dedicated analysis-mask cache; standalone research artifacts do not establish native cache integration.
+Native Vision RAM/disk cache passes13real AE renders including restart; original effect preserved, separate Cache Test installed. CPU SAM2 reference repeats29/29predictions exactly. New36frame/3face/partial-occlusion trial and two real cuts evaluated; soft proposal edges and interval fades added. Skin-field bands remain visible; continuous flicker acceptance and new whole-scene/SAM2 native backend are still open. **Full requested block is not complete.** [Requirement matrix and defects](SMART_COMPLETION_BLOCK.md), [evidence](SMART_COMPLETION_BLOCK_EVIDENCE.json), [native cache](SMART_ANALYSIS_CACHE.md).
+
+
+## MASK-CACHE-001 — agreed addition, 2026-10-17 (native Vision slice implemented; whole-scene extension pending)
+
+User explicitly requested remembering this for later implementation. Maintain an analysis cache independent of Smart On/Off, look choice and look intensity. Smart Off skips analysis while retaining existing masks; On reuses compatible cached masks. LUT changes regrade without repeating detection/propagation. Invalidate affected entries when upstream pixels/time mapping, input interpretation or analysis/model settings/version change. Bound memory use; add a versioned validated disk cache for reuse across AE sessions. Concurrent requests must share in-flight analysis where safe; cancellation and cache failure must not yield false successful analysis. Acceptance must verify detector/propagation invocation counts through On→Off→On and LUT changes, plus stale-cache rejection and memory/disk limits. Native Vision observation caching is implemented and passes isolated AE32bpc tests including restart; whole-scene/SAM2 tensor caching and the new native analysis backend remain pending. See SMART_ANALYSIS_CACHE.md.
 
 
 ## Shot analysis reliability follow-up — 2026-10-17

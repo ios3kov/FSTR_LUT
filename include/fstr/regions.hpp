@@ -5,6 +5,7 @@
 namespace fstr {
 struct AnalysisImage {int width=0,height=0;std::vector<std::uint8_t> rgba;};
 struct ColorRegion {double x0=0,y0=0,x1=0,y1=0,detail=0;std::vector<std::vector<std::array<double,2>>> holes;};
+void prepare_region_cache();
 std::vector<ColorRegion> detect_color_regions(const AnalysisImage&, double source_height);
 // Coordinates normalized to the same complete layer frame, never output ROI.
 std::vector<ColorRegion> stabilize_color_regions(const std::vector<ColorRegion>& current,

@@ -2,7 +2,7 @@ import sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools/benchmark'))
 import numpy as np
-from video_anchor_analysis import choose_anchor,warp_anchor,cut_between,combine_prediction,combine_geometry,anchor_roundtrip
+from video_anchor_analysis import choose_anchor,warp_anchor,cut_between,combine_prediction,combine_geometry,anchor_roundtrip,support_envelope
 class Tests(unittest.TestCase):
  def setUp(self):
   self.im=np.random.default_rng(3).random((48,48,3),dtype=np.float32);self.base=np.zeros((48,48,8),np.float32);self.base[...,6]=.8
@@ -15,6 +15,11 @@ class Tests(unittest.TestCase):
   m=np.zeros((48,48),np.float32);m[12:35,12:35]=1;p,t=warp_anchor(self.im,self.im,m)
   self.assertLess(float(np.abs(p-m).max()),.04);self.assertGreater(float(t[15:30,15:30].mean()),.99)
  def test_cut(self):self.assertTrue(cut_between([self.im*0,self.im*0+1],0,1))
+ def test_same_palette_scene_layout_change_is_not_certified_cut(self):
+  # Coarse color detector cannot distinguish a spatial rearrangement with the
+  # same histogram; callers must also validate tracked endpoints/geometry.
+  x=np.zeros((48,48,3),np.float32);x[:24]=1
+  self.assertFalse(cut_between([x,np.flip(x,0).copy()],0,1))
  def test_camera_reposition_same_palette_not_cut(self):
   self.assertFalse(cut_between([self.im,np.roll(self.im,20,axis=0)],0,1))
  def test_disagreement_no_override(self):
@@ -52,6 +57,24 @@ class Tests(unittest.TestCase):
  def test_complete_occlusion_disagreement_preserves_baseline(self):
   a=np.zeros((48,48),np.float32);a[4:16,4:16]=1;b=np.roll(a,24,axis=1);o=a*0+1
   result,w=combine_prediction(self.base,a,b,o,o,.8);np.testing.assert_array_equal(result,self.base)
+ def test_soft_boundary_reduces_step_and_preserves_far_background(self):
+  o=np.ones((48,48),np.float32);m=o.copy();m[:,24:]=0
+  hard,_=combine_prediction(self.base,m,m,o,o,.8)
+  soft,_=combine_prediction(self.base,m,m,o,o,.8,1.2)
+  self.assertLess(float(np.abs(np.diff(soft[...,0],axis=1)).max()),float(np.abs(np.diff(hard[...,0],axis=1)).max()))
+  np.testing.assert_array_equal(soft[:,32:],self.base[:,32:])
+ def test_supported_window_fades_at_both_ends(self):
+  self.assertEqual([support_envelope(i,1,5,2) for i in range(7)],[0.,0.,.5,1.,.5,0.,0.])
+  with self.assertRaises(ValueError):support_envelope(0,2,1)
+ def test_thin_direction_disagreement_is_feathered_too(self):
+  o=np.ones((48,48),np.float32);b=o.copy();b[:,24]=.7
+  hard,_=combine_prediction(self.base,o,b,o,o,.8)
+  soft,_=combine_prediction(self.base,o,b,o,o,.8,1.2)
+  self.assertGreater(float(soft[20,24,0]-hard[20,24,0]),.1)
+ def test_union_cannot_hide_lost_small_face(self):
+  large=np.zeros((48,48),np.float32);large[2:22,2:22]=1;small=large*0;small[40:44,40:44]=1
+  seeds=np.stack([large,small]);self.assertFalse(anchor_roundtrip(seeds,seeds,large,large)['accepted'])
+  self.assertTrue(anchor_roundtrip(seeds,seeds,np.maximum(large,small),np.maximum(large,small))['accepted'])
  def test_invalid(self):
   o=np.ones((48,48),np.float32)
   with self.assertRaises(ValueError):combine_prediction(self.base,o,o,o,o,float('nan'))

@@ -4,11 +4,11 @@ from pathlib import Path
 import cv2
 import numpy as np
 from PIL import Image,ImageDraw
-from video_anchor_analysis import combine_prediction,cut_between,combine_geometry,anchor_roundtrip
+from video_anchor_analysis import combine_prediction,cut_between,combine_geometry,anchor_roundtrip,support_envelope
 from scene_trial import decode,encode
 p=argparse.ArgumentParser()
 for key in ('trial','baseline','renderer','lut'):p.add_argument(key,type=Path)
-p.add_argument('--output',default='comparison-final');p.add_argument('--flow',default='flow-final');p.add_argument('--sam2',default='sam2-final')
+p.add_argument('--output',default='comparison-final');p.add_argument('--flow',default='flow-final');p.add_argument('--sam2',default='sam2-final');p.add_argument('--feather-sigma',type=float,default=0.);p.add_argument('--boundary-fade',type=int,default=0)
 a=p.parse_args();out=a.trial/a.output;out.mkdir(exist_ok=False);sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();manifest=json.loads((a.trial/'manifest.json').read_text());images=[];raw=[];records=[]
 for folder in (a.flow,a.sam2):
  evidence=json.loads((a.trial/folder/'evidence.json').read_text())
@@ -46,7 +46,9 @@ for i,(c,rgb) in enumerate(zip(manifest['cases'],images)):
     if not roundtrips[a.flow]['accepted']:ft*=0
     forward,backward,contribution=combine_geometry(forward,backward,ff,fb,ft)
     np.save(out/f'{c["name"]}-flow-contribution.npy',contribution)
-   fields[mode],weight=combine_prediction(base,forward,backward,trust,person,amplitude)
+   fields[mode],weight=combine_prediction(base,forward,backward,trust,person,amplitude,a.feather_sigma)
+   envelope=support_envelope(i,lo,hi,a.boundary_fade)
+   fields[mode]=base+(fields[mode]-base)*envelope;weight*=envelope
    agreed=np.minimum(forward,backward);negative=(base[...,2]>.7)&(raw[i][...,0]<.05)
    detail[mode]=dict(supported_pixels=int((weight>.05).sum()),changed_pixels=int((np.abs(fields[mode]-base).max(-1)>1e-6).sum()),direction_iou=float(np.logical_and(forward>.5,backward>.5).sum()/max(1,np.logical_or(forward>.5,backward>.5).sum())),proposal_on_clothing=float(agreed[negative].mean()) if negative.any() else 0,final_added_skin_on_clothing=float(np.maximum(fields[mode][...,0]-base[...,0],0)[negative].mean()) if negative.any() else 0)
    np.save(out/f'{c["name"]}-{mode}-weight.npy',weight)
@@ -60,4 +62,4 @@ for i,(c,rgb) in enumerate(zip(manifest['cases'],images)):
   im=Image.fromarray(np.rint(np.clip(encode(rgba[...,:3]),0,1)*255).astype(np.uint8));im.save(out/f'{c["name"]}-{mode}.png');row.paste(im,(k*w,28));row.paste(Image.fromarray(np.rint(field[...,0]*255).astype(np.uint8)).convert('RGB'),(k*w,h+28));draw.text((k*w+5,7),mode+' / '+str(c['frame']),fill='white')
  if sha(out/f'{c["name"]}-baseline.rgba32f')!=sha(a.baseline/(c['name']+'-on.rgba32f')):raise RuntimeError('Baseline mismatch')
  row.save(out/(c['name']+'-review.jpg'),quality=95);records.append(dict(frame=c['frame'],baseline_mask_sha256=sha(a.baseline/(c['name']+'-stable.npy')),baseline_reference_sha256=sha(a.baseline/(c['name']+'-on.rgba32f')),baseline_exact=True,supported=supported,modes=detail));print(c['name'],detail,flush=True)
-(out/'evidence.json').write_text(json.dumps(dict(manifest_sha256=sha(a.trial/'manifest.json'),renderer_sha256=sha(a.renderer),lut_sha256=sha(a.lut),anchor_roundtrips=roundtrips,prediction_evidence_sha256={folder:sha(a.trial/folder/'evidence.json') for folder in (a.flow,a.sam2)},output_sha256={x.name:sha(x) for x in out.iterdir() if x.is_file()},amplitude=amplitude,cases=records,limitations='Clothing metric uses existing semantic labels as a diagnostic proxy, not truth. Same auto-selected component at two anchors is a single-person trial, not general identity matching.'),indent=2))
+(out/'evidence.json').write_text(json.dumps(dict(runner_sha256=sha(Path(__file__)),geometry_sha256=sha(Path(__file__).with_name('video_anchor_analysis.py')),manifest_sha256=sha(a.trial/'manifest.json'),renderer_sha256=sha(a.renderer),lut_sha256=sha(a.lut),anchor_roundtrips=roundtrips,prediction_evidence_sha256={folder:sha(a.trial/folder/'evidence.json') for folder in (a.flow,a.sam2)},output_sha256={x.name:sha(x) for x in out.iterdir() if x.is_file()},amplitude=amplitude,feather_sigma=a.feather_sigma,boundary_fade=a.boundary_fade,cases=records,limitations='Clothing metric uses existing semantic labels as a diagnostic proxy, not truth. One or more automatically seeded skin components; union overlap does not establish object identity.'),indent=2))

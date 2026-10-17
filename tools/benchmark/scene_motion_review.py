@@ -4,8 +4,10 @@ from pathlib import Path
 import cv2
 import numpy as np
 from PIL import Image,ImageDraw
-p=argparse.ArgumentParser();p.add_argument('images',type=Path);p.add_argument('trial',type=Path);a=p.parse_args()
-frames=sorted(a.images.glob('motion-*.png'));pairs=[];prior=None
+p=argparse.ArgumentParser();p.add_argument('images',type=Path);p.add_argument('trial',type=Path);p.add_argument('--pattern',default='motion-*.png');p.add_argument('--fps',type=float,default=25);a=p.parse_args()
+if not np.isfinite(a.fps) or not 0<a.fps<=240:raise ValueError('Invalid review frame rate')
+frames=sorted(a.images.glob(a.pattern));pairs=[];prior=None
+if len(frames)<2:raise ValueError('At least two frames required')
 for path in frames:
  name=path.stem;rgb=np.asarray(Image.open(path),dtype=np.float32)/255;h,w=rgb.shape[:2]
  raw=np.load(a.trial/(name+'-raw.npy'));stable=np.load(a.trial/(name+'-stable.npy'))
@@ -29,7 +31,7 @@ writer=None
 for path in frames:
  name=path.stem;left=Image.open(a.trial/(name+'-off.png'));right=Image.open(a.trial/(name+'-on.png'));w,h=left.size
  panel=Image.new('RGB',(w*2,h+28),(18,18,18));panel.paste(left,(0,28));panel.paste(right,(w,28));d=ImageDraw.Draw(panel);d.text((8,8),'Ordinary LUT',fill='white');d.text((w+8,8),'Scene Smart - prototype',fill='white')
- if writer is None:writer=cv2.VideoWriter(str(a.trial/'Scene-Smart-Comparison.mp4'),cv2.VideoWriter_fourcc(*'mp4v'),25,panel.size)
+ if writer is None:writer=cv2.VideoWriter(str(a.trial/'Scene-Smart-Comparison.mp4'),cv2.VideoWriter_fourcc(*'mp4v'),a.fps,panel.size)
  if not writer.isOpened():raise RuntimeError('Video writer failed')
  writer.write(cv2.cvtColor(np.asarray(panel),cv2.COLOR_RGB2BGR))
 writer.release();cap=cv2.VideoCapture(str(a.trial/'Scene-Smart-Comparison.mp4'));count=0

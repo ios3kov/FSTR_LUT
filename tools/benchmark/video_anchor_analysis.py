@@ -41,19 +41,23 @@ def cut_between(images,a,b):
     # a limitation; geometric checks are still required for flow propagation.
     for j in range(min(a,b),max(a,b)):
         left=cv2.resize(images[j],(32,32));right=cv2.resize(images[j+1],(32,32))
-        if float(np.abs(left-right).mean())<=.15:continue
+        if float(np.abs(left-right).mean())<=.18:continue
         hist=lambda x:np.histogramdd(x.reshape(-1,3),bins=(8,8,8),range=((0,1),)*3)[0]/1024
-        if .5*float(np.abs(hist(left)-hist(right)).sum())>.65:return True
+        if .5*float(np.abs(hist(left)-hist(right)).sum())>.35:return True
     return False
 
 
-def combine_prediction(base,forward,backward,trust,person,amplitude):
+def combine_prediction(base,forward,backward,trust,person,amplitude,feather_sigma=0.):
     shape=base.shape[:2];validate_weights(base,shape)
     for m in (forward,backward,trust,person):
         if m.shape!=shape or not np.isfinite(m).all() or m.min()<0 or m.max()>1:raise ValueError('Invalid prediction')
     if not np.isfinite(amplitude) or not 0<=amplitude<=1:raise ValueError('Invalid anchor amplitude')
+    if not np.isfinite(feather_sigma) or not 0<=feather_sigma<=4:raise ValueError('Invalid feather radius')
     agreed=np.minimum(forward,backward)
-    confidence=(1-smooth(.15,.5,np.abs(forward-backward)))*trust*smooth(.1,.3,person)
+    if feather_sigma>0:agreed=cv2.GaussianBlur(agreed,(0,0),feather_sigma,borderType=cv2.BORDER_REPLICATE)
+    agreement=1-smooth(.15,.5,np.abs(forward-backward))
+    if feather_sigma>0:agreement=cv2.GaussianBlur(agreement,(0,0),feather_sigma,borderType=cv2.BORDER_REPLICATE)
+    confidence=agreement*trust*smooth(.1,.3,person)
     confidence*=1-smooth(.6,.95,base[...,2])
     weight=confidence*smooth(.1,.5,agreed)
     target=agreed*amplitude
@@ -77,14 +81,27 @@ def combine_geometry(sam_forward,sam_backward,flow_forward,flow_backward,flow_tr
 
 
 def anchor_roundtrip(start_seed,end_seed,forward_at_end,backward_at_start):
-    """Reject mismatched endpoints; overlap is not proof of person identity."""
-    shape=start_seed.shape
-    for m in (start_seed,end_seed,forward_at_end,backward_at_start):
-        if m.shape!=shape or not np.isfinite(m).all() or m.min()<0 or m.max()>1:
-            raise ValueError('Invalid anchor roundtrip')
+    """Reject each unsupported seed; union overlap is not identity proof."""
+    shape=forward_at_end.shape
+    if len(shape)!=2:raise ValueError('Invalid anchor geometry')
+    for prediction in (forward_at_end,backward_at_start):
+        if prediction.shape!=shape or not np.isfinite(prediction).all() or prediction.min()<0 or prediction.max()>1:
+            raise ValueError('Invalid anchor prediction')
     scores=[]
-    for seed,prediction in ((end_seed,forward_at_end),(start_seed,backward_at_start)):
-        s=seed>.5;p=prediction>.5;intersection=int((s&p).sum())
-        scores.append(dict(iou=intersection/max(1,int((s|p).sum())),
-                           coverage=intersection/max(1,int(s.sum()))))
-    return dict(accepted=all(x['iou']>=.35 and x['coverage']>=.5 for x in scores),directions=scores)
+    for seeds,prediction in ((end_seed,forward_at_end),(start_seed,backward_at_start)):
+        if seeds.ndim==2:seeds=seeds[None]
+        if seeds.ndim!=3 or seeds.shape[1:]!=shape or not 1<=len(seeds)<=16 or not np.isfinite(seeds).all() or seeds.min()<0 or seeds.max()>1:
+            raise ValueError('Invalid anchor seeds')
+        components=seeds>.5;s=components.any(0);p=prediction>.5;intersection=int((s&p).sum())
+        scores.append(dict(iou=intersection/max(1,int((s|p).sum())),coverage=intersection/max(1,int(s.sum())),
+                           seed_coverages=[int((m&p).sum())/max(1,int(m.sum())) for m in components]))
+    return dict(accepted=all(x['iou']>=.35 and min(x['seed_coverages'])>=.5 for x in scores),directions=scores)
+
+
+def support_envelope(index,start,end,fade_frames=2):
+    """Fade extra proposals into existing grading at explicit support edges."""
+    if not all(isinstance(v,int) for v in (index,start,end,fade_frames)) or start>end or fade_frames<0:
+        raise ValueError('Invalid support interval')
+    if index<start or index>end:return 0.
+    if fade_frames==0:return 1.
+    return float(smooth(0,fade_frames,min(index-start,end-index)))

@@ -25,13 +25,15 @@ with torch.inference_mode():
  for anchor in m['anchors']:
   direction=anchor['direction'];state=predictor.init_state(str((a.trial/'frames').resolve()),offload_video_to_cpu=True,offload_state_to_cpu=True)
   mask=np.load(a.trial/(direction+'-seed.npy'),allow_pickle=False)
-  predictor.add_new_mask(state,frame_idx=anchor['index'],obj_id=1,mask=mask)
+  if mask.ndim==2:mask=mask[None]
+  if mask.ndim!=3 or not 1<=len(mask)<=16:raise ValueError('Invalid object seeds')
+  for obj_id,object_mask in enumerate(mask,1):predictor.add_new_mask(state,frame_idx=anchor['index'],obj_id=obj_id,mask=object_mask)
   begin=time.perf_counter();count=0
   for idx,ids,logits in predictor.propagate_in_video(state,start_frame_idx=anchor['index'],reverse=direction=='backward'):
-   if ids!=[1] or tuple(logits.shape)!=(1,1,*mask.shape):raise RuntimeError('Unexpected object/output geometry')
-   prob=logits[0,0].sigmoid().cpu().numpy().astype(np.float32)
+   if ids!=list(range(1,len(mask)+1)) or tuple(logits.shape)!=(len(mask),1,*mask.shape[1:]):raise RuntimeError('Unexpected object/output geometry')
+   prob=logits[:,0].sigmoid().amax(dim=0).cpu().numpy().astype(np.float32)
    if not np.isfinite(prob).all():raise RuntimeError('Nonfinite output')
    np.save(out/f'{direction}-{idx:03}.npy',prob);count+=1;print(direction,idx,flush=True)
   records.append(dict(direction=direction,frames=count,seconds=time.perf_counter()-begin));del state
 root=Path(sam2.__file__).parent
-(out/'evidence.json').write_text(json.dumps(dict(seed=a.seed,deterministic_algorithms=torch.are_deterministic_algorithms_enabled(),loaded_state_sha256=state_digest.hexdigest(),runner_sha256=sha(Path(__file__)),mps_environment={k:os.environ.get(k) for k in ['PYTORCH_ENABLE_MPS_FALLBACK','PYTORCH_MPS_FAST_MATH','PYTORCH_MPS_PREFER_METAL']},model=provenance,device=a.device,torch=torch.__version__,runs=records,total_seconds=time.perf_counter()-start,maxrss_native=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,manifest_sha256=sha(a.trial/'manifest.json'),source_sha256={str(x.relative_to(root)):sha(x) for x in root.rglob('*') if x.is_file() and x.suffix in ('.py','.yaml')},postprocessing=False,output_sha256={x.name:sha(x) for x in out.glob('*.npy')},mps_fallback_enabled=os.environ.get('PYTORCH_ENABLE_MPS_FALLBACK')=='1',limitations='One automatically selected skin component; no general multi-object identity solution. SAM2 is a geometry predictor, not a skin classifier.'),indent=2))
+(out/'evidence.json').write_text(json.dumps(dict(seed=a.seed,deterministic_algorithms=torch.are_deterministic_algorithms_enabled(),loaded_state_sha256=state_digest.hexdigest(),runner_sha256=sha(Path(__file__)),mps_environment={k:os.environ.get(k) for k in ['PYTORCH_ENABLE_MPS_FALLBACK','PYTORCH_MPS_FAST_MATH','PYTORCH_MPS_PREFER_METAL']},model=provenance,device=a.device,torch=torch.__version__,runs=records,total_seconds=time.perf_counter()-start,maxrss_native=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,manifest_sha256=sha(a.trial/'manifest.json'),source_sha256={str(x.relative_to(root)):sha(x) for x in root.rglob('*') if x.is_file() and x.suffix in ('.py','.yaml')},postprocessing=False,output_sha256={x.name:sha(x) for x in out.glob('*.npy')},mps_fallback_enabled=os.environ.get('PYTORCH_ENABLE_MPS_FALLBACK')=='1',limitations='One or more automatically seeded skin components; saved output is their union, not identity labels. No general identity solution. SAM2 is a geometry predictor, not a skin classifier.'),indent=2))

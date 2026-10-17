@@ -12,6 +12,7 @@ for anchor in m['anchors']:
  d=anchor['direction'];i=anchor['index'];path=a.trial/(d+'-seed.npy')
  if sha(path)!=anchor['seed_sha256']:raise ValueError('Changed seed')
  mask=np.load(path,allow_pickle=False)
+ if mask.ndim==3:mask=mask.max(0)
  previous=i;previous_mask=mask.astype(np.float32);previous_trust=np.ones(mask.shape,np.float32)
  indices=range(i,len(images)) if d=='forward' else range(i,-1,-1)
  for k in indices:

@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-17",
+  "scope_status": "PARTIAL; NOT COMPLETE",
+  "artifacts": {
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/cpu-repeat.json": "7890315b9bebba717297f2887c6508e49ab66d5281b092f13f4595a9589711b9",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/people-cases.json": "5449851e61d88f703858f0a037da3a5d4a76d8b186c0306286fa97f04adeab20",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/people-reviewed/evidence.json": "21ca24ddc437005ea640e118f4acb6a200e2254e343ef0b8ecf6a83604acf02b",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/combined/evidence.json": "520ce167e67c3949ddc7fe8a7774d626d234d240ac217b75d3cf4fc7abdbcccb",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/combined/motion-review.json": "c3c0706255b70fa8c4c37d998dcec43247361a2a1a0fda1530292254c6acb01a",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/cuts/scores.json": "9c4214b46b28867ed19f98bc13e9a771fac846fc8c4d4d11da9fea22fb8eb9f5",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/cuts/reviewed-scores.json": "75c6afa3bb87422ef43c5f5e8dd4f7025bca3cfe960354c6126800e6522caefb",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/people-video-reviewed/manifest.json": "337af9daa29f416d82b4003136bab5af6774289d2dcd607223ed6bd479470317",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/people-video-reviewed/sam2-multi/evidence.json": "682bc36e7cb56f4d670d4c98f033b3a0ad63e7c0a2106562a905862a83bd3eba",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/people-video-reviewed/comparison-multi-reviewed/evidence.json": "9b093535ab332491992c6e10c37e0a89e215d9a9f6c30152ec625163afdc41c6",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/face-review-reviewed/Face-Comparison.mp4": "c7a4b4708f37eb2a240793f6b9c6dc4df7b9737dd16ed9d7c7c0a499d210ebcf",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/people-video-reviewed/comparison-multi-accepted/evidence.json": "3cc903a03bc2f24ad2b0358d76464c999e2dc481f20e1b0e825e5338353f4349",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/face-final-reviewed/Face-Comparison.mp4": "1e54f1be66344695c5a9d2c73112fd8c736bf5c200b004bdfa5e3f3579701150",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-cache-2026-10-17/diagnostic/face-020-gates.png": "c3d1f9dabbc554a28f44dec8fcd0824675ac0f5b11e5fc6038bf26ac937075be"
+  },
+  "source": {
+    "tools/benchmark/video_face_review.py": "86bbe6e16423448564dcf047b9d808bb3136c0fb8fc042c790ad6be31e1445fa",
+    "tools/benchmark/video_anchor_report.py": "c0a0fad40cd4ea1391045ba6ecefff37dcf12903af6edd05bdaf0b72d0e2cfbd",
+    "tools/benchmark/video_repeat_report.py": "8da4239250ca2bce59750b928a6ea1080108892965c0569118d011db943dacc7",
+    "tools/benchmark/video_people_prepare.py": "1f33912ef08d6c9d8386d7db653cdf3b56696b9fc187f6102d13ed69ae4a403c",
+    "tools/benchmark/video_sam2_trial.py": "2d42d08a7818fee8aba7c474fd622b204f29d65e9ae63886019e18f2927c95cd",
+    "tools/benchmark/video_flow_trial.py": "0821c542f5fc2f57b5dc09126d20e6a06c282f3c671d4b80624775821578bc44",
+    "tools/benchmark/video_anchor_analysis.py": "4c0466523ae1089e68d96f61dd241a823c402a574ed803a72db80524ca1c53b1",
+    "tools/benchmark/video_anchor_prepare.py": "dc27df8c5c970225553a2b2bfec1ea00b6e016aa7f55751c569c4000f9995bcd",
+    "tools/benchmark/video_anchor_compare.py": "1dcba2b47b2a869e5f6b21ed4fbfd675c95eeb2881a832c8a741813c960f8267"
+  },
+  "checks": {
+    "native_cache_host": "PASS scoped32bpc13renders",
+    "native_release_sanitizers": "PASS 10+10",
+    "CPU_repeat": "PASS 29/29 single-object predictions exact",
+    "multi_person": "36 frames;3confirmed faces each, pose0or1;68SAM union predictions",
+    "hard_cuts": "2detected after tuning; no false cuts on156C2098frames",
+    "soft_masks": "Feathered geometry and direction-agreement gate; full visual acceptance remains open",
+    "continuous_flicker": "NOT RUN",
+    "whole_scene_SAM2_AE": "NOT IMPLEMENTED",
+    "python_contracts": "PASS26geometry+6cache/provenance refusal tests",
+    "per_seed_admission": "PASS each of3endpoint seeds covered; union alone no longer sufficient"
+  }
+}

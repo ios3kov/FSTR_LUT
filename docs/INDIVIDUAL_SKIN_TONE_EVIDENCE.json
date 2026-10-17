@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-17",
+  "source_sha256": {
+    "include/fstr/skin_tone.hpp": "5b8da0e5a560f58a1fe33544a6c086a478b44e8f4330a1f54786e1d8b10afeae",
+    "src/color/skin_tone.cpp": "777821a8ee3a390acde37f7098ad69bba399b55e0e7bdf964a95589dbad7079a",
+    "include/fstr/scene_color.hpp": "28a55a44551f4983e3dbc8843e12df64371d5fb32248cb6dc94e8208c827ee37",
+    "src/color/scene_color.cpp": "457e1388a8861b64d9ee76cb1c85b7d5c9c0d644691f624786fc569d6d9dc848",
+    "tests/skin_tone_tests.cpp": "847dd8ceda861e7aa1d3946b7f3563413d31234df9c814ab2629f0d79984fe58",
+    "tests/scene_color_tests.cpp": "b643c88be9a7ff0c3bfb75a645946c48ecfc0b746230ce6f1c357a07a34f442a",
+    "tools/benchmark/skin_tone_main.cpp": "2119c0841f46892c73674f2b9d27e3d693a28ae7d45ab025118d2d5d2ee30969",
+    "tools/benchmark/scene_color_main.cpp": "216be747e8c538c28c74e58e648783d78e05320f23d39e612f33d34e80b484ff",
+    "CMakeLists.txt": "d9425d3f0215493edc8800ba46acc1020e04b6303f02e65b61d31bd8ef42ba9b"
+  },
+  "checks": {
+    "release_suite": "PASS 11/11 before final focused regression additions",
+    "sanitizer_suite": "PASS 11/11 before final focused regression additions",
+    "final_affected_release": "PASS 2/2",
+    "final_affected_asan_ubsan": "PASS 2/2",
+    "scanner": "no findings in 626 scanned text files before final focused regression additions",
+    "senior_review": "two read-only rounds; addressed boundary, binding, sparse confidence; mixed-role and unknown fallback tests added",
+    "synthetic_visual": "three tone ramps inspected, not real-human acceptance",
+    "automatic_person_association": "NOT RUN / not implemented by this slice",
+    "host_integration": "NOT RUN / installed plugin unchanged",
+    "auto_encoding": "not implemented; documented freshness issue"
+  },
+  "external_artifacts": "../skin-tone-2026-10-17"
+}

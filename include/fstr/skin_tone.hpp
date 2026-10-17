@@ -1,0 +1,25 @@
+#pragma once
+#include "fstr/color.hpp"
+#include <vector>
+namespace fstr {
+// Explicit samples belonging to one person in one shot, straight linear Rec709.
+// Association and semantic confidence are supplied by analysis, never guessed here.
+struct SkinSample { RGB color; double confidence=0; };
+struct SkinToneReference {
+    RGB chroma_delta{}; // LUT-directed change in RGB / luminance, zero luminance.
+    double confidence=0;
+    std::size_t samples=0;
+private:
+    friend class SkinToneLook;
+    std::shared_ptr<const int> binding_; // In-process immutable look instance; never serialize.
+};
+class SkinToneLook final {
+public:
+    SkinToneLook(std::shared_ptr<const LUT>,double strength);
+    SkinToneReference reference(const std::vector<SkinSample>&) const;
+    std::array<float,4> apply(std::array<float,4>,const SkinToneReference&,double mask,bool enabled=true) const;
+private:
+    ColorProcessor ordinary_;
+    std::shared_ptr<const int> binding_=std::make_shared<const int>(0);
+};
+}

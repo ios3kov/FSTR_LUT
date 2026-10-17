@@ -1,5 +1,6 @@
 #pragma once
 #include "fstr/color.hpp"
+#include "fstr/skin_tone.hpp"
 #include <array>
 namespace fstr {
 // Semantic probabilities after confidence/spatial/temporal processing; omitted
@@ -13,9 +14,11 @@ void validate_scene_weights(const SceneWeights&);
 class SceneLook final {
 public:
     SceneLook(std::shared_ptr<const LUT> teal_orange,double strength);
-    std::array<float,4> apply(std::array<float,4>,const SceneWeights&,bool enabled=true) const;
+    SkinToneReference skin_reference(const std::vector<SkinSample>& samples)const{return skin_.reference(samples);}
+    std::array<float,4> apply(std::array<float,4>,const SceneWeights&,bool enabled=true,const SkinToneReference* person=nullptr) const;
 private:
     ColorProcessor base_;
+    SkinToneLook skin_;
     double strength_;
 };
 }

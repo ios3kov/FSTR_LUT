@@ -2,7 +2,7 @@
 
 ## Current color follow-up — 2026-10-17
 
-Manual encoding moved to collapsed Advanced in candidate source; Auto freshness unresolved and host UI/migration unverified. Individual per-person skin-tone adaptation explicitly required, not yet implemented. [Requirements and remaining checks](COLOR_AUTO_FOLLOWUP.md).
+Manual encoding moved to collapsed Advanced in candidate source; Auto freshness unresolved and host UI/migration unverified. Individual per-person skin-tone adaptation now has an independent experimental core and scene-core hook; automatic association/video/AE still open. [Implementation and checks](INDIVIDUAL_SKIN_TONE.md). [Requirements and remaining checks](COLOR_AUTO_FOLLOWUP.md).
 
 ## Current Smart completion block — 2026-10-17
 

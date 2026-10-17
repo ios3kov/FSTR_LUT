@@ -26,7 +26,7 @@ struct Fixture {
     Fixture();
 };
 Fixture& fixture(PF_ProgPtr ref){return *reinterpret_cast<Fixture*>(ref);}
-PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==f.fail_param)return 73;*value=f.params[id];return PF_Err_NONE;}
+PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==AdvancedStart||id==AdvancedEnd)return 74;if(id==f.fail_param)return 73;*value=f.params[id];return PF_Err_NONE;}
 PF_Err checkin_cb(PF_ProgPtr ref,PF_ParamDef*){auto& f=fixture(ref);++f.checkin;return f.fail_checkin?74:PF_Err_NONE;}
 PF_Err add(PF_ProgPtr ref,PF_ParamIndex,PF_ParamDef* value){auto& f=fixture(ref);f.params[++f.checkout]=*value;return PF_Err_NONE;}
 PF_Err register_ui_cb(PF_ProgPtr,PF_CustomUIInfo* value){return value&&value->events==PF_CustomEFlag_EFFECT?PF_Err_NONE:PF_Err_BAD_CALLBACK_PARAM;}
@@ -61,7 +61,7 @@ template<class P>void formats(PF_PixelFormat format,P pixel){
     check(run(f,true)==PF_Err_NONE,"Smart native bypass failed");
     check(std::memcmp(&output[0],&input[5],sizeof(P))==0,"Smart ROI/bypass sample mismatch");
     check(std::memcmp(&output[1],&guard,sizeof(P))==0,"Output row padding overwritten");
-    check(f.checkout==CameraInfo-1&&f.checkin==f.checkout&&f.acquire==1&&f.release==1&&f.pixels_in==1,"Successful native resources unbalanced");
+    check(f.checkout==RenderParamCount&&f.checkin==f.checkout&&f.acquire==1&&f.release==1&&f.pixels_in==1,"Successful native resources unbalanced");
     Fixture legacy;set_world(legacy.input,input,1,1,4,format);set_world(legacy.output,output,1,1,2,format);
     legacy.params[Mix].u.fs_d.value=0;legacy.params[Source].u.pd.value=2;legacy.params[WorkingSpace].u.pd.value=1;
     check(run(legacy,false)==PF_Err_NONE&&std::memcmp(&output[0],&input[0],sizeof(P))==0,"Legacy LogMix0 exact bypass failed");
@@ -74,12 +74,17 @@ void processing(){
     check(output[0].alpha==16384&&output[0].red==8192&&output[0].green==16384&&output[0].blue==24576,"SDK32768/premult scale wrong");
     Fixture unknown;unknown.params[Exposure].u.fs_d.value=1;unknown.params[WorkingSpace].u.pd.value=1;
     set_world(unknown.input,input,1,1,1,PF_PixelFormat_ARGB64);set_world(unknown.output,output,1,1,1,PF_PixelFormat_ARGB64);
-    check(run(unknown,true)==PF_Err_BAD_CALLBACK_PARAM&&unknown.acquire==0&&unknown.checkin==CameraInfo-1&&unknown.pixels_in==1,"Unknown space error/resources wrong");
+    check(run(unknown,true)==PF_Err_BAD_CALLBACK_PARAM&&unknown.acquire==0&&unknown.checkin==RenderParamCount&&unknown.pixels_in==1,"Unknown space error/resources wrong");
 }
 void cinema(){
     Fixture ui;active=&ui;
     check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Cinema schema setup failed");
     check(ui.params[SmartColor].uu.id==13&&ui.params[SmartColor].u.bd.dephault==FALSE&&ui.params[CameraInfo].uu.id==12,"Smart default/legacy IDs wrong");
+    check(ui.params[AdvancedStart].param_type==PF_Param_GROUP_START&&
+          (ui.params[AdvancedStart].flags&PF_ParamFlag_COLLAPSE_TWIRLY)&&
+          ui.params[AdvancedEnd].param_type==PF_Param_GROUP_END,"Advanced must start collapsed");
+    check(ui.params[WorkingSpace].uu.id==9&&ui.params[WorkingSpace].u.pd.num_choices==4&&
+          ui.params[WorkingSpace].u.pd.dephault==1,"Legacy encoding choices/default changed");
     check(ui.params[Look].u.pd.num_choices==17&&ui.params[Look].uu.id==6,"Cinema menu or persistent ID wrong");
     check(std::strncmp(ui.params[Look].u.pd.u.namesptr,"Natural|(-|",11)==0,"Natural/retired Warm schema wrong");
     check(ui.params[LookAmount].u.fs_d.dephault==100&&ui.params[LookAmount].u.fs_d.slider_max==100&&ui.params[LookAmount].u.fs_d.valid_max==300,"Strength soft/hard/default range wrong");
@@ -153,10 +158,12 @@ void real_recovery(const char* path,int center=50,bool expected_recovery=true){
  check(expected_recovery?(changed>0&&changed<count/10):changed==0,"Short recovery / long-gap plain LUT contract failed");check(f.pixels_in==f.pixels_out,"Real temporal checkout leak");std::cout<<"Real frame"<<center<<(expected_recovery?" temporal recovery changed ":" long-gap vs Smart Off changed ")<<changed<<" pixels\n";
 }
 void failures(){
-    for(int mode=0;mode<10;++mode){
+    for(int mode=0;mode<12;++mode){
         Fixture f;std::vector<PF_Pixel> input{{255,10,20,30}},output(1);
         set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB32);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB32);
         if(mode==0)f.fail_param=4;
+        if(mode==10)f.fail_param=WorkingSpace;
+        if(mode==11)f.fail_param=SmartColor;
         if(mode==1)f.fail_suite=true;
         if(mode==2)f.fail_output=true;
         if(mode==3)f.fail_pixel_checkout=true;
@@ -167,7 +174,7 @@ void failures(){
         if(mode==8)f.abort_now=true;
         if(mode==9){f.params[Source].u.pd.value=2;f.params[Look].u.pd.value=2;f.params[Exposure].u.fs_d.value=11;}
         check(run(f,true)!=PF_Err_NONE,"Native injected failure silently succeeded");
-        check(f.checkin==(f.fail_param?f.fail_param-1:(mode==2||mode==3?0:CameraInfo-1)),"Parameter failure cleanup wrong");
+        check(f.checkin==(f.fail_param?f.fail_param-1-(f.fail_param>AdvancedStart?1:0)-(f.fail_param>AdvancedEnd?1:0):(mode==2||mode==3?0:RenderParamCount)),"Parameter failure cleanup wrong");
         check(f.pixels_in==(f.fail_pixel_checkout?0:1),"Pixel failure cleanup wrong");
         check(f.release==(f.acquire&&!f.fail_suite?1:0),"Suite failure cleanup wrong");
     }
@@ -189,7 +196,7 @@ int main(int argc,char** argv){try{
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
     formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}
     std::vector<std::future<bool>> tasks;
-    for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==CameraInfo-1&&f.pixels_in==1;}));
+    for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==RenderParamCount&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");
     check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setdown failed");
     check(dlclose(module)==0,"Native module cleanup failed");

@@ -1,5 +1,9 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Current color follow-up — 2026-10-17
+
+Manual encoding moved to collapsed Advanced in candidate source; Auto freshness unresolved and host UI/migration unverified. Individual per-person skin-tone adaptation explicitly required, not yet implemented. [Requirements and remaining checks](COLOR_AUTO_FOLLOWUP.md).
+
 ## Current Smart completion block — 2026-10-17
 
 Native Vision RAM/disk cache passes13real AE renders including restart; original effect preserved, separate Cache Test installed. CPU SAM2 reference repeats29/29predictions exactly. New36frame/3face/partial-occlusion trial and two real cuts evaluated; soft proposal edges and interval fades added. Skin-field bands remain visible; continuous flicker acceptance and new whole-scene/SAM2 native backend are still open. **Full requested block is not complete.** [Requirement matrix and defects](SMART_COMPLETION_BLOCK.md), [evidence](SMART_COMPLETION_BLOCK_EVIDENCE.json), [native cache](SMART_ANALYSIS_CACHE.md).

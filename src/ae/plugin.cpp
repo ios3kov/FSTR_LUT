@@ -35,19 +35,21 @@ void initialize_look() {
 class Params final {
     PF_InData* in_;
     std::array<PF_ParamDef,ParamCount> values_{};
-    int acquired_=0;
+    std::array<int,RenderParamCount> acquired_{};
+    int count_=0;
 public:
     explicit Params(PF_InData* in):in_(in) {
         for(int id=1;id<CameraInfo;++id) {
+            if(id==AdvancedStart||id==AdvancedEnd)continue;
             auto err=PF_CHECKOUT_PARAM(in_,id,in_->current_time,in_->time_step,in_->time_scale,&values_[id]);
-            if(err){close();throw err;}acquired_=id;
+            if(err){close();throw err;}acquired_[count_++]=id;
         }
     }
     ~Params(){close();}
     const PF_ParamDef& operator[](int id)const{return values_[id];}
     PF_Err close() noexcept {
         PF_Err first=PF_Err_NONE;
-        while(acquired_>0){auto err=PF_CHECKIN_PARAM(in_,&values_[acquired_--]);if(!first)first=err;}
+        while(count_>0){auto err=PF_CHECKIN_PARAM(in_,&values_[acquired_[--count_]]);if(!first)first=err;}
         return first;
     }
 };
@@ -90,7 +92,9 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     AEFX_CLR_STRUCT(def);PF_ADD_POPUP("Look",static_cast<A_short>(fstr::builtin_look_count),1,fstr::builtin_look_menu,LookId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Look Amount",0,300,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,LookAmountId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Mix",0,100,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,MixId);
+    PF_ADD_TOPICX("Advanced",PF_ParamFlag_COLLAPSE_TWIRLY,AdvancedStartId);
     AEFX_CLR_STRUCT(def);PF_ADD_POPUP("AE Pixel Encoding",4,1,"Choose pixel encoding...|sRGB|Linear Rec.709 / sRGB|Rec.709 Gamma 2.4",WorkingSpaceId);
+    AEFX_CLR_STRUCT(def);PF_END_TOPIC(AdvancedEndId);
     AEFX_CLR_STRUCT(def);PF_ADD_CHECKBOX("Smart Color Grading","On",FALSE,0,SmartColorId);
     AEFX_CLR_STRUCT(def);def.ui_flags=PF_PUI_CONTROL|PF_PUI_DONT_ERASE_CONTROL;def.ui_width=300;def.ui_height=64;
     PF_ADD_NULL("Camera metadata",CameraInfoId);

@@ -74,3 +74,17 @@ def combine_geometry(sam_forward,sam_backward,flow_forward,flow_backward,flow_tr
     weight=.25*flow_trust*compatible*smooth(.1,.5,np.minimum(sam_forward,sam_backward))
     return ((1-weight)*sam_forward+weight*flow_forward,
             (1-weight)*sam_backward+weight*flow_backward,weight)
+
+
+def anchor_roundtrip(start_seed,end_seed,forward_at_end,backward_at_start):
+    """Reject mismatched endpoints; overlap is not proof of person identity."""
+    shape=start_seed.shape
+    for m in (start_seed,end_seed,forward_at_end,backward_at_start):
+        if m.shape!=shape or not np.isfinite(m).all() or m.min()<0 or m.max()>1:
+            raise ValueError('Invalid anchor roundtrip')
+    scores=[]
+    for seed,prediction in ((end_seed,forward_at_end),(start_seed,backward_at_start)):
+        s=seed>.5;p=prediction>.5;intersection=int((s&p).sum())
+        scores.append(dict(iou=intersection/max(1,int((s|p).sum())),
+                           coverage=intersection/max(1,int(s.sum()))))
+    return dict(accepted=all(x['iou']>=.35 and x['coverage']>=.5 for x in scores),directions=scores)

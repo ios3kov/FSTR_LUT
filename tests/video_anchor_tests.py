@@ -2,7 +2,7 @@ import sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools/benchmark'))
 import numpy as np
-from video_anchor_analysis import choose_anchor,warp_anchor,cut_between,combine_prediction,combine_geometry
+from video_anchor_analysis import choose_anchor,warp_anchor,cut_between,combine_prediction,combine_geometry,anchor_roundtrip
 class Tests(unittest.TestCase):
  def setUp(self):
   self.im=np.random.default_rng(3).random((48,48,3),dtype=np.float32);self.base=np.zeros((48,48,8),np.float32);self.base[...,6]=.8
@@ -39,6 +39,19 @@ class Tests(unittest.TestCase):
   o=np.ones((48,48),np.float32);f,b,w=combine_geometry(o*.8,o*.8,o*.85,o*.85,o);self.assertTrue(np.all(f>=.8));self.assertTrue(np.all(f<=.85));self.assertLessEqual(float(w.max()),.25)
  def test_background_agreement_is_not_object_evidence(self):
   z=np.zeros((48,48),np.float32);f,b,w=combine_geometry(z,z,z,z,z+1);self.assertEqual(float(w.sum()),0)
+ def test_roundtrip_rejects_other_object(self):
+  a=np.zeros((48,48),np.float32);a[4:16,4:16]=1;b=np.roll(a,24,axis=1)
+  self.assertFalse(anchor_roundtrip(a,b,a,b)['accepted'])
+ def test_roundtrip_rejects_whole_frame_mask(self):
+  a=np.zeros((48,48),np.float32);a[4:16,4:16]=1
+  self.assertFalse(anchor_roundtrip(a,a,a*0+1,a*0+1)['accepted'])
+ def test_roundtrip_requires_both_directions(self):
+  a=np.zeros((48,48),np.float32);a[4:16,4:16]=1
+  self.assertFalse(anchor_roundtrip(a,a,a,a*0)['accepted'])
+  self.assertTrue(anchor_roundtrip(a,a,a,a)['accepted'])
+ def test_complete_occlusion_disagreement_preserves_baseline(self):
+  a=np.zeros((48,48),np.float32);a[4:16,4:16]=1;b=np.roll(a,24,axis=1);o=a*0+1
+  result,w=combine_prediction(self.base,a,b,o,o,.8);np.testing.assert_array_equal(result,self.base)
  def test_invalid(self):
   o=np.ones((48,48),np.float32)
   with self.assertRaises(ValueError):combine_prediction(self.base,o,o,o,o,float('nan'))

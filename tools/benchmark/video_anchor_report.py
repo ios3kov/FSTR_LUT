@@ -13,6 +13,14 @@ p.add_argument('--sam2', default='sam2-final')
 a = p.parse_args()
 root = a.trial / a.comparison
 evidence = json.loads((root / 'evidence.json').read_text())
+sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+sam_evidence_path = a.trial/a.sam2/'evidence.json'
+if evidence['prediction_evidence_sha256'].get(a.sam2)!=sha(sam_evidence_path):
+    raise ValueError('ROI cache does not match rendered comparison')
+sam_evidence=json.loads(sam_evidence_path.read_text())
+for name,digest in sam_evidence['output_sha256'].items():
+    if sha(a.trial/a.sam2/name)!=digest:
+        raise ValueError('Changed ROI prediction')
 manifest = json.loads((a.trial / 'manifest.json').read_text())
 rows = []
 for case, source in zip(evidence['cases'], manifest['cases']):
@@ -26,7 +34,8 @@ for case, source in zip(evidence['cases'], manifest['cases']):
     for mode in ('baseline', 'flow', 'sam2', 'hybrid'):
         field = np.load(root / f'{source["name"]}-{mode}-mask.npy', allow_pickle=False)
         row[mode] = float(field[..., 0][roi].mean()) if roi.any() else None
-    contribution = np.load(root / f'{source["name"]}-flow-contribution.npy', allow_pickle=False)
+    contribution_path = root / f'{source["name"]}-flow-contribution.npy'
+    contribution = np.load(contribution_path, allow_pickle=False) if contribution_path.exists() else np.zeros(roi.shape, dtype=np.float32)
     row['flow_contribution_pixels_over_001'] = int((contribution > .01).sum())
     rows.append(row)
 result = dict(

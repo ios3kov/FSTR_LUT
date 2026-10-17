@@ -1,0 +1,170 @@
+{
+  "date": "2026-10-17",
+  "baseline_commit": "50f5cbf",
+  "scope": "Same 16-frame C2098 arm trial; two independent MPS processes, seed0, deterministic algorithms enabled. Not independent footage validation.",
+  "artifacts": {
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/repeat-reviewed.json": "a857bf9c9221f32fcc03a84710d41ef44281ff93b12414d25a42152116f104a8",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/repeat-color.json": "706cd82196e24668d6ef8afccd027f7a8bdb242952fdd594f1bf6a2e53964418",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/sam2-deterministic-a/evidence.json": "84699b29df2f6c6b9850108068c716230d916859846b46cf848dfe9fc62d45d3",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/sam2-deterministic-b/evidence.json": "401e41ea0e1c9c1d127fb3ac04b54a226719183a38ed3243ed46cbcff30a464e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/comparison-deterministic-a/evidence.json": "6c6eeca48267637f062c823763f9e2ffb588375c6ad183bb961aaa9e6b6605f6",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/comparison-deterministic-b/evidence.json": "a204fad4b5bc9c70b1a1053159d6c4e1861324edac2c0dc7caca6e164bd25b7a",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/video-smart-2026-10-15/trial/comparison-roundtrip/evidence.json": "cb4c6735374a05dea8b838d30c1858d9c09bb653e7f5c64bfc27c735783e9908"
+  },
+  "repeat": {
+    "configuration_equal": true,
+    "bit_exact": false,
+    "predictions": 29,
+    "mean_probability_mae": 0.00015779836760508448,
+    "max_threshold_disagreement_pixels": 184
+  },
+  "color_repeat": {
+    "frames": [
+      {
+        "frame": 140,
+        "mean_srgb_delta": 0.0,
+        "max_srgb_delta": 0.0,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 141,
+        "mean_srgb_delta": 1.224689043510807e-07,
+        "max_srgb_delta": 0.0010068118572235107,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 142,
+        "mean_srgb_delta": 1.8700723103393102e-07,
+        "max_srgb_delta": 0.001835942268371582,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 143,
+        "mean_srgb_delta": 3.960224717047822e-07,
+        "max_srgb_delta": 0.002878054976463318,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 144,
+        "mean_srgb_delta": 2.743241225289239e-07,
+        "max_srgb_delta": 0.0027178525924682617,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 145,
+        "mean_srgb_delta": 2.603073312457127e-07,
+        "max_srgb_delta": 0.0031228065490722656,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 146,
+        "mean_srgb_delta": 6.647532018178026e-07,
+        "max_srgb_delta": 0.004083603620529175,
+        "pixels_over_1_255": 2
+      },
+      {
+        "frame": 147,
+        "mean_srgb_delta": 5.949113983660936e-07,
+        "max_srgb_delta": 0.003886103630065918,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 148,
+        "mean_srgb_delta": 4.831790647585876e-07,
+        "max_srgb_delta": 0.004680633544921875,
+        "pixels_over_1_255": 2
+      },
+      {
+        "frame": 149,
+        "mean_srgb_delta": 1.3430420153781597e-07,
+        "max_srgb_delta": 0.001719743013381958,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 150,
+        "mean_srgb_delta": 6.69554367505043e-08,
+        "max_srgb_delta": 0.0008757859468460083,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 151,
+        "mean_srgb_delta": 1.5230275707267538e-08,
+        "max_srgb_delta": 0.0001741349697113037,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 152,
+        "mean_srgb_delta": 5.020093141183679e-08,
+        "max_srgb_delta": 0.0003185272216796875,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 153,
+        "mean_srgb_delta": 8.109335567496601e-07,
+        "max_srgb_delta": 0.009022235870361328,
+        "pixels_over_1_255": 12
+      },
+      {
+        "frame": 154,
+        "mean_srgb_delta": 0.0,
+        "max_srgb_delta": 0.0,
+        "pixels_over_1_255": 0
+      },
+      {
+        "frame": 155,
+        "mean_srgb_delta": 0.0,
+        "max_srgb_delta": 0.0,
+        "pixels_over_1_255": 0
+      }
+    ],
+    "mean_srgb_delta": 2.5378738299774994e-07,
+    "max_srgb_delta": 0.009022235870361328,
+    "max_pixels_over_1_255": 12
+  },
+  "anchor_roundtrips": {
+    "flow-neighbor": {
+      "accepted": false,
+      "directions": [
+        {
+          "iou": 0.29078868151715836,
+          "coverage": 0.36397889977392617
+        },
+        {
+          "iou": 0.3128205128205128,
+          "coverage": 0.6275720164609053
+        }
+      ]
+    },
+    "sam2-final": {
+      "accepted": true,
+      "directions": [
+        {
+          "iou": 0.8461538461538461,
+          "coverage": 0.9284099472494348
+        },
+        {
+          "iou": 0.7701149425287356,
+          "coverage": 0.9650205761316872
+        }
+      ]
+    }
+  },
+  "checks": {
+    "anchor_contracts": "PASS 21",
+    "cache_refusal_contracts": "PASS 5",
+    "native_comparisons": "PASS 128 new renders, baseline exact both runs",
+    "roundtrip_fallback": "PASS rejected flow equals baseline; hybrid equals accepted SAM exact all16frames",
+    "perceptual_flicker": "NOT RUN",
+    "real_occlusions_crowds_cuts": "NOT RUN",
+    "AE": "NOT RUN"
+  },
+  "source_sha256": {
+    "tools/benchmark/video_anchor_analysis.py": "4d4c96407e87ccc94c37c470e5c4015a2c7e308194d7e7e97f4d9a16965dc81a",
+    "tools/benchmark/video_anchor_compare.py": "fabb5eb393e4a69e48213e6e53a4421a8f319f3a711b03fe042a6ab527059bea",
+    "tools/benchmark/video_anchor_prepare.py": "dc27df8c5c970225553a2b2bfec1ea00b6e016aa7f55751c569c4000f9995bcd",
+    "tools/benchmark/video_anchor_report.py": "c0a0fad40cd4ea1391045ba6ecefff37dcf12903af6edd05bdaf0b72d0e2cfbd",
+    "tools/benchmark/video_flow_trial.py": "91cae2353c364065305670b1748bf8465af120ea7114dbcbeee2f48784852212",
+    "tools/benchmark/video_repeat_report.py": "8da4239250ca2bce59750b928a6ea1080108892965c0569118d011db943dacc7",
+    "tools/benchmark/video_sam2_trial.py": "fab5c65e0f42b4fb9462148c903d37ff16bd5b66eebf0899c93434b48aad1378"
+  }
+}

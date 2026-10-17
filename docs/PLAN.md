@@ -1,5 +1,10 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Shot analysis reliability follow-up — 2026-10-17
+
+Added two-sided endpoint validation and exact rejection of unreliable flow.26contracts pass. Two fixed-setting independent MPS runs remain non-bit-exact; actual native color differs by>1/255 on at most12pixels/frame on this16frame trial. Repeatability mechanism, independent multi-person/occlusion footage and continuous perception remain open. No AE promotion. [Measured evidence](SMART_VIDEO_RELIABILITY_EVIDENCE.json).
+
+
 ## Offline semantic + SAM2 + motion comparison
 
 Automatic skin anchors and independent SAM2 directions now feed a bounded hybrid with optional reliable optical flow. The16frame difficult-arm trial improves mask strength stability; flow adds no meaningful gain here.17tests pass,64native comparison renders preserve the16frame baseline exactly. No new AE installation. Full-clip/multi-object quality, perceptual flicker, and inference repeatability remain open. [Result and next boundary](SMART_VIDEO_ANALYSIS.md), [exact evidence](SMART_VIDEO_ANALYSIS_EVIDENCE.json).

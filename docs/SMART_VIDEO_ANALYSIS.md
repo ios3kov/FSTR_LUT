@@ -32,3 +32,16 @@ The first direct-flow run falsely treated camera motion as27cuts; retained outsi
 Use existing external research Python/dependencies. `video_anchor_prepare.py` creates the immutable trial manifest/seeds. `video_sam2_trial.py --device mps --output sam2-final` runs independent directions with exact checkpoint verification. `video_flow_trial.py --strategy neighbor --output flow-neighbor` creates chained flow. `video_anchor_compare.py --flow flow-neighbor --output comparison-reviewed` validates caches and renders all four routes. `video_anchor_report.py` computes the common-region diagnostics. Each output directory must be fresh. See each runner's help for positional paths. Evidence records external absolute artifact locations; footage remains private.
 
 Next: qualify repeatability and test automatic anchor association on separate clips with occlusion, several people and cuts; then test soft edges and continuous motion. Do not port this tuned single-arm path into AE as a universal whole-scene solution.
+
+
+## Reliability follow-up — 2026-10-17
+
+Added endpoint roundtrip checks: both propagated masks must overlap the independently selected opposite anchor (IoU≥0.35 and anchor coverage≥0.5). On this trial SAM passes (IoU0.846/0.770), neighboring flow fails (0.291/0.313). Rejected flow now contributes exactly zero; its native result equals baseline and hybrid equals accepted SAM on all16frames. Endpoint overlap is a rejection check, not proof of identity in crowds. Unit controls cover wrong object, oversized whole-frame mask, one-sided failure and incompatible occlusion predictions. Real crowd/cut/occlusion qualification remains NOT RUN.
+
+Two fresh independent MPS runs record seed0, strict deterministic-algorithm setting, evaluation mode, identical loaded-state digest, code/config hashes and backend environment. They still differ: mean probability MAE0.000158 over29predictions, versus0.001575 before fixed settings. These are two comparisons, not proof that seed alone caused the reduction. The underlying nondeterministic operation has not been isolated. Worst binary-threshold disagreement184pixels includes predictions outside the accepted interval.
+
+Actual native final-color comparison across16frames: average encoded-sRGB channel error2.54e-7; maximum0.00902 (about2.3/255); at most12pixels/frame exceed1/255. Small measured effect does not establish perceptual temporal acceptance. Cache exact evaluated masks; do not silently re-analyze a shot when changing the LUT. A production cache lifecycle is still future work.
+
+PASS:21anchor/geometry contracts and5real-CLI refusal checks. Reporting rejects empty repeat inventories and mismatched ROI/model caches.128additional native renders pass baseline/finite-alpha checks. Source/data/config/output bindings and measured differences are in [follow-up evidence](SMART_VIDEO_RELIABILITY_EVIDENCE.json). No AE or installed-plugin changes in this follow-up.
+
+Next boundary: independent real footage with several people, occlusion and cuts; soft-edge/motion acceptance; then native cache/backend design. Single-arm quality and whole-scene product readiness remain separate.

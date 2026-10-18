@@ -138,7 +138,7 @@
   "visual_review": {
     "sampled_frames": "PASS reviewed four-time crops for each real shot, full-size representative default/cinematic frames and artificial control four-stage board; labels/footer/picture aspect inspected",
     "judgment": "Natural restrained on already edited real scenes; artificial flat control regains contrast; TealOrange65 warmer while sampled face/fabric detail retained; no obvious new patches or false double images in inspected samples",
-    "continuous_perceptual_flicker": "NOT_RUN: continuous visual judgement needs watching delivered clips",
+    "continuous_perceptual_flicker": "USER_ACCEPTED_SHOWN_COMPARISONS: user reports no visible flicker; exact watched subset unspecified; other sources and SmartOn excluded",
     "smart": "OFF in all color-base comparisons; no new Smart qualification",
     "source_limit": "Real Nikon Flat reel was tweaked by publisher; control explicitly synthesized in encoded RGB; no RAW/Log-equivalence claim"
   },
@@ -146,5 +146,10 @@
     "Source byte-exact assertion initially failed by at most1export code, unchangedalpha; source import accepted at established native8bit export tolerance. Failure retained source-byte-exact-check.log.",
     "Independent float reference differs at most1.001368code on anchor samples; strict1code+1e-6 assertion retained strict-float-export-check.log. All480output frames pass <=1code against separately quantized CPU reference. Float diagnostic recorded, not relabeled exact."
   ],
-  "artifacts_root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018"
+  "artifacts_root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018",
+  "user_feedback": {
+    "date": "2026-10-18",
+    "quote": "мерцаний не вижу",
+    "scope": "shown SDR comparison clips on this material; no general artistic/Log-equivalence claim"
+  }
 }

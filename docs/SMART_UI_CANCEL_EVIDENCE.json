@@ -1,0 +1,24 @@
+{
+  "base_commit": "ad7c04d54c2b7964097f44a21b6e07da3bc0f5b6",
+  "candidate": "5c0eac31093f15b0",
+  "working_cpu_unchanged": "1c490d4515b2937b",
+  "root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-ui-cancel-20261019",
+  "files": {
+    "contract.md": "b0e13e081dc0c44feacbdc9b1c982650a7b12fdf3c780f1101c318a321bfc3e7",
+    "ui-action.json": "b1d715f9db7c3d461454232c1005406af98c238b969d98e3f37d7774546f8403",
+    "verification.json": "03a5232efdac6b76560bd909acdbe5d721fb11d71dda34412e8aded200f13029",
+    "verify.py": "6e87308cfe8838096b1025b4b9266107a2e8150f0f36b49b732545c4ed9bdfd9",
+    "prepare.py": "3f6d37ba7cc0bca5a9cbbc3c1c257bb987377d6e4f0111055e6f268e8708ec9b",
+    "host/test.jsx": "6cea7137a98fe5960dd33fa48c30c4cd644bf8496f94da911e9f012720818fcb",
+    "host/config.json": "3d8e71bb4fb8cb3bbf806d91581b9cfe735d46bdb257b35b843fc50dcc5e6ce4",
+    "host/launch.json": "9d2b50fd0366066f3fa4bec92ab5f0a131bb8576b2b2491b6186047a4f4c7576",
+    "host/installation.json": "9709dd7bc72c5c3d701d8a40360040bac0079e8bea18e752730adb91f2e87d56",
+    "host/host-report.txt": "eebdc6df10f5f83f5bce02c44b41ce227b2c924ecde04008783d7a58f8ab5bba",
+    "host/process-error.log": "003b04e0b67298cfca8dff056576b03ab0d27edbf093f5e50ed3299b10b6028e",
+    "host/cleanup.json": "c82aebda325f9cf434f6f91e3e96b742bd59af08e92aa7e2c516d61733502639",
+    "host/retry_00035.psd": "9e3c88fa308b6985c0913c91710a4c650be974da322a56381d31ce0410fdbef2",
+    "retry.png": "842859c2d73feed84d3a9817a9b68ede4467004568936747cfa75ea36b4055b9",
+    "attempt1-capture-timeout/host-report.txt": "1ea53fc366a767a4528b82e32caa0e41de69d996a4d3e48b9acb9dc81859acb0",
+    "attempt1-capture-timeout/cleanup.json": "c82aebda325f9cf434f6f91e3e96b742bd59af08e92aa7e2c516d61733502639"
+  }
+}

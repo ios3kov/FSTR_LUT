@@ -10,7 +10,7 @@
     "C3": "PASS scoped; rendered-output reuse may satisfy",
     "C4": "PASS artifact and inspected stills",
     "C5": "PASS start/time/stop; steadyfps NOT_RUN",
-    "C6": "NOT_RUN human continuous visual acceptance",
+    "C6": "PASS direct user accepts shown quality; exact viewing coverage unspecified",
     "C7": "PASS"
   },
   "artifacts": [
@@ -69,14 +69,23 @@
     {
       "path": "../smart-continuous-cuts-20261018/host/host-report.txt",
       "sha256": "508742b2acb7d0820c239b54d7cd1957d372ae50a6e123bb28ad16f86b75e1fd"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/accepted-quality-baseline.json",
+      "sha256": "1b902a56dfbabf1c0e8bd6eccb762df5a645b898680e626a7dd13c7a747143d2"
     }
   ],
   "not_run": [
-    "continuous human flicker/artistic acceptance for new clips",
     "measured sustained preview FPS",
     "general skin/occlusion/cut detection accuracy",
-    "isolated/portable first-pass speed benchmark"
+    "isolated/portable first-pass speed benchmark",
+    "generalization of accepted quality beyond shown footage"
   ],
   "product_code_changed": false,
-  "published": false
+  "published": false,
+  "user_quality_acceptance": {
+    "date": "2026-10-18",
+    "quote": "качество принимаю",
+    "scope": "shown comparisons; viewing subset unspecified"
+  }
 }

@@ -314,7 +314,7 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
     const ColorPass prepare(enabled?preparation:settings,transfer,primaries,recipe);
     std::vector<fstr::ColorRegion> regions;
     const auto cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);const bool scene_active=bool(cache)||bool(automatic);std::shared_ptr<const fstr::SceneAnalysis> analysis;
-    std::unique_ptr<fstr::SceneLook> scene;std::unique_ptr<fstr::ColorProcessor> scene_plain;
+    std::unique_ptr<fstr::SceneLook> scene;
     std::vector<fstr::SkinToneReference> references;std::vector<fstr::SkinToneInfluence> influences;std::vector<fstr::StableToneWeight> stable;
     double source_height=in.height;
     if(in_data->downsample_y.num>0&&in_data->downsample_y.den>0)source_height*=double(in_data->downsample_y.den)/in_data->downsample_y.num;
@@ -332,7 +332,7 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
                 for(const auto&entry:images){if(std::abs(entry.first)==2){auto middle=std::find_if(images.begin(),images.end(),[&](const auto&v){return v.first==entry.first/2;});if(middle==images.end()||!compatible_image(middle->second,entry.second))continue;}frames.push_back({entry.first,analyzed(entry.second,entry.identity)});}
                 analysis=fstr::stabilize_scene_window(frames);
             }else analysis=cache->get(image,source_height);
-            if(analysis){scene=std::make_unique<fstr::SceneLook>(settings.look,settings.look_amount);fstr::ColorSettings plain;plain.look=settings.look;plain.look_amount=settings.look_amount;scene_plain=std::make_unique<fstr::ColorProcessor>(plain,fstr::Transfer::Linear,fstr::Primaries::SRGB_Rec709,fstr::Alpha::Straight);
+            if(analysis){scene=std::make_unique<fstr::SceneLook>(settings.look,settings.look_amount);
                 references.reserve(analysis->people.size());for(const auto&person:analysis->people){auto abort=PF_ABORT(in_data);if(abort)throw abort;references.push_back(scene->skin_reference(person.samples));}
                 stable.resize(references.size());influences.resize(references.size());for(std::size_t i=0;i<references.size();++i)influences[i].reference=&references[i];
             }
@@ -377,8 +377,8 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
                 for(auto&weight:stable)weight.support=std::clamp(weight.support,0.,1.);
                 if(!scene_residual)for(std::size_t c=1;c<roles.size();++c)roles[c]=0;
                 auto prepared=prepare.apply(raw);for(std::size_t c=0;c<3;++c)prepared[c]=float(fstr::decode_host(prepared[c]/prepared[3],transfer));prepared[3]=1;
-                const auto styled=scene->apply_stable_people(prepared,roles,influences,stable),plain=scene_plain->apply(prepared);
-                for(std::size_t c=0;c<3;++c){const double delta=double(styled[c])-plain[c];if(delta==0)continue;const double linear=fstr::decode_host(v[c]/raw[3],transfer)+settings.mix*delta;const double value=fstr::encode_host(linear,transfer)*raw[3];if(!std::isfinite(value)||std::abs(value)>std::numeric_limits<float>::max())throw std::invalid_argument("Scene result exceeds finite range");v[c]=float(value);}
+                const auto residual=scene->stable_residual(prepared,roles,influences,stable);
+                for(std::size_t c=0;c<3;++c){const double delta=residual[c];if(delta==0)continue;const double linear=fstr::decode_host(v[c]/raw[3],transfer)+settings.mix*delta;const double value=fstr::encode_host(linear,transfer)*raw[3];if(!std::isfinite(value)||std::abs(value)>std::numeric_limits<float>::max())throw std::invalid_argument("Scene result exceeds finite range");v[c]=float(value);}
             }
             if constexpr(std::is_same_v<P,PF_PixelFloat>){dst[x]={src->alpha,v[0],v[1],v[2]};}
             else {

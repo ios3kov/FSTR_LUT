@@ -1,3 +1,7 @@
+# Current combined acceleration — 2026-10-18
+
+Installed Currented9e33d687019dc1 includes the cache improvement and exact common-LUT reuse. No profile, controls, mask/model or accepted-look change. Frozen276480records match exactly; actual paired warm960x540render median1764→1238ms, with canonical host verification. Previous7be and accepted42ee preserved. [SMART_COLOR_REUSE.md](SMART_COLOR_REUSE.md) records output/timing scope; faster model inference, source hashing and production playback FPS are not established.
+
 # Current cache improvement — 2026-10-18
 
 Working installed Current is7be976a9a5160b0e after SMART-CACHE-LATENCY-001: unchanged color/model math and controls; accepted42ee remains archived byte-exact as quality reference. Actual18baseline comparisons across24native exports pass <=1PSD8code; masks persist across launches and complete5-frame windows stay in RAM for LUT/strength edits. This does not establish fast playback or accelerate the color kernel. [Details](SMART_CACHE_LATENCY.md).

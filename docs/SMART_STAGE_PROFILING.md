@@ -37,7 +37,7 @@ All16exports complete;13unchanged-setting comparisons against accepted exports p
 ## Selected follow-up
 
 1. **Completed by [SMART-CACHE-LATENCY-001](SMART_CACHE_LATENCY.md):** separate short resident RAM/LRU locking from the serialized miss path. Keep inference serialized until concurrency is independently qualified. Recheck RAM after the miss gate; preserve cancellation/failure wakeup and clear-memory generation semantics. This removes a measured avoidable wait; it does not make the scene model faster.
-2. Measure and reduce repeated per-pixel color work against the accepted outputs; model acceleration alone cannot establish a fast complete path.
+2. **Completed by [SMART-COLOR-REUSE-001](SMART_COLOR_REUSE.md):** measure and reduce repeated per-pixel color work against the accepted outputs; model acceleration alone cannot establish a fast complete path.
 3. Evaluate acceleration of the existing scene model on this Mac, comparing output and complete-path times. No downsampling/model replacement/FP16 or changed mask quality is accepted implicitly.
 
 Historical failures: diagnostic color harness initially linked only fstr_core and missed render_sdr_preparation; corrected to fstr_sdr_prepare and rebuilt. First batch launch rejected a relative resources path before model load; corrected to absolute path. Neither establishes a product defect. Original logs/checkpoints remain local.

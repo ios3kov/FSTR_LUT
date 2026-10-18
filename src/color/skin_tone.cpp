@@ -32,7 +32,10 @@ SkinToneReference SkinToneLook::reference(const std::vector<SkinSample>& samples
     r.confidence=(mass/double(count))*smooth(7.,32.,double(count));return r;
 }
 std::array<float,4> SkinToneLook::apply(std::array<float,4> p,const SkinToneReference&r,double mask,bool enabled)const{
-    auto q=ordinary_.apply(p);if(!enabled||ordinary_.bypass()||p[3]==0)return q;
+    return apply_from_ordinary(p,ordinary_.apply(p),r,mask,enabled);
+}
+std::array<float,4> SkinToneLook::apply_from_ordinary(std::array<float,4> p,std::array<float,4> q,const SkinToneReference&r,double mask,bool enabled)const{
+    if(!enabled||ordinary_.bypass()||p[3]==0)return q;
     unit(mask);unit(r.confidence);
     if(r.confidence>0&&r.binding_!=binding_)throw std::invalid_argument("Skin reference belongs to a different look/strength context");
     if(!std::isfinite(r.chroma_delta.r)||!std::isfinite(r.chroma_delta.g)||!std::isfinite(r.chroma_delta.b)||
@@ -48,14 +51,17 @@ std::array<float,4> SkinToneLook::apply(std::array<float,4> p,const SkinToneRefe
     for(std::size_t c=0;c<3;++c)q[c]=float(q[c]+limit*delta[c]);return q;
 }
 std::array<float,4> SkinToneLook::apply_people(std::array<float,4> p,const std::vector<SkinToneInfluence>& people,bool enabled)const{
-    const auto base=ordinary_.apply(p);if(!enabled||ordinary_.bypass()||p[3]==0)return base;
+    return people_from_ordinary(p,ordinary_.apply(p),people,enabled);
+}
+std::array<float,4> SkinToneLook::people_from_ordinary(std::array<float,4> p,std::array<float,4> base,const std::vector<SkinToneInfluence>& people,bool enabled)const{
+    if(!enabled||ordinary_.bypass()||p[3]==0)return base;
     if(people.size()>16)throw std::invalid_argument("Person field budget exceeded");
     double mass=0;for(const auto&v:people){unit(v.weight);mass+=v.weight;if(!v.reference)throw std::invalid_argument("Missing person reference");}
     if(mass>1.000001)throw std::invalid_argument("Person field ownership exceeds one");
     // Convex combination of complete results. Fractional overlap never grades twice.
     double values[]{base[0],base[1],base[2]};
     const double normalize=std::max(1.,mass);
-    for(const auto&v:people){const auto next=apply(p,*v.reference,1);for(std::size_t c=0;c<3;++c)values[c]+=(v.weight/normalize)*(double(next[c])-base[c]);}
+    for(const auto&v:people){const auto next=apply_from_ordinary(p,base,*v.reference,1,true);for(std::size_t c=0;c<3;++c)values[c]+=(v.weight/normalize)*(double(next[c])-base[c]);}
     auto result=base;for(std::size_t c=0;c<3;++c)result[c]=float(values[c]);return result;
 }
 

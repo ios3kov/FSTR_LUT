@@ -1,3 +1,5 @@
+Current working build is nowed9e33d687019dc1, including this unchanged cache improvement plus [exact color reuse](SMART_COLOR_REUSE.md). The7be installed/runtime measurements below remain tied to their original artifact;7be is now archived in the color-reuse task.
+
 # SMART-CACHE-LATENCY-001 — resident cache latency
 
 Scope authorized by continuation after SMART-STAGE-PROFILE-001. Base6e4a1bd, branchdev/ai-enhance-prototype. Preserve accepted42ee1edaaff01753 as quality reference. No color/model math, input encoding, controls, cache keys/policy/version or disk-budget change. No installer/release.

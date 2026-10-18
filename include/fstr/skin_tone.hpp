@@ -21,6 +21,11 @@ public:
     SkinToneReference reference(const std::vector<SkinSample>&) const;
     std::array<float,4> apply(std::array<float,4>,const SkinToneReference&,double mask,bool enabled=true) const;
 private:
+    friend class SceneLook;
+    // The caller is this immutable look or its owning SceneLook, constructed
+    // from the identical LUT/strength/linear-straight contract.
+    std::array<float,4> apply_from_ordinary(std::array<float,4>,std::array<float,4>,const SkinToneReference&,double,bool) const;
+    std::array<float,4> people_from_ordinary(std::array<float,4>,std::array<float,4>,const std::vector<SkinToneInfluence>&,bool) const;
     ColorProcessor ordinary_;
     std::shared_ptr<const int> binding_=std::make_shared<const int>(0);
 };

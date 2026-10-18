@@ -1,3 +1,7 @@
+## Short-clip Smart cache retention — 2026-10-18
+
+CACHE-RETENTION-001 fixes the64-frame disk cap that evicted part of the72-frame real-SDR trial below its byte budget. Disk now retains up to4096entries/512MiB; RAM/keys/models/color formulas unchanged.14Release/14sanitizer targets plus extended capacity tests pass. Actual AE Current9838bb4d38c6e9c9 exports217frames: only8previously evicted frames compute during warmup; SmartOff makes no accesses; re-enable and strength edits perform zero new computes across72frames each. Repeated pixels within one8bit code; prior Current preserved and helper archived after normal exit. This is cache behavior, not artistic or real-time acceptance. No installer. [Contract/evidence](CACHE_RETENTION.md).
+
 ## Real SDR motion sample — 2026-10-18
 
 User delegated source finding. Official DPReview Nikon Z6 Flat-capture reel acquired; intro acknowledges FinalCut tweaks, so not an untouched/ungraded camera original. Real20–23s kitchen segment has two people/steam/white uniforms. Unchanged Current923695974aa8fc72 renders146actual AE exports; numerical references within one8bit code; both72-frame sequences and two9scomparison videos decode.64retained analysis entries each describe2people. Sampled full-size/crop visual review performed; continuous flicker/professional artistic acceptance remains open. First Smart export is slow; no real-time claim. No new product build or installer. [Source, checks, limits](REAL_FLAT_SDR_TRIAL.md).

@@ -1,0 +1,71 @@
+{
+  "scope": "CACHE-RETENTION-001",
+  "base_commit": "0af574f2a1ee65aad2a20173ee740290def5ec44",
+  "build_id": "9838bb4d38c6e9c9",
+  "red_regression": {
+    "status": "observed FAIL before fix",
+    "message": "72-frame disk replay repeated analysis below byte budget"
+  },
+  "local_tests": {
+    "release": "14/14 PASS",
+    "asan_ubsan": "14/14 PASS",
+    "extended_cache_release": "PASS 4.06s",
+    "extended_cache_asan_ubsan": "PASS 4.66s"
+  },
+  "host": {
+    "status": "PASS scoped actual AE cache reuse",
+    "stages": {
+      "warm-cache": {
+        "compute": 8,
+        "ram": 124,
+        "disk": 222
+      },
+      "off": {
+        "compute": 0,
+        "ram": 0,
+        "disk": 0
+      },
+      "on-repeat": {
+        "compute": 0,
+        "ram": 118,
+        "disk": 236
+      },
+      "amount80": {
+        "compute": 0,
+        "ram": 126,
+        "disk": 228
+      }
+    },
+    "exports": 217,
+    "repeat_max_code_difference": 1,
+    "changed_strength_mean_difference": 1.3144960403442383,
+    "retained_entries": 72,
+    "logical_payload_bytes": 287385095,
+    "limits": "First analysis speed, arbitrary longer clips and full visual acceptance are not qualified by cache reuse."
+  },
+  "cleanup": {
+    "owned_pid": 85870,
+    "normal_exit": true,
+    "helper_archived": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/host/archived-runner.plugin",
+    "installed_inventory": "PASS",
+    "previous_inventory": "PASS",
+    "signature": "PASS"
+  },
+  "source_sha256": "04bb48bbcdac30df9b691708ac0fcbb47a491a71494b0eb33bcd2d61cc880803",
+  "test_sha256": "860a533774d0ef2694a24f739a2faabe709572e726a48665db646a6b6524244d",
+  "artifacts": {
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/release-tests.log": "0e03e104bcaa2a7a277114ef02baf4a00f13ace346dddbe7e12a8207037c7050",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/sanitize-tests.log": "310142266c3bb792cdb98ddbbd76a2b9c5a8587333dbcf5e04b17fd5a3fd7b97",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/final-test.log": "e5aec82e5191e2493cf60fbdee70128a3dd6c6c3e6dc10ada0b5ed5965aa985f",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/final-sanitize-test.log": "0d5d06c1c36691073ebb7cf64b065ceb793e58f2bceaa77f79c360eef8309bf5",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/audit.json": "66b6940c933efac87315dab3f9ebda8a801d361c8ebc9672f16ee904711ccc5c",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/host/verification.json": "d01dc078da4f34f70274e2f055d6d95a832b1640dfb00f8847bff3244cf19786",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/host/host-report.txt": "f9e2708f14bbdc90873f4bd2e24da94e3bf61616c9ada73fbbb0a740e028c5c4",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/host/installation.json": "1629b1259a314baf5d2a24ac2e3dec44294bab156493c64ad5a7716c2bc68a0d",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/host/cleanup.json": "7f6fb1484e0c48396aac54e54b99bc722c29523a75017f3b12b6e6301960100d",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/candidate/package-inventory.json": "fd0f54f98ff4ea08222850a3360efd62f43a479684149125fb9ccaba179ba81b",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/host/test.jsx": "474e175022d003a60a0ee24b8e5eff0f55b07e68572142f60a8329ce7e8627c9",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/final-audit.json": "36493698b9baaedbf736d4f3975e528026873fb219dd7ee9e0380830b79bbe9f",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/cache-retention-20261018/final-review.json": "64d548555866461dfc47d377a0f7d448a1542ac4f7e671a87f67a6d36eee80b5"
+  }
+}

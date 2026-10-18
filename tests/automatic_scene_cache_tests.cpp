@@ -76,7 +76,31 @@ int main(){const auto root=std::filesystem::temp_directory_path()/("fstr-auto-ca
  auto key=scene_cache_key(im,100,policy);{std::ofstream f(root/(key+".entry")/(key+".weights"),std::ios::binary);f<<"bad";}cache.clear_memory();auto repaired=cache.get(im,100);check(calls==6&&repaired->people[0].mask==a->people[0].mask,"Corrupt entry was accepted or not recomputed");
  auto bad=[&](const AnalysisImage&i,double,const std::function<void()>&){auto v=compute(i,1,{});v->people[0].mask[0]=1;return v;};AutomaticSceneCache invalid((root/"invalid").string(),policy,bad);bool rejected=false;try{invalid.get(im,100);}catch(const std::invalid_argument&){rejected=true;}check(rejected,"Invalid ownership was cached");
  auto before=calls.load();cache.get(im,100,{},std::string(64,'c'));cache.get(im,100,{},std::string(64,'c'));cache.get(im,100,{},std::string(64,'d'));check(calls==before+2,"Exact upstream identity did not invalidate or reuse");
- std::filesystem::create_directories(root/"keep_me");{std::ofstream f(root/"foreign.txt");f<<"keep";}for(int k=0;k<67;++k){auto unique=im;unique.rgba[1]=static_cast<std::uint8_t>(k+80);cache.get(unique,100);}std::size_t entries=0;for(const auto&e:std::filesystem::directory_iterator(root))if(e.path().extension()==".entry")++entries;check(entries<=64&&std::filesystem::exists(root/"foreign.txt")&&std::filesystem::exists(root/"keep_me"),"Disk entry bound or foreign-file preservation failed");
+ // A short 72-frame clip must survive disk-only replay after a process restart.
+ // Tiny deterministic analyses isolate retention from model speed/variability.
+ const auto clip_root=root/"clip-72";auto baseline=calls.load();
+ {AutomaticSceneCache first(clip_root.string(),policy,compute);for(int k=0;k<72;++k){auto frame=im;frame.rgba[1]=std::uint8_t(k);first.get(frame,100);}}
+ check(calls==baseline+72,"Clip fixture did not analyze every distinct frame");
+ {AutomaticSceneCache replay(clip_root.string(),policy,compute);for(int k=0;k<72;++k){auto frame=im;frame.rgba[1]=std::uint8_t(k);check(replay.get(frame,100)->people[0].mask==a->people[0].mask,"Clip replay changed masks");}}
+ check(calls==baseline+72,"72-frame disk replay repeated analysis below byte budget");
+ std::filesystem::create_directories(root/"keep_me");{std::ofstream f(root/"foreign.txt");f<<"keep";}for(int k=0;k<67;++k){auto unique=im;unique.rgba[1]=static_cast<std::uint8_t>(k+80);cache.get(unique,100);}std::size_t entries=0;for(const auto&e:std::filesystem::directory_iterator(root))if(e.path().extension()==".entry")++entries;check(entries>64&&entries<=4096&&std::filesystem::exists(root/"foreign.txt")&&std::filesystem::exists(root/"keep_me"),"Disk entry bound or foreign-file preservation failed");
+ // Oversized oldest managed payload must still be evicted by the 512 MiB budget.
+ // Sparse files test logical accounting without allocating hundreds of MiB.
+ const auto byte_root=root/"byte-budget";const std::string old_key(64,'0');
+ const auto old_dir=byte_root/(old_key+".entry");std::filesystem::create_directories(old_dir);
+ {std::ofstream f(old_dir/"old.weights",std::ios::binary);f<<'x';}
+ std::filesystem::resize_file(old_dir/"old.weights",513ULL*1024*1024);
+ std::filesystem::last_write_time(old_dir,std::filesystem::file_time_type::clock::now()-std::chrono::hours(1));
+ {AutomaticSceneCache bounded(byte_root.string(),policy,compute);bounded.get(im,100);}
+ check(!std::filesystem::exists(old_dir)&&std::filesystem::exists(byte_root/(key+".entry")),"Disk byte budget did not evict oldest payload or removed current entry");
+ // Seed tiny managed entries to exercise the separate inode/count ceiling.
+ const auto count_root=root/"count-budget";std::filesystem::create_directories(count_root);
+ for(unsigned n=0;n<4096;++n){auto k=std::string(64,'0');for(unsigned j=0;j<4;++j)k[63-j]="0123456789abcdef"[(n>>(4*j))&15];std::filesystem::create_directory(count_root/(k+".entry"));}
+ const auto oldest=count_root/(std::string(64,'0')+".entry");
+ std::filesystem::last_write_time(oldest,std::filesystem::file_time_type::clock::now()-std::chrono::hours(1));
+ {AutomaticSceneCache bounded(count_root.string(),policy,compute);bounded.get(im,100);}
+ std::size_t count=0;for(const auto&e:std::filesystem::directory_iterator(count_root))if(e.path().extension()==".entry")++count;
+ check(count==4096&&!std::filesystem::exists(oldest)&&std::filesystem::exists(count_root/(key+".entry")),"Tiny-entry ceiling or oldest-write eviction failed");
  AutomaticSceneCache unavailable((root/"blocked").string(),policy,compute);{std::ofstream f(root/"blocked");f<<"not a directory";}check(unavailable.get(im,100)->people.size()==1,"Persistence failure discarded valid analysis");
  std::cout<<"PASS automatic cache: miss, RAM, disk, restart, pixels, scale, policy, coalescing, cancellation, corruption, validation, unavailable persistence\n";return 0;
  }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

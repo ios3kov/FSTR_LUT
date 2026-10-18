@@ -21,6 +21,8 @@
 #endif
 namespace fstr {namespace {
 constexpr std::size_t max_entry=64*1024*1024,max_resident=128*1024*1024,max_disk=512*1024*1024;
+// Byte budget controls real mask storage; the count only bounds tiny-entry overhead.
+constexpr std::size_t max_disk_entries=4096;
 // One stable inode coordinates all cooperating writers/recovery in this root.
 // Never unlink the lock file: that would allow simultaneous locks on two inodes.
 class RootWriteLock final {
@@ -98,7 +100,7 @@ void store(const std::filesystem::path&root,const std::string&key,const std::str
  std::error_code error;std::filesystem::rename(dir,destination,error);if(error){if(!std::filesystem::is_directory(std::filesystem::symlink_status(destination)))throw std::runtime_error("Automatic cache publish failed");}
  std::vector<std::pair<std::filesystem::directory_entry,std::uintmax_t>> entries;std::uintmax_t total=0;
  for(const auto&e:std::filesystem::directory_iterator(root)){auto filename=e.path().filename().string();if(filename.size()!=70||filename.substr(64)!=".entry"||!key_text(filename.substr(0,64))||!std::filesystem::is_directory(e.symlink_status()))continue;std::uintmax_t bytes=0;for(const auto&p:std::filesystem::directory_iterator(e.path()))if(std::filesystem::is_regular_file(p.symlink_status()))bytes+=p.file_size();entries.push_back({e,bytes});total+=bytes;}
- std::sort(entries.begin(),entries.end(),[](const auto&a,const auto&b){return a.first.last_write_time()<b.first.last_write_time();});std::size_t remaining=entries.size();for(std::size_t k=0;k<entries.size()&&(total>max_disk||remaining>64);++k){if(entries[k].first.path()==destination)continue;std::filesystem::remove_all(entries[k].first.path());total-=entries[k].second;--remaining;}
+ std::sort(entries.begin(),entries.end(),[](const auto&a,const auto&b){return a.first.last_write_time()<b.first.last_write_time();});std::size_t remaining=entries.size();for(std::size_t k=0;k<entries.size()&&(total>max_disk||remaining>max_disk_entries);++k){if(entries[k].first.path()==destination)continue;std::filesystem::remove_all(entries[k].first.path());total-=entries[k].second;--remaining;}
 }
 }
 struct AutomaticSceneCache::Impl {std::filesystem::path directory;std::string policy;SceneCompute compute;std::mutex mutex;struct Entry{std::string key;std::shared_ptr<const SceneAnalysis> analysis;std::size_t bytes;};std::list<Entry> entries;std::size_t bytes=0;

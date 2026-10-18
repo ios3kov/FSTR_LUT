@@ -12,7 +12,9 @@ Exposure is measured in stops. Temperature and Tint are manual creative color tr
 
 **Natural** is the neutral look; select a cinematic look for creative grading. **Look Amount** starts at100%, its slider displays0–100and manual entry allows up to300%. The retired WarmFilm v1 stays frozen only for old projects. LUT interpolation is tetrahedral. Lookup coordinates clamp to the declared domain, while the existing encoded-domain residual retains values outside it; bright floating-point levels remain distinct. This continuation is an artistic mapping, not a universal HDR display transform. **Mix** fades the complete effect, including source normalization, against the original appearance in linear host output coordinates; Mix0 is exact original samples. No denoise or sharpening is added. Experimental native Smart and its separate analysis cache are described in AUTOMATIC_SMART.md; it does not add Python to the effect.
 
-No frame-order dependent analysis or automatic exposure/white-balance changes. LUT/sample math, technical profile normalization and artistic tuning are evaluated separately. A known-space test fixture is useful for checking math; actual flat source and camera footage are needed for final artistic acceptance.
+Optional **Auto Prepare SDR** estimates one fixed tone/chroma recipe from the first/middle/last clip frames before manual controls and looks. It is defaultOff, for already-converted bounded SDR and one shot per clip; inconsistent/ambiguous anchors remain neutral. It does not identify a camera Log curve or split edited clips at cuts. Mix includes the preparation; compatible recipes are cached independently from look changes. Native host qualification is tracked separately in [SDR_PREPARATION_AE.md](SDR_PREPARATION_AE.md).
+
+No frame-order dependent analysis or per-frame automatic exposure/white-balance changes. LUT/sample math, technical profile normalization and artistic tuning are evaluated separately. A known-space test fixture is useful for checking math; actual flat source and camera footage are needed for final artistic acceptance.
 
 Build with an external SDK; Adobe headers/source are not redistributed:
 

@@ -1,7 +1,9 @@
 // Owned SDK-callback fixture. Exercises native adapter bytes; not the AE loader/runtime.
 #include "plugin.hpp"
+#include "fstr/sdr_prepare.hpp"
 #include "AE_EffectUI.h"
 #include <cstring>
+#include <algorithm>
 #include <cmath>
 #include <future>
 #include <iostream>
@@ -22,7 +24,7 @@ thread_local Fixture* active=nullptr;
 struct Fixture {
     PF_InData in{};PF_OutData out{};SPBasicSuite basic{};PF_WorldSuite2 worlds{};
     std::array<PF_ParamDef,ParamCount> params{};
-    PF_EffectWorld input{},output{};std::array<PF_EffectWorld*,5> temporal{};
+    PF_EffectWorld input{},output{};std::array<PF_EffectWorld*,5> temporal{};std::array<PF_EffectWorld*,3> preparation{};std::vector<std::pair<int,A_long>> layer_times;
     int checkout=0,checkin=0,acquire=0,release=0,pixels_out=0,pixels_in=0,abort_calls=0;
     std::vector<std::string> guids;bool fail_guid=false;
     PF_LRect maximum_rect{0,0,96,96};
@@ -32,7 +34,7 @@ struct Fixture {
     Fixture();
 };
 Fixture& fixture(PF_ProgPtr ref){return *reinterpret_cast<Fixture*>(ref);}
-PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==AdvancedStart||id==AdvancedEnd)return 74;if(id==f.fail_param)return 73;*value=f.params[id];return PF_Err_NONE;}
+PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==AdvancedStart||id==AdvancedEnd)return 74;if(f.fail_param&&id==f.fail_param)return 73;*value=f.params[id];return PF_Err_NONE;}
 PF_Err checkin_cb(PF_ProgPtr ref,PF_ParamDef*){auto& f=fixture(ref);++f.checkin;return f.fail_checkin?74:PF_Err_NONE;}
 PF_Err add(PF_ProgPtr ref,PF_ParamIndex,PF_ParamDef* value){auto& f=fixture(ref);f.params[++f.checkout]=*value;return PF_Err_NONE;}
 PF_Err register_ui_cb(PF_ProgPtr,PF_CustomUIInfo* value){return value&&value->events==PF_CustomEFlag_EFFECT?PF_Err_NONE:PF_Err_BAD_CALLBACK_PARAM;}
@@ -40,7 +42,7 @@ PF_Err abort_cb(PF_ProgPtr ref){auto& f=fixture(ref);++f.abort_calls;return f.ab
 SPErr acquire_cb(const char* name,int32 version,const void** suite){++active->acquire;if(active->fail_suite)return 76;if(std::strcmp(name,kPFWorldSuite)||version!=kPFWorldSuiteVersion2)return 77;*suite=&active->worlds;return 0;}
 SPErr release_cb(const char*,int32){++active->release;return active->fail_release?78:0;}
 PF_Err pixel_format(const PF_EffectWorld* world,PF_PixelFormat* format){if(active->fail_format)return 79;if(!world->width||!world->height)return 80;*format=static_cast<PF_PixelFormat>(reinterpret_cast<std::uintptr_t>(world->reserved0));return PF_Err_NONE;}
-PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;*world=id>=0&&id<5&&f.temporal[id]?f.temporal[id]:&f.input;return PF_Err_NONE;}
+PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;*world=id>=2000&&id<2003&&f.preparation[id-2000]?f.preparation[id-2000]:(id>=0&&id<5&&f.temporal[id]?f.temporal[id]:&f.input);return PF_Err_NONE;}
 PF_Err checkout_output(PF_ProgPtr ref,PF_EffectWorld** world){auto& f=fixture(ref);if(f.fail_output)return 82;*world=&f.output;return PF_Err_NONE;}
 PF_Err checkin_pixels(PF_ProgPtr ref,A_long){auto& f=fixture(ref);++f.pixels_in;return f.fail_pixel_checkin?83:PF_Err_NONE;}
 Fixture::Fixture(){
@@ -136,11 +138,46 @@ void cinema(){
         check(run(f,true)==PF_Err_BAD_CALLBACK_PARAM,"Invalid look menu value accepted");
     }
 }
-PF_Err checkout_layer(PF_ProgPtr ref,PF_ParamIndex,A_long id,const PF_RenderRequest* request,A_long,A_long,A_u_long,PF_CheckoutResult* result){
- auto&f=fixture(ref);f.layer_ids.push_back(id);f.requests.push_back(request->rect);if(id==f.fail_layer)return 85;
+PF_Err checkout_layer(PF_ProgPtr ref,PF_ParamIndex,A_long id,const PF_RenderRequest* request,A_long time,A_long,A_u_long,PF_CheckoutResult* result){
+ auto&f=fixture(ref);f.layer_ids.push_back(id);f.layer_times.emplace_back(id,time);f.requests.push_back(request->rect);if(id==f.fail_layer)return 85;
  result->result_rect=request->rect;result->max_result_rect=f.maximum_rect;return PF_Err_NONE;
 }
 PF_Err mix_guid(PF_ProgPtr,A_u_long,const void*);
+PF_Err declared_render(Fixture& f){
+ active=&f;PF_PreRenderInput pi{};pi.output_request.rect={f.output.origin_x,f.output.origin_y,f.output.origin_x+f.output.width,f.output.origin_y+f.output.height};
+ PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};
+ auto err=effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe);if(err)return err;
+ PF_SmartRenderInput ri{};ri.pre_render_data=po.pre_render_data;PF_SmartRenderCallbacks rc{};rc.checkout_layer_pixels=checkout_pixels;rc.checkout_output=checkout_output;rc.checkin_layer_pixels=checkin_pixels;
+ PF_SmartRenderExtra re{};re.input=&ri;re.cb=&rc;err=effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&re);if(po.pre_render_data)po.delete_pre_render_data_func(po.pre_render_data);return err;
+}
+template<class P>void prepared_integer(PF_PixelFormat format,double maximum){
+ Fixture f;f.in.total_time=72;f.params[AutoPrepare].u.bd.value=TRUE;f.maximum_rect={0,0,96,1};std::vector<P> input(96),output(97);std::vector<float> rgba;
+ for(int x=0;x<96;++x){const auto v=static_cast<decltype(P::red)>((.04+.36*x/95)*maximum+.5);input[x]={static_cast<decltype(P::alpha)>(maximum),v,v,v};rgba.insert(rgba.end(),{float(v/maximum),float(v/maximum),float(v/maximum),1});}
+ set_world(f.input,input,96,1,96,format);set_world(f.output,output,96,1,97,format);for(auto& w:f.preparation)w=&f.input;
+ auto recipe=fstr::analyze_sdr_shot({{rgba.data(),rgba.size(),96,1,96*4,fstr::Transfer::Linear}}).settings;check(declared_render(f)==0,"Integer automatic preparation failed");
+ for(int x=0;x<96;++x){auto c=fstr::prepare_sdr_linear({rgba[x*4],rgba[x*4+1],rgba[x*4+2]},recipe);check(std::abs(double(output[x].red)-std::floor(c.r*maximum+.5))<=1&&output[x].alpha==maximum,"Integer auto preparation scale differs from core");}
+}
+void automatic_preparation(){
+ prepared_integer<PF_Pixel>(PF_PixelFormat_ARGB32,PF_MAX_CHAN8);prepared_integer<PF_Pixel16>(PF_PixelFormat_ARGB64,PF_MAX_CHAN16);
+ Fixture f;f.in.total_time=72;f.in.current_time=22;f.params[AutoPrepare].u.bd.value=TRUE;f.maximum_rect={0,0,96,1};
+ std::vector<PF_PixelFloat> input,output(96);std::array<std::vector<PF_PixelFloat>,3> pixels;std::array<PF_EffectWorld,3> worlds;std::array<std::vector<float>,3> rgba;
+ for(int x=0;x<96;++x){float c=float(.04+.36*x/95);input.push_back({1,c,c,c});for(int a=0;a<3;++a){float v=c+float(a)*.001f;pixels[a].push_back({1,v,v,v});rgba[a].insert(rgba[a].end(),{v,v,v,1});}}
+ set_world(f.input,input,96,1,96,PF_PixelFormat_ARGB128);set_world(f.output,output,96,1,96,PF_PixelFormat_ARGB128);
+ std::vector<fstr::FrameView> views;for(int i=0;i<3;++i){set_world(worlds[i],pixels[i],96,1,96,PF_PixelFormat_ARGB128);f.preparation[i]=&worlds[i];views.push_back({rgba[i].data(),rgba[i].size(),96,1,96*4,fstr::Transfer::Linear});}
+ auto recipe=fstr::analyze_sdr_shot(views).settings;check(declared_render(f)==0,"Native automatic clip preparation failed");
+ auto value=[&](int x){return fstr::prepare_sdr_linear({input[x].red,input[x].green,input[x].blue},recipe);};
+ for(int x=0;x<96;++x)check(std::abs(output[x].red-value(x).r)<3e-7&&output[x].alpha==1,"Native preparation differs from standalone core");
+ for(auto expected:std::vector<std::pair<int,A_long>>{{2000,0},{2001,35},{2002,71}})check(std::find(f.layer_times.begin(),f.layer_times.end(),expected)!=f.layer_times.end(),"Wrong fixed clip anchor checkout");
+ check(f.pixels_out==f.pixels_in&&f.checkin==RenderParamCount,"Prepared native resources unbalanced");auto complete=output;
+ f.layer_times.clear();f.in.current_time=50;check(declared_render(f)==0&&std::memcmp(output.data(),complete.data(),output.size()*sizeof(PF_PixelFloat))==0,"Current request time changed clip preparation");
+ f.params[Mix].u.fs_d.value=50;check(declared_render(f)==0,"Prepared Mix50 failed");for(int x=0;x<96;++x)check(std::abs(output[x].red-(value(x).r+input[x].red)*.5)<3e-7,"Mix did not include preparation");
+ f.params[Mix].u.fs_d.value=0;f.fail_pixel_id=2000;check(declared_render(f)==0&&std::memcmp(input.data(),output.data(),input.size()*sizeof(PF_PixelFloat))==0,"Prepared Mix0 checked anchors or changed pixels");f.fail_pixel_id=-1;f.params[Mix].u.fs_d.value=100;
+ std::vector<PF_PixelFloat> roi(2);roi[1]={.1f,.2f,.3f,.4f};auto guard=roi[1];set_world(f.output,roi,1,1,2,PF_PixelFormat_ARGB128,25,0);check(declared_render(f)==0&&std::abs(roi[0].red-value(25).r)<3e-7&&std::memcmp(&roi[1],&guard,sizeof(guard))==0,"Auto preparation changed ROI or padding");
+ set_world(f.output,output,96,1,96,PF_PixelFormat_ARGB128);auto before_out=f.pixels_out,before_in=f.pixels_in;f.fail_pixel_id=2001;check(declared_render(f)!=0&&f.pixels_out-before_out==f.pixels_in-before_in+1,"Anchor checkout failure leaked earlier worlds");f.fail_pixel_id=-1;
+ f.params[Source].u.pd.value=2;check(declared_render(f)!=0,"Auto preparation accepted camera Log override");f.params[Source].u.pd.value=1;
+ Fixture legacy;legacy.params[AutoPrepare].u.bd.value=TRUE;legacy.in.total_time=72;legacy.input=f.input;legacy.output=f.output;check(run(legacy,false)==0&&legacy.checkin==RenderParamCount+3,"Legacy timed preparation checkouts unbalanced");
+ Fixture schema;active=&schema;check(effect_fn(PF_Cmd_PARAMS_SETUP,&schema.in,&schema.out,nullptr,nullptr,nullptr)==0&&schema.params[AutoPrepare].uu.id==17&&schema.params[AutoPrepare].u.bd.dephault==FALSE&&CameraInfo==16&&AutoPrepare==17,"Appended auto control changed old indices/defaults");
+}
 void smart_requests(){
  for(int mode=0;mode<6;++mode){
   Fixture f;active=&f;f.in.current_time=10;f.in.total_time=100;
@@ -276,7 +313,7 @@ void cached_scene_bridge(){
 
 }
 void* cleanup_module=nullptr;
-int main(int argc,char** argv){try{
+int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_directory_path()/("fstr-native-prep-owned-"+std::to_string(getpid()));struct PrepCleanup{std::filesystem::path p;~PrepCleanup(){std::error_code e;std::filesystem::remove_all(p,e);}} prep_cleanup{prep_root};setenv("FSTR_LUT_PREPARATION_CACHE",prep_root.c_str(),1);try{
     check(argc>=2&&argc<=4,"Provide the actual built plugin executable");
     auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);cleanup_module=module;check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
@@ -288,7 +325,7 @@ int main(int argc,char** argv){try{
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
     formats(PF_PixelFormat_ARGB32,PF_Pixel{127,51,75,99});
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
-    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();if(argc==4&&std::string(argv[2])=="--automatic"){std::ifstream jobs(argv[3]);auto batch=nlohmann::json::parse(jobs);if(batch.contains("jobs")){for(const auto&path:batch.at("jobs"))automatic_scene(path.get<std::string>().c_str());}else automatic_scene(argv[3]);}else {if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}}
+    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();automatic_preparation();if(argc==4&&std::string(argv[2])=="--automatic"){std::ifstream jobs(argv[3]);auto batch=nlohmann::json::parse(jobs);if(batch.contains("jobs")){for(const auto&path:batch.at("jobs"))automatic_scene(path.get<std::string>().c_str());}else automatic_scene(argv[3]);}else {if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}}
     std::vector<std::future<bool>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==RenderParamCount&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");

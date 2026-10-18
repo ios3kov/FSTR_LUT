@@ -1,3 +1,7 @@
+## Optional native SDR preparation — 2026-10-18
+
+SDR-PREP-AE-001 implements **Auto Prepare SDR** as an appended, defaultOff native control. Fixed first/middle/last clip anchors choose one immutable SDR recipe before manual grading/LUT/Smart. Off/Mix0 skip anchor analysis; Mix includes preparation. Compatible recipes use bounded64-entry RAM /2048-entry8MiB versioned disk storage; algorithm, pixel content, geometry, transfer and fixed timing identify entries. Existing parameter indices/defaults remain unchanged. Single-shot clips only; no automatic segmentation, Log inference or recovered SDR latitude. SDK/callback, standalone and cache evidence is distinct from actual host acceptance. See [native contract/checkpoint](SDR_PREPARATION_AE.md).
+
 ## Automatic SDR preparation prototype — 2026-10-18
 
 SDR-PREP-001 adds a standalone C++17 shot-anchor estimator and bounded SDR tone/chroma transform, versioned v2 CLI recipe and meaningful numeric/behavior tests. White-uniform defect in first median estimator corrected by dark/light-anchor fitting; failing regression retained.3Release/3ASan+UBSan focused targets and6CLI refusals pass.240base+240styled frames, byte-exact out-of-order repeat, three decoded comparison videos reviewed in sampled stills. This is separate core research: installed Current9838bb4d38c6e9c9 unchanged; AE controls/shot selection/recipe-cache integration pending. No universal professional/Log-equivalent or continuous flicker acceptance. [Contract/evidence](SDR_PREPARATION.md).

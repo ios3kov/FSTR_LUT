@@ -1,5 +1,7 @@
 # Color development prototype
 
+Plain-language start: [QUICK_START_RU.md](QUICK_START_RU.md). Real EXR workflow and import-conversion caveat: [EXR_HELP.md](EXR_HELP.md).
+
 First native target: this Mac, After Effects2025/25.6, arm64. This is a development build. Windows, real-camera footage validation and full product readiness are separate checks.
 
 Use **Already converted / SDR** when AE has already converted footage into the project color space. In collapsed **Advanced**, select a named **Input Profile** only if the pixels reaching this effect still use that exact source encoding. The available explicit pairs are Sony S-Log3/S-Gamut3.Cine, ARRI LogC3 **EI800**/AWG3, ARRI LogC4/AWG4, Panasonic V-Log/V-Gamut, ACEScct/AP1 and linear ACEScg/AP1. **3D - Linear RGB** is for linear sRGB/Rec709 RGB, including floating-point render data; use **ACEScg / Linear AP1** for ACEScg. Bit depth alone does not identify either space. If AE already prepared the image, leave **Already converted / SDR**. AE input color conversion must not run first when using an override. Choosing a camera/ACES override on already converted pixels applies normalization twice. Other curves/gamuts or ARRI exposure-index definitions are not interchangeable. ACES entries normalize source data into linear Rec709; this is not an ACES output/display transform.

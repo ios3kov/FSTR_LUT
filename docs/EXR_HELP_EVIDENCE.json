@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "requirement": "EXR-HELP-001",
+  "baseline_revision": "f62d2c544cb28b4990db418d91977ad45e026d9a",
+  "created_utc": "2026-10-18T14:33:45.001900+00:00",
+  "build_id": "2c6caa579d3fa42f",
+  "source_sha256": {
+    "docs/EXR_HELP.md": "3392366231fa4ba4a284c502b8e102917e6e72e469f92a49228cdc74bd413bfc",
+    "docs/QUICK_START_RU.md": "103ed370bc8ac706301a3b5d8c991319aefd385a115727b63b850b9dcc0d7aff",
+    "docs/PLAN.md": "a97bbffc048e5f2edaf196d1ece45468af3d20c87bcd235b0acfa55925454b77",
+    "docs/SDR_LOG_GUIDE.md": "0fa72972aa63d18ebcaee8982acdd0351eb8b22f25b5de9b3ab39fdcb5ce0cf4",
+    "docs/STATUS.md": "3a7faeb215f825ddd7b9c0f633c8423ce736297994913e0afba40c386aec29e4",
+    "src/ae/metadata_ui.cpp": "c20a93ec14808afc2a42fa5a8713455866bd17b775a5cf74cd3b0590c1a0d1e7",
+    "src/ae/plugin.cpp": "54ec11a80ed8e3f1aad33ea0cadb3b1edea393e79a12a662234ea45e9b0b2b3b",
+    "tests/metadata_ui_tests.cpp": "7b366631b7966f1555e49e940275a0013a84c0a43eed7f30dd03bc02c805c654"
+  },
+  "external_receipts": [
+    {
+      "path": "../exr-help-20261018/download.py",
+      "sha256": "25a3fe81c24982856194041780d59148f1878375f68d30e08889e41491e8caa6"
+    },
+    {
+      "path": "../exr-help-20261018/download.json",
+      "sha256": "e310ccf582c6306447f70b73c37f05aec2c97252a1e21ac13049b15a2dbe663c"
+    },
+    {
+      "path": "../exr-help-20261018/Blobbies-original.exr",
+      "sha256": "c46dd0147e027ca2885fc75a7acb773759b900945ecafe998edb8319cdfb3278"
+    },
+    {
+      "path": "../exr-help-20261018/prepare_frame.py",
+      "sha256": "3e0b10e14de0600c9ace25a8f75301ad7d56a7260d02fa2285ca718b9bad8719"
+    },
+    {
+      "path": "../exr-help-20261018/preparation.json",
+      "sha256": "e1860930fd97fbeb6718a8e6567b0b989e960c65629370ba9ab24123806bc5be"
+    },
+    {
+      "path": "../exr-help-20261018/linear-rec709.exr",
+      "sha256": "db34ca1280dddf1d59fa89dcf0c329f711e5d3d327f169b622963b89e90308ec"
+    },
+    {
+      "path": "../exr-help-20261018/acescg.exr",
+      "sha256": "81f8c55eac74306fc5ca01c4864de6491e1640bad2616c8d2393432b34952ae6"
+    },
+    {
+      "path": "../exr-help-20261018/linear-rec709.rgba32f",
+      "sha256": "912c5d47f592b88cd6c52b549368bb9a0201f43604462d6893807fdd6f30d50c"
+    },
+    {
+      "path": "../exr-help-20261018/acescg.rgba32f",
+      "sha256": "95f75df146483b62ed5f2661e17a16d7b614fc78a364bd9d93da05023fde69be"
+    },
+    {
+      "path": "../exr-help-20261018/linear-rec709-natural.rgba32f",
+      "sha256": "813f0bdc4e8d2a68535bc6e2b80a1b01f7b20f6054ebfe7e29bc8de3aa163715"
+    },
+    {
+      "path": "../exr-help-20261018/linear-rec709-teal-orange.rgba32f",
+      "sha256": "a2eee1cad54c0e93b5134fa6f35f767fa6c7cdf16cac37aa750bb224e89203eb"
+    },
+    {
+      "path": "../exr-help-20261018/acescg-natural.rgba32f",
+      "sha256": "d63ce5f5a2bbb3452b5034bc3efcfa67883fef6b96ad901f3ecfff0ff5d65d5e"
+    },
+    {
+      "path": "../exr-help-20261018/acescg-teal-orange.rgba32f",
+      "sha256": "462d21e86ab194a21613afcbf1eb59363d075da555db9621acc59641b4ae8404"
+    },
+    {
+      "path": "../exr-help-20261018/3d-comparison.png",
+      "sha256": "6f7410ddd8eb66c8542c8e5dbb5c500d8a6688d1ff0e01b80a180885496e30ff"
+    },
+    {
+      "path": "../exr-help-20261018/highlight-compare.png",
+      "sha256": "c1a74ae428d7d480a86c3245e0edff10bf6676f2e32646de38d09d2a3b7f593a"
+    },
+    {
+      "path": "../exr-help-20261018/sdr_preview.py",
+      "sha256": "2480cc21fbafddae444186c2f3786baaddfdcf391edc86a76975394ad5282894"
+    },
+    {
+      "path": "../exr-help-20261018/sdr-preview.json",
+      "sha256": "d4995f59a23f65b52bb58759cacfc59f3e0fdd5dd91913dd91a87cf02baee6a6"
+    },
+    {
+      "path": "../exr-help-20261018/sdr-comparison.png",
+      "sha256": "2f24230dbc9f79c915743e600f428211cb2fe784bf8cd83cfa02dc9d03ea57c4"
+    },
+    {
+      "path": "../exr-help-20261018/unmanaged-negative-control.json",
+      "sha256": "95801086086faeafee45884e072afb61c85636dac92345137315e912dee43756"
+    },
+    {
+      "path": "../exr-help-20261018/release.log",
+      "sha256": "74ac324df1a7af3b053b14dd4a8bb4592148a1cb304b542c8859062e5c309275"
+    },
+    {
+      "path": "../exr-help-20261018/sanitize.log",
+      "sha256": "39fed2bdcca7d52f34f29aafc157d4f9028243192fec5848b842a8fb5a440a66"
+    },
+    {
+      "path": "../exr-help-20261018/prepare_host.py",
+      "sha256": "f10ea7f98c50868afadb6e76376e0b2923f1a503b012be455b04d46a1f56e3d4"
+    },
+    {
+      "path": "../exr-help-20261018/build_host_impl.py",
+      "sha256": "33d04b77e27b4a7c0c8a82ade15a943bb8ea89a4f70faab05b1f66af85f04591"
+    },
+    {
+      "path": "../exr-help-20261018/launch.py",
+      "sha256": "4d77a7944cbbdd84d5ac2b44b79e4b318d18db27b89fd4ab545273f377b9e9c4"
+    },
+    {
+      "path": "../exr-help-20261018/verify_host.py",
+      "sha256": "8f851ab0f04b59c32af4fc10e097146364b130ed2b5b25f9e814d3e0e56f6a76"
+    },
+    {
+      "path": "../exr-help-20261018/prepare_retry.py",
+      "sha256": "16651aa313a5830ab5ede056f11eb5092efcd83181b5c2eb6a9f457e310ef80f"
+    },
+    {
+      "path": "../exr-help-20261018/launch_retry.py",
+      "sha256": "3dd66cc3305f6cc34e31e1fafbd35357169c79a530d736c9a8676ba8d99c5b4d"
+    },
+    {
+      "path": "../exr-help-20261018/verify_linear_host.py",
+      "sha256": "873f1fd31de6ac65e6a1b1bd69a93b19bd1fa84a2d45f0d07da946391a6b938e"
+    },
+    {
+      "path": "../exr-help-20261018/linear-host-verification.json",
+      "sha256": "89d5953a9f12c91852139379a7da9cf83d8c56a1f3fb8583489613f83201d1e6"
+    },
+    {
+      "path": "../exr-help-20261018/final-review.json",
+      "sha256": "67e22bf6efb418920428672de62a5c7469f901e3a1b0b395bd0198a6ee8b2334"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/config.json",
+      "sha256": "6974c062f4cdab3a1f3af683d0befae21a135d023fa405bd29155673862f7f64"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/test.jsx",
+      "sha256": "a519cbcdf406c9c4a2d40797049232a1c096332ba283e19ad4aebd905e8e45ba"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/host-report.txt",
+      "sha256": "155b6dde4542b23005e0116b85f28117a2eca4f5316db09f6d930a8010044d98"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/installation.json",
+      "sha256": "e328841d98d4fad2d3d7ea3918c033222fa84bc08ada3c8d09937682000eef15"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/launch.json",
+      "sha256": "6260c285c07265e6829761dc44493d2add1133f9c549a6f1866b063d9866c11f"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/process-error.log",
+      "sha256": "cb219efe90a4e0d4972bc910dbcd2033bf5f19ecec8f6ec6daea04ff356c271a"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/acescg-natural_00000.psd",
+      "sha256": "63ad32944dc613c106e0b98ac47d6127ea33376b5a1a2ee7f3caf6f1dd12c269"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/acescg-teal-orange_00000.psd",
+      "sha256": "eae5a8afa735be8eae8cfaab992d9eb4938d99da25015699682da64ea2e9b26a"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/linear-rec709-natural_00000.psd",
+      "sha256": "7706a34116323f9eaccf672bb6a296ef9f6f812c79e559f393637733ab3419d9"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/linear-rec709-teal-orange_00000.psd",
+      "sha256": "ed0c97a37f4c49d1dc9b2af16a87e3c7f7659b7260687d122d8a591e3042076e"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/config.json",
+      "sha256": "43a639af5a051c2c7378d65a9e5d2c3ecd1b8b4857d709ef8a8eb7a8c3033a0f"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/test.jsx",
+      "sha256": "2f40d7165e5318299dcfc72e6b8f5d67082c17c04fe7faf02fe845a8abc58081"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/host-report.txt",
+      "sha256": "55071904ea7520eacef236cbce20f5ac280c460fc6f2c522549cec13787333ed"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/installation.json",
+      "sha256": "08287d984dbcd1544858a098872049507dc5cad7aa18b16a9b54f723065664a8"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/launch.json",
+      "sha256": "d52fec687582f7e00c1470e8b6a296f833b2978147ef8fef1d9f308808aaa4b4"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/process-error.log",
+      "sha256": "2a3b4b4a07f87aa4a472acade1cb0e4771f4472b541209312b847e430ae21241"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/acescg-natural_00000.psd",
+      "sha256": "2f9f5255031380fadb6cf3fe89e23b007679618878a9aa0eb086c181743e5a26"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/acescg-teal-orange_00000.psd",
+      "sha256": "9b67247a189ac680191905eadab8f89f99aa1207c1233fcb330a1bc7a0fd3272"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/linear-rec709-natural_00000.psd",
+      "sha256": "793e90f890ddfe39f5425a60c0694a198aebe267a8cd7d1157caa8ed79d1dfc0"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/linear-rec709-teal-orange_00000.psd",
+      "sha256": "e23e2d96e2385753e367a79ff8b3b1d013f62d732bc1eec5ed467bf4081917fb"
+    },
+    {
+      "path": "../exr-help-20261018/candidate/package-inventory.json",
+      "sha256": "acae0351fb69ee0dd9e7cf3ee66ffe91557cbe8a32595b0da6467272eded3198"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/real-exr.aep",
+      "sha256": "f069c09da00f1c7fb1d5bcc4acd41e4793bbd798c4a05ad84bdc7d9446df5f82"
+    },
+    {
+      "path": "../exr-help-20261018/linear-project/cleanup.json",
+      "sha256": "275d359a31532f6e80d460e3b9219a552213064618b07a79790212081e2befdd"
+    }
+  ],
+  "scanner": {
+    "path": "/tmp/fstr-exrhelp-20261018-review.json",
+    "sha256": "a8abca9c591bb01d87d542a94bb0b547d7f35c1de8229be272b6d26959e4b0c1"
+  },
+  "results": {
+    "math": "PASS",
+    "actual_linear_project_exr": "PASS",
+    "metadata_draw_callback": "PASS",
+    "actual_help_ui_visual": "NOT_RUN: CUA screenshot unavailable",
+    "flat_sdr_artistic_goal": "NOT_ACCEPTED by these checks",
+    "installer": "NOT_RUN per user exclusion"
+  },
+  "limits": [
+    "Derived AP1 image, not untouched native ACEScg renderer export",
+    "Negative unmanaged project control preserved, not promoted as valid input workflow",
+    "C2098 manual preview uses unknown camera profile treated as delivered SDR, Smart off",
+    "No push, merge or release"
+  ]
+}

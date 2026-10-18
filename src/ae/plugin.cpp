@@ -355,7 +355,7 @@ extern "C" DllExport PF_Err PluginDataEntryFunction2(PF_PluginDataPtr data,PF_Pl
 static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {
     try {
         switch(cmd) {
-            case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT color MVP 0.1 development\rBuild %s\rSDR + Sony S-Log3 / S-Gamut3.Cine",fstr::color_build_id);break;
+            case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT | Build %s\rReady-to-use image: keep default input.\rCamera Log: match its profile in Advanced.\r3D: choose Linear RGB or ACEScg to match the render.\rUnknown profile? Check with the source creator.",fstr::color_build_id);break;
             case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();initialize_automatic_analysis();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
             case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;

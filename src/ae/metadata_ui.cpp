@@ -151,10 +151,11 @@ PF_Err draw(PF_InData* in,PF_EventExtra* extra,const CameraMetadata& value) {
         lines[0]=(value.manufacturer.empty()?"Camera":value.manufacturer)+(value.model.empty()?"":" "+value.model);
         lines[1]=value.gamma.empty()||value.primaries.empty()?"Color profile not declared":std::string(declared_profile_name(value.profile));
         if(value.profile==DeclaredProfile::Other)lines[1]=value.gamma+" / "+value.primaries;
-        lines[2]=value.profile==DeclaredProfile::Rec709?"Suggested input: Already converted / SDR":"Check AE conversion before choosing Input Profile";
+        lines[2]=value.profile==DeclaredProfile::Rec709?"Suggested input: Already converted / SDR":"Log source? Match its profile in Advanced";
     } else {
         lines[0]=value.status==MetadataStatus::NotFound?"No camera metadata in source":value.message;
-        lines[1]="Choose Input Profile and AE Pixel Encoding manually";
+        lines[1]="Normal image? Keep the default input.";
+        lines[2]="Log or 3D? Choose Input Profile in Advanced.";
     }
     for(std::size_t i=0;i<lines.size()&&!err;++i) {
         const auto string=ascii_display(lines[i]);DRAWBOT_PointF32 origin{area.left+5,area.top+font_size+4+float(i)*(font_size+5)};

@@ -1,3 +1,7 @@
+## Real EXR workflow and input help — 2026-10-18
+
+Official OpenEXR Blobbies CG reference explicitly converted from its custom primaries into two known spaces. Four actual AE linear-project exports (Linear RGB/ACEScg × Natural/Teal&Orange) agree within one8bit code; unmanaged import negative control retained.14Release/14sanitizer targets pass. Simple source guidance/About updated; actual help typography inspection NOT_RUN (AE screenshot unavailable). Current **2c6caa579d3fa42f** installed; prior bytes archived. No installer. Professional-looking flat-SDR outcome remains **not accepted** by these technical checks; C2098 side-by-side is only a manual example. [Scope/evidence](EXR_HELP.md).
+
 ## Dynamic flag error fix — 2026-10-18
 
 Fixed AE25::228 by preserving host flag words during PF_Cmd_QUERY_DYNAMIC_FLAGS.14Release/14ASan+UBSan targets pass; regression fails on previous code. Actual AE completes709queries, eight exports, Smart switches, save/reopen and normal exit. Five old/new comparisons exact; repeated Smart-on within one8bit code. Current **9177edacb182d7a5** installed, prior bytes archived. See [DYNAMIC_FLAGS_FIX.md](DYNAMIC_FLAGS_FIX.md).

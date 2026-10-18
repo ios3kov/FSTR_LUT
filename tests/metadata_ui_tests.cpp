@@ -94,7 +94,7 @@ int main(int argc,char** argv){try{
     std::filesystem::remove(path);normal.text.clear();check(event(normal)==0&&normal.text[0]=="Sony ILME-FX3","Cached redraw reread source");
     check(event(normal,PF_Event_DO_CLICK)==0,"Refresh click failed");normal.text.clear();check(event(normal)==0&&normal.text[0]=="Source file unavailable","Missing source after refresh was hidden");
     for(int mode=0;mode<8;++mode){Fixture bad;bad.set_path(path);if(mode==0)bad.flags=AEGP_ItemFlag_USING_PROXY;if(mode==1)bad.flags=AEGP_ItemFlag_MISSING;if(mode==2)bad.type=AEGP_ItemType_COMP;if(mode==3)bad.fail_source=true;if(mode==4)bad.odd_size=true;if(mode==5)bad.no_nul=true;if(mode==6)bad.fail_free=true;if(mode==7)bad.path[0]=0xD800;
-        check(event(bad)==0,"Manual fallback DRAW failed");check(bad.text.size()==3&&bad.text[1].find("manually")!=std::string::npos,"Fallback missing");check(bad.acquisitions==bad.releases&&bad.locks==bad.unlocks&&bad.objects==0,"Fallback cleanup unbalanced");}
+        check(event(bad)==0,"Manual fallback DRAW failed");check(bad.text.size()==3&&bad.text[1]=="Normal image? Keep the default input."&&bad.text[2]=="Log or 3D? Choose Input Profile in Advanced.","Fallback missing");check(bad.acquisitions==bad.releases&&bad.locks==bad.unlocks&&bad.objects==0,"Fallback cleanup unbalanced");}
     Fixture ignored;check(event(ignored,PF_Event_DRAW,WorkingSpace)==0&&ignored.acquisitions==0,"Unrelated UI queried metadata");
     f=&normal;check(effect(PF_Cmd_GLOBAL_SETDOWN,&normal.in,&normal.out,nullptr,nullptr,nullptr)==0,"Cache teardown failed");check(dlclose(module)==0,"Module cleanup failed");
     std::cout<<"PASS "<<checks<<" owned metadata UI assertions; actual AE display NOT RUN\n";return 0;

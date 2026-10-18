@@ -134,7 +134,7 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Look Amount",0,300,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,LookAmountId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Mix",0,100,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,MixId);
     PF_ADD_TOPICX("Advanced",PF_ParamFlag_COLLAPSE_TWIRLY,AdvancedStartId);
-    AEFX_CLR_STRUCT(def);PF_ADD_POPUP("AE Pixel Encoding",4,1,"Choose pixel encoding...|sRGB|Linear Rec.709 / sRGB|Rec.709 Gamma 2.4",WorkingSpaceId);
+    AEFX_CLR_STRUCT(def);PF_ADD_POPUP("AE Pixel Encoding",4,2,"Choose pixel encoding...|sRGB|Linear Rec.709 / sRGB|Rec.709 Gamma 2.4",WorkingSpaceId);
     AEFX_CLR_STRUCT(def);PF_END_TOPIC(AdvancedEndId);
     AEFX_CLR_STRUCT(def);PF_ADD_CHECKBOX("Smart Color Grading","On",FALSE,0,SmartColorId);
     AEFX_CLR_STRUCT(def);def.ui_flags=PF_PUI_CONTROL|PF_PUI_DONT_ERASE_CONTROL;def.ui_width=300;def.ui_height=64;

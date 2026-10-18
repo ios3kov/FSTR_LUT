@@ -1,9 +1,17 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## sRGB default — current user direction, 2026-10-18
+
+PASS SRGB-DEFAULT-001: new effects use sRGB immediately; manual encoding remains in collapsed Advanced. Existing disk ID9 and choices1–4 retain their meanings.14Release and14ASan/UBSan targets pass. Actual AE25.6 renders4old-project and3fresh-effect cases; stored choices survive save/reopen. Old/new legacy outputs match exactly; fresh/manual pairs agree within one8bit code. Signed trial build d774807231370f48 is installed as FSTR-LUT Auto Smart Current; its previous bytes are archived. Auto encoding is canceled. This closes default/migration only, not wider Smart quality. [Contract and evidence](COLOR_AUTO_FOLLOWUP.md#srgb-default-001--actual-host-acceptance).
+
 ## Automatic Smart — active, 2026-10-18
 
-Native automatic scene/material/face/mesh/pose inference and independent RAM/disk mask cache now render in isolated AE25.6 trial B without external clip analysis or Python.34exports cover switches, look/amount, a cut, motion and save/reopen; a fresh process reuses5disk entries with0analysis calls and matches within one8bit export code.14Release and14ASan/UBSan targets pass. A final root-only64–80px mesh-entry fade passes a live-model boundary test; its separate Current bundle also passes actual AE loader/four-switch checks. New-port continuous visual acceptance and full-shot/SAM2 parity remain open. Auto encoding is still unimplemented: actual16-stage swatch experiment aliases all spaces and is rejected. [Contract, exact checks and limits](AUTOMATIC_SMART.md). Prepared-cache host evidence below remains valid for its original build only.
+Native automatic scene/material/face/mesh/pose inference and independent RAM/disk mask cache now render in isolated AE25.6 trial B without external clip analysis or Python.34exports cover switches, look/amount, a cut, motion and save/reopen; a fresh process reuses5disk entries with0analysis calls and matches within one8bit export code.14Release and14ASan/UBSan targets pass. A final root-only64–80px mesh-entry fade passes a live-model boundary test; its separate Current bundle also passes actual AE loader/four-switch checks. New-port continuous visual acceptance and full-shot/SAM2 parity remain open. Auto encoding was canceled by the user; the replacement is explicit sRGB default with Advanced manual override. [Contract, exact checks and limits](AUTOMATIC_SMART.md). Prepared-cache host evidence below remains valid for its original build only.
 
+
+## Historical checkpoints
+
+Entries below describe their original revisions. Current scope and overrides are above; references to pending Auto are superseded.
 
 ## Scalar toning in AE — host slice verified, 2026-10-18
 

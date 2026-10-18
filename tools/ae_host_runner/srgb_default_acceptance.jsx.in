@@ -1,0 +1,25 @@
+(function(){
+var cfg=@FSTR_SRGB_DEFAULT_CONFIG@,owned=false;
+function log(s){var f=new File(cfg.folder+'/host-report.txt');f.encoding='UTF-8';if(!f.open('a'))throw new Error('Report unavailable');f.writeln(s);f.close();}
+if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
+if(app.project&&(app.project.file!==null||app.project.numItems!==0)){log('BLOCKED existing project');return;}
+function enc(e){var p=e.property('AE Pixel Encoding');if(!p&&e.property('Advanced'))p=e.property('Advanced').property('AE Pixel Encoding');if(!p)throw new Error('Encoding missing');return p;}
+function render(c,label){app.purge(PurgeTarget.ALL_CACHES);var q=app.project.renderQueue.items.add(c);q.timeSpanStart=0;q.timeSpanDuration=1/12;q.outputModule(1).applyTemplate('Photoshop');q.outputModule(1).file=new File(cfg.folder+'/'+label+'_[#####].psd');app.project.renderQueue.render();if(q.status!==RQItemStatus.DONE)throw new Error('Render '+label);q.remove();log('RENDER '+label);}
+function find(name){for(var i=1;i<=app.project.numItems;i++)if(app.project.item(i).name===name)return app.project.item(i);throw new Error('Comp missing '+name);}
+function add(name,value,initial){var c=app.project.items.addComp(name,64,64,1,1,12),l=c.layers.addSolid([.18,.32,.55],'Owned color fixture',64,64,1,1),e=l.property('ADBE Effect Parade').addProperty(cfg.match);if(enc(e).value!==initial)throw new Error('New default '+enc(e).value+' expected '+initial);if(value!==initial)enc(e).setValue(value);if(value!==1)e.property('Exposure').setValue(1);return c;}
+function verify(name,value){var c=find(name),e=c.layer(1).property('ADBE Effect Parade').property(1);if(e.matchName!==cfg.match||enc(e).value!==value)throw new Error('Saved choice changed '+name);log('VALUE '+name+' '+enc(e).value);return c;}
+try{
+app.beginSuppressDialogs();owned=true;
+if(cfg.phase==='baseline'){
+ app.newProject();app.project.workingSpace='';app.project.bitsPerChannel=32;
+ for(var v=1;v<=4;v++)render(add('Legacy'+v,v,1),'legacy'+v);
+ app.project.save(new File(cfg.saved_project));log('PASS baseline defaults and explicit choices saved');
+}else{
+ app.open(new File(cfg.saved_project));for(var v=1;v<=4;v++)render(verify('Legacy'+v,v),'legacy'+v);
+ for(var v=2;v<=4;v++)render(add('Fresh'+v,v,2),'fresh'+v);
+ var saved=cfg.folder+'/srgb-default-reopened.aep';app.project.save(new File(saved));app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.open(new File(saved));
+ for(var v=1;v<=4;v++)verify('Legacy'+v,v);for(var v=2;v<=4;v++)verify('Fresh'+v,v);
+ log('PASS sRGB default, manual overrides and old-project save/reopen');
+}
+}catch(e){log('FAIL '+String(e.message)+' line='+String(e.line));}finally{if(owned)app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.endSuppressDialogs(false);app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '"+cfg.nonce+"') app.quit();",1000,false);}
+})();

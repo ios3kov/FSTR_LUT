@@ -1,0 +1,14 @@
+(function(){
+var cfg=@FSTR_COLOR_PROBE_CONFIG@,owned=false;
+function log(s){var f=new File(cfg.folder+'/host-report.txt');f.encoding='UTF-8';if(!f.open('a'))throw new Error('Report unavailable');f.writeln(s);f.close();}
+if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
+if(app.project&&(app.project.file!==null||app.project.numItems!==0)){log('BLOCKED existing project');return;}
+try{
+app.beginSuppressDialogs();app.newProject();owned=true;app.project.bitsPerChannel=32;
+var match=null;for(var i=0;i<app.effects.length;i++)if(app.effects[i].displayName==='Color Profile Converter'){match=app.effects[i].matchName;log('MATCH '+match);}
+if(!match)throw new Error('Host converter not found');
+var c=app.project.items.addComp('Owned converter inventory',16,16,1,1,12),layer=c.layers.addSolid([.18,.22,.3],'Owned source',16,16,1,1),e=layer.property('ADBE Effect Parade').addProperty(match);
+for(var k=1;k<=e.numProperties;k++){var p=e.property(k),line='PROPERTY '+k+' '+p.name+' / '+p.matchName+' type='+String(p.propertyType);try{line+=' valueType='+String(p.propertyValueType)+' expression='+p.canSetExpression;try{line+=' value='+String(p.value);}catch(v){line+=' valueError='+String(v.message);}if(p.hasMin)line+=' min='+p.minValue;if(p.hasMax)line+=' max='+p.maxValue;}catch(x){line+=' inspectError='+String(x.message);}log(line);}
+log('PASS converter inventory');
+}catch(e){log('FAIL '+String(e.message)+' line='+String(e.line));}finally{if(owned)app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.endSuppressDialogs(false);app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '"+cfg.nonce+"') app.quit();",1000,false);}
+})();

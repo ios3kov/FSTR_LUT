@@ -1,6 +1,24 @@
 # Color follow-up — 2026-10-17
 
-## AE-AUTO-001
+## Current decision — SRGB-DEFAULT-001, 2026-10-18
+
+Direct user instruction supersedes AE-AUTO-001: **sRGB by default, editable manually; no Auto mode at all**. This is not a guessed automatic encoding. New effects start at existing popup value2(sRGB); diskID9, values1–4, Advanced placement and rendering meanings stay unchanged. Existing projects must keep stored choices, including legacy unspecified1. Retain that legacy slot/error behavior to avoid reinterpreting saved pixels. Do not implement a main-thread profile bridge, converter stack or additional Auto UI.
+
+Acceptance: fresh effect renders a non-neutral grade without selecting encoding; manual Linear3/Gamma2.4value4 still work; old untouched default1and explicit2/3/4survive loading and save/reopen; the old/new outputs for matching explicit settings agree within the existing host export tolerance. Model analysis/cache remains independent of this UI default change; no Smart algorithm change is in scope. The earlier diagnostics below remain historical evidence for the canceled Auto route.
+
+## SRGB-DEFAULT-001 — actual host acceptance
+
+PASS on2026-10-18, AE25.6x101/macOS arm64. The old installed Current build05dd70f4d7a1b422 created an AEP with untouched legacy default1 plus explicit2/3/4; new signed build d774807231370f48 opened it, rendered all4, added3new effects (asserting initial2 before any changes), rendered sRGB/Linear/Gamma2.4, saved and reopened. All7stored choices persist. Four old/new legacy PSD exports are byte-value equal after decoding; new/manual equivalent pairs differ by at most one8bit code. Linear versus sRGB differs by64codes, proving manual selection affects output. This is a64×64uniform32bpc source/8bit Photoshop export test, not a new Smart visual approval.
+
+14Release and14ASan/UBSan targets pass, including an independent IEC sRGB expected value for fresh non-neutral rendering. Final source review confirms only default1→2 affects the product. All host source files match the root except trial registration identity. Old Current bundle and both test helpers are archived; only the hash-inventoried owned Current trial was updated. Installed inventory and strict/deep signature verification pass after the test process exits. Other installed effects are preserved. No release/push/merge.
+
+Evidence index: [SRGB_DEFAULT_EVIDENCE.json](SRGB_DEFAULT_EVIDENCE.json). External reproducible artifacts: `../srgb-default-ae-20261018/{baseline,candidate,verification.json}`; script `tools/ae_host_runner/srgb_default_acceptance.jsx.in`. Continuous Smart quality, wider footage and workflow checks remain open under AUTOMATIC_SMART.md.
+
+## Historical Auto investigation
+
+All entries below describe the canceled route and their original revisions. Their future-tense Auto steps are historical, not current requirements.
+
+## AE-AUTO-001 — superseded, history
 
 Requested: Auto by default for new effects; manual encoding inside collapsed Advanced. Preserve old disk ID9 and popup values1–4, old projects and render determinism. Unknown/unsupported AE encoding must not silently become sRGB. Accept only when project working-space and Linearize changes, MFR, save/reopen and fresh aerender resolve current input encoding correctly.
 
@@ -29,3 +47,19 @@ The separate identity diagnostic in `tools/ae_color_probe/` tests six hidden flo
 Exact evidence: `../automatic-color-probe-20261018-v3/{host-report.txt,process-error.log,verification.json,installation.json,cleanup.json}`. First two diagnostic attempts fail before color rendering because the effect is absent from the scripting effect list despite entry registration success. Fresh packaging with executable-matching resource basename plus support URL registers and renders; this joint change does not isolate a single root cause. All attempt bytes/logs preserved. After the owned process exits, only hash-inventoried diagnostic effect/helper bundles are archived; original installed effects are unchanged.
 
 Next: an authoritative main-thread project-profile bridge must prove freshness for immediate scripted render, project-space changes and fresh aerender; idle snapshots alone remain insufficient evidence. Auto remains required/open rather than silently replaced by a numeric swatch guess.
+
+## AE-AUTO-LIFECYCLE-001 — actual AE25.6 callback order
+
+Baseline585b9da; diagnostic-only additions in `tools/ae_color_probe/` and `tools/ae_host_runner/`, both new modes defaultOFF. The product effect and installed Current bundle are unchanged. An owned32bpc16×16composition switches eight project working-space/Linearize settings, rendering an existing and newly added diagnostic effect in each setting (16renders) immediately from one script. The diagnostic has actual flat sequence data, GET_FLATTENED support, SEND_UPDATE_PARAMS_UI, MFR and dynamic-flag support. The owned AEGP helper also registers an RQM listener and traces idle callbacks.
+
+Observed:0idle callbacks during the synchronous script; RQM registration returns0but no job/item notification arrives on this path. SEQUENCE_SETUP and GET_FLATTENED occur9times on main (initial instance +8new instances), while all16SmartPreRender/SmartRender callbacks run off-main. QUERY_DYNAMIC_FLAGS also runs off-main; RESETUP/SETDOWN are seen on workers. Thus initial snapshot transport is observable, but neither idle nor these serialization observations supplies an established fresh project descriptor for every changed-setting render. No main-thread API is called from a worker to bypass this limitation.
+
+Evidence: external `../color-lifecycle-20261018/{host-report.txt,process-error.log,verified-lifecycle.json,installation.json}`. Reproduce summary with `tools/ae_color_probe/verify_lifecycle.py ROOT NEW_OUTPUT`. This is one host/path diagnostic, not proof that every SDK mechanism or later AE version is impossible.
+
+Senior architecture advice was requested under the user's standing authorization, using GPT-6-astra, read-only. It found no supported universal freshness barrier in the reviewed SDK25.6 interfaces. RQM does not document preview coverage or a before-first-render/main-thread barrier; GET_FLATTENED documents state transfer, not sampling of changed project color. Primary references: [MFR selectors](https://ae-plugins.docsforadobe.dev/effect-details/multi-frame-rendering-in-ae/#implications-to-command-selectors-with-multi-frame-rendering), [AEGP threading](https://ae-plugins.docsforadobe.dev/aegps/implementation/#threading), [RQM suite](https://ae-plugins.docsforadobe.dev/aegps/aegp-suites/#render-queue-monitor-suite).
+
+Alternative under investigation: documented built-in Color Profile Converter before/after FSTR, with an explicitly fixed internal color space. This is an effect-stack workflow, not a standalone native Auto implementation. Adobe exposes separate input/output Linearize controls; their automatic relationship to project Linearize is not established. Exact whole-stack Mix0/neutral copy, negative/HDR values, gamut mapping and alpha require separate checks. No preset/stack is shipped or claimed accepted. [Adobe utility effects](https://helpx.adobe.com/after-effects/desktop/apply-effects-and-animation-presets/list-of-effects/utility-effects.html#color-profile-converter-effect).
+
+The user answered explicitly: sRGB by default with manual choice; Auto is not needed at all. SRGB-DEFAULT-001 above supersedes this investigation; no converter workflow or Auto bridge is to be promoted.
+
+Converter inventory: two unstarted attempts are preserved outside Git under `../converter-inventory-20261018*`. After archiving all prior hash-verified inert test helpers, a fresh single-helper process successfully inventories the built-in effect `ADBE ProfileToProfile`. Its input/output profile selectors are numeric and not expression-enabled; both Linearize controls default0and allow expressions; Intent defaults3and Black Point Compensation1. This closes script-access inventory only: converter pixel transport, profile-index-to-name mapping, linearization behavior and whole-stack roundtrip remain NOT_RUN. Exact report: `../converter-inventory-20261018-v2/host-report.txt`; source script `tools/ae_color_probe/converter_inventory.jsx.in`. A nonce-derived bundle identifier is added for provenance/isolation; single-helper startup succeeds, but the joint isolation/identity changes do not establish one specific cause of skipped startup. All test helpers are archived after process exit. Existing user-installed effects and functional Smart Current bundle are unchanged.

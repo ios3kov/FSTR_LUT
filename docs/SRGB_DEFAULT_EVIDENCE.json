@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "requirement": "SRGB-DEFAULT-001",
+  "created_utc": "2026-10-18T13:32:31.956398+00:00",
+  "baseline_revision": "585b9dadfd1d95dd3017c92012fc54f1c2d40117",
+  "branch": "dev/ai-enhance-prototype",
+  "decision": "sRGB default; manual Advanced override; Auto encoding canceled by user",
+  "source_sha256": {
+    "docs/AUTOMATIC_SMART.md": "6e554ccb420da3d53caef687a4a6836a88453f3598d2ef178beeca745b46b18f",
+    "docs/COLOR_AUTO_FOLLOWUP.md": "f4651ebe4d50759780b89bd0d2acfdd66213c134e5f7f8da2f199b2d703aea87",
+    "docs/MVP_COLOR.md": "c2117f495bc87c4b894d10fbdae23dd592d886c49a3537973cdf11f4228d1388",
+    "docs/PLAN.md": "fd4ef9a62e7fbfac8c9a604c08513adae86cb99cdaa67eef8e259d575004116b",
+    "docs/STATUS.md": "72cc9c4c26a1ac82ca979b83e91a6000ccd76ef0fcb3dc47e75676245d726b74",
+    "src/ae/plugin.cpp": "d00a66bd5282d4631c4a8aac9d75a022dfdb33ae8fad7c25e9cbeaca0a3511e8",
+    "tests/ae_adapter_tests.cpp": "ce494493ab7fd2e54fc9a2e0916b092b2a6b40ce4240b7c81668b522989289c3",
+    "tools/ae_color_probe/CMakeLists.txt": "75aacfb7f2c420a925a52f0d0355d9c5de1bbc3581f8d1f9f5348273b5079be4",
+    "tools/ae_color_probe/README.md": "46c04af4800f91a2464af37a77088e4a8cc2a14807875c5a775e41b3ff150025",
+    "tools/ae_color_probe/probe.cpp": "d5a18e366c1d4a0ffa1fb708cdd7a3e9664eea65dc6ccda5eba2ec45c3ab7a2d",
+    "tools/ae_color_probe/probe.r": "52964e28fa0b2033dfb971abc0c76d53ef237cfc730844b8360979f6eff5bd8f",
+    "tools/ae_host_runner/CMakeLists.txt": "9c714562c3ad14f09280444e10ea1f5164970c1dd5f74852dead5d759a3e8d29",
+    "tools/ae_host_runner/runner.cpp": "ed8cc1b294006322b88afefe515e55325bc1d295049391f9164dc4e780a16250",
+    "tools/ae_color_probe/converter_inventory.jsx.in": "eab5d331d2a34eeab2f7876942ace83a66b1f19544cd04209075eb89b300c1f1",
+    "tools/ae_color_probe/verify_lifecycle.py": "df692375f2de45758d42217c9dba44596b6dddfce1cae767cd81bc38064a1d33",
+    "tools/ae_host_runner/srgb_default_acceptance.jsx.in": "e59eb3b5c009fe566b49f67aadc27b905ead646d313335bec637361e32bccdae"
+  },
+  "external_receipts": [
+    {
+      "path": "../srgb-default-ae-20261018/verification.json",
+      "sha256": "b4288c426f84a9c0cb737cab27420165bb202d3ab3421529bb052b3203ffc04e"
+    },
+    {
+      "path": "../srgb-default-ae-20261018/baseline/host-report.txt",
+      "sha256": "985fc0340f0f2d2d2ae37a8f28b59827658f5a14b1501f4391fd8e8e428bfeda"
+    },
+    {
+      "path": "../srgb-default-ae-20261018/baseline/installation.json",
+      "sha256": "058b814d1442b1d2730df934f3f8eadf0cc06493e61cb0048684e77811e2a5c2"
+    },
+    {
+      "path": "../srgb-default-ae-20261018/candidate/host-report.txt",
+      "sha256": "f38115d48543f6cf6fd8ef0cf068ce9e90e0530994eeb757547da57f72ecfbf5"
+    },
+    {
+      "path": "../srgb-default-ae-20261018/candidate/installation.json",
+      "sha256": "41f4ea6d516ee42c112edf58fe8fb44eb16a9313e70707a412d7fcc9788932e2"
+    },
+    {
+      "path": "../srgb-default-ae-20261018/candidate/package-inventory.json",
+      "sha256": "d7b0862013010638a12ade0421a714cc3d876a7eded159b42bd53da537e70707"
+    },
+    {
+      "path": "../srgb-default-ae-20261018/candidate/cleanup.json",
+      "sha256": "703560b8ed6cb2016e610542a53e11c55a51c6f8743c73ee6516fa328d214da7"
+    },
+    {
+      "path": "../native-smart-20261018/srgb-default-before.log",
+      "sha256": "a2ec708f188007ce514718c3a8518accc54736c48a6c5d65b15272f6db3995f7"
+    },
+    {
+      "path": "../native-smart-20261018/srgb-default-release.log",
+      "sha256": "8bf0a3ad3f853ded689916941ce9b2cf339d7ae5cab88e6b39c4571304d4d657"
+    },
+    {
+      "path": "../native-smart-20261018/srgb-default-sanitize.log",
+      "sha256": "581ea26f2874d3e2ab02908c52eda4e6a94e6a34feeb062c6d1f6ebcd4d89e2d"
+    },
+    {
+      "path": "../native-smart-20261018/srgb_host_phase.py",
+      "sha256": "154536123a3fa5fd1530b50223c69bd77879c811c1f82ee51f4a3dbe6a5f9173"
+    },
+    {
+      "path": "../color-lifecycle-20261018/verified-lifecycle.json",
+      "sha256": "9aaede749fa3e51f3f885f648a960a258b2d844323b2df9e93b66ee2685dbd79"
+    },
+    {
+      "path": "../converter-inventory-20261018-v2/host-report.txt",
+      "sha256": "71e6ab822eae3b269d83875f9e152ecaf38d14b8a5b143d226fa05adabdb4c8e"
+    },
+    {
+      "path": "/tmp/fstr-srgb-default-reviewed-20261018.json",
+      "sha256": "c111a15cf7b2c69ac9d30c2686d17f4a2db6493491e115ff92617ba25f02dd04"
+    }
+  ],
+  "host": {
+    "environment": "AE25.6x101 / SDK25.6 / macOS26.6.2 / Apple M1 Pro16GiB",
+    "build_id": "d774807231370f48",
+    "match_name": "FSTR LUT Auto Current 20261018",
+    "source_matches_root_except_registration_identity": true,
+    "old_project_default1_preserved": "PASS",
+    "explicit_choices_2_3_4_preserved": "PASS",
+    "fresh_default2": "PASS",
+    "save_reopen": "PASS",
+    "images": [
+      {
+        "test": "legacy1 unchanged",
+        "max_code_difference": 0.0
+      },
+      {
+        "test": "legacy2 unchanged",
+        "max_code_difference": 0.0
+      },
+      {
+        "test": "legacy3 unchanged",
+        "max_code_difference": 0.0
+      },
+      {
+        "test": "legacy4 unchanged",
+        "max_code_difference": 0.0
+      },
+      {
+        "test": "fresh2 matches legacy2",
+        "max_code_difference": 1.0
+      },
+      {
+        "test": "fresh3 matches legacy3",
+        "max_code_difference": 1.0
+      },
+      {
+        "test": "fresh4 matches legacy4",
+        "max_code_difference": 1.0
+      },
+      {
+        "test": "manual linear differs from sRGB",
+        "max_code_difference": 64.0
+      }
+    ],
+    "installed_signature_and_inventory": "PASS",
+    "owned_helpers_archived_after_exit": true,
+    "previous_trial_archived": true
+  },
+  "checks": {
+    "release": "PASS 14/14",
+    "asan_ubsan": "PASS 14/14",
+    "red_before_default_change": "PASS expected failing regression observed",
+    "source_review": "PASS default-only product delta; persistent ID9 and meanings1-4 preserved",
+    "smart_visual_acceptance": "NOT_RUN in this slice",
+    "release_readiness": "NOT_ASSESSED",
+    "final_scanner": "PASS 839 text files, no findings, no omissions; release not assessed",
+    "final_diff_check": "PASS"
+  },
+  "diagnostics": {
+    "lifecycle": "16renders observed; not an Auto freshness solution; defaultOFF tool only",
+    "converter": "script inventory only; no pixel transport or roundtrip acceptance; canceled route"
+  }
+}

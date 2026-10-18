@@ -1,3 +1,7 @@
+# Current encoding default decision — 2026-10-18
+
+User explicitly selected sRGB by default with manual override and canceled Auto altogether. This supersedes older unspecified-default/automatic-discovery obligations below. Existing saved encoding values retain their meanings; source Log versus already-converted Host remains explicit. See docs/COLOR_AUTO_FOLLOWUP.md SRGB-DEFAULT-001 for compatibility acceptance. Historical requirements/results below remain tied to their original artifacts.
+
 # Color-first MVP — current user direction
 
 Authority: direct user messages on 2026-10-14. First establish useful processing before acceleration; then prioritize color of flat inputs for grading «как с логарифмом». All other enhancement is after MVP. This narrows the delivery sequence, without deleting v3/history or research.

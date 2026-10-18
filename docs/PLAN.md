@@ -1,6 +1,12 @@
 ## Active follow-up — automatic Smart, 2026-10-18
 
-Automatic native analysis/cache has actual AE trial evidence for switches, cut, motion, save/reopen and fresh-process reuse. Corrected-bundle load/switch checks also pass. Full motion/restart replay on that exact bundle, new-port continuous perception, Auto encoding and wider workflow acceptance remain open; the16-stage swatch method is rejected by actual host evidence. [Acceptance and sequence](AUTOMATIC_SMART.md). Earlier obligations and evidence retained below.
+SRGB-DEFAULT-001 replaces the Auto follow-up: user requires sRGB default and manual Advanced choice, and explicitly cancels Auto. Preserve saved ID9values1–4and verify old-project/default migration plus new-effect rendering. Auto bridge/converter investigations are historical and not delivery prerequisites. See COLOR_AUTO_FOLLOWUP.md.
+
+Automatic native analysis/cache has actual AE trial evidence for switches, cut, motion, save/reopen and fresh-process reuse. Corrected-bundle load/switch checks also pass. Full motion/restart replay on that exact bundle, new-port continuous perception, wider workflow acceptance remain open; sRGB-default migration now passes its scoped host checks; the16-stage swatch method is rejected by actual host evidence. [Acceptance and sequence](AUTOMATIC_SMART.md). Earlier obligations and evidence retained below.
+
+# Historical plan checkpoints
+
+Prior Auto obligations below are superseded by SRGB-DEFAULT-001. Current encoding acceptance:14Release +14sanitizer checks and actual AE old/new/save/reopen output comparison PASS; see SRGB_DEFAULT_EVIDENCE.json.
 
 # FSTR-LUT — AI Enhance + Looks v3
 

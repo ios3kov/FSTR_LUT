@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <pthread.h>
 
 namespace {
 // AEGP idle/entry callbacks execute on the host main thread. No render hook.
@@ -18,8 +19,22 @@ bool owns_process() noexcept {
     const auto value=std::getenv("FSTR_LUT_OWNED_TOKEN");
     return value&&std::strcmp(value,owned_nonce)==0;
 }
+#ifdef FSTR_RUNNER_TRACE_IDLE
+void trace_rqm(const char*event){std::fprintf(stderr,"FSTR_RQM event=%s main=%d\n",event,pthread_main_np());}
+A_Err job_start(AEGP_RQM_BasicData*,AEGP_RQM_SessionId){trace_rqm("job_start");return 0;}
+A_Err job_end(AEGP_RQM_BasicData*,AEGP_RQM_SessionId){trace_rqm("job_end");return 0;}
+A_Err item_start(AEGP_RQM_BasicData*,AEGP_RQM_SessionId,AEGP_RQM_ItemId){trace_rqm("item_start");return 0;}
+A_Err item_update(AEGP_RQM_BasicData*,AEGP_RQM_SessionId,AEGP_RQM_ItemId,AEGP_RQM_FrameId){return 0;}
+A_Err item_end(AEGP_RQM_BasicData*,AEGP_RQM_SessionId,AEGP_RQM_ItemId,AEGP_RQM_FinishedStatus){return 0;}
+A_Err item_log(AEGP_RQM_BasicData*,AEGP_RQM_SessionId,AEGP_RQM_ItemId,A_Boolean,AEGP_MemHandle){return 0;}
+const AEGP_RQM_FunctionBlock1 monitor{job_start,job_end,item_start,item_update,item_end,item_log};
+#endif
 A_Err idle(AEGP_GlobalRefcon,AEGP_IdleRefcon,A_long* max_sleep) noexcept {
-    if(done||!owns_process())return A_Err_NONE;
+    if(!owns_process())return A_Err_NONE;
+#ifdef FSTR_RUNNER_TRACE_IDLE
+    std::fprintf(stderr,"FSTR_IDLE main=%d after_dispatch=%d\n",pthread_main_np(),int(done));
+#endif
+    if(done)return A_Err_NONE;
     if(max_sleep&&*max_sleep>60)*max_sleep=60; // SDK units: 1/60 second.
     if(std::chrono::steady_clock::now()<ready)return A_Err_NONE;
     const AEGP_UtilitySuite6* utility=nullptr;
@@ -76,6 +91,9 @@ extern "C" DllExport A_Err EntryPointFunc(SPBasicSuite* suites,A_long,A_long,AEG
         const auto err=registration->AEGP_RegisterIdleHook(id,idle,nullptr);
         const auto released=basic->ReleaseSuite(kAEGPRegisterSuite,kAEGPRegisterSuiteVersion5);
         std::fprintf(stderr,"FSTR_RUNNER owned registration %ld release %ld\n",long(err),long(released));
+#ifdef FSTR_RUNNER_TRACE_IDLE
+        if(!err){const AEGP_RenderQueueMonitorSuite1*suite=nullptr;auto acquired_rqm=basic->AcquireSuite(kAEGPRenderQueueMonitorSuite,kAEGPRenderQueueMonitorSuiteVersion1,reinterpret_cast<const void**>(&suite));if(!acquired_rqm){auto registered=suite->AEGP_RegisterListener(id,nullptr,&monitor);auto released_rqm=basic->ReleaseSuite(kAEGPRenderQueueMonitorSuite,kAEGPRenderQueueMonitorSuiteVersion1);std::fprintf(stderr,"FSTR_RQM register=%ld release=%ld\n",long(registered),long(released_rqm));}else std::fprintf(stderr,"FSTR_RQM acquire=%ld\n",long(acquired_rqm));}
+#endif
         // A successful registration publishes a callback; keep its image initialized.
         return err;
     }catch(...){return A_Err_GENERIC;}

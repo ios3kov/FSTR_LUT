@@ -2,6 +2,7 @@
 #include "plugin.hpp"
 #include "AE_EffectUI.h"
 #include <cstring>
+#include <cmath>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -90,7 +91,12 @@ void cinema(){
           (ui.params[AdvancedStart].flags&PF_ParamFlag_COLLAPSE_TWIRLY)&&
           ui.params[AdvancedEnd].param_type==PF_Param_GROUP_END,"Advanced must start collapsed");
     check(ui.params[WorkingSpace].uu.id==9&&ui.params[WorkingSpace].u.pd.num_choices==4&&
-          ui.params[WorkingSpace].u.pd.dephault==1,"Legacy encoding choices/default changed");
+          ui.params[WorkingSpace].u.pd.dephault==2&&ui.params[WorkingSpace].u.pd.value==2,"New effects must default to sRGB with legacy choices retained");
+    // IEC sRGB: half of linear white encodes to0.735356983; linear0.5
+    // would expose an incorrect new-effect transfer without reusing core math.
+    std::vector<PF_PixelFloat> white{{1,1,1,1}},half_white(1);
+    ui.params[Exposure].u.fs_d.value=-1;set_world(ui.input,white,1,1,1,PF_PixelFormat_ARGB128);set_world(ui.output,half_white,1,1,1,PF_PixelFormat_ARGB128);
+    check(run(ui,true)==0&&std::abs(half_white[0].red-.735356983f)<1e-6f&&half_white[0].alpha==1,"Fresh sRGB effect must render without encoding selection");
     check(ui.params[Look].u.pd.num_choices==17&&ui.params[Look].uu.id==6,"Cinema menu or persistent ID wrong");
     check(std::strncmp(ui.params[Look].u.pd.u.namesptr,"Natural|(-|",11)==0,"Natural/retired Warm schema wrong");
     check(ui.params[LookAmount].u.fs_d.dephault==100&&ui.params[LookAmount].u.fs_d.slider_max==100&&ui.params[LookAmount].u.fs_d.valid_max==300,"Strength soft/hard/default range wrong");

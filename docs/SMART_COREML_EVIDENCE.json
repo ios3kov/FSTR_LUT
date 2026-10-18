@@ -1,0 +1,28 @@
+{
+  "local_root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/smart-coreml-validation-20261018",
+  "manifest": {
+    "base_commit": "a0553c8a9397aabf1521526605e121ffa100e841",
+    "files": {
+      "contract.md": "55809339372edaa3e1b4ea8108053d5ee871d80061ed8c22a515c26bd8689625",
+      "quality-summary.json": "3e7cedf50aff5bf438eb254fe038865fed622360853c1ccfb462dee88cc5bbc9",
+      "mask-comparison.json": "6cc32d361b245b6e945fd223929e1e142d9d0e86da3abc9c4bffef4eb0b5aa57",
+      "repeat-comparison.json": "5986274802568cf4948878b20e5aaef07518b39af29a2807a43d4dd3828a85cf",
+      "matrix-color/result.json": "c077ce8557a7d0f6ecc8fcfeeca31863117d8f55ca024e8808be98f6eff5cb24",
+      "sequence-color/result.json": "7f93067c517897ddd52f9dae7d222a859ac73f737e2451dc5f36afa61036a66a",
+      "prewarm-verification.json": "790c9612c4e86af22e39c3fef40d3594068234b30aad6a8ee86b7ee623230c50",
+      "host-verification.json": "bb173c7bf4d7d531a4ce4b3a0a216673d4a1edc4cf74ca2edd466f98e7e9d338",
+      "host/host-report.txt": "7276e24ff4f2395ecc1a37c24c248f19637bb53c82e9e2c42a54a06a11be804e",
+      "host/installation.json": "23d866177503fb65f129e5562a0ccdbe9718d9d160db655439fd6e4a58191fdf",
+      "host/cleanup.json": "c82aebda325f9cf434f6f91e3e96b742bd59af08e92aa7e2c516d61733502639",
+      "ae-package-inventory.json": "d33c301aad03c3bc14327b6e867cb39cf35d00f6f3e3c5ed22c66c8d3527f31d",
+      "ae-environment-binding.json": "8a33c5bd579061e26e2a450134e665fc92c9383216074cfc53f33e0ed1d35088",
+      "ae-comparison.png": "44e54205f064916fec8ee12cf135a577b11ac8009f642a50957a1a4c3ee4e544",
+      "cpu/source-binding.json": "3703c56c3a53ad78c63666e75810ea09e2d07d706682ab0dad34bae0c42835f8",
+      "coreml/source-binding.json": "7cb49252d7561441e5b19d37d015c5620b828fcea9fbcf0599adfdf95283d418"
+    }
+  },
+  "host_result": "PASS scoped actual AE CoreML validation",
+  "working_current": "1c490d4515b2937b",
+  "trial": "8ef20895ffc59d55",
+  "promoted": false
+}

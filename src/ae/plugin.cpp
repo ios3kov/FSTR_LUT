@@ -360,7 +360,9 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
             case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_SEQUENCE_SETDOWN:fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
-            case PF_Cmd_QUERY_DYNAMIC_FLAGS:out_data->out_flags=flags;out_data->out_flags2=flags2;break;
+            // AE supplies the current flag words; never rewrite static capability bits here.
+            // There are no parameter-dependent flag changes in this effect.
+            case PF_Cmd_QUERY_DYNAMIC_FLAGS:break;
             case PF_Cmd_PARAMS_SETUP:return params_setup(in_data,out_data);
             case PF_Cmd_EVENT:return fstr::ae::metadata_event(in_data,static_cast<PF_EventExtra*>(extra));
             case PF_Cmd_RENDER:return render(in_data,params[Input]->u.ld,*output,false);

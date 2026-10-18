@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "requirement": "DYNAMIC-FLAGS-001",
+  "baseline_revision": "4e8f6afb78fe0b5deed1c268cdd5aa89cc72e022",
+  "created_utc": "2026-10-18T14:23:11.392577+00:00",
+  "build_id": "9177edacb182d7a5",
+  "source_sha256": {
+    "docs/DYNAMIC_FLAGS_FIX.md": "289807780a56083d7a09eb2325fb60e7a5b40835ab091bc5d9c6637d93e51a9e",
+    "docs/PLAN.md": "a0d81449101e053a045aac767581bce74f4da42485bd845908a8a084d0556e7d",
+    "docs/STATUS.md": "1d9fc4ab5aa92f12e14e6727951046ab2743b545fc019f87697d5b0fbe515a5c",
+    "src/ae/plugin.cpp": "ee67cafd727ef99405aec6849fed26706397e3d6c0efd49215298207f6dee906",
+    "tests/ae_adapter_tests.cpp": "8f67c68f047cd88d25ab7214986980eef0ff1580fa660c26ba41ac71364bf6e0"
+  },
+  "external_receipts": [
+    {
+      "path": "../dynamic-flags-20261018/red.log",
+      "sha256": "0d1cfe95d8bfef54489cc52c7340e751432a6546af2af00c2619c065558862c2"
+    },
+    {
+      "path": "../dynamic-flags-20261018/red-callback.log",
+      "sha256": "6a33e0159fc94bef9280cea173310e8d32f0c23dd6148686ef77d231212c35fa"
+    },
+    {
+      "path": "../dynamic-flags-20261018/release.log",
+      "sha256": "f718b3902109480dc0cbdf4a126bbe55902889edd261cc83a3100f88186bc321"
+    },
+    {
+      "path": "../dynamic-flags-20261018/sanitize.log",
+      "sha256": "ecc5ffe3695ad483e3a9c9da2a632f65e77295856b1b1d9dee487cfbe50c4af4"
+    },
+    {
+      "path": "../dynamic-flags-20261018/prepare.py",
+      "sha256": "9d20f21346dba46a1b99e4c8e593809f8b17964980f006d1af3051fcfb0bd3c6"
+    },
+    {
+      "path": "../dynamic-flags-20261018/launch.py",
+      "sha256": "c8cae19637ce6a42bfd87a6d7755211da95971c15b2db7a7609f40d1160334da"
+    },
+    {
+      "path": "../dynamic-flags-20261018/verify.py",
+      "sha256": "7497b45fe869552ab9593837f6c0cb518d3ad682d782baddb50b31ced4e0090f"
+    },
+    {
+      "path": "../dynamic-flags-20261018/source-match.json",
+      "sha256": "bd9af79a0ab50f337d2b2a606bcabb72c913c0f9cd6b83d98db778eb30d43e16"
+    },
+    {
+      "path": "../dynamic-flags-20261018/host-verification.json",
+      "sha256": "eaa7bff3a4eafde725cd7ca311ada9462f0d6aaeaf0ea68b76f95626041ae061"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/build.log",
+      "sha256": "266eacd1ab19320b94661a83817ced481a8a6a3021dca525a5b29d543e3f2923"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/package-inventory.json",
+      "sha256": "6f3c6cedf9c95097111aa69c1e2f496136b052ddc92b69650a366c152099f6e6"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/installation.json",
+      "sha256": "f9e432d02747842754f68e3838306baaa3fc32bbc40d8379aeec80fafaefa6ff"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/launch.json",
+      "sha256": "4006542bbe94109d5221c620567c7fb593fe6ade087025e9ee2ccce75c714f7b"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/config.json",
+      "sha256": "6eb91dad223c3b7e0e4d695600e63aa5e9e3d9d8204a722f038502b409a3dff1"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/test.jsx",
+      "sha256": "5b161a0146a520c160de0e717f4f87da4c15ea3cb620b166a99a5379a8338e31"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/process-error.log",
+      "sha256": "c565bbf5b5508328fb98e84d2a59c96f290065249727154a1a200ad4a7b83cb6"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/host-report.txt",
+      "sha256": "d26265ff61679ee15e942ef47d676f4a32d6665c5a79672ccc06a2c9d074bfce"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/cleanup.json",
+      "sha256": "393d66ce96432b99192f93b80b3765de56e5c4c0dec14353a12808662920cfe9"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/dynamic-flags.aep",
+      "sha256": "65906ae7cb60fa32721f9bceba9d7da584ccc04136aa4816dbd1d3a4ee38fdf9"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/legacy-aces_00000.psd",
+      "sha256": "7c0a57345af234c598b01550879c26dbe151ae747edbd2a632e0a72bd4b90797"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/legacy-controls0_00000.psd",
+      "sha256": "5644762515fac947cbf0fa2fc3eb9ea03f531e30e2bbe9195082410d22d6d951"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/legacy-controls6_00006.psd",
+      "sha256": "6b9df0afe3c224e405316b60b8127394378d4fc12abb7b5c148d01d05167ece4"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/legacy-host_00000.psd",
+      "sha256": "7910dd2b0a0ddbec053eba5fb0542e838d7a5162853bc6703bc45e1e079a0499"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/new3d_00000.psd",
+      "sha256": "c5ce2330905333b0b98f454d6723f991dec153a5aa6936f20b3f312b92367635"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/smart0_00000.psd",
+      "sha256": "cabb083c94294afb0bc5386a875365957003d74058c82e39c314ea6d51d66aad"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/smart1_00000.psd",
+      "sha256": "d5511797a870b9491d9ff5750341e574c672d184ad0ec5fe5eacf6caf59ac381"
+    },
+    {
+      "path": "../dynamic-flags-20261018/candidate/smart2_00000.psd",
+      "sha256": "a98c064d67c5b039b4d432d509a00289587e8a12cd3a7d70dfafdeb3e576a6bd"
+    },
+    {
+      "path": "../dynamic-flags-20261018/final-review.json",
+      "sha256": "5ed8797e11818efa77938ceee78590ac2b35d52509670bc249e4518150249105"
+    }
+  ],
+  "scanner": {
+    "path": "/tmp/fstr-dynamicflags-20261018-final-review.json",
+    "sha256": "8a18aa7394e6f5cfc8b53e03312945b56ca2a0e15a3cfd2ce3e95c4b84e11dd2",
+    "status": "PASS scanned static scope only"
+  },
+  "final_review": {
+    "status": "PASS scoped review",
+    "root_cause": "Dynamic query copied complete global flag words, including static capabilities; old callback expectation modeled that invalid behavior",
+    "fix": "No-op query preserves host-provided words; global/PiPL capability definitions unchanged",
+    "tests": "16-combination preservation matrix, 14 Release+14 sanitizer, eight actual AE exports and709query callbacks",
+    "unchanged": [
+      "Render math",
+      "Persistent parameter IDs",
+      "Models",
+      "Cache behavior"
+    ],
+    "limits": [
+      "Synthetic owned host fixture; not all user projects/workflows",
+      "Prior float-helper shutdown cause not established"
+    ]
+  },
+  "publication": "No push, merge or release"
+}

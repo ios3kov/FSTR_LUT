@@ -82,8 +82,18 @@ void processing(){
     set_world(unknown.input,input,1,1,1,PF_PixelFormat_ARGB64);set_world(unknown.output,output,1,1,1,PF_PixelFormat_ARGB64);
     check(run(unknown,true)==PF_Err_BAD_CALLBACK_PARAM&&unknown.acquire==0&&unknown.checkin==RenderParamCount&&unknown.pixels_in==1,"Unknown space error/resources wrong");
 }
+void check_dynamic_flags(){
+    // AE supplies its current flags. The query may only change documented dynamic bits;
+    // this effect has no parameter-dependent capability changes, so preserve both words.
+    const PF_OutFlags first[]{0,0x02008042,PF_OutFlag_WIDE_TIME_INPUT,PF_OutFlag_PIX_INDEPENDENT};
+    const PF_OutFlags2 second[]{0,0x08221401,PF_OutFlag2_SUPPORTS_SMART_RENDER,PF_OutFlag2_REVEALS_ZERO_ALPHA};
+    for(auto a:first)for(auto b:second){
+        Fixture query;active=&query;query.out.out_flags=a;query.out.out_flags2=b;
+        check(effect_fn(PF_Cmd_QUERY_DYNAMIC_FLAGS,&query.in,&query.out,nullptr,nullptr,nullptr)==0&&query.out.out_flags==a&&query.out.out_flags2==b,"Dynamic query changed host-provided flags");
+    }
+}
 void cinema(){
-    Fixture query;active=&query;check(effect_fn(PF_Cmd_QUERY_DYNAMIC_FLAGS,&query.in,&query.out,nullptr,nullptr,nullptr)==0&&query.out.out_flags2==0x08221401,"Dynamic query lost static capabilities");
+    check_dynamic_flags();
     Fixture ui;active=&ui;
     check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Cinema schema setup failed");
     check(ui.params[SmartColor].uu.id==13&&ui.params[SmartColor].u.bd.dephault==FALSE&&ui.params[CameraInfo].uu.id==12,"Smart default/legacy IDs wrong");
@@ -266,7 +276,7 @@ int main(int argc,char** argv){try{
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
     check(setup.out.out_flags==0x02008042&&setup.out.out_flags2==0x08221401&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
-    Fixture query;active=&query;check(effect_fn(PF_Cmd_QUERY_DYNAMIC_FLAGS,&query.in,&query.out,nullptr,nullptr,nullptr)==0&&query.out.out_flags2==0x08221401,"Dynamic query lost static capabilities");
+    check_dynamic_flags();
     Fixture ui;active=&ui;check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE&&ui.out.num_params==ParamCount,"Native control schema failed");
     check(ui.params[Contrast].uu.id==3&&ui.params[WorkingSpace].uu.id==9&&ui.params[Temperature].uu.id==10&&ui.params[Tint].uu.id==11,"Persistent IDs changed with UI order");
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");

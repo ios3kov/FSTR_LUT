@@ -1,3 +1,7 @@
+## Dynamic flag error fix — 2026-10-18
+
+Fixed AE25::228 by preserving host flag words during PF_Cmd_QUERY_DYNAMIC_FLAGS.14Release/14ASan+UBSan targets pass; regression fails on previous code. Actual AE completes709queries, eight exports, Smart switches, save/reopen and normal exit. Five old/new comparisons exact; repeated Smart-on within one8bit code. Current **9177edacb182d7a5** installed, prior bytes archived. See [DYNAMIC_FLAGS_FIX.md](DYNAMIC_FLAGS_FIX.md).
+
 ## 3D Linear input — 2026-10-18
 
 Added **3D - Linear RGB** beside ACEScg, moved Input Profile inside Advanced and preserved sRGB/Already converted defaults.14Release/14sanitizer targets,718prior profile vectors, eight exact legacy host comparisons, animated/name-expression migration and save/reopen pass. Six actual32bpc AE frame checkouts retain distinct above-white values with/without a look. Signed Current **f6153fc453e7167e** installed; prior Current archived. Unknown Log or arbitrary renderer gamut is not inferred from bit depth. OpenEXR file export NOT_RUN; actual host float receipts used instead. [Contract/evidence](LINEAR_3D_INPUT.md).

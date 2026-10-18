@@ -1,3 +1,7 @@
+## Three-scene SDR grading examples — 2026-10-18
+
+SDR-GRADE-REVIEW-001: two additional real outdoor shots,194accepted actual AE exports and eight core comparisons within one8bit code.192CPU float outputs finite/in-range with unchanged alpha. Delivered Natural and Teal&Orange65%+Smart comparisons covering kitchen/performers/wide group,14s each, plus a saved/reopened editable AE project. Final visual review rejected an existing author dissolve; replaced84–86s with clean82–84s and repeated affected checks. No product math/default/model changes; installed Current9838bb4d38c6e9c9 preserved. Fixed manual shot settings and sampled visual judgments do not establish universal automatic/Log-equivalent grading. [Outputs/evidence](SDR_GRADE_REVIEW.md).
+
 ## Short-clip Smart cache retention — 2026-10-18
 
 CACHE-RETENTION-001 fixes the64-frame disk cap that evicted part of the72-frame real-SDR trial below its byte budget. Disk now retains up to4096entries/512MiB; RAM/keys/models/color formulas unchanged.14Release/14sanitizer targets plus extended capacity tests pass. Actual AE Current9838bb4d38c6e9c9 exports217frames: only8previously evicted frames compute during warmup; SmartOff makes no accesses; re-enable and strength edits perform zero new computes across72frames each. Repeated pixels within one8bit code; prior Current preserved and helper archived after normal exit. This is cache behavior, not artistic or real-time acceptance. No installer. [Contract/evidence](CACHE_RETENTION.md).

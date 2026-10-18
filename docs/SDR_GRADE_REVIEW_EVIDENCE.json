@@ -1,0 +1,134 @@
+{
+  "requirement": "SDR-GRADE-REVIEW-001",
+  "base_commit": "bf237875dfdc2fe960df447d0a64428949cf59b7",
+  "installed_build": "9838bb4d38c6e9c9",
+  "core_summary": {
+    "frames": 192,
+    "min": 0.0,
+    "max": 0.9852120876312256,
+    "outside_channels": 0,
+    "all_finite": true,
+    "alpha_unchanged": true
+  },
+  "host_exports": 194,
+  "discarded_source_exports": 97,
+  "cpu_spots": [
+    {
+      "shot": "performers",
+      "kind": "natural",
+      "frame": 0,
+      "max_delta": 1
+    },
+    {
+      "shot": "performers",
+      "kind": "natural",
+      "frame": 23,
+      "max_delta": 1
+    },
+    {
+      "shot": "performers",
+      "kind": "natural",
+      "frame": 47,
+      "max_delta": 1
+    },
+    {
+      "shot": "performers",
+      "kind": "teal-off",
+      "frame": 0,
+      "max_delta": 1
+    },
+    {
+      "shot": "wide-clean",
+      "kind": "natural",
+      "frame": 0,
+      "max_delta": 1
+    },
+    {
+      "shot": "wide-clean",
+      "kind": "natural",
+      "frame": 23,
+      "max_delta": 1
+    },
+    {
+      "shot": "wide-clean",
+      "kind": "natural",
+      "frame": 47,
+      "max_delta": 1
+    },
+    {
+      "shot": "wide-clean",
+      "kind": "teal-off",
+      "frame": 0,
+      "max_delta": 1
+    }
+  ],
+  "videos": [
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/natural-three-scenes.mp4",
+      "frames": 336,
+      "seconds": 14,
+      "sha256": "eb685c690001ba18aae85def18d47cafd3c052101fa4ba4656030f98c077ce29",
+      "decode": "PASS"
+    },
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/smart-three-scenes.mp4",
+      "frames": 336,
+      "seconds": 14,
+      "sha256": "39f13cd9b6ee5d32c705cfb4c6edffc47023b73fb2b930f7e8e47825cc8c6efb",
+      "decode": "PASS"
+    }
+  ],
+  "analysis_accesses": {
+    "COMPUTE": 144,
+    "RAM": 229,
+    "DISK": 329
+  },
+  "retained_entries": 48,
+  "retained_people_count_histogram": {
+    "1": 20,
+    "0": 28
+  },
+  "review": {
+    "scope": "Three scenes: full-size final stills and four paired crop positions per new outdoor shot",
+    "numeric": "PASS 192 CPU float outputs finite/alpha/range; 194 actual AE outputs and 8 core spot comparisons; two full decoded 336-frame videos",
+    "source_fidelity": "PASS published Nikon Flat edited sample; unchanged downscaled image; source watermark and caveat retained; initial84\u201386s source dissolve rejected, clean82\u201384s re-rendered",
+    "visual_judgment": "Natural is restrained; creative look darkens/cools shadows without obvious solid skin patches in inspected samples. Highlights and saturated clothes remain distinguishable. These are scoped artistic judgments, not all-tone quality certification.",
+    "not_run": [
+      "Continuous visual flicker acceptance on new scenes",
+      "Ungraded camera original/professionally graded Log paired reference",
+      "Native AE cut-detection test (reel cuts are assembled after separate renders)",
+      "New universal automatic shot normalization"
+    ],
+    "software": "Product math/defaults/installed Current9838bb4d38c6e9c9 unchanged; no defect established requiring a source-code change"
+  },
+  "cleanup": {
+    "owned_pid": 88058,
+    "normal_exit": true,
+    "helper_archived": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host-wide-clean/archived-runner.plugin",
+    "product_unchanged": true,
+    "installed_inventory": "PASS",
+    "signature": "PASS"
+  },
+  "artifacts": {
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/core-review-final.json": "5bb2036ad54a313d6b2fdbf0db24aef97b27d06f50b45b358f302c0113c0bf0f",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/delivery-verification.json": "7e1fdf989d0cefa0a7724fe9ad770e9647fd37d4b74f72a6a48c3a2d72a327f0",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/final-review.json": "b516c98b44881ee7b765d19a4e85a508fb551b5681781097b86af9c37659bd9b",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/audit.json": "6ec4a0d5e5cb59a61bfcf3305ff492045cdd2703d1a971da440e90a4994d082c",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/shots.json": "b09875ff0f912d74d17282d57203d260ba88a38be3cb021a476d88be59cdda6c",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host-wide-clean/host-report.txt": "be1814483adac6716511bf29868a1a380bba15af5b1fe608462732fa0e474c72",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host/host-report.txt": "85c1e248fb168ad8dd8a15f4cc522315b9402868b36173e8529a3353666c7536",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host/cleanup.json": "82949c7be88a174770884611f8eb65bb637faaacaaef459fe1598189de758cfb",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host-wide-clean/installation.json": "5f32280040568eba6e3c932d0481055c0f59c61604cabc977f1e8bd5a3af36ce",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host-wide-clean/cleanup.json": "2db888e3b24eb2e2d6b5db141e92fa69050f2ecca41270aefca64ea0ffca4b1e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host-wide-clean/test.jsx": "a156492fb79c4bca4010bd04b4aae1e54e1c25a9e35230e3480daeec821aa37e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/host-wide-clean/SDR-Grading-Examples.aep": "c45a2a09474d8fafe3509da5fbd47c9d08f63e614657918da258c981a6d53028",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/natural-performers.png": "b2144d0c78fd6cacac78cae3be8c99d430111be7065570fc0f52402360cfd683",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/natural-wide-shot.png": "1454c902562f486068fe2ca481189531a6b94f02b6fdbcc7799ea1c0aedc2fd6",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/smart-performers.png": "994dbc2672ae87e53d8a2be60b72b75283eed5c6c0daa3fc3cc0f8cc814cba3c",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/smart-wide-shot.png": "55a3053d34cf218cd60f2a6f65b9711a147c79d9808034ef24e321d1e7e4860e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/performers-paired-crops.png": "431de070762b32256610f676d655bc0c9e264b88f0de91269e05741dc7a17d9b",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/wide-clean-paired-crops.png": "f499e196744724c4a39f34e2239f1f71c224715489af0d0ccaeee0c1e72f2806",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-grade-review-20261018/final-audit.json": "f6b6b571f24392b6d4d3ce2b5d4ecfbde6227d89b7d8f83ac47499151e1ea361",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/real-flat-sdr-20261018/download.json": "6558de39fd8eddc8f55d36e5de1bb5ac5b0e7476691583383d23ac2873e0c096"
+  }
+}

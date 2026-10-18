@@ -5,7 +5,7 @@ namespace fstr {
 struct SceneModelResult {int width=0,height=0;std::vector<SceneWeights> weights;std::vector<float> person;};
 class SceneModel final {
 public:
- explicit SceneModel(const std::string& model_directory);
+ explicit SceneModel(const std::string& model_directory,const std::function<void()>& loading_cancel={});
  ~SceneModel();
  const std::string& runtime_identity()const noexcept;
  SceneModelResult analyze(const AnalysisImage&,const PersonParts&,const std::function<void()>& cancellation={});

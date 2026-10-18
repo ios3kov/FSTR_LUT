@@ -1,0 +1,35 @@
+{
+  "timestamp_utc": "2026-10-18T22:39:49.320900+00:00",
+  "base": "bb67717",
+  "candidate_build": "702b645d02c24d66",
+  "source_sha256": {
+    "CMakeLists.txt": "eeeb3d71a47c216f6febae1bdbad9ccb883498fdef68ce5b481c6f2781ddc12f",
+    "docs/PLAN.md": "3eb09e0e003d12358ab7b721bd9b2480928841ee41da3ca5170879d08754f365",
+    "docs/STATUS.md": "0dee278cd3a0385ad081decead22f512f441d9222afa0316d591688fa2615c79",
+    "include/fstr/native_scene.hpp": "120fcbd1693982ddc8d0e0acb66e45570df1e609a57235dc67432b079769db5e",
+    "include/fstr/scene_model.hpp": "b2b1e1b63b941089b34fe72cfa19e59c8a4afd8c0def1bf93da8551f5d451de9",
+    "src/ae/metadata_ui.cpp": "3ffb2fa3ca23ee49636cbd289cbf5caa3743a39954773c3bc84551b6575e76bb",
+    "src/ae/plugin.cpp": "6b4919979f0733de5347aee364c01693dcc6b14bb5fe44033f47adcb85de59bf",
+    "src/analysis/native_scene.cpp": "71b65bbf2497d08f37a4215c2288f49b398a12e5275677fbf432d22424476441",
+    "src/inference/scene_model.cpp": "d00c245d660102d05ba962bde3a9f9bafe93d8bd5246fa6c643a7b81bdb48c7d",
+    "tests/metadata_ui_tests.cpp": "61a63c12d14f4a4464a8b44ab0ac7e028fce8a3030bb0a91fd3dc352e93f7a8e",
+    "include/fstr/compiler_cache_generation.hpp": "fe38171f0b2659a96952227772f7ce3b6ca9345564af40ed9ac1e97d882cd1cc",
+    "include/fstr/compiler_cache_lock.hpp": "f2a5f50dcb06ec6f9b11835ec62dd27140ca534075133c212673287fbe862147",
+    "tests/compiler_cache_lock_tests.cpp": "d533e04b06770a3629b13774a9e0f01a97b96be840d1c1d707357844dab9eb71",
+    "docs/PRODUCT_FINISH.md": "57a6488fd9323e184867b40289c0a5b17626bddfaa8cb175388689ec4f909b0e"
+  },
+  "gates": {
+    "concurrent_native_raw": "PASS 6 outputs versus CPU max3.635883331298828e-6, cancellation/recovery",
+    "release_tests": "PASS 23",
+    "asan_ubsan_tests": "PASS 23",
+    "compiler_generation_process_tests": "PASS exclusion, death, partial generation, leases, pruning",
+    "gui": "BLOCKED Mac locked; repeated alert root unproven",
+    "matrix_26_exports": "NOT_RUN",
+    "canonical_install": "NOT_RUN; CPU Current preserved"
+  },
+  "verification": "../smart-product-finish-20261019/concurrent-native-verification.json",
+  "tests": "../smart-product-finish-20261019/ui-context-fixed-suites.log",
+  "issue": "Actual AE no current context alert, cause unproven; Mac locked",
+  "installed": "CPU1c preserved; no promotion",
+  "scope": "macOS arm64 AE25.6 local development; no installer/release"
+}

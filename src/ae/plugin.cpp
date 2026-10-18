@@ -89,9 +89,10 @@ void initialize_automatic_analysis(){
         else {const char* user_home=std::getenv("HOME");if(!user_home)throw std::runtime_error("Smart cache location unavailable");directory=std::filesystem::path(user_home)/"Library/Caches/FSTR.Tools/FSTR_LUT/automatic-v1";}
         automatic_loader.start([resources=std::move(resources),directory=std::move(directory)]{
             if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD BEGIN\n");
-            auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string());
+            auto stop_loading=[]{if(automatic_loader.state()==fstr::BackgroundResource<fstr::AutomaticSceneCache>::State::Stopped)throw std::runtime_error("Smart loading stopped");};
+            auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string(),stop_loading);stop_loading();
             auto cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),analyzer->policy(),[analyzer](const auto&image,double height,const auto&cancel){return analyzer->analyze(image,height,cancel);});
-            if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD READY\n");
+            stop_loading();if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD READY\n");
             return cache;
         });
     }catch(...){
@@ -116,9 +117,9 @@ const char* loading_status(){
 #ifdef FSTR_NATIVE_SMART
     using State=fstr::BackgroundResource<fstr::AutomaticSceneCache>::State;
     switch(automatic_loader.state()){
-        case State::Loading:return "Smart: loading model. First Smart render will wait.";
+        case State::Loading:return "Smart: loading model...";
         case State::Ready:return "Smart: ready";
-        case State::Failed:return "Smart unavailable. Check model installation.";
+        case State::Failed:return "Smart: unavailable. Check installation.";
         default:break;
     }
 #endif

@@ -22,6 +22,8 @@ struct Cached {
 };
 std::mutex cache_mutex;
 std::unordered_map<PF_ProgPtr,Cached> cache;
+struct StatusContext{PF_ProgPtr effect;std::string text;};
+std::unordered_map<PF_ContextH,StatusContext> displayed_status;
 class Suites {
     SPBasicSuite* basic_;std::vector<std::pair<const char*,int>> acquired_;
 public:
@@ -176,12 +178,26 @@ std::array<std::string,3> metadata_lines(const CameraMetadata& value){
     return lines;
 }
 PF_Err metadata_event(PF_InData* in,PF_EventExtra* extra,const char* smart_status) {
-    if(!extra||extra->effect_win.index!=CameraInfo||extra->effect_win.area!=PF_EA_CONTROL)return PF_Err_NONE;
-    if(extra->e_type==PF_Event_DO_CLICK){clear_metadata_cache(in->effect_ref);extra->evt_out_flags|=PF_EO_HANDLED_EVENT|PF_EO_UPDATE_NOW;return PF_Err_NONE;}
+    if(extra&&extra->e_type==PF_Event_CLOSE_CONTEXT){std::lock_guard<std::mutex> lock(cache_mutex);displayed_status.erase(extra->contextH);return PF_Err_NONE;}
+    if(!extra)return PF_Err_NONE;
+    // Only these events provide a current effect-control context. Do not
+    // invalidate a saved context from IDLE or make host calls from the worker.
+    if(extra->e_type!=PF_Event_DRAW&&extra->e_type!=PF_Event_DO_CLICK&&extra->e_type!=PF_Event_ADJUST_CURSOR)return PF_Err_NONE;
+    if(extra->effect_win.index!=CameraInfo||extra->effect_win.area!=PF_EA_CONTROL)return PF_Err_NONE;
+    if(extra->e_type==PF_Event_DO_CLICK||extra->e_type==PF_Event_ADJUST_CURSOR){
+        bool changed=extra->e_type==PF_Event_DO_CLICK;
+        if(changed)clear_metadata_cache(in->effect_ref);
+        else {std::lock_guard<std::mutex> lock(cache_mutex);auto found=displayed_status.find(extra->contextH);changed=found!=displayed_status.end()&&found->second.effect==in->effect_ref&&found->second.text!=(smart_status?smart_status:"");}
+        if(!changed)return PF_Err_NONE;
+        Suites suites(in->pica_basicP);const auto* app=suites.get<PFAppSuite4>(kPFAppSuite,kPFAppSuiteVersion4);
+        const auto error=app->PF_InvalidateRect?app->PF_InvalidateRect(extra->contextH,nullptr):PF_Err_BAD_CALLBACK_PARAM;
+        if(!error)extra->evt_out_flags|=PF_EO_HANDLED_EVENT|PF_EO_UPDATE_NOW|PF_EO_NEVER_UPDATE;
+        const auto released=suites.close();return error?error:released;
+    }
     if(extra->e_type!=PF_Event_DRAW)return PF_Err_NONE;
     auto lines=metadata_lines(cached_metadata(in));if(smart_status&&*smart_status)lines[2]=smart_status;
-    const auto result=draw(in,extra,lines);if(!result)extra->evt_out_flags|=PF_EO_HANDLED_EVENT;return result;
+    const auto result=draw(in,extra,lines);if(!result){extra->evt_out_flags|=PF_EO_HANDLED_EVENT;std::lock_guard<std::mutex> lock(cache_mutex);if(displayed_status.size()>=128)displayed_status.clear();displayed_status[extra->contextH]={in->effect_ref,smart_status?smart_status:""};}return result;
 }
-void clear_metadata_cache(PF_ProgPtr effect){std::lock_guard<std::mutex> lock(cache_mutex);cache.erase(effect);}
-void clear_all_metadata_cache(){std::lock_guard<std::mutex> lock(cache_mutex);cache.clear();}
+void clear_metadata_cache(PF_ProgPtr effect){std::lock_guard<std::mutex> lock(cache_mutex);cache.erase(effect);for(auto i=displayed_status.begin();i!=displayed_status.end();)if(i->second.effect==effect)i=displayed_status.erase(i);else ++i;}
+void clear_all_metadata_cache(){std::lock_guard<std::mutex> lock(cache_mutex);cache.clear();displayed_status.clear();}
 }

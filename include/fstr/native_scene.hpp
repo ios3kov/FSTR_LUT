@@ -6,7 +6,7 @@ namespace fstr {
 // Current-frame, IMAGE-mode observations only. No implicit temporal state.
 class NativeSceneAnalyzer final {
 public:
- explicit NativeSceneAnalyzer(const std::string& resource_directory);
+ explicit NativeSceneAnalyzer(const std::string& resource_directory,const std::function<void()>& loading_cancel={});
  ~NativeSceneAnalyzer();
  std::shared_ptr<const SceneAnalysis> analyze(const AnalysisImage&,double source_height,const std::function<void()>& cancellation={});
  const std::string& policy() const noexcept;

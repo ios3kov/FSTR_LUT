@@ -1,0 +1,30 @@
+#include "fstr/compiler_cache_generation.hpp"
+#include <iostream>
+#include <fstream>
+#include <poll.h>
+#include <signal.h>
+#include <sys/wait.h>
+using namespace std::chrono_literals;
+void check(bool v,const char*m){if(!v)throw std::runtime_error(m);}
+int main(int argc,char**argv){try{
+ if(argc==4){const int fd=std::stoi(argv[3]);char marker='S';::write(fd,&marker,1);if(std::string(argv[1])=="generation-hold"||std::string(argv[1])=="generation-cold-crash"){fstr::CompilerCacheGeneration generation(argv[2]);if(std::string(argv[1])=="generation-hold"){check(generation.reused(),"Child did not reuse warm generation");generation.commit();}else std::ofstream(generation.directory()/"partial")<<"partial";marker='G';::write(fd,&marker,1);for(;;)::pause();}fstr::CompilerCacheLock lock(argv[2]);marker='G';::write(fd,&marker,1);if(std::string(argv[1])=="hold")for(;;)::pause();return 0;}
+ const auto root=std::filesystem::temp_directory_path()/("fstr-compiler-lock-"+std::to_string(::getpid()));std::filesystem::create_directory(root);struct Cleanup{std::filesystem::path p;~Cleanup(){std::error_code e;std::filesystem::remove_all(p,e);}}cleanup{root};const auto path=root/"lock";
+ auto spawn=[&](const char* mode,int& read_fd,const std::filesystem::path& target){int ends[2];check(!::pipe(ends),"pipe");const auto pid=::fork();check(pid>=0,"fork");if(!pid){::close(ends[0]);std::string fd=std::to_string(ends[1]);::execl(argv[0],argv[0],mode,target.c_str(),fd.c_str(),nullptr);::_exit(90);}::close(ends[1]);read_fd=ends[0];return pid;};
+ auto receive=[](int fd,char expected){pollfd p{fd,POLLIN,0};check(::poll(&p,1,3000)==1,"Child timeout");char c=0;check(::read(fd,&c,1)==1&&c==expected,"Child marker");};
+ auto owner=std::make_unique<fstr::CompilerCacheLock>(path);int fd;auto child=spawn("once",fd,path);receive(fd,'S');pollfd wait{fd,POLLIN,0};check(::poll(&wait,1,50)==0,"Two processes own writer");
+ int polls=0;bool cancelled=false;try{fstr::CompilerCacheLock other(path,[&]{if(++polls==3)throw 75;});}catch(int v){cancelled=v==75;}check(cancelled,"Waiting lock not cancellable");bool timed=false;try{fstr::CompilerCacheLock other(path,{},10ms);}catch(const std::runtime_error&){timed=true;}check(timed,"Timeout ignored");
+ struct stat before{};check(!::stat(path.c_str(),&before),"stat");owner.reset();receive(fd,'G');int status=0;check(::waitpid(child,&status,0)==child&&WIFEXITED(status)&&WEXITSTATUS(status)==0,"Child failed");::close(fd);
+ child=spawn("hold",fd,path);receive(fd,'S');receive(fd,'G');check(!::kill(child,SIGKILL),"kill owned child");check(::waitpid(child,&status,0)==child&&WIFSIGNALED(status),"Death not observed");::close(fd);{fstr::CompilerCacheLock recovered(path,{},100ms);}struct stat after{};check(!::stat(path.c_str(),&after)&&before.st_ino==after.st_ino,"Lock inode replaced");
+ const auto link=root/"link";std::filesystem::create_symlink(path,link);bool refused=false;try{fstr::CompilerCacheLock bad(link);}catch(const std::runtime_error&){refused=true;}check(refused,"Symlink followed");const auto fifo=root/"fifo";check(!::mkfifo(fifo.c_str(),0600),"mkfifo");refused=false;try{fstr::CompilerCacheLock bad(fifo);}catch(const std::runtime_error&){refused=true;}check(refused,"Nonregular lock accepted");
+ const auto generation_root=root/"generation";std::filesystem::create_directory(generation_root);std::filesystem::path partial,valid;
+ {fstr::CompilerCacheGeneration g(generation_root);partial=g.directory();check(!g.reused(),"New generation marked warm");std::ofstream(g.directory()/"partial")<<"partial";}
+ {fstr::CompilerCacheGeneration g(generation_root);check(!g.reused()&&g.directory()!=partial&&std::filesystem::exists(partial/"partial"),"Incomplete artifacts reused or moved");valid=g.directory();std::ofstream(valid/"valid")<<"complete";g.commit();}
+ {fstr::CompilerCacheGeneration g(generation_root);check(g.reused()&&g.directory()==valid,"Completed generation discarded");} // failed warm load leaves artifacts intact.
+ auto live=std::make_unique<fstr::CompilerCacheGeneration>(generation_root);check(!live->reused()&&live->directory()!=valid&&std::filesystem::exists(valid/"valid"),"Failed warm load not isolated");const auto live_path=live->directory();std::ofstream(live_path/"alive")<<"live";live->commit();
+ child=spawn("generation-hold",fd,generation_root);receive(fd,'S');receive(fd,'G');live.reset();
+ {fstr::CompilerCacheGeneration failed(generation_root);check(failed.reused(),"Concurrent load did not reuse completed generation");}
+ for(int i=0;i<6;++i){fstr::CompilerCacheGeneration fresh(generation_root);check(!fresh.reused(),"Uncompleted pointer reused");}
+ check(std::filesystem::exists(live_path/"alive"),"Cleanup deleted a live model");int count=0;for(const auto&e:std::filesystem::directory_iterator(generation_root))if(e.is_directory())++count;check(count<=4,"Inactive generations unbounded");check(!::kill(child,SIGKILL),"Kill own generation child");check(::waitpid(child,&status,0)==child&&WIFSIGNALED(status),"Generation death not observed");::close(fd);{fstr::CompilerCacheGeneration final(generation_root);final.commit();}count=0;for(const auto&e:std::filesystem::directory_iterator(generation_root))if(e.is_directory())++count;check(count<=3,"Released generation not pruned");
+ const auto crashed=root/"crashed-generation";std::filesystem::create_directory(crashed);child=spawn("generation-cold-crash",fd,crashed);receive(fd,'S');receive(fd,'G');check(!::kill(child,SIGKILL),"Kill own cold constructor");check(::waitpid(child,&status,0)==child&&WIFSIGNALED(status),"Cold constructor death not observed");::close(fd);{fstr::CompilerCacheGeneration recovered(crashed);check(!recovered.reused()&&!std::filesystem::exists(recovered.directory()/"partial"),"Cold crash reused incomplete artifacts");recovered.commit();}
+ std::cout<<"PASS process exclusion, release, cancellation, timeout, lock release after death, persistent inode, symlink/FIFO refusal and incomplete/warm generation isolation, active-model lease and bounded cleanup\n";return 0;
+}catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

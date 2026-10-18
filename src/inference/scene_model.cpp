@@ -2,6 +2,7 @@
 #include <cstdlib>
 #ifdef FSTR_SCENE_COREML
 #include <sys/sysctl.h>
+#include "fstr/compiler_cache_generation.hpp"
 #endif
 #include "onnxruntime_cxx_api.h"
 #include "picosha2.h"
@@ -19,8 +20,12 @@ double smooth(double a,double b,double v){double t=std::clamp((v-a)/(b-a),0.,1.)
 std::string digest(const std::filesystem::path& path){std::ifstream f(path,std::ios::binary);if(!f)throw std::runtime_error("Scene model asset unavailable");std::string hash;picosha2::hash256_hex_string(std::istreambuf_iterator<char>(f),std::istreambuf_iterator<char>(),hash);if(f.bad())throw std::runtime_error("Scene model asset read failed");return hash;}
 }
 struct SceneModel::Impl {
+#ifdef FSTR_SCENE_COREML
+ std::unique_ptr<CompilerCacheGeneration> compiler_generation; // Outlives session and Env.
+#endif
  Ort::Env env{ORT_LOGGING_LEVEL_WARNING,"FSTR_Scene"};Ort::SessionOptions options;std::unique_ptr<Ort::Session> session;std::array<int,150> roles{};std::mutex device;std::string runtime;
- explicit Impl(const std::string& directory){
+ explicit Impl(const std::string& directory,const std::function<void()>& cancel){
+  if(cancel)cancel();
   const auto root=std::filesystem::path(directory);if(!root.is_absolute())throw std::invalid_argument("Absolute scene model path required");
   if(std::string(OrtGetApiBase()->GetVersionString())!="1.23.2")throw std::runtime_error("Unsupported native ONNX Runtime version");Dl_info runtime_info{};if(!dladdr(reinterpret_cast<void*>(&OrtGetApiBase),&runtime_info)||!runtime_info.dli_fname)throw std::runtime_error("Native runtime identity unavailable");runtime=digest(runtime_info.dli_fname);
   if(!std::filesystem::is_regular_file(std::filesystem::symlink_status(root/"manifest.json"))||std::filesystem::file_size(root/"manifest.json")>131072)throw std::invalid_argument("Scene manifest budget");
@@ -37,19 +42,24 @@ struct SceneModel::Impl {
   if(sysctlbyname("kern.osversion",os_build,&os_size,nullptr,0)||!os_size||os_size>sizeof(os_build)||os_build[os_size-1]!=0)throw std::runtime_error("CoreML OS identity unavailable");
   std::filesystem::path cache_root;
   if(const char* configured=std::getenv("FSTR_LUT_COREML_CACHE"))cache_root=configured;
-  else {const char* home=std::getenv("HOME");if(!home)throw std::runtime_error("CoreML cache location unavailable");cache_root=std::filesystem::path(home)/"Library/Caches/FSTR.Tools/FSTR_LUT/coreml-v1";}
+  else {const char* home=std::getenv("HOME");if(!home)throw std::runtime_error("CoreML cache location unavailable");cache_root=std::filesystem::path(home)/"Library/Caches/FSTR.Tools/FSTR_LUT/coreml-v2";}
   if(!cache_root.is_absolute())throw std::invalid_argument("Absolute CoreML cache path required");
-  const auto compiler_cache=cache_root/os_build/(manifest.at("onnx_sha256").get<std::string>()+"-"+runtime+"-MLProgram-ALL-static-v1");
+  const auto compiler_cache=cache_root/os_build/(manifest.at("onnx_sha256").get<std::string>()+"-"+runtime+"-"+picosha2::hash256_hex_string(path.string())+"-MLProgram-ALL-static-cache-v2");
   std::filesystem::create_directories(compiler_cache);
-  options.AppendExecutionProvider("CoreML",{{"ModelFormat","MLProgram"},{"MLComputeUnits","ALL"},{"RequireStaticInputShapes","1"},{"ModelCacheDirectory",compiler_cache.string()}});
+  compiler_generation=std::make_unique<CompilerCacheGeneration>(compiler_cache,cancel);
+  options.AppendExecutionProvider("CoreML",{{"ModelFormat","MLProgram"},{"MLComputeUnits","ALL"},{"RequireStaticInputShapes","1"},{"ModelCacheDirectory",compiler_generation->directory().string()}});
   // Never enable ProfileComputePlan in the host (ORT1.23.2 can stall on errors).
   runtime+="/CoreML-MLProgram-ALL-static-v1/";runtime+=os_build;
 #endif
+  if(cancel)cancel();
   session=std::make_unique<Ort::Session>(env,path.c_str(),options);
   if(session->GetInputCount()!=1||session->GetOutputCount()!=1||session->GetInputTypeInfo(0).GetTensorTypeAndShapeInfo().GetShape()!=std::vector<std::int64_t>{1,3,512,512}||session->GetOutputTypeInfo(0).GetTensorTypeAndShapeInfo().GetShape()!=std::vector<std::int64_t>{1,150,512,512})throw std::invalid_argument("Scene runtime tensor contract mismatch");
+#ifdef FSTR_SCENE_COREML
+  compiler_generation->commit();
+#endif
  }
 };
-SceneModel::SceneModel(const std::string& p):impl_(new Impl(p)){}
+SceneModel::SceneModel(const std::string& p,const std::function<void()>& cancel):impl_(new Impl(p,cancel)){}
 SceneModel::~SceneModel()=default;
 const std::string& SceneModel::runtime_identity()const noexcept{return impl_->runtime;}
 SceneModelResult SceneModel::analyze(const AnalysisImage& image,const PersonParts&parts,const std::function<void()>& cancel){

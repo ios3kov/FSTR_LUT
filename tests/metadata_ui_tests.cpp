@@ -1,5 +1,6 @@
 // Actual module entrypoint, owned SDK stand-ins, real bounded file parser.
 #include "plugin.hpp"
+#include "metadata_ui.hpp"
 #include "AE_EffectUI.h"
 #include "AE_GeneralPlug.h"
 #include "AE_EffectSuites.h"
@@ -20,7 +21,7 @@ struct Fixture {
     AEGP_PFInterfaceSuite1 interface{};AEGP_LayerSuite9 layers{};AEGP_ItemSuite9 items{};AEGP_FootageSuite5 footage{};AEGP_MemorySuite1 memory{};
     PF_EffectCustomUISuite1 ui{};DRAWBOT_DrawbotSuite1 bot{};DRAWBOT_SupplierSuite1 supplier{};DRAWBOT_SurfaceSuite1 surface{};PFAppSuite4 app{};
     AEGP_ItemType type=AEGP_ItemType_FOOTAGE;AEGP_ItemFlags flags=0;bool fail_source=false,fail_free=false,odd_size=false,no_nul=false,fail_acquire=false;
-    int acquisitions=0,releases=0,locks=0,unlocks=0,frees=0,objects=0;
+    int acquisitions=0,releases=0,locks=0,unlocks=0,frees=0,objects=0,invalidations=0;
     std::vector<A_UTF16Char> path;std::vector<std::string> text;
     Fixture();
     void set_path(const std::filesystem::path& value){const auto s=value.u16string();path.assign(s.begin(),s.end());path.push_back(0);}
@@ -51,6 +52,7 @@ A_Err size(AEGP_MemHandle,AEGP_MemSize* value){*value=f->path.size()*sizeof(A_UT
 A_Err lock(AEGP_MemHandle,void** value){++f->locks;*value=f->path.data();if(f->no_nul)f->path.back()='x';return 0;}
 A_Err unlock(AEGP_MemHandle){++f->unlocks;return 0;}
 A_Err free_mem(AEGP_MemHandle){++f->frees;return f->fail_free?20:0;}
+PF_Err invalidate(PF_ContextH context,const PF_Rect* area){check(context==reinterpret_cast<PF_ContextH>(f)&&!area,"Wrong idle context/region");++f->invalidations;return 0;}
 PF_Err drawing(PF_ContextH,DRAWBOT_DrawRef* value){*value=reinterpret_cast<DRAWBOT_DrawRef>(f);return 0;}
 SPErr get_supplier(DRAWBOT_DrawRef,DRAWBOT_SupplierRef* value){*value=reinterpret_cast<DRAWBOT_SupplierRef>(f);return 0;}
 SPErr get_surface(DRAWBOT_DrawRef,DRAWBOT_SurfaceRef* value){*value=reinterpret_cast<DRAWBOT_SurfaceRef>(f);return 0;}
@@ -73,10 +75,10 @@ Fixture::Fixture(){
     memory.AEGP_GetMemHandleSize=size;memory.AEGP_LockMemHandle=lock;memory.AEGP_UnlockMemHandle=unlock;memory.AEGP_FreeMemHandle=free_mem;
     ui.PF_GetDrawingReference=drawing;bot.GetSupplier=get_supplier;bot.GetSurface=get_surface;
     supplier.SupportsText=supports;supplier.GetDefaultFontSize=font_size;supplier.NewDefaultFont=font;supplier.NewBrush=brush;supplier.ReleaseObject=release_object;
-    surface.PaintRect=paint;surface.DrawString=draw_text;app.PF_AppGetBgColor=background;app.PF_AppGetColor=color;
+    surface.PaintRect=paint;surface.DrawString=draw_text;app.PF_InvalidateRect=invalidate;app.PF_AppGetBgColor=background;app.PF_AppGetColor=color;
 }
 PF_Err event(Fixture& value,PF_EventType type=PF_Event_DRAW,int index=CameraInfo){
-    f=&value;PF_EventExtra extra{};extra.e_type=type;extra.effect_win.index=index;extra.effect_win.area=PF_EA_CONTROL;extra.effect_win.current_frame={0,0,64,300};
+    f=&value;PF_EventExtra extra{};extra.contextH=reinterpret_cast<PF_ContextH>(&value);extra.e_type=type;extra.effect_win.index=index;extra.effect_win.area=PF_EA_CONTROL;extra.effect_win.current_frame={0,0,64,300};
     return effect(PF_Cmd_EVENT,&value.in,&value.out,nullptr,nullptr,&extra);
 }
 std::string box(const char* type,const std::string& data){unsigned n=static_cast<unsigned>(data.size()+8);std::string s;for(int shift=24;shift>=0;shift-=8)s.push_back(static_cast<char>((n>>shift)&255));return s+std::string(type,4)+data;}
@@ -96,6 +98,16 @@ int main(int argc,char** argv){try{
     for(int mode=0;mode<8;++mode){Fixture bad;bad.set_path(path);if(mode==0)bad.flags=AEGP_ItemFlag_USING_PROXY;if(mode==1)bad.flags=AEGP_ItemFlag_MISSING;if(mode==2)bad.type=AEGP_ItemType_COMP;if(mode==3)bad.fail_source=true;if(mode==4)bad.odd_size=true;if(mode==5)bad.no_nul=true;if(mode==6)bad.fail_free=true;if(mode==7)bad.path[0]=0xD800;
         check(event(bad)==0,"Manual fallback DRAW failed");check(bad.text.size()==3&&bad.text[1]=="Normal image? Keep the default input."&&bad.text[2]=="Log or 3D? Choose Input Profile in Advanced.","Fallback missing");check(bad.acquisitions==bad.releases&&bad.locks==bad.unlocks&&bad.objects==0,"Fallback cleanup unbalanced");}
     Fixture ignored;check(event(ignored,PF_Event_DRAW,WorkingSpace)==0&&ignored.acquisitions==0,"Unrelated UI queried metadata");
+    f=&normal;normal.text.clear();normal.invalidations=0;PF_EventExtra status_draw{};status_draw.e_type=PF_Event_DRAW;status_draw.effect_win.index=CameraInfo;status_draw.effect_win.area=PF_EA_CONTROL;status_draw.effect_win.current_frame={0,0,64,300};status_draw.contextH=reinterpret_cast<PF_ContextH>(&normal);
+    check(fstr::ae::metadata_event(&normal.in,&status_draw,"Smart: loading model...")==0&&normal.text.back()=="Smart: loading model...","Loading display missing");
+    PF_EventExtra idle{};idle.e_type=PF_Event_IDLE;idle.contextH=status_draw.contextH; // effect_win deliberately unpopulated.
+    check(fstr::ae::metadata_event(&normal.in,&idle,"Smart: ready")==0&&normal.invalidations==0,"Idle used an unavailable UI context");
+    PF_EventExtra cursor=status_draw;cursor.e_type=PF_Event_ADJUST_CURSOR;
+    check(fstr::ae::metadata_event(&normal.in,&cursor,"Smart: ready")==0&&normal.invalidations==1&&(cursor.evt_out_flags&PF_EO_NEVER_UPDATE),"Current cursor context failed or requested comp render");
+    normal.text.clear();check(fstr::ae::metadata_event(&normal.in,&status_draw,"Smart: ready")==0&&normal.text.back()=="Smart: ready","Ready display missing");
+    check(fstr::ae::metadata_event(&normal.in,&cursor,"Smart: ready")==0&&normal.invalidations==1,"Unchanged status repaints repeatedly");
+    check(fstr::ae::metadata_event(&normal.in,&cursor,"Smart: unavailable. Check installation.")==0&&normal.invalidations==2,"Failure status not invalidated");
+    PF_EventExtra closed{};closed.e_type=PF_Event_CLOSE_CONTEXT;closed.contextH=status_draw.contextH;check(fstr::ae::metadata_event(&normal.in,&closed,"")==0,"Context close failed");check(fstr::ae::metadata_event(&normal.in,&cursor,"Smart: ready")==0&&normal.invalidations==2,"Closed context repainted");fstr::ae::clear_all_metadata_cache();
     f=&normal;check(effect(PF_Cmd_GLOBAL_SETDOWN,&normal.in,&normal.out,nullptr,nullptr,nullptr)==0,"Cache teardown failed");check(dlclose(module)==0,"Module cleanup failed");
     std::cout<<"PASS "<<checks<<" owned metadata UI assertions; actual AE display NOT RUN\n";return 0;
 }catch(const std::exception& error){std::cerr<<"FAIL "<<error.what()<<" assertion "<<checks<<'\n';return 1;}}

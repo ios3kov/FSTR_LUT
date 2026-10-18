@@ -1,0 +1,82 @@
+{
+  "requirement": "SMART-CONTINUOUS-CUTS-001",
+  "date": "2026-10-18",
+  "source_commit": "6f96e81",
+  "product": "42ee1edaaff01753 unchanged",
+  "status": "PASS_SCOPED_WITH_EXPLICIT_NOT_RUN",
+  "criteria": {
+    "C1": "PASS",
+    "C2": "PASS scoped",
+    "C3": "PASS scoped; rendered-output reuse may satisfy",
+    "C4": "PASS artifact and inspected stills",
+    "C5": "PASS start/time/stop; steadyfps NOT_RUN",
+    "C6": "NOT_RUN human continuous visual acceptance",
+    "C7": "PASS"
+  },
+  "artifacts": [
+    {
+      "path": "../smart-continuous-cuts-20261018/native-verification.json",
+      "sha256": "202c049f91f91f0ca1c21800fc41ee1ca0ac35cf591e5a5acc818c76fccc901e"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/off-verification.json",
+      "sha256": "58c3f69a74eb87518913bf2ce3317795548b877348232081309948be99991f63"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/core-reference.json",
+      "sha256": "952d1f6c6def193cea373a2272dd8bba5a868ce182e7bb26b4eba6dea5688a56"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/isolated-vs-sequence.json",
+      "sha256": "a9133307a4b496cc2d9850a9797d627263adda9a63b9b3daa583730e2b73a3e5"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/motion-diagnostics.json",
+      "sha256": "78f99bdf79b3aca4af539c529cd9f8102c4e6bb65d876b6d574987b1a3156fa3"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/review-pairs.json",
+      "sha256": "ea3699491c6679c0d52e5b163e9590864cb13e642cc7c286b874d803ba744350"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/delivery-verification.json",
+      "sha256": "282126175a1f1cb9da38f585c921716541d08ca542806fe302722b052e285c50"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/preview-verification.json",
+      "sha256": "659edb0942fd4d0249be9f0a3a43891a5d0933dc481869c97ef3d6000b3df6c4"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/host/installation.json",
+      "sha256": "36ee126f3a43f216718e17e0b1cfdec328b469282cb73a562cde216ee2cac6ea"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/host/cleanup.json",
+      "sha256": "c405c26233e2f0ea5dbce894cab47499b248ba12a84bb2790142c3d3e48301fb"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/host/Smart-Continuous-Cuts.aep",
+      "sha256": "8331c67470392926c292895cd68afd2bce6dd020fba881db2dbd873fe110fb92"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/host/test.jsx",
+      "sha256": "d9524e39be5c68d5ed2467947326646df4c6d4749d4ab34612c262ccbca9e6a2"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/host/config.json",
+      "sha256": "3e30f45b68ed436bb3b68cdb19abf8d4f13c82c79b760f476435d27542e1812b"
+    },
+    {
+      "path": "../smart-continuous-cuts-20261018/host/host-report.txt",
+      "sha256": "508742b2acb7d0820c239b54d7cd1957d372ae50a6e123bb28ad16f86b75e1fd"
+    }
+  ],
+  "not_run": [
+    "continuous human flicker/artistic acceptance for new clips",
+    "measured sustained preview FPS",
+    "general skin/occlusion/cut detection accuracy",
+    "isolated/portable first-pass speed benchmark"
+  ],
+  "product_code_changed": false,
+  "published": false
+}

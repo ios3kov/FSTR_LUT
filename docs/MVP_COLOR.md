@@ -1,3 +1,7 @@
+# Current preparation acceleration — 2026-10-18
+
+Installed Current1c490d4515b2937b adds bounded prepared-input reuse to the prior cache/color improvements. Accepted model/color/defaults and raw disk keys are unchanged; actual upstream/format invalidation and15full image/hash comparisons pass. Measured warm-frame median1251→751ms is scoped to3paired960x540/32bpc requests, not real-time FPS.22Release/22sanitizer tests;51successful host exports across identified jobs; prior ed9/accepted42ee preserved. CoreML is a separate measured prototype, not the installed model backend. [Exact contract/results](SMART_INPUT_PREPARATION.md). Earlier milestones below retain their historical artifact identities.
+
 # Current combined acceleration — 2026-10-18
 
 Installed Currented9e33d687019dc1 includes the cache improvement and exact common-LUT reuse. No profile, controls, mask/model or accepted-look change. Frozen276480records match exactly; actual paired warm960x540render median1764→1238ms, with canonical host verification. Previous7be and accepted42ee preserved. [SMART_COLOR_REUSE.md](SMART_COLOR_REUSE.md) records output/timing scope; faster model inference, source hashing and production playback FPS are not established.

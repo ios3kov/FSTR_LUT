@@ -1,4 +1,5 @@
 #include "sdr_timeline_host.hpp"
+#include "prepared_input_cache.hpp"
 #include <mutex>
 #include <map>
 #include <cstdlib>
@@ -13,6 +14,7 @@ struct Entry{PF_State state{};std::string metadata;std::shared_ptr<const HostSdr
 // Input-only immutable results may be shared by AE render clones. effect_ref
 // is an opaque callback token, not a stable cache owner or source identity.
 std::mutex entries_mutex;std::vector<Entry> entries;
+PreparedInputCache<PF_State,PreparedInput> prepared_inputs;
 void abort(PF_InData*in){auto e=PF_ABORT(in);if(e)throw e;}
 thread_local std::vector<PF_ProgPtr> computing;
 }
@@ -35,4 +37,16 @@ std::shared_ptr<const HostSdrTimeline> get_sdr_timeline(PF_InData*in,const PF_St
     if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_SHOTS COMPUTE shots=%zu frames=%zu\n",value->shots.size(),value->shots.back().end);return value;
 }
 void clear_sdr_timelines(){std::lock_guard<std::mutex> lock(entries_mutex);entries.clear();}
+std::shared_ptr<const PreparedInput> get_prepared_input(PF_InData*in,const PF_State&state,const std::string&key,const std::function<PreparedInput()>&build){
+    const PF_ParamUtilsSuite3* suite=nullptr;
+    const auto error=in->pica_basicP->AcquireSuite(kPFParamUtilsSuite,kPFParamUtilsSuiteVersion3,reinterpret_cast<const void**>(&suite));
+    if(error||!suite)return std::make_shared<const PreparedInput>(build());
+    struct Release{PF_InData* in;~Release(){in->pica_basicP->ReleaseSuite(kPFParamUtilsSuite,kPFParamUtilsSuiteVersion3);}}release{in};
+    if(!suite->PF_AreStatesIdentical)return std::make_shared<const PreparedInput>(build());
+    bool hit=false;
+    auto value=prepared_inputs.get(state,key,[&](const PF_State&a,const PF_State&b){A_Boolean identical=FALSE;return !suite->PF_AreStatesIdentical(in->effect_ref,&a,&b,&identical)&&identical;},build,[&]{abort(in);},&hit);
+    if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_INPUT %s\n",hit?"RAM":"COMPUTE");
+    return value;
+}
+void clear_prepared_inputs(){prepared_inputs.clear();}
 }

@@ -210,14 +210,18 @@ template<class P>constexpr double channel_max() {
 struct TemporalInput {PF_EffectWorld* world=nullptr;int offset=0;};
 struct PreparationInput {PF_EffectWorld* world=nullptr;A_long time=0;};
 struct ShotCheckout {int scan=0,anchor=0;A_long time=0;};
-struct SmartPreData {std::vector<std::pair<int,int>> frames;std::vector<std::pair<int,A_long>> anchors;std::vector<ShotCheckout> scans;PF_State scene_state{};std::string scene_metadata;fstr::Transfer scene_transfer=fstr::Transfer::SRGB;};
+struct SmartPreData {std::vector<std::pair<int,int>> frames;std::vector<std::pair<int,A_long>> anchors;std::vector<ShotCheckout> scans;PF_State scene_state{};std::optional<PF_State> prepared_state;std::string scene_metadata;fstr::Transfer scene_transfer=fstr::Transfer::SRGB;};
 void delete_smart_pre(void* data){delete static_cast<SmartPreData*>(data);}
-template<class P>std::string analysis_source_identity(PF_InData*in_data,const PF_EffectWorld&world,const fstr::ColorSettings&s,fstr::Transfer transfer,const std::string& preparation_key={}){
+template<class P>std::string analysis_source_metadata(const PF_EffectWorld&world,const fstr::ColorSettings&s,fstr::Transfer transfer,const std::string& preparation_key){
     if(world.width<1||world.height<1||!world.data||world.rowbytes<=0||world.width>world.rowbytes/static_cast<A_long>(sizeof(P)))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
     std::ostringstream meta;meta.imbue(std::locale::classic());meta<<std::setprecision(17)<<"FSTR_UPSTREAM_V1 "<<sizeof(P)<<' '<<world.width<<' '<<world.height<<' '<<world.origin_x<<' '<<world.origin_y<<' '<<int(s.source)<<' '<<int(transfer)<<' '<<s.grade.exposure_stops<<' '<<s.grade.contrast<<' '<<s.grade.saturation<<' '<<s.grade.temperature<<' '<<s.grade.tint<<' '<<s.shoulder;
     if(s.grade.natural_contrast&&s.grade.contrast!=1)meta<<" NATURAL_CONTRAST_V1";
     if(!preparation_key.empty())meta<<" SDR_PREP_V2 "<<preparation_key;
-    picosha2::hash256_one_by_one hash;hash.init();auto text=meta.str();hash.process(text.begin(),text.end());
+    return meta.str();
+}
+template<class P>std::string analysis_source_identity(PF_InData*in_data,const PF_EffectWorld&world,const fstr::ColorSettings&s,fstr::Transfer transfer,const std::string& preparation_key={}){
+    const auto text=analysis_source_metadata<P>(world,s,transfer,preparation_key);
+    picosha2::hash256_one_by_one hash;hash.init();hash.process(text.begin(),text.end());
     // Hash valid channels only, excluding undefined row padding and ROI output.
     for(A_long y=0;y<world.height;++y){auto error=PF_ABORT(in_data);if(error)throw error;auto row=reinterpret_cast<const P*>(reinterpret_cast<const char*>(world.data)+std::size_t(y)*std::size_t(world.rowbytes));for(A_long x=0;x<world.width;++x){const auto&p=row[x];for(const auto*channel:{&p.alpha,&p.red,&p.green,&p.blue}){auto begin=reinterpret_cast<const unsigned char*>(channel);hash.process(begin,begin+sizeof(*channel));}}}hash.finish();return picosha2::get_hash_hex_string(hash);
 }
@@ -300,7 +304,7 @@ template<class P>fstr::CachedSdrPreparation clip_preparation(PF_InData* in_data,
     try{return cache->get(views,context.str(),cancel);}catch(const std::invalid_argument&){throw PreparationError("Auto Prepare requires normal SDR input");}
 }
 template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& in,PF_EffectWorld& out,
-                                    bool smart,bool enabled,fstr::Transfer transfer,const std::vector<TemporalInput>& neighbors,const fstr::ColorSettings& settings,bool scene_residual,bool auto_prepare,const std::vector<PreparationInput>& anchors,const fstr::CachedSdrPreparation* selected_recipe=nullptr) {
+                                    bool smart,bool enabled,fstr::Transfer transfer,const std::vector<TemporalInput>& neighbors,const fstr::ColorSettings& settings,bool scene_residual,bool auto_prepare,const std::vector<PreparationInput>& anchors,const fstr::CachedSdrPreparation* selected_recipe=nullptr,const PF_State* prepared_state=nullptr) {
     if(out.width<0||out.height<0||in.width<0||in.height<0)return PF_Err_BAD_CALLBACK_PARAM;
     if(out.width==0||out.height==0)return PF_Err_NONE;
     if(!out.data||out.rowbytes<=0||out.width>out.rowbytes/static_cast<A_long>(sizeof(P)))return PF_Err_BAD_CALLBACK_PARAM;
@@ -321,13 +325,28 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
     if(enabled&&!processor.bypass()&&in.width>0&&in.height>0){
         if(const auto error=std::atomic_load(&automatic_error))throw SmartAnalysisError(*error);
         if(scene_active){
-            auto image=analysis_image<P>(in_data,in,prepare,transfer);
+            // The all-time input state comes from pre-render, before pixel
+            // checkout. Explicit frame/context/pre-look keys separate checkouts.
+            // Legacy and unavailable-state paths retain full hashing/preparation.
+            auto prepared_input=[&](const PF_EffectWorld& world,int offset){
+                auto build=[&]{return fstr::ae::PreparedInput{analysis_image<P>(in_data,world,prepare,transfer),analysis_source_identity<P>(in_data,world,settings,transfer,preparation_key)};};
+                if(!prepared_state)return std::make_shared<const fstr::ae::PreparedInput>(build());
+                std::ostringstream key;key.imbue(std::locale::classic());
+                key<<analysis_source_metadata<P>(world,settings,transfer,preparation_key)<<" PREPARED_INPUT_V1 "
+                   <<(std::int64_t(in_data->current_time)+std::int64_t(offset)*in_data->time_step)<<' '<<in_data->time_step<<' '<<in_data->time_scale<<' '<<in_data->quality<<' '<<in_data->field
+                   <<' '<<in_data->pixel_aspect_ratio.num<<' '<<in_data->pixel_aspect_ratio.den
+                   <<' '<<in_data->downsample_x.num<<' '<<in_data->downsample_x.den<<' '<<in_data->downsample_y.num<<' '<<in_data->downsample_y.den;
+                return fstr::ae::get_prepared_input(in_data,*prepared_state,key.str(),build);
+            };
+            auto current=automatic?prepared_input(in,0):std::shared_ptr<const fstr::ae::PreparedInput>{};
+            auto uncached=automatic?fstr::AnalysisImage{}:analysis_image<P>(in_data,in,prepare,transfer);
+            const auto& image=automatic?current->image:uncached;
             if(automatic){
                 auto cancel=[&]{auto error=PF_ABORT(in_data);if(error)throw error;};
                 auto analyzed=[&](const auto&pixels,const std::string& identity){try{return automatic->get(pixels,source_height,cancel,identity);}catch(const std::bad_alloc&){throw;}catch(const std::exception&e){if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_SMART_ANALYSIS_ERROR %s\n",e.what());throw SmartAnalysisError("Smart analysis failed");}};
-                std::vector<fstr::AnalyzedFrame> frames{{0,analyzed(image,analysis_source_identity<P>(in_data,in,settings,transfer,preparation_key))}};
+                std::vector<fstr::AnalyzedFrame> frames{{0,analyzed(image,current->identity)}};
                 struct RawInput{int first;fstr::AnalysisImage second;std::string identity;};std::vector<RawInput> images;
-                for(const auto&n:neighbors){if(!n.world||n.world->width!=in.width||n.world->height!=in.height||n.world->origin_x!=in.origin_x||n.world->origin_y!=in.origin_y)continue;auto other=analysis_image<P>(in_data,*n.world,prepare,transfer);if(compatible_image(image,other))images.push_back({n.offset,std::move(other),analysis_source_identity<P>(in_data,*n.world,settings,transfer,preparation_key)});}
+                for(const auto&n:neighbors){if(!n.world||n.world->width!=in.width||n.world->height!=in.height||n.world->origin_x!=in.origin_x||n.world->origin_y!=in.origin_y)continue;auto other=prepared_input(*n.world,n.offset);if(compatible_image(image,other->image))images.push_back({n.offset,other->image,other->identity});}
                 // No borrowing across an intervening missing/incompatible input.
                 for(const auto&entry:images){if(std::abs(entry.first)==2){auto middle=std::find_if(images.begin(),images.end(),[&](const auto&v){return v.first==entry.first/2;});if(middle==images.end()||!compatible_image(middle->second,entry.second))continue;}frames.push_back({entry.first,analyzed(entry.second,entry.identity)});}
                 analysis=fstr::stabilize_scene_window(frames);
@@ -389,7 +408,7 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
     }
     return PF_Err_NONE;
 }
-PF_Err render(PF_InData* in_data,PF_EffectWorld& input,PF_EffectWorld& output,bool smart,const std::vector<TemporalInput>& neighbors={},const std::vector<PreparationInput>& declared_anchors={},const fstr::ae::HostSdrTimeline* scene_timeline=nullptr) {
+PF_Err render(PF_InData* in_data,PF_EffectWorld& input,PF_EffectWorld& output,bool smart,const std::vector<TemporalInput>& neighbors={},const std::vector<PreparationInput>& declared_anchors={},const fstr::ae::HostSdrTimeline* scene_timeline=nullptr,const PF_State* prepared_state=nullptr) {
     if(output.width==0||output.height==0)return PF_Err_NONE;
     Params params(in_data);const auto s=settings(params,in_data);const auto transfer=host_transfer(params);
     const auto primaries=static_cast<int>(transfer)<0?fstr::Primaries::Unknown:fstr::Primaries::SRGB_Rec709;
@@ -423,7 +442,7 @@ PF_Err render(PF_InData* in_data,PF_EffectWorld& input,PF_EffectWorld& output,bo
             if(err||nf!=format){err=PF_Err_BAD_CALLBACK_PARAM;break;}
         }
         if(!err&&auto_prepare)for(const auto& anchor:anchors){PF_PixelFormat af{};if(!anchor.world){err=PF_Err_BAD_CALLBACK_PARAM;break;}err=world_suite->PF_GetPixelFormat(anchor.world,&af);if(err||af!=format){err=PF_Err_BAD_CALLBACK_PARAM;break;}}
-        auto process=[&](auto pixel){using P=decltype(pixel);std::shared_ptr<const fstr::ae::HostSdrTimeline> legacy_timeline;const auto* timeline=scene_timeline;if(auto_prepare&&params[DetectSceneChanges].u.bd.value&&!timeline){if(smart)throw PreparationError("Declared scene timeline unavailable");legacy_timeline=legacy_scene_timeline<P>(in_data,transfer);timeline=legacy_timeline.get();}const auto* selected=timeline?&timeline->at(scene_frame_index(in_data)):nullptr;return process_world<P>(in_data,input,output,smart,enabled,transfer,neighbors,s,params[Look].u.pd.value==9,auto_prepare,anchors,selected);};
+        auto process=[&](auto pixel){using P=decltype(pixel);std::shared_ptr<const fstr::ae::HostSdrTimeline> legacy_timeline;const auto* timeline=scene_timeline;if(auto_prepare&&params[DetectSceneChanges].u.bd.value&&!timeline){if(smart)throw PreparationError("Declared scene timeline unavailable");legacy_timeline=legacy_scene_timeline<P>(in_data,transfer);timeline=legacy_timeline.get();}const auto* selected=timeline?&timeline->at(scene_frame_index(in_data)):nullptr;return process_world<P>(in_data,input,output,smart,enabled,transfer,neighbors,s,params[Look].u.pd.value==9,auto_prepare,anchors,selected,prepared_state);};
         if(!err)switch(format) {
             case PF_PixelFormat_ARGB32:err=process(PF_Pixel{});break;
             case PF_PixelFormat_ARGB64:err=process(PF_Pixel16{});break;
@@ -463,6 +482,10 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
     request.rect=result.max_result_rect;
     err=extra->cb->checkout_layer(in_data->effect_ref,Input,Input,&request,in_data->current_time,in_data->time_step,in_data->time_scale,&result);if(err)return err;
     auto data=std::make_unique<SmartPreData>();
+    if(active&&automatic){
+        if(detect_active)data->prepared_state=input_state;
+        else {const auto aborted=PF_ABORT(in_data);if(aborted)return aborted;try{data->prepared_state=fstr::ae::sdr_input_state(in_data);}catch(PF_Err){/* Optional optimization: original path remains valid. */}}
+    }
     if(prepare_active&&!detect_active){const auto times=fstr::sdr_clip_anchor_times(in_data->total_time,in_data->time_step);for(std::size_t i=0;i<times.size();++i){
         const int id=2000+int(i);auto anchor_request=request;PF_CheckoutResult anchor_bounds{};
         err=extra->cb->checkout_layer(in_data->effect_ref,Input,3000+int(i),&anchor_request,times[i],in_data->time_step,in_data->time_scale,&anchor_bounds);if(err)return err;
@@ -513,7 +536,7 @@ PF_Err smart_render(PF_InData* in_data,PF_SmartRenderExtra* extra) {
             switch(format){case PF_PixelFormat_ARGB32:timeline=build(PF_Pixel{});break;case PF_PixelFormat_ARGB64:timeline=build(PF_Pixel16{});break;case PF_PixelFormat_ARGB128:timeline=build(PF_PixelFloat{});break;default:throw PreparationError("Unsupported scene format");}
             const auto&range=timeline->range(scene_frame_index(in_data));const auto current=std::int64_t(scene_frame_index(in_data));neighbors.erase(std::remove_if(neighbors.begin(),neighbors.end(),[&](const TemporalInput&f){const auto frame=current+f.offset;return frame<std::int64_t(range.begin)||frame>=std::int64_t(range.end);}),neighbors.end());
         }
-        if(!err)err=(!input||!output)?PF_Err_BAD_CALLBACK_PARAM:render(in_data,*input,*output,true,neighbors,anchors,timeline.get());
+        if(!err)err=(!input||!output)?PF_Err_BAD_CALLBACK_PARAM:render(in_data,*input,*output,true,neighbors,anchors,timeline.get(),scene_data&&scene_data->prepared_state?&*scene_data->prepared_state:nullptr);
     }catch(...){close();throw;}
     const auto release=close();return err?err:release;
 }
@@ -528,7 +551,7 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
         switch(cmd) {
             case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR Grading | Build %s\rReady-to-use image: keep default input.\rCamera Log: match its profile in Advanced.\r3D: choose Linear RGB or ACEScg to match the render.\rUnknown profile? Check with the source creator.",fstr::color_build_id);break;
             case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();initialize_automatic_analysis();initialize_preparation_cache();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
-            case PF_Cmd_GLOBAL_SETDOWN:fstr::ae::clear_sdr_timelines();std::atomic_store(&preparation_cache,std::shared_ptr<fstr::SdrPreparationCache>{});std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();fstr::ae::clear_external_references();break;
+            case PF_Cmd_GLOBAL_SETDOWN:fstr::ae::clear_prepared_inputs();fstr::ae::clear_sdr_timelines();std::atomic_store(&preparation_cache,std::shared_ptr<fstr::SdrPreparationCache>{});std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();fstr::ae::clear_external_references();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_SEQUENCE_SETDOWN:fstr::ae::forget_external_selection(in_data);fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             // AE supplies the current flag words; never rewrite static capability bits here.

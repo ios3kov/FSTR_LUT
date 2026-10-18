@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Automatic Smart — active, 2026-10-18
+
+Native automatic scene/material/face/mesh/pose inference and independent RAM/disk mask cache now render in isolated AE25.6 trial B without external clip analysis or Python.34exports cover switches, look/amount, a cut, motion and save/reopen; a fresh process reuses5disk entries with0analysis calls and matches within one8bit export code.14Release and14ASan/UBSan targets pass. A final root-only64–80px mesh-entry fade passes a live-model boundary test; its separate Current bundle also passes actual AE loader/four-switch checks. New-port continuous visual acceptance and full-shot/SAM2 parity remain open. Auto encoding is still unimplemented: actual16-stage swatch experiment aliases all spaces and is rejected. [Contract, exact checks and limits](AUTOMATIC_SMART.md). Prepared-cache host evidence below remains valid for its original build only.
+
+
 ## Scalar toning in AE — host slice verified, 2026-10-18
 
 Native stable-strength core and schema2read-only analysis bridge now render in isolated AE25.6. Fixed the measured GUID-protocol export regression.77image-reference checks,3switch/upstream checks, fresh-process disk read and unseen-shot hard-cut fallback pass;12release +12sanitizer targets pass. This is prepared-clip integration: arbitrary-media native analysis, time-remap invalidation, Auto encoding and continuous visual acceptance remain open. [Exact host/artifact scope and evidence](SCALAR_NATIVE_INTEGRATION.md).

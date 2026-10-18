@@ -1,3 +1,7 @@
+## Active follow-up — automatic Smart, 2026-10-18
+
+Automatic native analysis/cache has actual AE trial evidence for switches, cut, motion, save/reopen and fresh-process reuse. Corrected-bundle load/switch checks also pass. Full motion/restart replay on that exact bundle, new-port continuous perception, Auto encoding and wider workflow acceptance remain open; the16-stage swatch method is rejected by actual host evidence. [Acceptance and sequence](AUTOMATIC_SMART.md). Earlier obligations and evidence retained below.
+
 # FSTR-LUT — AI Enhance + Looks v3
 
 ## Scalar toning in AE — host slice verified, 2026-10-18

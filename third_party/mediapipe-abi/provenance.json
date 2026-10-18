@@ -1,0 +1,12 @@
+{
+  "version": "1.1.1",
+  "source": "installed mediapipe wheel, C ABI declarations and topology indices only",
+  "files": {
+    "core/base_options_c.py": "d01d31e2e02723c8a5cf9f34bd291761d950131333a6138bf954c0bd249647df",
+    "vision/image_segmenter.py": "912c0744d244f09e268d79ef47628479aee1612b8cf8fe8a6328487ae6f7e1fe",
+    "vision/face_landmarker.py": "69c822394b341e8fef4aea6351d4ef2285931cd7448a5c235c30a2a80f390412",
+    "vision/pose_landmarker.py": "bb49f0c12742e982130765720471d7963692f53e0b02c8df44419fb765d1eb79",
+    "components/containers/landmark_c.py": "afcc5f18da976bc7a1f54924e75e58e49d22c7a8d5efde1a3f7a8bd2f8833611",
+    "vision/core/image.py": "427c6561e7b0290624d8b21563358d761aae5174b3d001bb14f4d1bc6b6dab29"
+  }
+}

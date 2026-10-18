@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "date": "2026-10-18",
+  "baseline": "b2a1e037167a7fd3b2df1957c809fe841e05fb3c",
+  "branch": "dev/ai-enhance-prototype",
+  "source_binding": "Commit containing this receipt; source hashes below and exact external trial inventories",
+  "source_sha256": {
+    "CMakeLists.txt": "7b3e9a60c4f9d14bc3ed7ecd1cbad94e8d8d3f14b0b3d26a25852e028fd1de56",
+    "docs/AUTOMATIC_SMART.md": "8e9bebe620f9daf30a6de099fe42623398568e81d56b7dfef7c6389fb6a6d504",
+    "docs/COLOR_AUTO_FOLLOWUP.md": "f892c1832b5e357c61c8faeac884d5cb78e36f3f091abe0c5fcea3d8e6ceea7f",
+    "docs/NATIVE_MODEL_PORT.md": "b531ff22d334834662c736aab0103646598a17141f7ccd5debe0f791d3b3a7cc",
+    "docs/PLAN.md": "0655805a58e3a6dd81e178b41ac710ce466f0df3e95ab7fdfca704b62a5f254c",
+    "docs/STATUS.md": "23001f027be8d32a9c60e5850c7c51bf0ecf55b2a14d8300f033004f7fc2ca47",
+    "include/fstr/automatic_scene_cache.hpp": "527daa288f611647dc5e1c161647f4c51b9e3eda077d8c204e714a9b4173b782",
+    "include/fstr/face_model.hpp": "3f539d05e38e20fb383977e7805ce129801b692fb8f8a1d76fd6ef032646313d",
+    "include/fstr/native_scene.hpp": "5cd5b07b3a7538c76935eade5904dfd6dd475d6624395e17c7e8dae60034457f",
+    "include/fstr/parts_model.hpp": "c46454cbc42be26a852cd3372c333a5f9d581d07197e8ca6667a1b51c67acd85",
+    "include/fstr/scene_cache.hpp": "b2c6ae49b0b5e631dc7566a8585f3321ed93e7f3a51b6dc3d50ba569fd70c9df",
+    "include/fstr/scene_model.hpp": "052503159b084384336bcf0ca4c9dab3bb3f937f81772b01adbb6e2966f47e69",
+    "include/fstr/scene_window.hpp": "f9eac1af41e9bf5dbc53678779fdc66c00924dffb8987de21345603b1f4ac447",
+    "src/ae/plugin.cpp": "31e13ec2636662ae568b7ed03797a06b997eed8fd15a1dac205fc8e6202988fe",
+    "src/analysis/automatic_scene_cache.cpp": "d65ce22a6248bb29cce2c465e98f2f5332497f89d67a0a35f854674bf41b6331",
+    "src/analysis/face_topology.hpp": "50ece24b80dcdb8fc52795e83728f0a1405261eff028e6f98b0594ea07b92cdc",
+    "src/analysis/native_scene.cpp": "0360049e345f9713f70d74e498ad3328f0a6d46f480df5b18330a97e5cce4040",
+    "src/analysis/scene_cache.cpp": "9c556b8d67d2db3287e6d50d1b185558e47799420a43b39be348e0e2e4ea858a",
+    "src/analysis/scene_window.cpp": "b5aec97ba827d42499c5f3be80c0466609473823f571fb8833f2e3561e332e7d",
+    "src/inference/face_model.cpp": "640a414ba36705f247e8b16a713c525c56e0ed3ac64db33451608d8e7e53e0bd",
+    "src/inference/mediapipe_abi.hpp": "b78979d376eea2232b56e08cd1fee8355349b3546e8600481eee00291899113e",
+    "src/inference/parts_model.cpp": "dd92a48b4f29583fb693097bebb366d43514233341b8109980324745eb5475c2",
+    "src/inference/scene_model.cpp": "71a6ca9d30e74cc24a522f3e0ff2a37e2fa9916e60696fd89660dc036519d7da",
+    "tests/ae_adapter_tests.cpp": "10932374225f9c4e164428e9e8ace6d8115c977cf3e699afed39f246853fddd6",
+    "tests/automatic_scene_cache_tests.cpp": "a62b40935d943ecdb274e7ad9c3dadc4afa42ffe17ac745b7b229bb954e5151d",
+    "tests/scene_window_tests.cpp": "45bb8c7c77c59c49caeeab4205cf738f056bbc96f77b61d2ecc1d7b22fd71821",
+    "third_party/mediapipe-abi/LICENSE": "8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8",
+    "third_party/mediapipe-abi/NOTICE": "b42bbe1ba61fff634974c0c59395bc98e2865e8dcf8547f635c121e17ec6b8c9",
+    "third_party/mediapipe-abi/provenance.json": "3e0211d37d56cef687a61709533dbb71b4d48cccb3362e32ffec668ae5a3458c",
+    "tools/ae_color_probe/CMakeLists.txt": "1b409500ed471d05b054f087b0692fa1873aab76fd70d4cdae06bf3d87170f9b",
+    "tools/ae_color_probe/Info.plist": "0c6ea98153c69e1058d4fd8f8f205f640fd5efc4ad8035ffca85ad8a16125e2e",
+    "tools/ae_color_probe/README.md": "2025249ed3777d6917c940d70ca3892c3d4cd0f2c31b63834e4af6e62a88d549",
+    "tools/ae_color_probe/acceptance.jsx.in": "ef7b77bc3dc690b3a94cd247960b05e26980740b904536b113aa4572043ca533",
+    "tools/ae_color_probe/probe.cpp": "941c7847454c7fb0578e95a6cdc230cd50a1c17c26258c5cc670164d938ed2ca",
+    "tools/ae_color_probe/probe.r": "4d3fcf8a8696c3b1e61af9afc712a4769aad6e648d92ad3a486dd8724044222e",
+    "tools/ae_host_runner/automatic_acceptance.jsx.in": "60222fb18300462e7bedb4e84379dace415cebea1c8acc93105fba6b9aeb6a63",
+    "tools/benchmark/native_scene_main.cpp": "c5cf4d466baf6722e49ef192e82f63ad4a99c015fad85bc60255a656b69278a6",
+    "tools/benchmark/parts_model_main.cpp": "c4dd560b7faf601c78aefd634578a4fa21f370efd3f8a80bed8c4cc8e0fd2002",
+    "tools/benchmark/people_model_main.cpp": "e59a668d1222087c2cf1207a5be2262799f7374e1f8cc74e940edb3d6c2d5cb9",
+    "tools/benchmark/scene_model_main.cpp": "8a3c79576a76665771173d1c5a43ac10cc8c7d351074e142ea3dabf38dcd4c1d",
+    "tools/benchmark/verify_native_parts.py": "d5e26273ad51540b30600c99c675ee24dd08644e25f065eedbccc1a1dd06b807",
+    "tools/benchmark/verify_native_people.py": "03fbd603f5c15abcb4676db41cd9bc299fe03a9625f64f34fd55927a3f7e6840",
+    "tools/benchmark/verify_native_scene_model.py": "9487d9afc320cf44ff83b7c14d234deeb15812b9066737840cdd1b2f423061af",
+    "tools/model_export/export_scene_onnx.py": "485ec3df4ad7d5394ce36c30cfc715e12fccce36ac47ef7e5f9e348743635225",
+    "tools/model_export/prepare_yunet.py": "9e6fb014e2f78b5bc79aa7591992c1f56b941bea7c68427b8d8bf7a6138b8667"
+  },
+  "current_host_build_id": "05dd70f4d7a1b422",
+  "current_host_match": "FSTR LUT Auto Current 20261018",
+  "current_host_functional_source_matches_root_except_registration_identity": true,
+  "external_receipts": [
+    {
+      "path": "../native-smart-20261018/transition-verification.json",
+      "sha256": "c64cb4218e90a83243f64ab59c2f112dc6fbd392300f04c4a6ac785b6c38182c"
+    },
+    {
+      "path": "../native-smart-20261018/independent-repeat.json",
+      "sha256": "9753dc022b2d9ab4649c6e80adca5f649e27a2f64fecf63d51f0f45c18d3ab2d"
+    },
+    {
+      "path": "../native-smart-20261018/adapter-verification.json",
+      "sha256": "d2a1a24c0e32c97aa5d4f9dfce5553d75d9cdfc46f041e4a175bfd0d593ada9c"
+    },
+    {
+      "path": "../native-smart-20261018/host-reference/motion/verification.json",
+      "sha256": "793c2a993a2e0e54e3775664e5e42d841e669a5a43481bad542de5dc1a953502"
+    },
+    {
+      "path": "../native-smart-20261018/release-ctest-checkpoint.log",
+      "sha256": "e53742d4b70f91a4c5c1768d9b9b93a7f356d03631909b4a4175a511fef18c96"
+    },
+    {
+      "path": "../native-smart-20261018/sanitize-ctest-checkpoint.log",
+      "sha256": "6c08292e29777c548794c1c51f532d08cd624f97c328eb09e1d66bc0879a4814"
+    },
+    {
+      "path": "../automatic-ae-host-20261018-v2/host-pair-verification.json",
+      "sha256": "2d178c3b5c871d833c918a746dedf6c890d508755bb9ac7774d224b88f83f920"
+    },
+    {
+      "path": "../automatic-ae-host-20261018-v2/package-inventory.json",
+      "sha256": "e1a3a593b9bb9f47877ec930ea84fc699403bdab8687c05d80f4fc73523216be"
+    },
+    {
+      "path": "../automatic-ae-host-20261018-v2/installation.json",
+      "sha256": "80801916e48379ce615ab25711c419b5e227af081a826f7bf232e492c569e032"
+    },
+    {
+      "path": "../automatic-ae-host-20261018-v2/visual-review/review.json",
+      "sha256": "4c063860c401d4facf3b7a462757b012bfe28b83c89ff8024460a224ea8a5b1f"
+    },
+    {
+      "path": "../automatic-ae-restart-color-probe-20261018/host-report.txt",
+      "sha256": "479ba4331d3f0d6a13ba6dd2e79366e2a3a77028229ded511f233a9213741b76"
+    },
+    {
+      "path": "../automatic-color-probe-20261018-v3/verification.json",
+      "sha256": "da199b3c802a483d13a1632f49eefb85583258892b8e2f408b2192755e762c6c"
+    },
+    {
+      "path": "../automatic-color-probe-20261018-v3/cleanup.json",
+      "sha256": "d1d730bfb82f5a660d5ffa846a27527eba7034f217f6c6e5852a1c1d466865e6"
+    },
+    {
+      "path": "../automatic-ae-current-20261018/verification.json",
+      "sha256": "29dd0a6cd655698381a9e010f3653b153a7cde3fecd33dc55fbcc90a7fc2061f"
+    },
+    {
+      "path": "../automatic-ae-current-20261018/package-inventory.json",
+      "sha256": "aee5d1f33bcc2008c78ee711a2465434a3d3722532529e39f3c533ea85fd0853"
+    },
+    {
+      "path": "../automatic-ae-current-20261018/installation.json",
+      "sha256": "eeafb1827703429391891c972678ccc1ed05426d32d32e7112db6baf37ddc7a0"
+    },
+    {
+      "path": "../automatic-ae-current-20261018/cleanup.json",
+      "sha256": "dbab9ec8fc9919288ed2229750eadb8f9910592e1e1851cf445f172c82d2dc58"
+    }
+  ],
+  "criteria": {
+    "AUTO-SMART-01": "PARTIAL: native automatic models/scene/person rendering proven on scoped fixtures; full prepared/SAM2 parity open",
+    "AUTO-SMART-02": "PASS_SCOPED: cache core, switches, invalidation and actual fresh-process disk reuse; long-clip capacity and temp-crash cleanup limitations documented",
+    "AUTO-SMART-03": "PASS_SCOPED: own-code sanitizer/core/ABI checks, error/cancel boundaries; uninstrumented inference internals and full MFR not certified",
+    "AUTO-SMART-04": "PARTIAL: exact artifact scopes in linked receipts; Auto and broad visual/workflow acceptance incomplete"
+  },
+  "checks": {
+    "release_ctest": "14/14 PASS",
+    "asan_ubsan_ctest": "14/14 PASS; external model runtimes not instrumented",
+    "trial_b_host": "34 exports; switches/cut/motion/save-reopen PASS",
+    "fresh_process_restart": "5DISK /0COMPUTE, image difference <=1 export code",
+    "trial_b_pixel_reference": "24 images, maximum1.0009766 codes <=2code bound",
+    "current_corrected_bundle": "4 actual AE switch exports PASS; frame0 exact to trialB; native frame17 float output exact",
+    "mesh_boundary": "live model63.99964/64.00036px support mass0/0.000002197 PASS",
+    "auto_swatch": "16 stages \u00d76swatches identical; REJECTED as Auto resolver",
+    "visual": "first960x540comparison still inspected; continuous acceptance NOT_RUN",
+    "source_whitespace": "PASS authored files; upstream NOTICE trailing whitespace preserved verbatim",
+    "vendor_license_notice_bytes": {
+      "LICENSE": "8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8",
+      "NOTICE": "b42bbe1ba61fff634974c0c59395bc98e2865e8dcf8547f635c121e17ec6b8c9"
+    },
+    "static_scanner": "PASS exit0/no findings in selected code scope; not release certification"
+  },
+  "not_complete": [
+    "Auto encoding with authoritative project profile and render freshness",
+    "continuous new-port visual/temporal acceptance",
+    "full-shot/SAM2/fixed-anchor parity",
+    "crowd/blur/diverse-tone/preview/time-remap/Undo/fullMFR acceptance",
+    "crash-left cache temporary cleanup",
+    "release/license/notarization/Windows distribution qualification"
+  ],
+  "publication": "NOT_REQUESTED: no push/merge/release"
+}

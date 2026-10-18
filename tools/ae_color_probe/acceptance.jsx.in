@@ -1,0 +1,20 @@
+(function(){
+var cfg=@FSTR_COLOR_PROBE_CONFIG@,owned=false;
+function log(s){var f=new File(cfg.folder+'/host-report.txt');f.encoding='UTF-8';f.open('a');f.writeln(s);f.close();}
+if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
+if(app.project&&(app.project.file!==null||app.project.numItems!==0)){log('BLOCKED existing project');return;}
+try{
+app.beginSuppressDialogs();for(var fx=0;fx<app.effects.length;fx++)if(app.effects[fx].displayName.indexOf('FSTR')===0)log('EFFECT '+app.effects[fx].displayName+' / '+app.effects[fx].matchName);app.open(new File(cfg.saved_project));owned=true;
+var comp=null;for(var i=1;i<=app.project.numItems;i++)if(app.project.item(i).name==='Automatic Smart trial')comp=app.project.item(i);
+if(!comp)throw new Error('Owned saved comp missing');var effect=comp.layer(1).property('ADBE Effect Parade').property(1);if(effect.matchName!==cfg.match||effect.property('Smart Color Grading').value!==1)throw new Error('Owned saved state differs');
+function render(c,label,frame,resolution){app.purge(PurgeTarget.ALL_CACHES);var q=app.project.renderQueue.items.add(c);if(resolution)q.setSettings({'Resolution':resolution});q.timeSpanStart=frame/c.frameRate;q.timeSpanDuration=1/c.frameRate;q.outputModule(1).applyTemplate('Photoshop');q.outputModule(1).file=new File(cfg.folder+'/'+label+'_[#####].psd');log('BEGIN '+label);app.project.renderQueue.render();if(q.status!==RQItemStatus.DONE)throw new Error('Render '+label);q.remove();log('RENDER '+label);}
+render(comp,'restart_on',17,'Quarter');log('PASS fresh-process owned project render');app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.newProject();app.project.bitsPerChannel=32;
+var initialSpace=app.project.workingSpace,initialLinear=app.project.linearizeWorkingSpace;
+var profiles=app.project.listColorProfiles();for(var p=0;p<profiles.length;p++)log('PROFILE '+profiles[p]);
+function profile(kind){for(var k=0;k<profiles.length;k++){var n=profiles[k];if(kind==='srgb'&&n==='sRGB IEC61966-2.1')return n;if(kind==='709'&&/Rec.*709.*2\.4/.test(n))return n;if(kind==='adobe'&&/Adobe RGB.*1998/.test(n))return n;if(kind==='p3'&&/Display P3/.test(n))return n;}return null;}
+var modes=[['none',false],['srgb',false],['srgb',true],['709',false],['709',true],['adobe',false],['adobe',true],['p3',false]];
+app.project.workingSpace='';app.project.linearizeWorkingSpace=false;var c=app.project.items.addComp('Owned color parameter probe',16,16,1,1,12),layer=c.layers.addSolid([.18,.22,.3],'Owned probe source',16,16,1,1),old=layer.property('ADBE Effect Parade').addProperty('FSTR Color Probe 20261018');
+for(var m=0;m<modes.length;m++){var n=modes[m][0]==='none'?'':profile(modes[m][0]);if(n===null){log('SKIP mode '+(m+1)+' missing '+modes[m][0]);continue;}app.project.linearizeWorkingSpace=false;app.project.workingSpace=n;app.project.linearizeWorkingSpace=modes[m][1];log('MODE '+(m+1)+' space='+app.project.workingSpace+' linear='+app.project.linearizeWorkingSpace);old.enabled=true;old.property('Color Probe Mode').setValue(m+1);render(c,'probe_old_'+(m+1),0,null);old.enabled=false;var fresh=layer.property('ADBE Effect Parade').addProperty('FSTR Color Probe 20261018');fresh.property('Color Probe Mode').setValue(m+9);render(c,'probe_new_'+(m+1),0,null);fresh.remove();old=layer.property('ADBE Effect Parade').property(1);}
+app.project.linearizeWorkingSpace=false;app.project.workingSpace=initialSpace;app.project.linearizeWorkingSpace=initialLinear;log('PASS color parameter experiment renders');
+}catch(e){log('FAIL message='+String(e.message)+' line='+String(e.line));}finally{if(owned)app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.endSuppressDialogs(false);app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '"+cfg.nonce+"') app.quit();",1000,false);}
+})();

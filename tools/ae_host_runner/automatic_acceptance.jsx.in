@@ -1,0 +1,24 @@
+(function(){
+var cfg=@FSTR_AUTOMATIC_HOST_CONFIG_JSON@,owned=false;
+function log(s){var f=new File(cfg.folder+'/host-report.txt');if(!f.open('a'))throw new Error('Report unavailable');f.writeln(s);f.close();}
+if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
+if(app.project&&(app.project.file!==null||app.project.numItems!==0)){log('BLOCKED existing project');return;}
+try{
+app.beginSuppressDialogs();app.newProject();owned=true;app.project.workingSpace='';app.project.bitsPerChannel=32;app.project.linearizeWorkingSpace=false;
+log('HOST '+app.version+' '+app.buildNumber);
+var io=new ImportOptions(new File(cfg.frames+'/frame000.png'));io.sequence=true;io.forceAlphabetical=true;
+var footage=app.project.importFile(io);footage.mainSource.conformFrameRate=12;
+var source=app.project.items.addComp('Owned upstream and cut',1920,800,1,3,12);source.layers.add(footage);
+var cut=source.layers.addSolid([.18,.18,.18],'Owned one-frame cut',1920,800,1,3);cut.inPoint=1/12;cut.outPoint=2/12;
+var comp=app.project.items.addComp('Automatic Smart trial',1920,800,1,3,12),layer=comp.layers.add(source),effect=layer.property('ADBE Effect Parade').addProperty(cfg.match);layer.quality=LayerQuality.DRAFT;
+function encoding(e){var p=e.property('AE Pixel Encoding');if(!p&&e.property('Advanced'))p=e.property('Advanced').property('AE Pixel Encoding');if(!p)throw new Error('Encoding control missing');return p;}
+encoding(effect).setValue(2);effect.property('Look').setValue(9);effect.property('Look Amount').setValue(100);effect.property('Mix').setValue(100);
+function render(label,on,frame,count){effect.property('Smart Color Grading').setValue(on);app.purge(PurgeTarget.ALL_CACHES);var q=app.project.renderQueue.items.add(comp);q.setSettings({'Resolution':'Quarter'});q.timeSpanStart=frame/12;q.timeSpanDuration=count/12;var om=q.outputModule(1);om.applyTemplate('Photoshop');om.file=new File(cfg.folder+'/'+label+'_[#####].psd');log('BEGIN '+label);app.project.renderQueue.render();log('STATUS '+label+' '+String(q.status));if(q.status!==RQItemStatus.DONE)throw new Error('Render '+label);q.remove();log('RENDER '+label);}
+render('01_off',0,0,1);render('02_on',1,0,1);render('03_off',0,0,1);render('04_on',1,0,1);
+effect.property('Look').setValue(10);render('05_look',1,0,1);effect.property('Look Amount').setValue(150);render('06_strength',1,0,1);effect.property('Look').setValue(9);effect.property('Look Amount').setValue(100);
+render('07_cut_on',1,1,1);render('08_cut_off',0,1,1);render('09_after_cut',1,2,1);
+render('10_motion_on',1,17,12);render('11_motion_off',0,17,12);
+effect.property('Smart Color Grading').setValue(1);app.project.save(new File(cfg.folder+'/automatic-smart-test.aep'));app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.open(new File(cfg.folder+'/automatic-smart-test.aep'));comp=null;for(var i=1;i<=app.project.numItems;i++){if(app.project.item(i).name==='Automatic Smart trial')comp=app.project.item(i);}if(!comp)throw new Error('Saved composition missing');layer=comp.layer(1);effect=layer.property('ADBE Effect Parade').property(1);if(effect.matchName!==cfg.match||effect.property('Smart Color Grading').value!==1||effect.property('Look').value!==9||encoding(effect).value!==2)throw new Error('Saved state mismatch');render('12_reopen_on',1,17,1);
+log('PASS automatic Smart switches, cuts, motion and save/reopen');
+}catch(err){log('FAIL message='+String(err.message)+' line='+String(err.line));}finally{if(owned)app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.endSuppressDialogs(false);app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '"+cfg.nonce+"') app.quit();",1000,false);}
+})();

@@ -3,6 +3,16 @@
 #include "metadata_ui.hpp"
 #include "fstr/regions.hpp"
 #include "fstr/scene_cache.hpp"
+#include "fstr/automatic_scene_cache.hpp"
+#include "fstr/scene_window.hpp"
+#include "picosha2.h"
+#include <iomanip>
+#include <locale>
+#ifdef FSTR_NATIVE_SMART
+#include "fstr/native_scene.hpp"
+#include <dlfcn.h>
+#include <filesystem>
+#endif
 #include <cstdlib>
 #include <limits>
 #include <vector>
@@ -24,6 +34,27 @@ using LookLibrary=std::array<std::shared_ptr<const fstr::LUT>,fstr::builtin_look
 std::shared_ptr<const LookLibrary> looks;
 std::mutex initialization;
 std::shared_ptr<fstr::SceneCache> scene_cache;
+std::shared_ptr<fstr::AutomaticSceneCache> automatic_cache;
+std::shared_ptr<const std::string> automatic_error;
+class SmartAnalysisError final : public std::runtime_error {public:using std::runtime_error::runtime_error;};
+void initialize_automatic_analysis(){
+#ifdef FSTR_NATIVE_SMART
+    std::lock_guard<std::mutex> lock(initialization);
+    if(std::atomic_load(&automatic_cache)||std::atomic_load(&automatic_error))return;
+    try{
+        if(std::atomic_load(&scene_cache))return; // Explicit prepared development snapshot retains its original path.
+        std::filesystem::path resources;
+        if(const char* configured=std::getenv("FSTR_LUT_NATIVE_RESOURCES"))resources=configured;
+        else {Dl_info info{};if(!dladdr(reinterpret_cast<void*>(&EffectMain),&info)||!info.dli_fname)throw std::runtime_error("Smart resources unavailable");resources=std::filesystem::path(info.dli_fname).parent_path().parent_path()/"Resources"/"Smart";}
+        auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string());
+        std::filesystem::path directory;
+        if(const char* configured=std::getenv("FSTR_LUT_AUTOMATIC_CACHE"))directory=configured;
+        else {const char* user_home=std::getenv("HOME");if(!user_home)throw std::runtime_error("Smart cache location unavailable");directory=std::filesystem::path(user_home)/"Library/Caches/FSTR.Tools/FSTR_LUT/automatic-v1";}
+        auto cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),analyzer->policy(),[analyzer](const auto&image,double height,const auto&cancel){return analyzer->analyze(image,height,cancel);});
+        std::atomic_store(&automatic_cache,std::move(cache));
+    }catch(const std::exception& e){std::atomic_store(&automatic_error,std::make_shared<const std::string>(std::string("Smart analysis unavailable: ")+e.what()));}
+#endif
+}
 void initialize_scene_cache(){
     const char* directory=std::getenv("FSTR_LUT_SCENE_CACHE");const char* policy=std::getenv("FSTR_LUT_SCENE_POLICY");
     if(!directory&&!policy)return;
@@ -120,6 +151,13 @@ template<class P>constexpr double channel_max() {
 struct TemporalInput {PF_EffectWorld* world=nullptr;int offset=0;};
 struct SmartPreData {std::vector<std::pair<int,int>> frames;};
 void delete_smart_pre(void* data){delete static_cast<SmartPreData*>(data);}
+template<class P>std::string analysis_source_identity(PF_InData*in_data,const PF_EffectWorld&world,const fstr::ColorSettings&s,fstr::Transfer transfer){
+    if(world.width<1||world.height<1||!world.data||world.rowbytes<=0||world.width>world.rowbytes/static_cast<A_long>(sizeof(P)))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
+    std::ostringstream meta;meta.imbue(std::locale::classic());meta<<std::setprecision(17)<<"FSTR_UPSTREAM_V1 "<<sizeof(P)<<' '<<world.width<<' '<<world.height<<' '<<world.origin_x<<' '<<world.origin_y<<' '<<int(s.source)<<' '<<int(transfer)<<' '<<s.grade.exposure_stops<<' '<<s.grade.contrast<<' '<<s.grade.saturation<<' '<<s.grade.temperature<<' '<<s.grade.tint<<' '<<s.shoulder;
+    picosha2::hash256_one_by_one hash;hash.init();auto text=meta.str();hash.process(text.begin(),text.end());
+    // Hash valid channels only, excluding undefined row padding and ROI output.
+    for(A_long y=0;y<world.height;++y){auto error=PF_ABORT(in_data);if(error)throw error;auto row=reinterpret_cast<const P*>(reinterpret_cast<const char*>(world.data)+std::size_t(y)*std::size_t(world.rowbytes));for(A_long x=0;x<world.width;++x){const auto&p=row[x];for(const auto*channel:{&p.alpha,&p.red,&p.green,&p.blue}){auto begin=reinterpret_cast<const unsigned char*>(channel);hash.process(begin,begin+sizeof(*channel));}}}hash.finish();return picosha2::get_hash_hex_string(hash);
+}
 template<class P>fstr::AnalysisImage analysis_image(PF_InData* in_data,const PF_EffectWorld& world,const fstr::ColorProcessor& prepare,fstr::Transfer transfer){
     if(world.width<=0||world.height<=0||!world.data||world.rowbytes<=0||world.width>world.rowbytes/static_cast<A_long>(sizeof(P)))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
     double aspect=1.;
@@ -127,7 +165,7 @@ template<class P>fstr::AnalysisImage analysis_image(PF_InData* in_data,const PF_
     if(in_data->downsample_x.num>0&&in_data->downsample_x.den>0&&in_data->downsample_y.num>0&&in_data->downsample_y.den>0)
         aspect*=double(in_data->downsample_x.den)/in_data->downsample_x.num*in_data->downsample_y.num/in_data->downsample_y.den;
     if(!std::isfinite(aspect)||aspect<.01||aspect>100)throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
-    const double factor=std::min(1.,960./std::max(world.width*aspect,double(world.height)));fstr::AnalysisImage image;
+    const double factor=std::min(1.,(std::atomic_load(&automatic_cache)?384.:960.)/std::max(world.width*aspect,double(world.height)));fstr::AnalysisImage image;
     image.width=std::max(1,int(world.width*aspect*factor));image.height=std::max(1,int(world.height*factor));image.rgba.resize(std::size_t(image.width)*image.height*4);
     const double scale=channel_max<P>();
     for(int y=0;y<image.height;++y){auto abort=PF_ABORT(in_data);if(abort)throw abort;
@@ -151,14 +189,25 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
     if(!out.data||out.rowbytes<=0||out.width>out.rowbytes/static_cast<A_long>(sizeof(P)))return PF_Err_BAD_CALLBACK_PARAM;
     if(in.width&&in.height&&(!in.data||in.rowbytes<=0||in.width>in.rowbytes/static_cast<A_long>(sizeof(P))))return PF_Err_BAD_CALLBACK_PARAM;
     std::vector<fstr::ColorRegion> regions;
-    const auto cache=std::atomic_load(&scene_cache);std::shared_ptr<const fstr::SceneAnalysis> analysis;
+    const auto cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);const bool scene_active=bool(cache)||bool(automatic);std::shared_ptr<const fstr::SceneAnalysis> analysis;
     std::unique_ptr<fstr::SceneLook> scene;std::unique_ptr<fstr::ColorProcessor> scene_plain;
     std::vector<fstr::SkinToneReference> references;std::vector<fstr::SkinToneInfluence> influences;std::vector<fstr::StableToneWeight> stable;
     double source_height=in.height;
     if(in_data->downsample_y.num>0&&in_data->downsample_y.den>0)source_height*=double(in_data->downsample_y.den)/in_data->downsample_y.num;
     if(enabled&&!processor.bypass()&&in.width>0&&in.height>0){
-        if(cache){
-            analysis=cache->get(analysis_image<P>(in_data,in,prepare,transfer),source_height);
+        if(const auto error=std::atomic_load(&automatic_error))throw SmartAnalysisError(*error);
+        if(scene_active){
+            auto image=analysis_image<P>(in_data,in,prepare,transfer);
+            if(automatic){
+                auto cancel=[&]{auto error=PF_ABORT(in_data);if(error)throw error;};
+                auto analyzed=[&](const auto&pixels,const std::string& identity){try{return automatic->get(pixels,source_height,cancel,identity);}catch(const std::bad_alloc&){throw;}catch(const std::exception&e){if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_SMART_ANALYSIS_ERROR %s\n",e.what());throw SmartAnalysisError("Smart analysis failed");}};
+                std::vector<fstr::AnalyzedFrame> frames{{0,analyzed(image,analysis_source_identity<P>(in_data,in,settings,transfer))}};
+                struct RawInput{int first;fstr::AnalysisImage second;std::string identity;};std::vector<RawInput> images;
+                for(const auto&n:neighbors){if(!n.world||n.world->width!=in.width||n.world->height!=in.height||n.world->origin_x!=in.origin_x||n.world->origin_y!=in.origin_y)continue;auto other=analysis_image<P>(in_data,*n.world,prepare,transfer);if(compatible_image(image,other))images.push_back({n.offset,std::move(other),analysis_source_identity<P>(in_data,*n.world,settings,transfer)});}
+                // No borrowing across an intervening missing/incompatible input.
+                for(const auto&entry:images){if(std::abs(entry.first)==2){auto middle=std::find_if(images.begin(),images.end(),[&](const auto&v){return v.first==entry.first/2;});if(middle==images.end()||!compatible_image(middle->second,entry.second))continue;}frames.push_back({entry.first,analyzed(entry.second,entry.identity)});}
+                analysis=fstr::stabilize_scene_window(frames);
+            }else analysis=cache->get(image,source_height);
             if(analysis){scene=std::make_unique<fstr::SceneLook>(settings.look,settings.look_amount);fstr::ColorSettings plain;plain.look=settings.look;plain.look_amount=settings.look_amount;scene_plain=std::make_unique<fstr::ColorProcessor>(plain,fstr::Transfer::Linear,fstr::Primaries::SRGB_Rec709,fstr::Alpha::Straight);
                 references.reserve(analysis->people.size());for(const auto&person:analysis->people){auto abort=PF_ABORT(in_data);if(abort)throw abort;references.push_back(scene->skin_reference(person.samples));}
                 stable.resize(references.size());influences.resize(references.size());for(std::size_t i=0;i<references.size();++i)influences[i].reference=&references[i];
@@ -193,7 +242,7 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
             const auto src=reinterpret_cast<const P*>(reinterpret_cast<const unsigned char*>(in.data)+std::size_t(sy)*std::size_t(in.rowbytes))+sx;
             if(processor.bypass()||src->alpha==0){dst[x]=*src;continue;}
             const std::array<float,4> raw{float(src->red/scale),float(src->green/scale),float(src->blue/scale),float(src->alpha/scale)};
-            auto v=processor.apply(raw,enabled&&!cache?.8*fstr::color_region_weight((sx+.5)/in.width,(sy+.5)/in.height,source_height,regions):0);
+            auto v=processor.apply(raw,enabled&&!scene_active?.8*fstr::color_region_weight((sx+.5)/in.width,(sy+.5)/in.height,source_height,regions):0);
             if(analysis){
                 const double ax=std::clamp((sx+.5)*analysis->width/in.width-.5,0.,double(analysis->width-1)),ay=std::clamp((sy+.5)*analysis->height/in.height-.5,0.,double(analysis->height-1));
                 const int x0=int(ax),y0=int(ay),x1=std::min(x0+1,analysis->width-1),y1=std::min(y0+1,analysis->height-1);const double fx=ax-x0,fy=ay-y0;
@@ -259,8 +308,8 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
         auto e=PF_CHECKOUT_PARAM(in_data,pair.first,in_data->current_time,in_data->time_step,in_data->time_scale,pair.second);if(e)return e;
     }
     const bool active=enabled.u.bd.value&&look.u.pd.value>1&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0;
-    const auto analysis_cache=std::atomic_load(&scene_cache);
-    if(extra->cb->GuidMixInPtr){const std::string base_guid="FSTR_NATIVE_BASE_V1";const auto&guid=active&&analysis_cache?analysis_cache->guid():base_guid;const auto error=extra->cb->GuidMixInPtr(in_data->effect_ref,static_cast<A_u_long>(guid.size()),guid.data());if(error)return error;}else if(active&&analysis_cache)return PF_Err_BAD_CALLBACK_PARAM;
+    const auto analysis_cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);
+    if(extra->cb->GuidMixInPtr){const std::string guid=std::string("FSTR_NATIVE_BASE_V2/")+fstr::color_build_id+"/"+(active&&analysis_cache?analysis_cache->guid():active&&automatic?automatic->guid():"inactive");const auto error=extra->cb->GuidMixInPtr(in_data->effect_ref,static_cast<A_u_long>(guid.size()),guid.data());if(error)return error;}else if(active&&(analysis_cache||automatic))return PF_Err_BAD_CALLBACK_PARAM;
     PF_CheckoutResult result{};
     auto err=extra->cb->checkout_layer(in_data->effect_ref,Input,active?1000:Input,&request,in_data->current_time,in_data->time_step,in_data->time_scale,&result);
     if(err)return err;
@@ -307,8 +356,8 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
     try {
         switch(cmd) {
             case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT color MVP 0.1 development\rBuild %s\rSDR + Sony S-Log3 / S-Gamut3.Cine",fstr::color_build_id);break;
-            case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
-            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
+            case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();initialize_automatic_analysis();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
+            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_SEQUENCE_SETDOWN:fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_QUERY_DYNAMIC_FLAGS:out_data->out_flags=flags;out_data->out_flags2=flags2;break;
@@ -322,6 +371,7 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
         return PF_Err_NONE;
     }catch(PF_Err err){return err;}
      catch(const std::bad_alloc&){return PF_Err_OUT_OF_MEMORY;}
+     catch(const SmartAnalysisError&){out_data->out_flags|=PF_OutFlag_DISPLAY_ERROR_MESSAGE;std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Smart analysis could not run. Check the plugin model installation or turn Smart off.");return PF_Err_BAD_CALLBACK_PARAM;}
      catch(const fstr::UnsupportedColorProfile&){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Choose AE Pixel Encoding. Linearized project: select Linear. Sony override requires preserved, unconverted Log samples.");return PF_Err_BAD_CALLBACK_PARAM;}
      catch(...){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT color processing failed; input, settings or range unsupported.");return PF_Err_BAD_CALLBACK_PARAM;}
 }

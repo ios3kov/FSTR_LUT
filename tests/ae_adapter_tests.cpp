@@ -24,6 +24,7 @@ struct Fixture {
     PF_EffectWorld input{},output{};std::array<PF_EffectWorld*,5> temporal{};
     int checkout=0,checkin=0,acquire=0,release=0,pixels_out=0,pixels_in=0,abort_calls=0;
     std::vector<std::string> guids;bool fail_guid=false;
+    PF_LRect maximum_rect{0,0,96,96};
     std::vector<int> layer_ids;std::vector<PF_LRect> requests;int fail_layer=-1,fail_pixel_id=-1;
     int fail_param=0;bool fail_suite=false,fail_output=false,fail_pixel_checkout=false,fail_format=false;
     bool fail_checkin=false,fail_pixel_checkin=false,fail_release=false,abort_now=false;
@@ -108,13 +109,14 @@ void cinema(){
 }
 PF_Err checkout_layer(PF_ProgPtr ref,PF_ParamIndex,A_long id,const PF_RenderRequest* request,A_long,A_long,A_u_long,PF_CheckoutResult* result){
  auto&f=fixture(ref);f.layer_ids.push_back(id);f.requests.push_back(request->rect);if(id==f.fail_layer)return 85;
- result->result_rect=request->rect;result->max_result_rect={0,0,96,96};return PF_Err_NONE;
+ result->result_rect=request->rect;result->max_result_rect=f.maximum_rect;return PF_Err_NONE;
 }
+PF_Err mix_guid(PF_ProgPtr,A_u_long,const void*);
 void smart_requests(){
  for(int mode=0;mode<6;++mode){
   Fixture f;active=&f;f.in.current_time=10;f.in.total_time=100;
   f.params[SmartColor].u.bd.value=mode!=0;f.params[Look].u.pd.value=3;
-  PF_PreRenderInput pi{};pi.output_request.rect={10,10,20,20};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;
+  PF_PreRenderInput pi{};pi.output_request.rect={10,10,20,20};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;
   PF_PreRenderExtra pe{&pi,&po,&pc};if(mode==2)f.fail_layer=2;
   auto err=effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe);
   if(mode==2){check(err==85&&!po.pre_render_data,"Pre-render failure leaked/succeeded");continue;}
@@ -132,6 +134,28 @@ void smart_requests(){
   check(f.pixels_in==f.pixels_out-(mode==3?1:0),"Temporal input cleanup imbalance");
   if(po.pre_render_data)po.delete_pre_render_data_func(po.pre_render_data);
  }
+}
+void automatic_scene(const char* config_path){
+ std::ifstream file(config_path);const auto cfg=nlohmann::json::parse(file);const int w=cfg.at("width"),h=cfg.at("height"),source_height=cfg.at("source_height");const std::size_t count=std::size_t(w)*std::size_t(h);std::vector<unsigned char> bytes(count*4);std::ifstream raw(cfg.at("rgba8").get<std::string>(),std::ios::binary);raw.read(reinterpret_cast<char*>(bytes.data()),std::streamsize(bytes.size()));check(bool(raw)&&raw.peek()==EOF,"Automatic frame input invalid");
+ std::vector<PF_PixelFloat> input(count),off(count),on(count),again(count);for(std::size_t i=0;i<count;++i)input[i]={1,bytes[i*4]/255.f,bytes[i*4+1]/255.f,bytes[i*4+2]/255.f};Fixture f;f.in.pixel_aspect_ratio={1,1};f.in.downsample_x={h,static_cast<A_u_long>(source_height)};f.in.downsample_y={h,static_cast<A_u_long>(source_height)};f.params[WorkingSpace].u.pd.value=2;f.params[Look].u.pd.value=9;f.params[LookAmount].u.fs_d.value=100;set_world(f.input,input,w,h,w,PF_PixelFormat_ARGB128);set_world(f.output,off,w,h,w,PF_PixelFormat_ARGB128);check(run(f,true)==0,"Automatic Off render failed");
+
+ std::array<std::vector<PF_PixelFloat>,5> adjacent;std::array<PF_EffectWorld,5> worlds;PF_PreRenderOutput po{};PF_SmartRenderInput si{};
+ if(cfg.contains("neighbors")){
+  check(cfg.at("neighbors").size()==4,"Automatic explicit window size");f.maximum_rect={0,0,w,h};f.in.time_scale=12;f.in.current_time=cfg.at("frame");f.in.total_time=cfg.at("total_frames");f.temporal[0]=&f.input;
+  for(int id=1;id<5;++id){std::vector<unsigned char> data(count*4);std::ifstream source(cfg.at("neighbors")[id-1].get<std::string>(),std::ios::binary);source.read(reinterpret_cast<char*>(data.data()),std::streamsize(data.size()));check(bool(source)&&source.peek()==EOF,"Explicit neighbor input invalid");adjacent[id].resize(count);for(std::size_t i=0;i<count;++i)adjacent[id][i]={1,data[i*4]/255.f,data[i*4+1]/255.f,data[i*4+2]/255.f};set_world(worlds[id],adjacent[id],w,h,w,PF_PixelFormat_ARGB128);f.temporal[id]=&worlds[id];}
+  f.params[SmartColor].u.bd.value=TRUE;active=&f;PF_PreRenderInput pi{};pi.output_request.rect={0,0,w,h};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Automatic explicit pre-render failed");si.pre_render_data=po.pre_render_data;
+ }
+ struct PreCleanup{PF_PreRenderOutput& value;~PreCleanup(){if(value.pre_render_data)value.delete_pre_render_data_func(value.pre_render_data);}} cleanup{po};
+ auto render_on=[&]{if(!cfg.contains("neighbors"))return run(f,true);active=&f;PF_SmartRenderCallbacks cb{};cb.checkout_layer_pixels=checkout_pixels;cb.checkout_output=checkout_output;cb.checkin_layer_pixels=checkin_pixels;PF_SmartRenderExtra se{};se.input=&si;se.cb=&cb;return effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&se);};
+ f.params[SmartColor].u.bd.value=TRUE;set_world(f.output,on,w,h,w,PF_PixelFormat_ARGB128);check(render_on()==0,"Automatic On render failed");std::size_t changed=0;for(std::size_t i=0;i<count;++i){if(std::memcmp(&off[i],&on[i],sizeof(PF_PixelFloat)))++changed;check(on[i].alpha==1,"Automatic alpha changed");}check(changed>0,"Automatic Smart inactive");
+ set_world(f.output,again,w,h,w,PF_PixelFormat_ARGB128);f.params[SmartColor].u.bd.value=FALSE;check(run(f,true)==0&&std::memcmp(off.data(),again.data(),count*sizeof(PF_PixelFloat))==0,"Automatic Off repeat differs");f.params[SmartColor].u.bd.value=TRUE;check(render_on()==0&&std::memcmp(on.data(),again.data(),count*sizeof(PF_PixelFloat))==0,"Automatic On repeat differs");
+
+ if(!cfg.value("reference_only",false)){
+ f.params[Look].u.pd.value=10;check(run(f,true)==0,"Automatic changed look failed");f.params[LookAmount].u.fs_d.value=150;check(run(f,true)==0,"Automatic changed amount failed");f.params[Look].u.pd.value=9;f.params[LookAmount].u.fs_d.value=100;
+ input[0].red+=1.f/255;check(run(f,true)==0,"Automatic changed upstream failed");input[0].red-=1.f/255;input[0].red+=1e-7f;check(run(f,true)==0,"Sub-8-bit upstream change failed");input[0].red-=1e-7f;
+ }
+ auto save=[&](const char*name,const auto&v){std::ofstream out(cfg.at("output").get<std::string>()+name,std::ios::binary);for(auto p:v){float rgba[]{p.red,p.green,p.blue,p.alpha};out.write(reinterpret_cast<char*>(rgba),sizeof(rgba));}check(bool(out),"Automatic fixture output failed");};save("-on.rgba32f",on);save("-off.rgba32f",off);
+ std::cout<<"Automatic native Smart changes "<<changed<<" pixels; switches exact; look/amount/upstream render PASS\n";
 }
 void real_smart(const char* path){
  std::ifstream stream(path,std::ios::binary);std::vector<unsigned char> bytes(540*960*4);stream.read(reinterpret_cast<char*>(bytes.data()),bytes.size());check(bool(stream),"Real fixture missing");
@@ -156,7 +180,7 @@ void real_recovery(const char* path,int center=50,bool expected_recovery=true){
  if(!expected_recovery)f.params[SmartColor].u.bd.value=FALSE;
  check(run(f,true)==0,"Current-only real frame failed");
  f.params[SmartColor].u.bd.value=TRUE;
- PF_PreRenderInput pi{};pi.output_request.rect={0,0,width,height};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Recovery pre-render failed");
+ PF_PreRenderInput pi{};pi.output_request.rect={0,0,width,height};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Recovery pre-render failed");
  PF_SmartRenderInput si{};si.pre_render_data=po.pre_render_data;PF_SmartRenderCallbacks sc{};sc.checkout_layer_pixels=checkout_pixels;sc.checkin_layer_pixels=checkin_pixels;sc.checkout_output=checkout_output;PF_SmartRenderExtra se{};se.input=&si;se.cb=&sc;set_world(f.output,recovered,width,height,width,PF_PixelFormat_ARGB32);
  auto err=effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&se);po.delete_pre_render_data_func(po.pre_render_data);check(err==0,"Actual temporal recovery failed");
  std::size_t changed=0;for(std::size_t i=0;i<count;++i){check(recovered[i].alpha==255,"Recovered alpha changed");if(std::memcmp(&raw[i],&recovered[i],sizeof(PF_Pixel)))++changed;}
@@ -196,7 +220,7 @@ void cached_scene_bridge(){
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==0,"Scene global setup");
     {Fixture f;active=&f;f.in.current_time=5;f.in.total_time=10;f.params[SmartColor].u.bd.value=TRUE;f.params[Look].u.pd.value=9;
      PF_PreRenderInput input{};input.output_request.rect={0,0,2,1};PF_PreRenderOutput output{};PF_PreRenderCallbacks cb{};cb.checkout_layer=checkout_layer;cb.GuidMixInPtr=mix_guid;PF_PreRenderExtra extra{&input,&output,&cb};
-     check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&extra)==0,"Cached pre-render failed");check(f.guids.size()==1&&f.guids[0].size()==64&&f.layer_ids==std::vector<int>({1000,Input}),"Scene snapshot GUID or current-only checkout missing");if(output.delete_pre_render_data_func)output.delete_pre_render_data_func(output.pre_render_data);
+     check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&extra)==0,"Cached pre-render failed");check(f.guids.size()==1&&f.guids[0].rfind("FSTR_NATIVE_BASE_V2/",0)==0&&f.guids[0].size()>80&&f.layer_ids==std::vector<int>({1000,Input}),"Scene snapshot GUID or current-only checkout missing");if(output.delete_pre_render_data_func)output.delete_pre_render_data_func(output.pre_render_data);
      f.fail_guid=true;f.layer_ids.clear();check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&extra)==91&&f.layer_ids.empty(),"GUID failure did not propagate before checkout");}
     auto check_look=[&](int look,const char* file){
         Fixture f;std::vector<PF_PixelFloat> input{{1,120.f/255,70.f/255,40.f/255},{1,180.f/255,120.f/255,90.f/255}},output(2);
@@ -222,9 +246,10 @@ void cached_scene_bridge(){
 }
 
 }
+void* cleanup_module=nullptr;
 int main(int argc,char** argv){try{
     check(argc>=2&&argc<=4,"Provide the actual built plugin executable");
-    auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);check(module!=nullptr,"Native plugin dlopen failed");
+    auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);cleanup_module=module;check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
     check(setup.out.out_flags==0x02008042&&setup.out.out_flags2==0x08221401&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
@@ -234,12 +259,12 @@ int main(int argc,char** argv){try{
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
     formats(PF_PixelFormat_ARGB32,PF_Pixel{127,51,75,99});
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
-    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}
+    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();if(argc==4&&std::string(argv[2])=="--automatic"){std::ifstream jobs(argv[3]);auto batch=nlohmann::json::parse(jobs);if(batch.contains("jobs")){for(const auto&path:batch.at("jobs"))automatic_scene(path.get<std::string>().c_str());}else automatic_scene(argv[3]);}else {if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}}
     std::vector<std::future<bool>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==RenderParamCount&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");
     check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setdown failed");
     cached_scene_bridge();
-    check(dlclose(module)==0,"Native module cleanup failed");
+    check(dlclose(module)==0,"Native module cleanup failed");cleanup_module=nullptr;
     std::cout<<"PASS "<<checks<<" owned native callback assertions; actual AE loader/MFR: NOT RUN\n";return 0;
-}catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<" assertion "<<checks<<"\n";return 1;}}
+}catch(const std::exception& e){if(cleanup_module&&effect_fn){Fixture cleanup;active=&cleanup;effect_fn(PF_Cmd_GLOBAL_SETDOWN,&cleanup.in,&cleanup.out,nullptr,nullptr,nullptr);dlclose(cleanup_module);cleanup_module=nullptr;}std::cerr<<"FAIL "<<e.what()<<" assertion "<<checks<<"\n";return 1;}}

@@ -449,13 +449,13 @@ PF_Err smart_render(PF_InData* in_data,PF_SmartRenderExtra* extra) {
 }
 extern "C" DllExport PF_Err PluginDataEntryFunction2(PF_PluginDataPtr data,PF_PluginDataCB2 callback,SPBasicSuite*,const char*,const char*) {
     PF_Err result=PF_Err_INVALID_CALLBACK;
-    result=PF_REGISTER_EFFECT_EXT2(data,callback,"FSTR-LUT Development","FSTR LUT Color MVP","FSTR.Tools",AE_RESERVED_INFO,"EffectMain","https://github.com/ios3kov/FSTR_LUT");
+    result=PF_REGISTER_EFFECT_EXT2(data,callback,"FSTR Grading","FSTR LUT Color MVP","FSTR Effects",AE_RESERVED_INFO,"EffectMain","https://github.com/ios3kov/FSTR_LUT");
     return result;
 }
 static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {
     try {
         switch(cmd) {
-            case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT | Build %s\rReady-to-use image: keep default input.\rCamera Log: match its profile in Advanced.\r3D: choose Linear RGB or ACEScg to match the render.\rUnknown profile? Check with the source creator.",fstr::color_build_id);break;
+            case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR Grading | Build %s\rReady-to-use image: keep default input.\rCamera Log: match its profile in Advanced.\r3D: choose Linear RGB or ACEScg to match the render.\rUnknown profile? Check with the source creator.",fstr::color_build_id);break;
             case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();initialize_automatic_analysis();initialize_preparation_cache();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
             case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&preparation_cache,std::shared_ptr<fstr::SdrPreparationCache>{});std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
@@ -476,7 +476,7 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
      catch(const PreparationError&){out_data->out_flags|=PF_OutFlag_DISPLAY_ERROR_MESSAGE;std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Auto Prepare SDR could not run. Use normal SDR footage and fixed clip timing, or turn Auto Prepare SDR off.");return PF_Err_BAD_CALLBACK_PARAM;}
      catch(const SmartAnalysisError&){out_data->out_flags|=PF_OutFlag_DISPLAY_ERROR_MESSAGE;std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Smart analysis could not run. Check the plugin model installation or turn Smart off.");return PF_Err_BAD_CALLBACK_PARAM;}
      catch(const fstr::UnsupportedColorProfile&){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Choose AE Pixel Encoding. Linearized project: select Linear. Sony override requires preserved, unconverted Log samples.");return PF_Err_BAD_CALLBACK_PARAM;}
-     catch(...){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT color processing failed; input, settings or range unsupported.");return PF_Err_BAD_CALLBACK_PARAM;}
+     catch(...){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR Grading color processing failed; input, settings or range unsupported.");return PF_Err_BAD_CALLBACK_PARAM;}
 }
 
 extern "C" DllExport PF_Err EffectMain(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {

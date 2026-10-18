@@ -4,7 +4,7 @@
 <key>CFBundleDevelopmentRegion</key><string>en</string>
 <key>CFBundleExecutable</key><string>FSTR_LUT_Development</string>
 <key>CFBundleIdentifier</key><string>com.fstr.lut.color.development</string>
-<key>CFBundleName</key><string>FSTR-LUT Development</string>
+<key>CFBundleName</key><string>FSTR Grading</string>
 <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
 <key>CFBundlePackageType</key><string>eFKT</string>
 <key>CFBundleSignature</key><string>FXTC</string>

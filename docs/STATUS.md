@@ -1,3 +1,7 @@
+## FSTR Grading — product name, 2026-10-18
+
+User selects **FSTR Grading** in **FSTR Effects**. Display/category/Info/About updated; internal match names/indices/cache paths preserved. Actual AE registry, fresh effect, old-project pixel/cache reuse and normal own exit pass. Signed candidate **ac8fd7cefc63305c** installed; previous1eebb7fa77c9f1a0 archived intact.16Release tests pass. [Evidence](PRODUCT_NAME.md).
+
 ## Optional native SDR preparation — 2026-10-18
 
 SDR-PREP-AE-001 implements **Auto Prepare SDR** as an appended, defaultOff native control. Fixed first/middle/last clip anchors choose one immutable SDR recipe before manual grading/LUT/Smart. Off/Mix0 skip anchor analysis; Mix includes preparation. Compatible recipes use bounded64-entry RAM /2048-entry8MiB versioned disk storage; algorithm, pixel content, geometry, transfer and fixed timing identify entries. Existing parameter indices/defaults remain unchanged. Single-shot clips only; no automatic segmentation, Log inference or recovered SDR latitude. Corrected candidate **1eebb7fa77c9f1a0** is installed. Actual AE163exports cover72base frames individually within one8bit code of core references,72Smart frames, switches/old-project/save-reopen and fresh-process1recipe+3mask disk hits with0first-frame computes. Found/fixed AE output-time cache alias; previous failed candidate retained.16Release/16ASan+UBSan targets pass. Continuous new-clip visual acceptance remains separate. See [native contract/checkpoint](SDR_PREPARATION_AE.md).

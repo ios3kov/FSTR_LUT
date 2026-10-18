@@ -14,6 +14,7 @@
 #include "scene_cache_fixture.hpp"
 #include <cstdlib>
 #include <unistd.h>
+#include <map>
 
 namespace {
 int checks=0;
@@ -21,8 +22,14 @@ PF_FilterProc effect_fn=nullptr;
 void check(bool value,const char* message){++checks;if(!value)throw std::runtime_error(message);}
 struct Fixture;
 thread_local Fixture* active=nullptr;
+std::mutex handles_mutex;std::map<PF_Handle,A_u_longlong> handles;
+PF_Handle new_handle(A_u_longlong n){auto slot=static_cast<void**>(std::malloc(sizeof(void*)));if(!slot)return nullptr;*slot=std::calloc(1,std::size_t(n));if(!*slot){std::free(slot);return nullptr;}auto h=reinterpret_cast<PF_Handle>(slot);std::lock_guard<std::mutex> lock(handles_mutex);handles[h]=n;return h;}
+void* lock_handle(PF_Handle h){return h?*reinterpret_cast<void**>(h):nullptr;}
+void unlock_handle(PF_Handle){}
+void dispose_handle(PF_Handle h){if(!h)return;std::lock_guard<std::mutex> lock(handles_mutex);handles.erase(h);std::free(*reinterpret_cast<void**>(h));std::free(h);}
+A_u_longlong handle_size(PF_Handle h){std::lock_guard<std::mutex> lock(handles_mutex);auto it=handles.find(h);return it==handles.end()?0:it->second;}
 struct Fixture {
-    PF_InData in{};PF_OutData out{};SPBasicSuite basic{};PF_WorldSuite2 worlds{};
+    PF_InData in{};PF_OutData out{};SPBasicSuite basic{};PF_WorldSuite2 worlds{};PF_UtilCallbacks utils{};
     std::array<PF_ParamDef,ParamCount> params{};
     PF_EffectWorld input{},output{};std::array<PF_EffectWorld*,5> temporal{};std::array<PF_EffectWorld*,3> preparation{};std::vector<std::pair<int,A_long>> layer_times;
     int checkout=0,checkin=0,acquire=0,release=0,pixels_out=0,pixels_in=0,abort_calls=0;
@@ -32,6 +39,7 @@ struct Fixture {
     int fail_param=0;bool fail_suite=false,fail_output=false,fail_pixel_checkout=false,fail_format=false;
     bool fail_checkin=false,fail_pixel_checkin=false,fail_release=false,abort_now=false;
     Fixture();
+    ~Fixture(){if(params[LUTReference].param_type==PF_Param_ARBITRARY_DATA&&params[LUTReference].u.arb_d.dephault)dispose_handle(params[LUTReference].u.arb_d.dephault);}
 };
 Fixture& fixture(PF_ProgPtr ref){return *reinterpret_cast<Fixture*>(ref);}
 PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==AdvancedStart||id==AdvancedEnd)return 74;if(f.fail_param&&id==f.fail_param)return 73;*value=f.params[id];return PF_Err_NONE;}
@@ -46,6 +54,7 @@ PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=
 PF_Err checkout_output(PF_ProgPtr ref,PF_EffectWorld** world){auto& f=fixture(ref);if(f.fail_output)return 82;*world=&f.output;return PF_Err_NONE;}
 PF_Err checkin_pixels(PF_ProgPtr ref,A_long){auto& f=fixture(ref);++f.pixels_in;return f.fail_pixel_checkin?83:PF_Err_NONE;}
 Fixture::Fixture(){
+    in.utils=&utils;utils.host_new_handle=new_handle;utils.host_lock_handle=lock_handle;utils.host_unlock_handle=unlock_handle;utils.host_dispose_handle=dispose_handle;utils.host_get_handle_size=handle_size;
     in.appl_id=kAppID_AfterEffects;
     in.effect_ref=reinterpret_cast<PF_ProgPtr>(this);in.time_scale=24;in.time_step=1;in.pica_basicP=&basic;
     in.inter.checkout_param=checkout_cb;in.inter.checkin_param=checkin_cb;in.inter.add_param=add;in.inter.abort=abort_cb;in.inter.register_ui=register_ui_cb;
@@ -113,7 +122,7 @@ void cinema(){
     std::vector<PF_PixelFloat> white{{1,1,1,1}},half_white(1);
     ui.params[Exposure].u.fs_d.value=-1;set_world(ui.input,white,1,1,1,PF_PixelFormat_ARGB128);set_world(ui.output,half_white,1,1,1,PF_PixelFormat_ARGB128);
     check(run(ui,true)==0&&std::abs(half_white[0].red-.735356983f)<1e-6f&&half_white[0].alpha==1,"Fresh sRGB effect must render without encoding selection");
-    check(ui.params[Look].u.pd.num_choices==17&&ui.params[Look].uu.id==6,"Cinema menu or persistent ID wrong");
+    check(ui.params[Look].u.pd.num_choices==18&&ui.params[Look].uu.id==6,"Cinema/Custom menu or persistent ID wrong");
     check(ui.params[Source].uu.id==1&&ui.params[Source].u.pd.num_choices==8&&ui.params[Source].u.pd.dephault==1,"Input profile schema/legacy default changed");
     check(Source>AdvancedStart&&Source<AdvancedEnd,"Technical input profile must stay inside Advanced");
     check(ui.params[NaturalContrast].uu.id==16&&ui.params[NaturalContrast].u.bd.dephault==TRUE&&ui.params[NaturalContrast].u.bd.value==FALSE&&(ui.params[NaturalContrast].flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS),"Natural contrast new/legacy default contract wrong");
@@ -157,6 +166,35 @@ template<class P>void prepared_integer(PF_PixelFormat format,double maximum){
  auto recipe=fstr::analyze_sdr_shot({{rgba.data(),rgba.size(),96,1,96*4,fstr::Transfer::Linear}}).settings;check(declared_render(f)==0,"Integer automatic preparation failed");
  for(int x=0;x<96;++x){auto c=fstr::prepare_sdr_linear({rgba[x*4],rgba[x*4+1],rgba[x*4+2]},recipe);check(std::abs(double(output[x].red)-std::floor(c.r*maximum+.5))<=1&&output[x].alpha==maximum,"Integer auto preparation scale differs from core");}
 }
+void custom_lut_reference(){
+ Fixture f;active=&f;const auto before=handles.size();std::vector<PF_ArbitraryH> owned;
+ struct Release {Fixture& f;std::vector<PF_ArbitraryH>& hs;~Release(){for(auto h:hs){PF_ArbParamsExtra e{};e.id=ExternalLUTId;e.which_function=PF_Arbitrary_DISPOSE_FUNC;e.u.dispose_func_params.arbH=h;effect_fn(PF_Cmd_ARBITRARY_CALLBACK,&f.in,&f.out,nullptr,nullptr,&e);}}} release{f,owned};
+ auto call=[&](PF_ArbParamsExtra& e){e.id=ExternalLUTId;return effect_fn(PF_Cmd_ARBITRARY_CALLBACK,&f.in,&f.out,nullptr,nullptr,&e);};
+ auto flatten=[&](PF_ArbitraryH h){PF_ArbParamsExtra e{};A_u_long n=0;e.which_function=PF_Arbitrary_FLAT_SIZE_FUNC;e.u.flat_size_func_params.arbH=h;e.u.flat_size_func_params.flat_data_sizePLu=&n;check(call(e)==0&&n<32768,"LUT flat size invalid");std::string s(n,' ');e={};e.which_function=PF_Arbitrary_FLATTEN_FUNC;e.u.flatten_func_params.arbH=h;e.u.flatten_func_params.buf_sizeLu=n;e.u.flatten_func_params.flat_dataPV=s.data();check(call(e)==0,"LUT flatten failed");return s;};
+ auto scan=[&](const std::string& s){PF_ArbitraryH h=nullptr;PF_ArbParamsExtra e{};e.which_function=PF_Arbitrary_SCAN_FUNC;e.u.scan_func_params.bufPC=s.data();e.u.scan_func_params.bytes_to_scanLu=static_cast<A_u_long>(s.size());e.u.scan_func_params.arbPH=&h;check(call(e)==0&&h,"LUT reference scan failed");owned.push_back(h);return h;};
+ PF_ArbitraryH empty=nullptr;PF_ArbParamsExtra e{};e.which_function=PF_Arbitrary_NEW_FUNC;e.u.new_func_params.arbPH=&empty;check(call(e)==0&&empty,"Default external reference allocation failed");owned.push_back(empty);auto flat_empty=flatten(empty);check(nlohmann::json::parse(flat_empty).at("path")=="","Default reference nonempty");scan(flat_empty);
+ const auto folder=std::filesystem::temp_directory_path()/("fstr-custom-reference-"+std::to_string(::getpid()));std::filesystem::create_directories(folder);struct Clean{std::filesystem::path p;~Clean(){std::error_code e;std::filesystem::remove_all(p,e);}}clean{folder};const auto path=folder/"Test LUT.cube";
+ std::string cube="LUT_3D_SIZE 2\n";for(int b=0;b<2;++b)for(int g=0;g<2;++g)for(int r=0;r<2;++r)cube+=std::to_string(g)+" "+std::to_string(b)+" "+std::to_string(r)+"\n";
+ {std::ofstream out(path);out<<cube;}
+ const auto serialized=nlohmann::json{{"schema",1},{"path",path.string()},{"fingerprint",""}}.dump();auto loaded=scan(serialized);const auto flat=flatten(loaded);check(flat.size()<1024&&flat.find("LUT_3D_SIZE")==std::string::npos&&nlohmann::json::parse(flat).at("path")==path.string(),"Project embeds LUT source rather than reference");
+ PF_ArbitraryH copied=nullptr;e={};e.which_function=PF_Arbitrary_COPY_FUNC;e.u.copy_func_params.src_arbH=loaded;e.u.copy_func_params.dst_arbPH=&copied;check(call(e)==0&&copied!=loaded,"Reference copy failed/aliased host handle");owned.push_back(copied);
+ e={};e.which_function=PF_Arbitrary_COMPARE_FUNC;PF_ArbCompareResult comparison=-1;e.u.compare_func_params.a_arbH=loaded;e.u.compare_func_params.b_arbH=copied;e.u.compare_func_params.compareP=&comparison;check(call(e)==0&&comparison==PF_ArbCompare_EQUAL,"Copied reference differs");
+ std::vector<PF_PixelFloat> input{{1,.2f,.4f,.7f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Look].u.pd.value=18;f.params[LookAmount].u.fs_d.value=100;f.params[LUTReference].u.arb_d.value=copied;
+#ifdef FSTR_TEST_EXTERNAL_LUT
+ check(declared_render(f)==0&&std::abs(output[0].red-.4f)<3e-6&&std::abs(output[0].green-.7f)<3e-6&&std::abs(output[0].blue-.2f)<3e-6,"Custom LUT native rendering failed");auto original_guid=f.guids.back();
+#endif
+ std::filesystem::remove(path);
+#ifdef FSTR_TEST_EXTERNAL_LUT
+ check(declared_render(f)==0&&std::abs(output[0].red-.4f)<3e-6,"Existing resource lost after source removal");
+#endif
+ auto missing=scan(flat);f.params[LUTReference].u.arb_d.value=missing;check(declared_render(f)!=0,"Reopened missing LUT silently succeeded");f.params[Mix].u.fs_d.value=0;check(declared_render(f)==0&&std::memcmp(input.data(),output.data(),sizeof(PF_PixelFloat))==0,"Custom missing-file Mix0 not exact/no-analysis");f.params[Mix].u.fs_d.value=100;
+#ifdef FSTR_TEST_EXTERNAL_LUT
+ {std::ofstream out(path);out<<"LUT_3D_SIZE 2\n";for(int b=0;b<2;++b)for(int g=0;g<2;++g)for(int r=0;r<2;++r)out<<r<<' '<<g<<' '<<b<<'\n';}auto revised=scan(flat);f.params[LUTReference].u.arb_d.value=revised;check(declared_render(f)==0&&std::abs(output[0].red-.2f)<3e-6&&f.guids.back()!=original_guid,"Changed external file reused old mapping/host GUID");
+#endif
+ PF_ArbitraryH invalid=nullptr;e={};e.which_function=PF_Arbitrary_SCAN_FUNC;const std::string bad="{\"schema\":2}";e.u.scan_func_params.bufPC=bad.data();e.u.scan_func_params.bytes_to_scanLu=static_cast<A_u_long>(bad.size());e.u.scan_func_params.arbPH=&invalid;check(call(e)!=0&&!invalid,"Invalid reference schema accepted");
+ for(auto h:owned){e={};e.which_function=PF_Arbitrary_DISPOSE_FUNC;e.u.dispose_func_params.arbH=h;check(call(e)==0,"LUT handle disposal failed");}owned.clear();check(handles.size()==before,"Arbitrary reference handles leaked");
+}
+
 void automatic_preparation(){
  prepared_integer<PF_Pixel>(PF_PixelFormat_ARGB32,PF_MAX_CHAN8);prepared_integer<PF_Pixel16>(PF_PixelFormat_ARGB64,PF_MAX_CHAN16);
  Fixture f;f.in.total_time=72;f.in.current_time=22;f.params[AutoPrepare].u.bd.value=TRUE;f.maximum_rect={0,0,96,1};
@@ -326,7 +364,7 @@ int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_direct
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
     formats(PF_PixelFormat_ARGB32,PF_Pixel{127,51,75,99});
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
-    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();automatic_preparation();if(argc==4&&std::string(argv[2])=="--automatic"){std::ifstream jobs(argv[3]);auto batch=nlohmann::json::parse(jobs);if(batch.contains("jobs")){for(const auto&path:batch.at("jobs"))automatic_scene(path.get<std::string>().c_str());}else automatic_scene(argv[3]);}else {if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}}
+    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();automatic_preparation();custom_lut_reference();if(argc==4&&std::string(argv[2])=="--automatic"){std::ifstream jobs(argv[3]);auto batch=nlohmann::json::parse(jobs);if(batch.contains("jobs")){for(const auto&path:batch.at("jobs"))automatic_scene(path.get<std::string>().c_str());}else automatic_scene(argv[3]);}else {if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}}
     std::vector<std::future<bool>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==RenderParamCount&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");

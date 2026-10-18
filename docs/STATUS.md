@@ -1,3 +1,7 @@
+## External LUT import — 2026-10-18
+
+**IMPLEMENTED / AE HOST BLOCKED.** Last Look entry **Custom**, Import LUT chooser and filename; native four-format OCIO2.4.2 backend (.cube/.3dl/IRIDAS.look/cineSpace.csp), reference-only project serialization, explicit missing-file behavior, immutable render processors and compatible Smart-cache reuse are implemented. Existing IDs/defaults preserved.17Release +17ASan/UBSan tests pass; scoped code scanner reports no findings. Actual chooser/save/reopen/undo/cache behavior inside AE is NOT_RUN: own empty AE pid24652 stalls before plugin/helper load in Adobe previous-session `sysctl`; SIGTERM/SIGKILL do not complete. Installed build restored byte-exact to previously host-verified **ac8fd7cefc63305c**. Candidate **fa7cd7bd1a3291eb** and diagnostics retained separately. Do not describe external import as installed/host accepted. [Contract and resume point](EXTERNAL_LUT.md).
+
 ## FSTR Grading — product name, 2026-10-18
 
 User selects **FSTR Grading** in **FSTR Effects**. Display/category/Info/About updated; internal match names/indices/cache paths preserved. Actual AE registry, fresh effect, old-project pixel/cache reuse and normal own exit pass. Signed candidate **ac8fd7cefc63305c** installed; previous1eebb7fa77c9f1a0 archived intact.16Release tests pass. [Evidence](PRODUCT_NAME.md).

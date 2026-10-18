@@ -6,6 +6,7 @@
 #include "fstr/automatic_scene_cache.hpp"
 #include "fstr/scene_window.hpp"
 #include "fstr/sdr_prepare_cache.hpp"
+#include "external_lut_ui.hpp"
 #include <optional>
 #include "picosha2.h"
 #include <iomanip>
@@ -118,7 +119,7 @@ class Params final {
 public:
     explicit Params(PF_InData* in):in_(in) {
         for(int id=1;id<ParamCount;++id) {
-            if(id==AdvancedStart||id==AdvancedEnd||id==CameraInfo)continue;
+            if(id==AdvancedStart||id==AdvancedEnd||id==CameraInfo||id==ImportLUT||id==LUTFileInfo)continue;
             auto err=PF_CHECKOUT_PARAM(in_,id,in_->current_time,in_->time_step,in_->time_scale,&values_[id]);
             if(err){close();throw err;}acquired_[count_++]=id;
         }
@@ -131,16 +132,18 @@ public:
         return first;
     }
 };
-fstr::ColorSettings settings(const Params& p) {
+fstr::ColorSettings settings(const Params& p,PF_InData* in_data) {
     fstr::ColorSettings s;
     const auto source=p[Source].u.pd.value,look=p[Look].u.pd.value;
-    if(source<1||source>fstr::source_profile_count||look<1||look>static_cast<int>(fstr::builtin_look_count))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
+    if(source<1||source>fstr::source_profile_count||look<1||look>static_cast<int>(fstr::builtin_look_count+1))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
     s.source=static_cast<fstr::SourceProfile>(source-1);
     s.grade={p[Exposure].u.fs_d.value,p[Contrast].u.fs_d.value,p[Saturation].u.fs_d.value/100};
     s.grade.natural_contrast=p[NaturalContrast].u.bd.value!=0;
     s.grade.temperature=p[Temperature].u.fs_d.value/100;s.grade.tint=p[Tint].u.fs_d.value/100;
     s.shoulder=p[Shoulder].u.fs_d.value/100;s.look_amount=p[LookAmount].u.fs_d.value/100;s.mix=p[Mix].u.fs_d.value/100;
-    if(look>1) {
+    if(look==static_cast<int>(fstr::builtin_look_count+1)){
+        if(s.mix>0&&s.look_amount>0){const auto external=fstr::ae::external_reference(in_data,p[LUTReference].u.arb_d.value);if(!external.look)throw fstr::ae::ExternalLUTError("Custom LUT unavailable. Use Import LUT to choose or relink the file.");s.look=external.look;}
+    }else if(look>1) {
         const auto library=std::atomic_load(&looks);
         if(!library)throw static_cast<PF_Err>(PF_Err_INTERNAL_STRUCT_DAMAGED);
         s.look=(*library)[static_cast<std::size_t>(look-1)];
@@ -167,7 +170,8 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Saturation",0,200,0,200,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,SaturationId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Highlight Rolloff",0,100,0,100,0,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,ShoulderId);
     // Slot2 is a nonselectable separator; old projects keep their frozen Warm v1.
-    AEFX_CLR_STRUCT(def);PF_ADD_POPUP("Look",static_cast<A_short>(fstr::builtin_look_count),1,fstr::builtin_look_menu,LookId);
+    static const std::string menu=std::string(fstr::builtin_look_menu)+"|Custom";
+    AEFX_CLR_STRUCT(def);PF_ADD_POPUP("Look",static_cast<A_short>(fstr::builtin_look_count+1),1,menu.c_str(),LookId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Look Amount",0,300,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,LookAmountId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Mix",0,100,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,MixId);
     PF_ADD_TOPICX("Advanced",PF_ParamFlag_COLLAPSE_TWIRLY,AdvancedStartId);
@@ -186,6 +190,15 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     PF_CustomUIInfo custom{};custom.events=PF_CustomEFlag_EFFECT;
     if(!err)err=in_data->inter.register_ui(in_data->effect_ref,&custom);
     AEFX_CLR_STRUCT(def);PF_ADD_CHECKBOX("Auto Prepare SDR","On",FALSE,0,AutoPrepareId);
+    A_long import_ui=PF_PUI_STD_CONTROL_ONLY;
+#ifndef FSTR_EXTERNAL_LUT
+    import_ui|=PF_PUI_DISABLED;
+#endif
+    PF_ADD_BUTTON("Custom LUT","Import LUT...",import_ui,PF_ParamFlag_SUPERVISE,ImportLUTId);
+    AEFX_CLR_STRUCT(def);auto empty=fstr::ae::new_external_reference(in_data);
+    def.param_type=PF_Param_ARBITRARY_DATA;PF_STRNNCPY(def.PF_DEF_NAME,"External LUT reference",sizeof(def.PF_DEF_NAME));def.flags=PF_ParamFlag_CANNOT_TIME_VARY;def.ui_flags=PF_PUI_NO_ECW_UI;def.u.arb_d.id=ExternalLUTId;def.uu.id=ExternalLUTId;def.u.arb_d.dephault=empty;
+    if((err=PF_ADD_PARAM(in_data,-1,&def))!=PF_Err_NONE){PF_DISPOSE_HANDLE(empty);return err;}
+    AEFX_CLR_STRUCT(def);def.ui_flags=PF_PUI_CONTROL|PF_PUI_DONT_ERASE_CONTROL;def.ui_width=300;def.ui_height=24;PF_ADD_NULL("LUT file",LUTFileInfoId);
     out_data->num_params=ParamCount;return err;
 }
 template<class P>constexpr double channel_max() {
@@ -342,7 +355,7 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
 }
 PF_Err render(PF_InData* in_data,PF_EffectWorld& input,PF_EffectWorld& output,bool smart,const std::vector<TemporalInput>& neighbors={},const std::vector<PreparationInput>& declared_anchors={}) {
     if(output.width==0||output.height==0)return PF_Err_NONE;
-    Params params(in_data);const auto s=settings(params);const auto transfer=host_transfer(params);
+    Params params(in_data);const auto s=settings(params,in_data);const auto transfer=host_transfer(params);
     const auto primaries=static_cast<int>(transfer)<0?fstr::Primaries::Unknown:fstr::Primaries::SRGB_Rec709;
     const fstr::ColorProcessor validated(s,transfer,primaries,fstr::Alpha::Premultiplied);
     const bool auto_prepare=params[AutoPrepare].u.bd.value&&s.mix>0;
@@ -393,6 +406,8 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
     }
     const bool active=enabled.u.bd.value&&look.u.pd.value>1&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0;
     const bool prepare_active=preparation.u.bd.value&&mix.u.fs_d.value>0;
+    std::string external_identity;
+    if(look.u.pd.value==static_cast<int>(fstr::builtin_look_count+1)&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0){PF_ParamDef file{};const auto e=PF_CHECKOUT_PARAM(in_data,LUTReference,in_data->current_time,in_data->time_step,in_data->time_scale,&file);if(e)return e;const auto value=fstr::ae::external_reference(in_data,file.u.arb_d.value);if(!value.look)throw fstr::ae::ExternalLUTError("Custom LUT unavailable. Use Import LUT to choose or relink the file.");external_identity=value.identity;}
     if(prepare_active&&source.u.pd.value!=1)throw PreparationError("Auto Prepare requires normal SDR");
     const auto analysis_cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);
     if(extra->cb->GuidMixInPtr){std::string guid=std::string("FSTR_NATIVE_BASE_V2/")+fstr::color_build_id+"/"+(active&&analysis_cache?analysis_cache->guid():active&&automatic?automatic->guid():"inactive");
@@ -400,7 +415,8 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
         // which time supplies the output pixels, even when AE coalesces that set.
         // This salts host output caching only; the shot recipe remains reusable.
         if(prepare_active)guid+="/SDR_SHOT_V2_AE_TIME_V1/"+std::to_string(in_data->current_time)+"/"+std::to_string(in_data->time_scale)+"/"+std::to_string(in_data->time_step)+"/"+std::to_string(in_data->total_time);
-        const auto error=extra->cb->GuidMixInPtr(in_data->effect_ref,static_cast<A_u_long>(guid.size()),guid.data());if(error)return error;}else if(prepare_active||(active&&(analysis_cache||automatic)))return PF_Err_BAD_CALLBACK_PARAM;
+        if(!external_identity.empty())guid+="/CUSTOM_LUT_V1/"+external_identity;
+        const auto error=extra->cb->GuidMixInPtr(in_data->effect_ref,static_cast<A_u_long>(guid.size()),guid.data());if(error)return error;}else if(prepare_active||!external_identity.empty()||(active&&(analysis_cache||automatic)))return PF_Err_BAD_CALLBACK_PARAM;
     PF_CheckoutResult result{};
     auto err=extra->cb->checkout_layer(in_data->effect_ref,Input,(active||prepare_active)?1000:Input,&request,in_data->current_time,in_data->time_step,in_data->time_scale,&result);
     if(err)return err;
@@ -457,14 +473,16 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
         switch(cmd) {
             case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR Grading | Build %s\rReady-to-use image: keep default input.\rCamera Log: match its profile in Advanced.\r3D: choose Linear RGB or ACEScg to match the render.\rUnknown profile? Check with the source creator.",fstr::color_build_id);break;
             case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();initialize_automatic_analysis();initialize_preparation_cache();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
-            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&preparation_cache,std::shared_ptr<fstr::SdrPreparationCache>{});std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
+            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&preparation_cache,std::shared_ptr<fstr::SdrPreparationCache>{});std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();fstr::ae::clear_external_references();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_SEQUENCE_SETDOWN:fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             // AE supplies the current flag words; never rewrite static capability bits here.
             // There are no parameter-dependent flag changes in this effect.
             case PF_Cmd_QUERY_DYNAMIC_FLAGS:break;
             case PF_Cmd_PARAMS_SETUP:return params_setup(in_data,out_data);
-            case PF_Cmd_EVENT:return fstr::ae::metadata_event(in_data,static_cast<PF_EventExtra*>(extra));
+            case PF_Cmd_ARBITRARY_CALLBACK:return fstr::ae::external_arbitrary(in_data,static_cast<PF_ArbParamsExtra*>(extra));
+            case PF_Cmd_USER_CHANGED_PARAM:if(extra&&static_cast<PF_UserChangedParamExtra*>(extra)->param_index==ImportLUT){try{return fstr::ae::import_external_lut(in_data,out_data,params);}catch(const std::exception&){throw fstr::ae::ExternalLUTError("Could not import LUT. Check the file and supported format; the previous LUT is unchanged.");}}break;
+            case PF_Cmd_EVENT:{auto* event=static_cast<PF_EventExtra*>(extra);if(event&&event->effect_win.index==LUTFileInfo&&event->effect_win.area==PF_EA_CONTROL&&event->e_type==PF_Event_DRAW){PF_ParamDef ref{};auto e=PF_CHECKOUT_PARAM(in_data,LUTReference,in_data->current_time,in_data->time_step,in_data->time_scale,&ref);if(e)return e;std::string label;try{const auto value=fstr::ae::external_reference(in_data,ref.u.arb_d.value);label=value.path.empty()?"No LUT selected":(value.error.empty()?"":"Unavailable: ")+std::filesystem::path(value.path).filename().string();}catch(...){PF_CHECKIN_PARAM(in_data,&ref);throw;}e=PF_CHECKIN_PARAM(in_data,&ref);if(e)return e;return fstr::ae::draw_info_line(in_data,event,label);}return fstr::ae::metadata_event(in_data,event);}
             case PF_Cmd_RENDER:return render(in_data,params[Input]->u.ld,*output,false);
             case PF_Cmd_SMART_PRE_RENDER:return pre_render(in_data,static_cast<PF_PreRenderExtra*>(extra));
             case PF_Cmd_SMART_RENDER:return smart_render(in_data,static_cast<PF_SmartRenderExtra*>(extra));
@@ -473,6 +491,7 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
         return PF_Err_NONE;
     }catch(PF_Err err){return err;}
      catch(const std::bad_alloc&){return PF_Err_OUT_OF_MEMORY;}
+     catch(const fstr::ae::ExternalLUTError& e){out_data->out_flags|=PF_OutFlag_DISPLAY_ERROR_MESSAGE;std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"%s",e.what());return PF_Err_BAD_CALLBACK_PARAM;}
      catch(const PreparationError&){out_data->out_flags|=PF_OutFlag_DISPLAY_ERROR_MESSAGE;std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Auto Prepare SDR could not run. Use normal SDR footage and fixed clip timing, or turn Auto Prepare SDR off.");return PF_Err_BAD_CALLBACK_PARAM;}
      catch(const SmartAnalysisError&){out_data->out_flags|=PF_OutFlag_DISPLAY_ERROR_MESSAGE;std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Smart analysis could not run. Check the plugin model installation or turn Smart off.");return PF_Err_BAD_CALLBACK_PARAM;}
      catch(const fstr::UnsupportedColorProfile&){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Choose AE Pixel Encoding. Linearized project: select Linear. Sony override requires preserved, unconverted Log samples.");return PF_Err_BAD_CALLBACK_PARAM;}

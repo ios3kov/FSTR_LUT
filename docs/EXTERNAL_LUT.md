@@ -1,0 +1,29 @@
+# EXT-LUT-001 — external LUT import
+
+User requests import like native Apply Color LUT, four target formats .cube/.3dl/IRIDAS.look/cineSpace.csp. Latest explicit override: **do not embed LUT data in the AE project**. Persist only an external reference (path and small revision/fingerprint metadata); LUT file stays separate. Display FSTR Grading in FSTR Effects; preserve saved indices/internal match names. No installer/release.
+
+One Import LUT file chooser; appended **Custom** look (last menu entry), existing Look Amount/Mix/Smart pipeline. Keep built-in choices stable. Cancel/bad files retain last working reference/look. Missing external file after reopening must be explicit, allow relink, never silently return another look. Copy/undo/save/reopen must retain references and own memory safely. External look/strength switches must reuse compatible Smart analysis; Mix0 must remain exact and independent of file availability. No source gamut/Log inference.
+
+Native C++ OpenColorIO2.4.2 pinned BSD3dependency in private namespace for format semantics; no Python runtime, source external to Git and required notices retained. Existing built-ins retain their exact reference tetrahedral math. External processors remain immutable/thread-safe, native reference interpolation and file-domain handling. Maximum source32MiB/grid65/shaper65536/16operations. Read bounded regular file into immutable temporary snapshot at import/project restoration; remove it after processor construction. Persist no source bytes/nodes in project. File I/O/parsing never from frame processing; references own cached CPU resources until disposal. Exceptions cannot cross AE API.
+
+Acceptance: independent known-node/channel-order/shaper tests for all four formats; malformed/truncated/nonfinite/oversized/unknown/missing/directory paths; references contain no LUT data; exact built-in regression; callback ownership/flat/copy/dispose/interpolation/resource failures; native chooser/cancel/relink/Mix0/look-strength/Smart reuse; old-project compatibility; fresh-process restore/missing/relink and actual rendered numeric comparison. Import remains in verification until the actual native chooser and fresh-process restoration checks pass.
+
+Sources: Adobe Utility effects documentation (formats) and official OpenColorIO v2.4.2 file-format implementations/SDK. Current external workspace `../external-lut-20261018`; private static build under deps/. No independent parser reinterpretation of ambiguous .3dl/CSP preluts.
+
+## Build and dependency scope
+
+Set `FSTR_OCIO_ROOT` to a static OpenColorIO **2.4.2** installation compiled with `OCIO_NAMESPACE=FSTRColorIO_v2_4`, Python/apps/tests/docs disabled, SIMD disabled for this reference build. Add its dependency prefix to `CMAKE_PREFIX_PATH`. The SDK selection overrides a stale `OpenColorIO_DIR`; when switching instrumented dependency variants, use a fresh build directory or clear cached dependency package paths too. Instrument all C++ dependencies consistently for ASan/UBSan. Initial mixed builds reported a libc++ vector container overflow; an isolated build with instrumented OCIO/pystring/Imath/yaml-cpp passes all17 tests without suppressions. Apple system libraries and ORT remain instrumentation gaps.
+
+Notices and the official OCIO source archive checksum are retained in `third_party/external_lut/`. Native package also includes the five required notices. This is four-format support through OCIO, not every Adobe-specific dialect: integer Flame/Lustre `.3dl` fixtures are verified; arbitrary float `.3dl` variants and nonuniform CSP grids are not certified. Maximum Look Amount remains300%, visual slider0–100%; external LUTs follow the same color/Smart pipeline as built-in looks.
+
+## Verification checkpoint — 2026-10-18
+
+- PASS:17Release targets (`tests-final-reviewed.log`) and17ASan/UBSan targets (`tests-sanitize-final.log`); no sanitizer suppression. Built-in regression and native callback fixture included.
+- PASS: separate CPU CLI renders for all four authored LUT formats. This is a numeric test fixture, not a host export or a creative look acceptance.
+- PASS: scoped offline code scanner, `audit-final.json`, no findings in scanned scope; source has a later documentation/provenance-only update.
+- PASS: separate final review of ownership/registry lock protocol, reference serialization, failure handling, cache separation, parameter compatibility and parser budgets. Corrected stale CMake package selection; preserved initial failing reports.
+- NOT_RUN: actual native file chooser, Cyrillic filename rendering, cancel/invalid/undo, fresh-process project restore/missing-file/relink, AE exports versus CPU references, old-project/current-LUT Smart cache trace. No host startup helper executed or project opened in this attempt.
+- BLOCKED: exact own AE25.6 pid24652 before plugin load, kernel `sysctl` called by Adobe `AllPreviousAppInstancesExitedNormally`. Sample and own launch/cancellation receipts retained. Kernel-blocked process did not finish on SIGTERM orSIGKILL; do not call its exit normal. No user project was touched.
+- PASS: signed candidate **fa7cd7bd1a3291eb** preserved in `../external-lut-20261018/candidate/` and `host/candidate-not-host-accepted.plugin`; prior tested **ac8fd7cefc63305c** restored byte-for-byte; nonce-owned test helper archived. Installed external LUT feature remains unavailable pending host acceptance.
+
+Resume after the blocked empty AE process has gone (a Mac restart may be needed): verify no AE process, installed branding receipt/inventory and candidate source. Reinstall preserved candidate and own helper with a fresh host nonce/folder; do not rerun the original launch script without updating its already-existing archive checks. Then execute the native acceptance list above. Prepared GUI fixtures, CPU RGBA references and typed host commands are under `../external-lut-20261018/`. No installer, release or push performed.

@@ -1,0 +1,29 @@
+{
+  "OpenColorIO": {
+    "version": "2.4.2",
+    "source": "https://github.com/AcademySoftwareFoundation/OpenColorIO/archive/refs/tags/v2.4.2.tar.gz",
+    "archive_sha256": "2d8f2c47c40476d6e8cea9d878f6601d04f6d5642b47018eaafa9e9f833f3690",
+    "private_namespace": "FSTRColorIO_v2_4"
+  },
+  "notices": {
+    "OpenColorIO-2.4.2.txt": "82a40c52065ee968aa62015735e84378ac11425db7a233e6a2dcd2c83fc24276",
+    "pystring.txt": "7b565d49be50a0490b38ae69d22f1e93ce9449546a99a8a1efcaf0ae922b7442",
+    "minizip-ng.txt": "675181c03fc1302a1c8554c00f7be9bb420c5dbc9dcc2013433cec144413de03",
+    "Imath.txt": "c20236d3b39fd20eba8e3d1fb3b892a5483df2e7d8d61bf43f165d3fac22f601",
+    "yaml-cpp.txt": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b"
+  },
+  "dependencies": {
+    "pystring": {
+      "source_commit": "c2de99deb4f0bd13751f8436400b5e8662301769"
+    },
+    "yaml-cpp": {
+      "source_commit": "0579ae3d976091d7d664aa9d2527e0d0cff25763"
+    },
+    "Imath": {
+      "source_commit": "c0396a055a01bc537d32f435aee11a9b7ed6f0b5"
+    },
+    "libminizip-ng": {
+      "source_commit": "241428886216f0f0efd6926efcaaaa13794e51bd"
+    }
+  }
+}

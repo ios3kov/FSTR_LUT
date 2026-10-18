@@ -112,7 +112,13 @@ CameraMetadata cached_metadata(PF_InData* in) {
 }
 std::vector<DRAWBOT_UTF16Char> ascii_display(const std::string& value) {
     std::vector<DRAWBOT_UTF16Char> out;out.reserve(value.size()+1);
-    for(unsigned char c:value)out.push_back(static_cast<DRAWBOT_UTF16Char>(c>=32&&c<127?c:'?'));out.push_back(0);return out;
+    for(std::size_t i=0;i<value.size()&&out.size()<4096;){
+        const auto first=static_cast<unsigned char>(value[i++]);std::uint32_t cp=first;int n=0;
+        if(first>=0xc2&&first<=0xdf){cp=first&31;n=1;}else if(first>=0xe0&&first<=0xef){cp=first&15;n=2;}else if(first>=0xf0&&first<=0xf4){cp=first&7;n=3;}else if(first>=128)cp='?';
+        bool valid=i+std::size_t(n)<=value.size();for(int j=0;j<n&&valid;++j){auto c=static_cast<unsigned char>(value[i+j]);if((c&0xc0)!=0x80)valid=false;else cp=(cp<<6)|(c&63);}
+        if(!valid||cp>0x10ffff||(cp>=0xd800&&cp<=0xdfff)||(n==2&&cp<0x800)||(n==3&&cp<0x10000)){cp='?';n=0;}i+=std::size_t(n);
+        if(cp<32)cp='?';if(cp<=0xffff)out.push_back(static_cast<DRAWBOT_UTF16Char>(cp));else {cp-=0x10000;out.push_back(static_cast<DRAWBOT_UTF16Char>(0xd800+(cp>>10)));out.push_back(static_cast<DRAWBOT_UTF16Char>(0xdc00+(cp&1023)));}
+    }out.push_back(0);return out;
 }
 struct DrawObjects {
     const DRAWBOT_SupplierSuite1* supplier;
@@ -125,7 +131,7 @@ struct DrawObjects {
     }
     ~DrawObjects(){close();}
 };
-PF_Err draw(PF_InData* in,PF_EventExtra* extra,const CameraMetadata& value) {
+PF_Err draw(PF_InData* in,PF_EventExtra* extra,const std::array<std::string,3>& lines) {
     Suites suites(in->pica_basicP);
     const auto* ui=suites.get<PF_EffectCustomUISuite1>(kPFEffectCustomUISuite,kPFEffectCustomUISuiteVersion1);
     const auto* bot=suites.get<DRAWBOT_DrawbotSuite1>(kDRAWBOT_DrawSuite,kDRAWBOT_DrawSuite_Version1);
@@ -146,6 +152,16 @@ PF_Err draw(PF_InData* in,PF_EventExtra* extra,const CameraMetadata& value) {
     if(!err)err=supplier->GetDefaultFontSize(supply,&font_size);
     if(!err)err=supplier->NewDefaultFont(supply,font_size,&objects.font);
     if(!err)err=supplier->NewBrush(supply,&fg,&objects.brush);
+    for(std::size_t i=0;i<lines.size()&&!err;++i) {
+        const auto string=ascii_display(lines[i]);DRAWBOT_PointF32 origin{area.left+5,area.top+font_size+4+float(i)*(font_size+5)};
+        err=surface->DrawString(canvas,objects.brush,objects.font,string.data(),&origin,kDRAWBOT_TextAlignment_Left,kDRAWBOT_TextTruncation_EndEllipsis,std::max(0.f,area.width-10));
+    }
+    const auto objects_released=objects.close();if(!err)err=objects_released;
+    const auto released=suites.close();return err?static_cast<PF_Err>(err):released;
+}
+}
+PF_Err draw_info_line(PF_InData* in,PF_EventExtra* extra,const std::string& text){const auto e=draw(in,extra,{text,"",""});if(!e)extra->evt_out_flags|=PF_EO_HANDLED_EVENT;return e;}
+std::array<std::string,3> metadata_lines(const CameraMetadata& value){
     std::array<std::string,3> lines;
     if(value.status==MetadataStatus::Found) {
         lines[0]=(value.manufacturer.empty()?"Camera":value.manufacturer)+(value.model.empty()?"":" "+value.model);
@@ -157,19 +173,13 @@ PF_Err draw(PF_InData* in,PF_EventExtra* extra,const CameraMetadata& value) {
         lines[1]="Normal image? Keep the default input.";
         lines[2]="Log or 3D? Choose Input Profile in Advanced.";
     }
-    for(std::size_t i=0;i<lines.size()&&!err;++i) {
-        const auto string=ascii_display(lines[i]);DRAWBOT_PointF32 origin{area.left+5,area.top+font_size+4+float(i)*(font_size+5)};
-        err=surface->DrawString(canvas,objects.brush,objects.font,string.data(),&origin,kDRAWBOT_TextAlignment_Left,kDRAWBOT_TextTruncation_EndEllipsis,std::max(0.f,area.width-10));
-    }
-    const auto objects_released=objects.close();if(!err)err=objects_released;
-    const auto released=suites.close();return err?static_cast<PF_Err>(err):released;
-}
+    return lines;
 }
 PF_Err metadata_event(PF_InData* in,PF_EventExtra* extra) {
     if(!extra||extra->effect_win.index!=CameraInfo||extra->effect_win.area!=PF_EA_CONTROL)return PF_Err_NONE;
     if(extra->e_type==PF_Event_DO_CLICK){clear_metadata_cache(in->effect_ref);extra->evt_out_flags|=PF_EO_HANDLED_EVENT|PF_EO_UPDATE_NOW;return PF_Err_NONE;}
     if(extra->e_type!=PF_Event_DRAW)return PF_Err_NONE;
-    const auto result=draw(in,extra,cached_metadata(in));if(!result)extra->evt_out_flags|=PF_EO_HANDLED_EVENT;return result;
+    const auto result=draw(in,extra,metadata_lines(cached_metadata(in)));if(!result)extra->evt_out_flags|=PF_EO_HANDLED_EVENT;return result;
 }
 void clear_metadata_cache(PF_ProgPtr effect){std::lock_guard<std::mutex> lock(cache_mutex);cache.erase(effect);}
 void clear_all_metadata_cache(){std::lock_guard<std::mutex> lock(cache_mutex);cache.clear();}

@@ -72,7 +72,12 @@ LUT LUT::identity(std::size_t size) {
                 lut.nodes_.push_back({double(r)/double(size-1),double(g)/double(size-1),double(b)/double(size-1)});
     return lut;
 }
+LUT LUT::from_sampler(std::function<RGB(RGB)> fn) {
+    if(!fn)throw std::invalid_argument("Missing external LUT sampler");
+    LUT lut;lut.sampler_=std::move(fn);return lut;
+}
 RGB LUT::sample(RGB input) const {
+    if(sampler_){if(!finite(input))throw std::invalid_argument("Invalid LUT input");const auto out=sampler_(input);if(!finite(out))throw std::invalid_argument("External LUT exceeded finite range");return out;}
     if(!size_ || !finite(input)) throw std::invalid_argument("Invalid LUT/sample");
     auto in=channels(input),lo=channels(minimum_),hi=channels(maximum_);
     std::array<std::size_t,3> base{}; std::array<double,3> frac{},residual{};

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <istream>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -29,12 +30,16 @@ class LUT final {
 public:
     static LUT parse(std::istream& stream);
     static LUT identity(std::size_t size);
+    // Immutable external CPU transform. The owner must capture all resources;
+    // concurrent calls must be safe. No file or host access during sample().
+    static LUT from_sampler(std::function<RGB(RGB)>);
     RGB sample(RGB input) const;
     std::size_t size() const { return size_; }
 private:
     std::size_t size_ = 0;
     RGB minimum_{0,0,0}, maximum_{1,1,1};
     std::vector<RGB> nodes_;
+    std::function<RGB(RGB)> sampler_;
 };
 struct PackedTensor {
     std::size_t half_width = 0, half_height = 0;

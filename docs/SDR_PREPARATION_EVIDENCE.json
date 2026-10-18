@@ -1,0 +1,189 @@
+{
+  "requirement": "SDR-PREP-001",
+  "base_commit": "d77d71872f5b09c3bc6e999998725b69411fb725",
+  "algorithm": "sdr-shot-v2-prototype",
+  "tests": {
+    "release": "3/3 focused targets PASS",
+    "asan_ubsan": "3/3 focused targets PASS",
+    "cli_refusals": "6/6 PASS",
+    "red_white_anchor": "FAIL before two-anchor correction, PASS after"
+  },
+  "base_frames": 240,
+  "styled_frames": 240,
+  "base_range": "strict[0,1]",
+  "look_float_min": -1.687069434902962e-35,
+  "look_roundoff_tolerance": 1e-07,
+  "settings": [
+    {
+      "name": "kitchen",
+      "recipe": {
+        "algorithm": "sdr-shot-v2-prototype",
+        "amount": 1.0,
+        "brightness_bias": 0.027422619009248046,
+        "contrast": 1.0469819773351945,
+        "decision": "prepared",
+        "flatness": 0.3080075473908672,
+        "high": 0.6604188528559992,
+        "low": 0.019477539259483565,
+        "median": 0.34426890883265104,
+        "samples": 15552,
+        "saturation": 1.0160853436838613,
+        "schema": 1,
+        "analysis_wall_ms": 408.68554200278595
+      },
+      "artificial": false
+    },
+    {
+      "name": "performers",
+      "recipe": {
+        "algorithm": "sdr-shot-v2-prototype",
+        "amount": 1.0,
+        "brightness_bias": -0.002767188385044391,
+        "contrast": 1.0059771283362715,
+        "decision": "prepared",
+        "flatness": 0.10312178687710105,
+        "high": 0.7272513887831452,
+        "low": 0.017757421664473756,
+        "median": 0.103012104740636,
+        "samples": 15552,
+        "saturation": 1.0,
+        "schema": 1,
+        "analysis_wall_ms": 18.679540953598917
+      },
+      "artificial": false
+    },
+    {
+      "name": "wide",
+      "recipe": {
+        "algorithm": "sdr-shot-v2-prototype",
+        "amount": 1.0,
+        "brightness_bias": 0.06104794468245691,
+        "contrast": 1.0097584026252733,
+        "decision": "prepared",
+        "flatness": 0.1356620992943487,
+        "high": 0.5316080391524958,
+        "low": 0.00814579065194399,
+        "median": 0.05284332194132075,
+        "samples": 15552,
+        "saturation": 1.0,
+        "schema": 1,
+        "analysis_wall_ms": 25.957166973967105
+      },
+      "artificial": false
+    },
+    {
+      "name": "controlled-flat",
+      "recipe": {
+        "algorithm": "sdr-shot-v2-prototype",
+        "amount": 1.0,
+        "brightness_bias": 0.45,
+        "contrast": 1.8,
+        "decision": "prepared",
+        "flatness": 1.0,
+        "high": 0.3946226979700293,
+        "low": 0.03860409226530313,
+        "median": 0.23659610309687426,
+        "samples": 15552,
+        "saturation": 1.0759980586062783,
+        "schema": 1,
+        "analysis_wall_ms": 29.17429100489244
+      },
+      "artificial": true
+    }
+  ],
+  "videos": [
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/manual-vs-auto.mp4",
+      "frames": 336,
+      "sha256": "0fbc55e544597b4ce8a30376a5c952599902c63e1a28aa73446bd7cd7b24be8c",
+      "decode": "PASS"
+    },
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/auto-look.mp4",
+      "frames": 336,
+      "sha256": "e9f4b78eb0ed4f96cf6810bf962b2bcf8938aae2d97f2aa3d97378d227b9e229",
+      "decode": "PASS"
+    },
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/controlled-flat.mp4",
+      "frames": 144,
+      "sha256": "e1ee6bf537b82a0282772cf3b61488d65b3791dfecc142ac22c533474bf99c14",
+      "decode": "PASS"
+    }
+  ],
+  "review": {
+    "scope": "Separate final review of prototype code, analytic/behavior tests and delivered full-size comparison stills",
+    "functional": "PASS within exercised SDR prototype contract",
+    "visual_judgment": "v2 controlled flattening has brighter whites/deeper darks than v1; kitchen natural and outdoor scenes stay restrained, without conspicuous color blotches in inspected stills. Auto base is lighter than the chosen manual darkening on outdoor shots; this is a different artistic choice, not objective superiority.",
+    "source_fidelity": "PASS scoped provenance: real published Nikon Flat reel already edited by author; severe-flat branch explicitly artificial encodedRGB=.12+.65*source, not untouched camera flat/Log.",
+    "reviewed": [
+      "bounded borrowed input views/stride/alpha/transfer",
+      "sample-grid and memory bounds",
+      "deterministic quantiles and immutable recipe",
+      "monotone tone curve, luminance-preserving chroma bounds and floating residue",
+      "neutral copy, cancellation, exception/CLI boundaries",
+      "versioned v2 recipes refusing v1",
+      "existing installed adapter not linked to new prototype",
+      "final labels/footer/aspect/watermark at delivery size"
+    ],
+    "not_run": [
+      "AE integration/runtime of this new feature",
+      "automatic shot-boundary/anchor selection",
+      "per-shot recipe cache in AE and upstream invalidation",
+      "continuous visual flicker acceptance",
+      "untouched flat-camera and paired graded-Log comparison",
+      "Windows/Linux execution"
+    ],
+    "acceptance": "Prototype scope complete; universal automatic professional grading and product readiness not established"
+  },
+  "installed_current": {
+    "build_id": "9838bb4d38c6e9c9",
+    "unchanged": true
+  },
+  "source_sha256": {
+    "CMakeLists.txt": "8d874b1f3827db650743d81dc42adf3d6f86cced180daf9e7f35741265d74dea",
+    "include/fstr/sdr_prepare.hpp": "e3a6218030c36f32790a29fa31d31b9ec79c6e9061e38b2d43fab0a3f53624d5",
+    "src/color/sdr_prepare.cpp": "dc17e4d8e2f296ac83864705ea077401310827ec248fe864487ef8eb15636c36",
+    "tools/benchmark/sdr_prepare_main.cpp": "bc7bacc6e8645ff3e9f4e1bdb5b75e6ca8af2129934392b09ca04b28a34109c7",
+    "tests/sdr_prepare_tests.cpp": "422ce6f336bc9e27ab5ee01fa7087346af7c7221b344fd6bedb29c47f2c9fd65"
+  },
+  "artifacts": {
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/tests.log": "f5e000399918f590ff8d417a97383fa79bc1f1a68dda1811ae37346c3acab91d",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/sanitize-tests.log": "a7731455747a2f991bd0bcf46d72229495712733ffbc454e03eb8cecde5996cb",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/white-anchor-red.log": "d80fc94ae338d526344e2fe287c2b1df1489182c1338a63c83ef2df202367e1d",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/cli-refusals.json": "e54830dcb8a0a59a55055e0245a121ba756cc654ca294e0ff2a69b6d0bc954c2",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/render-verification.json": "672e51159ec025ce7ad02dd5bf924d019b02d3792c2fc2925039f76d5846baf8",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/delivery-verification.json": "8c3e79153892a71241c26c6e2a756b3f3252281a3cc877172ccad7b42236eed0",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/final-review.json": "d67bf5b26e1fa9006ac7deab4e84b37ee23fc83bdad61b62443f99c0e142aff2",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/final-audit.json": "5ba662cf4e4eb2173d645d233998c43f4a539e4384d48f19800018268adbe519",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/installed-unchanged.json": "77435dfd184e561d84326f580c30db632720118bd1e3e24ee6954599aa83396e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/styled-roundoff.json": "e0bf57436adfe6f45b380a13e6447a7a956cd44884e03dc7a44a8873b455ae30",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/cases.json": "67f172d85caee9caaa75f30db14cac4503ec9e319477248afd8313f6ca018365",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/controlled-flat-three-way.png": "5a784babc88546b1425c67a38661a84d95a8d0fc8f80b1a8e5bce6d3635cbd31",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/manual-vs-auto-kitchen.png": "0a77f147bc9ce8817697303b4ee2ba3ee0c56b65035039323b4cfc288d670309",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/manual-vs-auto-performers.png": "7892e217f4d1c8f4032e97be4edbf4eb95bd720b7b7436011f3fe43a0a93b63b",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/manual-vs-auto-wide.png": "5997e36be9948c29cdb39044282a677f66abd1a8b5190283f23352b6c6cfae72",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/auto-look-wide.png": "2a2b6d9a45a274b35b76dac2adc5c972160e961692724bcc0c1472a4b585e612",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/controlled-flat-controlled-flat.png": "e29afc00b2277024e733648b7741f67bcdbae32c48d3667a5a0a8994e77a9fbd",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/build/fstr_sdr_prepare_cli": "5d5f8af1c227755a8135286524257a557fcd5e5e56261766d3c35fbbda4fdbbb",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/build/fstr_sdr_prepare_tests": "b5d9816128317192b22a296cdb0b79379f4976bb9face81d09377a48cc54acb4",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/kitchen/recipe.json": "4a47ed4e96f96d62c1f27cd1b97c9639a4a67cce969d88c6c1d158d9f7db6b17",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/kitchen/anchor-0.rgba32f": "adf4ec45a785fc5e70f1cbcb65cea68705c858043b8b066fed4f3952df735355",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/kitchen/anchor-36.rgba32f": "dbac6a54f370132ecd84fd76ec1a99b41e1e47abf55fae5b745efc36e09eab19",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/kitchen/anchor-71.rgba32f": "de233456c31fa218e9aa9cc9a70f7600327b868dd61bb0adc3ed4e264701215c",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/performers/recipe.json": "f8f4fe03047a0c019f677985396634cca6c5743d16c22868d2c7c43306eacc44",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/performers/anchor-0.rgba32f": "728deb8b98671f510fbf42be5cb6708786e04eb719ace2dc759cc4c586d71be6",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/performers/anchor-24.rgba32f": "5ac1123e0f391eb631646d598b0e8bf6d08de388c43668ef931fcd882b1f9f3e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/performers/anchor-47.rgba32f": "8b0d637897d6d9e7c3b4e0df45451a49b5ba3ee5da83f537e20197d2d28a1915",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/wide/recipe.json": "136b7636959146f8a137a8077f007361dec6f6ddec6a7cc1d469bc7c9a2a8a67",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/wide/anchor-0.rgba32f": "bc9ec32a7fda66dcc071c3c460e59cb71cdacd20ba38b2601228c0e3f4cfe80e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/wide/anchor-24.rgba32f": "aa4ae7b7c0c4ae699be0fe4449c27f39cc43e13bea6e9a77d21e3ca08f9bbeeb",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/wide/anchor-47.rgba32f": "a9bae9911df817a1462646ed0a5186295f5da09ffde6fe23d565baa63624e319",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/controlled-flat/recipe.json": "f9a6851d82b75ebd09cf89b0c7d1c848c9f701e2cd84c5c609da96eb5d86e60b",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/controlled-flat/anchor-0.rgba32f": "3bdf01cc2370c6d9808f3157c7193544e3a75fb9b2f3f6696a36b5c6a7287817",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/controlled-flat/anchor-36.rgba32f": "a1bc78bfbeaa688799162c60935b42b1ebac886021e3f72cb97e2490c2d01e42",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/controlled-flat/anchor-71.rgba32f": "398f50018625c4fbe89df9688deeb86967e6e60fa68cc6028eb7b3fdab6fd2a8",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/png-inventory.json": "7a388fd8cda75c9afd5d8968daa0f2b667f052dd00bf4112d3f641c078e0333e",
+    "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-preparation-20261018/close-audit.json": "3adbf63158aec2373cb334a826c3fa0c3508c7c5df5ff29e11d8c4067ebf3863"
+  }
+}

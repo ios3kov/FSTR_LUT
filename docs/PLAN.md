@@ -1,3 +1,7 @@
+## Automatic SDR preparation prototype — 2026-10-18
+
+SDR-PREP-001 adds a standalone C++17 shot-anchor estimator and bounded SDR tone/chroma transform, versioned v2 CLI recipe and meaningful numeric/behavior tests. White-uniform defect in first median estimator corrected by dark/light-anchor fitting; failing regression retained.3Release/3ASan+UBSan focused targets and6CLI refusals pass.240base+240styled frames, byte-exact out-of-order repeat, three decoded comparison videos reviewed in sampled stills. This is separate core research: installed Current9838bb4d38c6e9c9 unchanged; AE controls/shot selection/recipe-cache integration pending. No universal professional/Log-equivalent or continuous flicker acceptance. [Contract/evidence](SDR_PREPARATION.md).
+
 ## Three-scene SDR grading examples — 2026-10-18
 
 SDR-GRADE-REVIEW-001: two additional real outdoor shots,194accepted actual AE exports and eight core comparisons within one8bit code.192CPU float outputs finite/in-range with unchanged alpha. Delivered Natural and Teal&Orange65%+Smart comparisons covering kitchen/performers/wide group,14s each, plus a saved/reopened editable AE project. Final visual review rejected an existing author dissolve; replaced84–86s with clean82–84s and repeated affected checks. No product math/default/model changes; installed Current9838bb4d38c6e9c9 preserved. Fixed manual shot settings and sampled visual judgments do not establish universal automatic/Log-equivalent grading. [Outputs/evidence](SDR_GRADE_REVIEW.md).

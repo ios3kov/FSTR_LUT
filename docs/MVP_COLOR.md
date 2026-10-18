@@ -1,3 +1,7 @@
+# Current cache improvement — 2026-10-18
+
+Working installed Current is7be976a9a5160b0e after SMART-CACHE-LATENCY-001: unchanged color/model math and controls; accepted42ee remains archived byte-exact as quality reference. Actual18baseline comparisons across24native exports pass <=1PSD8code; masks persist across launches and complete5-frame windows stay in RAM for LUT/strength edits. This does not establish fast playback or accelerate the color kernel. [Details](SMART_CACHE_LATENCY.md).
+
 # Accepted quality and acceleration baseline — 2026-10-18
 
 User accepts shown quality of42ee1edaaff01753. Preserve that bundle and the linked accepted comparison artifacts while accelerating. SMART-STAGE-PROFILE-001 measures six standalone inputs and16AE diagnostic exports; it changes no color, mask, model, encoding defaults or installed product bytes. Actual RAM-warm Smart still takes1509ms at960x540 in the scoped trial; no real-time claim. [Measurements and next work](SMART_STAGE_PROFILING.md).

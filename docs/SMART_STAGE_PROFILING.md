@@ -36,7 +36,7 @@ All16exports complete;13unchanged-setting comparisons against accepted exports p
 
 ## Selected follow-up
 
-1. Separate short resident RAM/LRU locking from the serialized miss path. Keep inference serialized until concurrency is independently qualified. Recheck RAM after the miss gate; preserve cancellation/failure wakeup and clear-memory generation semantics. This removes a measured avoidable wait; it does not make the scene model faster.
+1. **Completed by [SMART-CACHE-LATENCY-001](SMART_CACHE_LATENCY.md):** separate short resident RAM/LRU locking from the serialized miss path. Keep inference serialized until concurrency is independently qualified. Recheck RAM after the miss gate; preserve cancellation/failure wakeup and clear-memory generation semantics. This removes a measured avoidable wait; it does not make the scene model faster.
 2. Measure and reduce repeated per-pixel color work against the accepted outputs; model acceleration alone cannot establish a fast complete path.
 3. Evaluate acceleration of the existing scene model on this Mac, comparing output and complete-path times. No downsampling/model replacement/FP16 or changed mask quality is accepted implicitly.
 

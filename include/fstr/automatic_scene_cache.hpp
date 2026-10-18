@@ -10,6 +10,8 @@ public:
  AutomaticSceneCache(std::string directory,std::string policy,SceneCompute compute);
  ~AutomaticSceneCache();
  std::shared_ptr<const SceneAnalysis> get(const AnalysisImage&,double,const std::function<void()>& cancellation={},const std::string& source_identity={});
+ // Clears resident entries immediately; older requests cannot republish into
+ // the new generation. Persistent entries remain available on the next get.
  void clear_memory();
  const std::string& guid()const noexcept;
 private:

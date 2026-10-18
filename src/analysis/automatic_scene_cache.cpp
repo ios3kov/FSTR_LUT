@@ -103,17 +103,70 @@ void store(const std::filesystem::path&root,const std::string&key,const std::str
  std::sort(entries.begin(),entries.end(),[](const auto&a,const auto&b){return a.first.last_write_time()<b.first.last_write_time();});std::size_t remaining=entries.size();for(std::size_t k=0;k<entries.size()&&(total>max_disk||remaining>max_disk_entries);++k){if(entries[k].first.path()==destination)continue;std::filesystem::remove_all(entries[k].first.path());total-=entries[k].second;--remaining;}
 }
 }
-struct AutomaticSceneCache::Impl {std::filesystem::path directory;std::string policy;SceneCompute compute;std::mutex mutex;struct Entry{std::string key;std::shared_ptr<const SceneAnalysis> analysis;std::size_t bytes;};std::list<Entry> entries;std::size_t bytes=0;
+namespace {
+// A recursive miss from compute/cancellation must fail instead of waiting on
+// this thread's own serialized backend. Resident hits remain safe to borrow.
+struct ActiveSceneMiss {
+ const void* cache;ActiveSceneMiss* previous;
+ static thread_local ActiveSceneMiss* current;
+ static bool contains(const void* cache)noexcept{for(auto p=current;p;p=p->previous)if(p->cache==cache)return true;return false;}
+ explicit ActiveSceneMiss(const void* c)noexcept:cache(c),previous(current){current=this;}
+ ~ActiveSceneMiss(){current=previous;}
+};
+thread_local ActiveSceneMiss* ActiveSceneMiss::current=nullptr;
+}
+struct AutomaticSceneCache::Impl {
+ std::filesystem::path directory;std::string policy;SceneCompute compute;
+ // Never hold resident while waiting for miss, invoking callbacks or doing I/O.
+ std::mutex resident,miss;std::size_t generation=0;
+ struct Entry{std::string key;std::shared_ptr<const SceneAnalysis> analysis;std::size_t bytes;};
+ std::list<Entry> entries;std::size_t bytes=0;
  Impl(std::string d,std::string p,SceneCompute c):directory(std::move(d)),policy(std::move(p)),compute(std::move(c)){if(!directory.is_absolute()||!key_text(policy)||!compute)throw std::invalid_argument("Invalid automatic cache configuration");recover(directory);}
 };
 AutomaticSceneCache::AutomaticSceneCache(std::string d,std::string p,SceneCompute c):impl_(new Impl(std::move(d),std::move(p),std::move(c))){}
 AutomaticSceneCache::~AutomaticSceneCache()=default;
 const std::string& AutomaticSceneCache::guid()const noexcept{return impl_->policy;}
-void AutomaticSceneCache::clear_memory(){std::lock_guard<std::mutex> lock(impl_->mutex);impl_->entries.clear();impl_->bytes=0;}
+void AutomaticSceneCache::clear_memory(){
+ std::list<Impl::Entry> retired;
+ {std::lock_guard<std::mutex> lock(impl_->resident);++impl_->generation;retired.swap(impl_->entries);impl_->bytes=0;}
+ // Release potentially large analyses after unlocking resident access.
+}
 std::shared_ptr<const SceneAnalysis> AutomaticSceneCache::get(const AnalysisImage&i,double height,const std::function<void()>&cancel,const std::string&source_identity){
- const bool trace=std::getenv("FSTR_LUT_SCENE_TRACE")&&std::string(std::getenv("FSTR_LUT_SCENE_TRACE"))=="1";if(!source_identity.empty()&&!key_text(source_identity))throw std::invalid_argument("Invalid upstream identity");const auto policy=source_identity.empty()?impl_->policy:picosha2::hash256_hex_string("FSTR_SOURCE_IDENTITY_V1\n"+impl_->policy+"\n"+source_identity);auto key=scene_cache_key(i,height,policy);auto abort=[&]{if(cancel)cancel();};abort();std::unique_lock<std::mutex> lock(impl_->mutex,std::defer_lock);while(!lock.try_lock()){abort();std::this_thread::sleep_for(std::chrono::milliseconds(2));}abort();auto found=std::find_if(impl_->entries.begin(),impl_->entries.end(),[&](const auto&e){return e.key==key;});if(found!=impl_->entries.end()){if(trace)std::fprintf(stderr,"FSTR_AUTO RAM %s\n",key.c_str());auto value=found->analysis;impl_->entries.splice(impl_->entries.begin(),impl_->entries,found);return value;}
- std::shared_ptr<const SceneAnalysis> result;auto directory=impl_->directory/(key+".entry");try{if(std::filesystem::is_directory(std::filesystem::symlink_status(directory))){SceneCache cache(directory.string(),policy);result=cache.get(i,height);if(result){validate(*result,i);if(trace)std::fprintf(stderr,"FSTR_AUTO DISK %s\n",key.c_str());}}}catch(const std::exception&){result.reset();/* Invalid data is a miss; no false analysis success. */}
+ const bool trace=std::getenv("FSTR_LUT_SCENE_TRACE")&&std::string(std::getenv("FSTR_LUT_SCENE_TRACE"))=="1";
+ if(!source_identity.empty()&&!key_text(source_identity))throw std::invalid_argument("Invalid upstream identity");
+ const auto policy=source_identity.empty()?impl_->policy:picosha2::hash256_hex_string("FSTR_SOURCE_IDENTITY_V1\n"+impl_->policy+"\n"+source_identity);
+ const auto key=scene_cache_key(i,height,policy);auto abort=[&]{if(cancel)cancel();};abort();
+ std::size_t generation=0;
+ auto resident=[&](bool remember_generation){
+  std::lock_guard<std::mutex> lock(impl_->resident);if(remember_generation)generation=impl_->generation;
+  auto found=std::find_if(impl_->entries.begin(),impl_->entries.end(),[&](const auto&e){return e.key==key;});
+  if(found==impl_->entries.end())return std::shared_ptr<const SceneAnalysis>{};
+  auto value=found->analysis;impl_->entries.splice(impl_->entries.begin(),impl_->entries,found);return value;
+ };
+ auto result=resident(true);
+ auto return_resident=[&]{abort();if(trace)std::fprintf(stderr,"FSTR_AUTO RAM %s\n",key.c_str());return result;};
+ if(result)return return_resident();
+ if(ActiveSceneMiss::contains(impl_.get()))throw std::logic_error("Recursive automatic scene cache miss");
+ std::unique_lock<std::mutex> gate(impl_->miss,std::defer_lock);
+ while(!gate.try_lock()){abort();std::this_thread::sleep_for(std::chrono::milliseconds(2));}
+ ActiveSceneMiss active(impl_.get());abort();
+ // Another owner may have populated this key while we waited. Backend calls
+ // stay serialized: this is not a qualification of model parallelism.
+ result=resident(false);if(result)return return_resident();
+ auto directory=impl_->directory/(key+".entry");
+ try{if(std::filesystem::is_directory(std::filesystem::symlink_status(directory))){SceneCache cache(directory.string(),policy);result=cache.get(i,height);if(result){validate(*result,i);if(trace)std::fprintf(stderr,"FSTR_AUTO DISK %s\n",key.c_str());}}}catch(const std::exception&){result.reset();/* Invalid data is a miss; no false analysis success. */}
  abort();if(!result){if(trace)std::fprintf(stderr,"FSTR_AUTO COMPUTE %s\n",key.c_str());result=impl_->compute(i,height,cancel);abort();if(!result)throw std::runtime_error("Automatic scene analysis returned no result");validate(*result,i);try{store(impl_->directory,key,policy,*result,height);}catch(const std::exception&){/* Persistence failure retains valid current analysis. */}}
- auto bytes=validate(*result,i);impl_->entries.push_front({key,result,bytes});impl_->bytes+=bytes;while(impl_->entries.size()>4||impl_->bytes>max_resident){impl_->bytes-=impl_->entries.back().bytes;impl_->entries.pop_back();}return result;
+ const auto bytes=validate(*result,i);abort();std::list<Impl::Entry> retired;
+ {
+  std::lock_guard<std::mutex> lock(impl_->resident);
+  // clear_memory invalidates publication by requests that began before it.
+  if(generation==impl_->generation){
+   impl_->entries.push_front({key,result,bytes});impl_->bytes+=bytes;
+   // Five explicit temporal frames fit, with room for a nearby request. The
+   // existing byte ceiling remains authoritative for large analyses.
+   while(impl_->entries.size()>8||impl_->bytes>max_resident){impl_->bytes-=impl_->entries.back().bytes;retired.splice(retired.begin(),impl_->entries,std::prev(impl_->entries.end()));}
+  }
+ }
+ return result;
 }
 }

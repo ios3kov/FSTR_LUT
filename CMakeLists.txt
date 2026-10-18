@@ -364,3 +364,8 @@ if(FSTR_SANITIZE AND NOT MSVC)
     target_link_options(${t} PRIVATE -fsanitize=address,undefined)
   endforeach()
 endif()
+
+add_executable(fstr_automatic_cache_latency_tests tests/automatic_scene_cache_latency_tests.cpp)
+target_link_libraries(fstr_automatic_cache_latency_tests PRIVATE fstr_scene_color)
+add_test(NAME automatic_scene_cache_latency COMMAND fstr_automatic_cache_latency_tests)
+set_tests_properties(automatic_scene_cache_latency PROPERTIES TIMEOUT 30)

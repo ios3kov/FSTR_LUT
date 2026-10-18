@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "requirement": "CACHE-RECOVERY-001",
+  "baseline_revision": "d79c3e4ebbed14a8f2a75b5713b1b371435e2f4f",
+  "created_utc": "2026-10-18T13:39:19.069079+00:00",
+  "source_sha256": {
+    "src/analysis/automatic_scene_cache.cpp": "ba9a723bde488fd117cbdfa47ad4973cbfc457df0e1774518575e9ce9d389508",
+    "tests/automatic_scene_cache_tests.cpp": "bed0e4fb6ec13f88e8f7f277317b5442735f902a37674064d72ed8e6df25830f",
+    "docs/CACHE_RECOVERY.md": "85ffbabb7bf9dfd97fe3711f5b5acbc948b3fc0f64738d153f69a8336ce79d8d",
+    "docs/STATUS.md": "f0d8c7a2b205f9b2ab9d2c4b82661488c543fed6054866986a7eb876ca1b660c",
+    "docs/PLAN.md": "f65f057d9409fa2234fca897f25cf23652839681a90f959972bccefba4b93a15",
+    "docs/AUTOMATIC_SMART.md": "6cfbc092db6c5735312a767e990f0c5701a2f9c3165f02d51a3c942bb3c23ed9"
+  },
+  "external_receipts": [
+    {
+      "path": "../cache-recovery-20261018/release.log",
+      "sha256": "98090517b405025101b6deddc2c42eda9dc9eea90a2b92589b172e8c1b3b86b9"
+    },
+    {
+      "path": "../cache-recovery-20261018/sanitize.log",
+      "sha256": "01fd752ad8d8b04acf02641430883bf8053cdc01b7ee40d78cbb59c5f85c9f7f"
+    },
+    {
+      "path": "../cache-recovery-20261018/host-verification.json",
+      "sha256": "ce88a2400ab15d16b54844145dd87c4476a86dfb0c8e8b11447603f5c15db858"
+    },
+    {
+      "path": "../cache-recovery-20261018/prepare_host.py",
+      "sha256": "d584902f4f539a7f2bfaf44ea30105c2f2e7c26ebcb15b7f9b7da609905b1183"
+    },
+    {
+      "path": "../cache-recovery-20261018/install_host.py",
+      "sha256": "8e9f1c5d7c416356008a25cd50d49407fe0b22ef88a4e81cd3ab2c98f0882309"
+    },
+    {
+      "path": "../cache-recovery-20261018/host/test.jsx",
+      "sha256": "bff928fd6bfda6dbd1a02630e813db2163b77005197e53ec0c332f5d6ede65de"
+    },
+    {
+      "path": "../cache-recovery-20261018/host/host-report.txt",
+      "sha256": "2d6527158c11b6676904ad0025760b9581e81ce63c4b0edf677265cc841bfbbe"
+    },
+    {
+      "path": "../cache-recovery-20261018/host/package-inventory.json",
+      "sha256": "604ac429941fcc784eb4ff0e17e9a64a4d9aacce137356f8b4e5f3781e23e755"
+    },
+    {
+      "path": "../cache-recovery-20261018/host/installation.json",
+      "sha256": "75f1200b4201c5e014d2c916b1c22251aeacde022d9704326bb27bfa2b6df996"
+    },
+    {
+      "path": "../cache-recovery-20261018/host/cleanup.json",
+      "sha256": "6e979ddd997f878447a0aa981d73b537aff7696c5b7d95eb8dd65ec015e5174a"
+    },
+    {
+      "path": "../native-smart-20261018/cache-recovery-red.log",
+      "sha256": "a3dd0211ad3c1b70166c59dc47915f758ede0511a3a0d45a8f39d26c7179e753"
+    },
+    {
+      "path": "/tmp/fstr-cache-recovery-20261018-final.json",
+      "sha256": "4e883a699c12efe0d81ce56a5c4292f60826397db988061a430fefd8a40be67c"
+    },
+    {
+      "path": "/tmp/fstr-cache-recovery-20261018-checkpoint.json",
+      "sha256": "4cca693873be30f60a0a70337f28b831a38fa7aeb2f9050878d24c50b348bc16"
+    }
+  ],
+  "user_acceptance": {
+    "build_id": "d774807231370f48",
+    "statement": "Smart checks on installed new build passed",
+    "basis": "direct user message; no new universal footage guarantee"
+  },
+  "host_build_id": "450636dfa3af11bb",
+  "host_source_matches_root_except_registration": true,
+  "checks": {
+    "red_regression": "PASS expected pre-fix failure",
+    "release": "PASS 14/14",
+    "asan_ubsan": "PASS 14/14",
+    "separate_process_interrupted_writer": "PASS live exclusion, abrupt exit, restart recovery; not an actual AE crash",
+    "host": "PASS 6 actual AE exports, orphan recovery, foreign/legacy preservation",
+    "analysis_counts": {
+      "COMPUTE": 1,
+      "RAM": 3,
+      "DISK": 0
+    },
+    "pixel_checks": [
+      {
+        "label": "off-repeat",
+        "max_8bit_code_difference": 1.0
+      },
+      {
+        "label": "on-repeat",
+        "max_8bit_code_difference": 1.0
+      },
+      {
+        "label": "accepted-off",
+        "max_8bit_code_difference": 0.0
+      },
+      {
+        "label": "accepted-on",
+        "max_8bit_code_difference": 0.0
+      }
+    ],
+    "installed_and_archived_inventory": "PASS",
+    "signature": "PASS strict/deep",
+    "scanner": "PASS no findings or omissions; scope only",
+    "final_review": "PASS descriptor lifetime, nonblocking lock, cross-process exclusion, name range, symlinks, failure fallback and unchanged analysis/color",
+    "final_whitespace": "PASS after removing extra final blank line"
+  },
+  "limits": [
+    "macOS local filesystem qualified; Windows/Linux NOT_RUN",
+    "Legacy unversioned partial directories preserved because old writers do not participate in the lock protocol",
+    "No new full-motion visual claim; accepted algorithm retained",
+    "Cancellation inside inference remains open"
+  ],
+  "publication": "No push, merge or release"
+}

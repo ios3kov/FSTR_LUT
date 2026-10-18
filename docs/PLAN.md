@@ -1,3 +1,7 @@
+## Current next slice — CACHE-RECOVERY-001
+
+User accepts Smart checks on installed build d774807231370f48. Preserve its algorithm; versioned interrupted-write cleanup with cross-process live-writer exclusion is implemented and passes14Release/14ASan+UBSan targets plus the scoped six-render AE test. See CACHE_RECOVERY.md. This supersedes the pending user-trial acceptance in older entries below.
+
 ## Active follow-up — automatic Smart, 2026-10-18
 
 SRGB-DEFAULT-001 replaces the Auto follow-up: user requires sRGB default and manual Advanced choice, and explicitly cancels Auto. Preserve saved ID9values1–4and verify old-project/default migration plus new-effect rendering. Auto bridge/converter investigations are historical and not delivery prerequisites. See COLOR_AUTO_FOLLOWUP.md.

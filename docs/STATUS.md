@@ -1,5 +1,9 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Smart accepted by user — 2026-10-18
+
+User reports that Smart checks on the installed new sRGB-default Current build d774807231370f48 passed. Treat this installed-build acceptance as closed; no repeat of those visual checks or automatic promotion of experimental anchor/SAM2 paths. CACHE-RECOVERY-001 now adds safe versioned interrupted-write cleanup;14Release/14sanitizer tests and six actual AE renders pass. Installed Current build450636dfa3af11bb matches prior Off/On pixels exactly; one analysis plus three RAM hits. Accepted prior bytes preserved. See CACHE_RECOVERY.md. This does not certify unperformed time-remap/MFR/platform workflows.
+
 ## sRGB default — current user direction, 2026-10-18
 
 PASS SRGB-DEFAULT-001: new effects use sRGB immediately; manual encoding remains in collapsed Advanced. Existing disk ID9 and choices1–4 retain their meanings.14Release and14ASan/UBSan targets pass. Actual AE25.6 renders4old-project and3fresh-effect cases; stored choices survive save/reopen. Old/new legacy outputs match exactly; fresh/manual pairs agree within one8bit code. Signed trial build d774807231370f48 is installed as FSTR-LUT Auto Smart Current; its previous bytes are archived. Auto encoding is canceled. This closes default/migration only, not wider Smart quality. [Contract and evidence](COLOR_AUTO_FOLLOWUP.md#srgb-default-001--actual-host-acceptance).

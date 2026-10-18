@@ -6,6 +6,10 @@ Baseline: b2a1e03, dev/ai-enhance-prototype; macOS arm64 / AE25.6 / SDK25.6. Exi
 
 On2026-10-18the user canceled Auto encoding entirely and selected explicit sRGB default with manual Advanced override. SRGB-DEFAULT-001 in COLOR_AUTO_FOLLOWUP.md supersedes the Auto requirement in the historical sequence below; Auto is not an outstanding blocker. Smart analysis/visual obligations are unchanged.
 
+## User acceptance update — 2026-10-18
+
+User reports that Smart checks passed on the installed new Current build d774807231370f48. This supersedes the pending visual acceptance for that user trial in the historical notes below. Preserve the accepted local-median/current-geometry algorithm. Four-frame anchors/SAM2 parity remain separate experimental quality work, not a reason to rerun the accepted trial. Interrupted-cache-write recovery now passes on new Current build450636dfa3af11bb (see CACHE_RECOVERY.md); prior Off/On pixels match exactly. Broader unperformed host workflows retain their evidence limits.
+
 ## Authorized scope and acceptance
 
 AUTO-SMART-01: unseen upstream pixels must run native analysis and use current scene/person evidence, without prepared clip files or Python in AE. Do not silently substitute the older face-only effect for the accepted combined algorithm. Native model ports must be compared to their research counterparts before promotion; changed analysis geometry requires new visual acceptance.
@@ -14,14 +18,14 @@ AUTO-SMART-02: bounded independent analysis cache; Off never invokes analysis; O
 
 AUTO-SMART-03: native ownership/ABI, serialized bounded inference, cancellation, thread-safe immutable data, validated schemas/models and source-safe persistence. Model loading outside render callbacks. Preserve all installed originals and project state; install only an isolated trial after standalone checks.
 
-AUTO-SMART-04: compare real new-clip native/AE results; exercise switches, upstream change, restart, cut, save/reopen. Follow-up Auto encoding remains required under AE-AUTO-001; unknown spaces must fail explicitly rather than guess.
+AUTO-SMART-04: compare real new-clip native/AE results; exercise switches, upstream change, restart, cut, save/reopen. Encoding follows SRGB-DEFAULT-001: explicit sRGB default with Advanced overrides; Auto was canceled.
 
 ## Implementation sequence
 
 1. Prove the native model boundary (existing six-class MediaPipe and scene model) with independent reference output and resource lifetime/error checks.
 2. Port current people/scene fusion, bounded temporal context and scalar-strength aggregation; record differences from accepted prepared trial.
 3. Integrate automatic cache population and AE callback dependencies, then run isolated real host tests.
-4. Complete Auto encoding and ordinary user workflow verification.
+4. Use the verified explicit sRGB default and complete ordinary user workflow verification.
 
 Python remains conversion/reference tooling only. External models/runtimes stay outside Git. Existing prepared snapshot remains a compatible development path. No training/restoration/GPU performance expansion, release, push or main changes.
 
@@ -42,12 +46,14 @@ Python remains conversion/reference tooling only. External models/runtimes stay 
 
 ## Still open
 
-Current corrected bundle now has scoped loader/switch evidence; full motion/restart/save-reopen replay on that exact bundle, continuous new-native-port visual acceptance, fixed four-frame anchors and full-shot/SAM2 parity, tiny/blurred/crowd/diverse-tone coverage, time-remap/preview/MFR/Undo acceptance beyond the scoped trials, cancellation inside uninstrumented inference and temporary-cache crash recovery. Auto pixel encoding is canceled by the user; explicit sRGB default and Advanced manual choice replace AE-AUTO-001. Historical swatch/freshness negatives are preserved, but no Auto bridge is required. Do not call the full authorized block or production MVP complete.
+Current corrected bundle now has scoped loader/switch evidence; full motion/restart/save-reopen replay on later maintenance bytes beyond scoped tests; experimental fixed four-frame anchors and full-shot/SAM2 parity, tiny/blurred/crowd/diverse-tone coverage, time-remap/preview/MFR/Undo acceptance beyond the scoped trials, cancellation inside uninstrumented inference. Version1 temporary-cache crash recovery is now implemented under CACHE-RECOVERY-001; legacy unversioned leftovers remain untouched. Auto pixel encoding is canceled by the user; explicit sRGB default and Advanced manual choice replace AE-AUTO-001. Historical swatch/freshness negatives are preserved, but no Auto bridge is required. Do not call the full authorized block or production MVP complete.
 
 ## Checkpoint review / handoff
 
-Separate review against AUTO-SMART-01..04 covered raw-pixel/processing identity, immutable publication, concurrent miss serialization, host-boundary exception handling, GlobalSetup/Setdown model ownership, C result/image/string release, explicit cut/window dependency handling and schema1/2compatibility. The confirmed64px support activation defect is fixed and regression-tested. Remaining model accuracy, full-shot parity, whole-process memory and crash-left temporary storage limits are not closed by these checks.
+Separate review against AUTO-SMART-01..04 covered raw-pixel/processing identity, immutable publication, concurrent miss serialization, host-boundary exception handling, GlobalSetup/Setdown model ownership, C result/image/string release, explicit cut/window dependency handling and schema1/2compatibility. The confirmed64px support activation defect is fixed and regression-tested. Remaining model accuracy, full-shot parity, whole-process memory limits are not closed by these checks. Version1 temporary recovery now has separate scoped evidence in CACHE_RECOVERY.md.
 
-Final source/host evidence index: [AUTOMATIC_SMART_EVIDENCE.json](AUTOMATIC_SMART_EVIDENCE.json). Developer code is behind defaultOFF `FSTR_NATIVE_SMART`; current installed trial is **FSTR-LUT Auto Smart Current**, match `FSTR LUT Auto Current 20261018`. Original installed effects are preserved. All owned diagnostic helpers have been archived after hash verification and process exit. No release, push or merge. SRGB-DEFAULT-001 now passes actual host migration/save/reopen and output checks on build d774807231370f48; see SRGB_DEFAULT_EVIDENCE.json. Next: corrected-bundle wider motion/workflow qualification. No Auto development is required.
+Final source/host evidence index: [AUTOMATIC_SMART_EVIDENCE.json](AUTOMATIC_SMART_EVIDENCE.json). Developer code is behind defaultOFF `FSTR_NATIVE_SMART`; current installed trial is **FSTR-LUT Auto Smart Current**, match `FSTR LUT Auto Current 20261018`. Original installed effects are preserved. All owned diagnostic helpers have been archived after hash verification and process exit. No release, push or merge. SRGB-DEFAULT-001 now passes actual host migration/save/reopen and output checks on build d774807231370f48; see SRGB_DEFAULT_EVIDENCE.json. User-trial Smart acceptance is closed; broader workflow qualification is limited to its performed checks. No Auto development is required.
 
 Whitespace check: authored source/docs/tests pass `git diff --cached --check` with the vendored NOTICE excluded. The complete installed MediaPipe LICENSE/NOTICE are retained byte-for-byte (both verified against the1.1.1wheel); upstream NOTICE contains trailing whitespace, intentionally preserved rather than rewriting legal source material.
+
+Current trial update: CACHE-RECOVERY-001 build450636dfa3af11bb supersedes the installed sRGB-default build for maintenance only; prior accepted bytes are preserved. Six host exports and interrupted-write cleanup pass, with exact accepted Off/On pixel equality. See CACHE_RECOVERY_EVIDENCE.json.

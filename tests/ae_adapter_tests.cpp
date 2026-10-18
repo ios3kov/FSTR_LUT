@@ -168,8 +168,9 @@ void automatic_preparation(){
  auto value=[&](int x){return fstr::prepare_sdr_linear({input[x].red,input[x].green,input[x].blue},recipe);};
  for(int x=0;x<96;++x)check(std::abs(output[x].red-value(x).r)<3e-7&&output[x].alpha==1,"Native preparation differs from standalone core");
  for(auto expected:std::vector<std::pair<int,A_long>>{{2000,0},{2001,35},{2002,71}})check(std::find(f.layer_times.begin(),f.layer_times.end(),expected)!=f.layer_times.end(),"Wrong fixed clip anchor checkout");
- check(f.pixels_out==f.pixels_in&&f.checkin==RenderParamCount,"Prepared native resources unbalanced");auto complete=output;
+ check(f.pixels_out==f.pixels_in&&f.checkin==RenderParamCount,"Prepared native resources unbalanced");auto complete=output;const auto first_guid=f.guids.back();
  f.layer_times.clear();f.in.current_time=50;check(declared_render(f)==0&&std::memcmp(output.data(),complete.data(),output.size()*sizeof(PF_PixelFloat))==0,"Current request time changed clip preparation");
+ check(f.guids.back()!=first_guid,"Host cache aliases different output times with fixed anchor dependencies");
  f.params[Mix].u.fs_d.value=50;check(declared_render(f)==0,"Prepared Mix50 failed");for(int x=0;x<96;++x)check(std::abs(output[x].red-(value(x).r+input[x].red)*.5)<3e-7,"Mix did not include preparation");
  f.params[Mix].u.fs_d.value=0;f.fail_pixel_id=2000;check(declared_render(f)==0&&std::memcmp(input.data(),output.data(),input.size()*sizeof(PF_PixelFloat))==0,"Prepared Mix0 checked anchors or changed pixels");f.fail_pixel_id=-1;f.params[Mix].u.fs_d.value=100;
  std::vector<PF_PixelFloat> roi(2);roi[1]={.1f,.2f,.3f,.4f};auto guard=roi[1];set_world(f.output,roi,1,1,2,PF_PixelFormat_ARGB128,25,0);check(declared_render(f)==0&&std::abs(roi[0].red-value(25).r)<3e-7&&std::memcmp(&roi[1],&guard,sizeof(guard))==0,"Auto preparation changed ROI or padding");

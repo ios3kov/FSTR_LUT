@@ -395,7 +395,12 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
     const bool prepare_active=preparation.u.bd.value&&mix.u.fs_d.value>0;
     if(prepare_active&&source.u.pd.value!=1)throw PreparationError("Auto Prepare requires normal SDR");
     const auto analysis_cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);
-    if(extra->cb->GuidMixInPtr){const std::string guid=std::string("FSTR_NATIVE_BASE_V2/")+fstr::color_build_id+"/"+(active&&analysis_cache?analysis_cache->guid():active&&automatic?automatic->guid():"inactive")+(prepare_active?"/SDR_SHOT_V2_CLIP_V1":"");const auto error=extra->cb->GuidMixInPtr(in_data->effect_ref,static_cast<A_u_long>(guid.size()),guid.data());if(error)return error;}else if(prepare_active||(active&&(analysis_cache||automatic)))return PF_Err_BAD_CALLBACK_PARAM;
+    if(extra->cb->GuidMixInPtr){std::string guid=std::string("FSTR_NATIVE_BASE_V2/")+fstr::color_build_id+"/"+(active&&analysis_cache?analysis_cache->guid():active&&automatic?automatic->guid():"inactive");
+        // The anchor dependency set is constant throughout a clip. Distinguish
+        // which time supplies the output pixels, even when AE coalesces that set.
+        // This salts host output caching only; the shot recipe remains reusable.
+        if(prepare_active)guid+="/SDR_SHOT_V2_AE_TIME_V1/"+std::to_string(in_data->current_time)+"/"+std::to_string(in_data->time_scale)+"/"+std::to_string(in_data->time_step)+"/"+std::to_string(in_data->total_time);
+        const auto error=extra->cb->GuidMixInPtr(in_data->effect_ref,static_cast<A_u_long>(guid.size()),guid.data());if(error)return error;}else if(prepare_active||(active&&(analysis_cache||automatic)))return PF_Err_BAD_CALLBACK_PARAM;
     PF_CheckoutResult result{};
     auto err=extra->cb->checkout_layer(in_data->effect_ref,Input,(active||prepare_active)?1000:Input,&request,in_data->current_time,in_data->time_step,in_data->time_scale,&result);
     if(err)return err;

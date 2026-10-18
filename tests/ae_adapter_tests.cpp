@@ -126,7 +126,7 @@ void cinema(){
     std::vector<PF_PixelFloat> white{{1,1,1,1}},half_white(1);
     ui.params[Exposure].u.fs_d.value=-1;set_world(ui.input,white,1,1,1,PF_PixelFormat_ARGB128);set_world(ui.output,half_white,1,1,1,PF_PixelFormat_ARGB128);
     check(run(ui,true)==0&&std::abs(half_white[0].red-.735356983f)<1e-6f&&half_white[0].alpha==1,"Fresh sRGB effect must render without encoding selection");
-    check(ui.params[Look].u.pd.num_choices==18&&ui.params[Look].uu.id==6,"Cinema/Custom menu or persistent ID wrong");
+    check(ui.params[Look].u.pd.num_choices==19&&ui.params[Look].uu.id==6,"Cinema/Custom menu or persistent ID wrong");
     check(ui.params[Source].uu.id==1&&ui.params[Source].u.pd.num_choices==8&&ui.params[Source].u.pd.dephault==1,"Input profile schema/legacy default changed");
     check(Source>AdvancedStart&&Source<AdvancedEnd,"Technical input profile must stay inside Advanced");
     check(ui.params[NaturalContrast].uu.id==16&&ui.params[NaturalContrast].u.bd.dephault==TRUE&&ui.params[NaturalContrast].u.bd.value==FALSE&&(ui.params[NaturalContrast].flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS),"Natural contrast new/legacy default contract wrong");
@@ -184,6 +184,8 @@ void custom_lut_reference(){
  PF_ArbitraryH copied=nullptr;e={};e.which_function=PF_Arbitrary_COPY_FUNC;e.u.copy_func_params.src_arbH=loaded;e.u.copy_func_params.dst_arbPH=&copied;check(call(e)==0&&copied!=loaded,"Reference copy failed/aliased host handle");owned.push_back(copied);
  e={};e.which_function=PF_Arbitrary_COMPARE_FUNC;PF_ArbCompareResult comparison=-1;e.u.compare_func_params.a_arbH=loaded;e.u.compare_func_params.b_arbH=copied;e.u.compare_func_params.compareP=&comparison;check(call(e)==0&&comparison==PF_ArbCompare_EQUAL,"Copied reference differs");
  std::vector<PF_PixelFloat> input{{1,.2f,.4f,.7f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Look].u.pd.value=18;f.params[LookAmount].u.fs_d.value=100;f.params[LUTReference].u.arb_d.value=copied;f.params[Look].param_type=PF_Param_POPUP;PF_ParamDef* ui_params[ParamCount];for(int i=0;i<ParamCount;++i)ui_params[i]=&f.params[i];active=&f;check(effect_fn(PF_Cmd_UPDATE_PARAMS_UI,&f.in,&f.out,ui_params,nullptr,nullptr)==0&&f.popup_label.find("Proverka LUT.cube")!=std::string::npos,"Selected external LUT filename missing from menu");
+PF_UserChangedParamExtra selected{};selected.param_index=Look;check(effect_fn(PF_Cmd_USER_CHANGED_PARAM,&f.in,&f.out,ui_params,nullptr,&selected)==0&&f.params[Look].u.pd.value==18&&flatten(copied)==flat,"Selecting stored Custom reopened chooser or changed reference");
+ check(f.popup_label.size()>=12&&f.popup_label.substr(f.popup_label.size()-12)=="|Load LUT...","Reload action is not last after named Custom");
 #ifdef FSTR_TEST_EXTERNAL_LUT
  check(declared_render(f)==0&&std::abs(output[0].red-.4f)<3e-6&&std::abs(output[0].green-.7f)<3e-6&&std::abs(output[0].blue-.2f)<3e-6,"Custom LUT native rendering failed");auto original_guid=f.guids.back();
 #endif
@@ -221,7 +223,7 @@ void automatic_preparation(){
  Fixture legacy;legacy.params[AutoPrepare].u.bd.value=TRUE;legacy.in.total_time=72;legacy.input=f.input;legacy.output=f.output;check(run(legacy,false)==0&&legacy.checkin==RenderParamCount+3,"Legacy timed preparation checkouts unbalanced");
  Fixture schema;active=&schema;check(effect_fn(PF_Cmd_PARAMS_SETUP,&schema.in,&schema.out,nullptr,nullptr,nullptr)==0&&schema.params[AutoPrepare].uu.id==17&&schema.params[AutoPrepare].u.bd.dephault==TRUE&&schema.params[AutoPrepare].u.bd.value==FALSE&&(schema.params[AutoPrepare].flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS)&&AutoPrepare==1&&CameraInfo==17,"Auto-first default or legacy value policy changed");
  check(schema.params[Exposure].uu.id==2&&schema.params[Look].uu.id==6&&schema.params[ImportLUT].uu.id==18&&schema.params[ImportLUT].param_type==PF_Param_BUTTON&&(schema.params[ImportLUT].ui_flags&PF_PUI_NO_ECW_UI),"Legacy disk IDs/hidden former button changed");
- check((schema.params[Look].flags&PF_ParamFlag_SUPERVISE)&&std::string(schema.params[Look].u.pd.u.namesptr).find("|Custom / Load LUT...")!=std::string::npos,"Custom load entry not supervised/last");check(schema.params[LUTFileInfo].ui_flags&PF_PUI_NO_ECW_UI,"Separate LUT filename block is still visible");check(schema.popup_label.empty(),"Setup unexpectedly mutated UI");
+ check((schema.params[Look].flags&PF_ParamFlag_SUPERVISE)&&std::string(schema.params[Look].u.pd.u.namesptr).find("|Custom|Load LUT...")!=std::string::npos,"Custom load entry not supervised/last");check(schema.params[LUTFileInfo].ui_flags&PF_PUI_NO_ECW_UI,"Separate LUT filename block is still visible");check(schema.popup_label.empty(),"Setup unexpectedly mutated UI");
  PF_ParamDef* ui[ParamCount];for(int i=0;i<ParamCount;++i)ui[i]=&schema.params[i];schema.params[Look].u.pd.value=3;check(effect_fn(PF_Cmd_UPDATE_PARAMS_UI,&schema.in,&schema.out,ui,nullptr,nullptr)==0,"UI snapshot failed");PF_UserChangedParamExtra changed{};changed.param_index=Look;schema.params[Look].u.pd.value=4;check(effect_fn(PF_Cmd_USER_CHANGED_PARAM,&schema.in,&schema.out,ui,nullptr,&changed)==0&&schema.params[Look].u.pd.value==4,"Built-in selection incorrectly opened chooser");
 
 }

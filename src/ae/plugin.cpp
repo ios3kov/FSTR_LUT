@@ -142,7 +142,7 @@ fstr::ColorSettings settings(const Params& p,PF_InData* in_data) {
     s.grade.temperature=p[Temperature].u.fs_d.value/100;s.grade.tint=p[Tint].u.fs_d.value/100;
     s.shoulder=p[Shoulder].u.fs_d.value/100;s.look_amount=p[LookAmount].u.fs_d.value/100;s.mix=p[Mix].u.fs_d.value/100;
     if(look==static_cast<int>(fstr::builtin_look_count+1)){
-        if(s.mix>0&&s.look_amount>0){const auto external=fstr::ae::external_reference(in_data,p[LUTReference].u.arb_d.value);if(!external.look)throw fstr::ae::ExternalLUTError("Custom LUT unavailable. Choose Custom / Load LUT to select or relink the file.");s.look=external.look;}
+        if(s.mix>0&&s.look_amount>0){const auto external=fstr::ae::external_reference(in_data,p[LUTReference].u.arb_d.value);if(!external.look)throw fstr::ae::ExternalLUTError("Custom LUT unavailable. Choose Load LUT to select or relink the file.");s.look=external.look;}
     }else if(look>1) {
         const auto library=std::atomic_load(&looks);
         if(!library)throw static_cast<PF_Err>(PF_Err_INTERNAL_STRUCT_DAMAGED);
@@ -172,8 +172,8 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Saturation",0,200,0,200,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,SaturationId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Highlight Rolloff",0,100,0,100,0,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,ShoulderId);
     // Slot2 is a nonselectable separator; old projects keep their frozen Warm v1.
-    static const std::string menu=std::string(fstr::builtin_look_menu)+"|Custom / Load LUT...";
-    AEFX_CLR_STRUCT(def);def.flags=PF_ParamFlag_SUPERVISE;PF_ADD_POPUP("Look",static_cast<A_short>(fstr::builtin_look_count+1),1,menu.c_str(),LookId);
+    static const std::string menu=std::string(fstr::builtin_look_menu)+"|Custom|Load LUT...";
+    AEFX_CLR_STRUCT(def);def.flags=PF_ParamFlag_SUPERVISE;PF_ADD_POPUP("Look",static_cast<A_short>(fstr::builtin_look_count+2),1,menu.c_str(),LookId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Look Amount",0,300,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,LookAmountId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Mix",0,100,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,MixId);
     PF_ADD_TOPICX("Advanced",PF_ParamFlag_COLLAPSE_TWIRLY,AdvancedStartId);
@@ -405,7 +405,7 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
     const bool active=enabled.u.bd.value&&look.u.pd.value>1&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0;
     const bool prepare_active=preparation.u.bd.value&&mix.u.fs_d.value>0&&source.u.pd.value==1;
     std::string external_identity;
-    if(look.u.pd.value==static_cast<int>(fstr::builtin_look_count+1)&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0){PF_ParamDef file{};const auto e=PF_CHECKOUT_PARAM(in_data,LUTReference,in_data->current_time,in_data->time_step,in_data->time_scale,&file);if(e)return e;const auto value=fstr::ae::external_reference(in_data,file.u.arb_d.value);if(!value.look)throw fstr::ae::ExternalLUTError("Custom LUT unavailable. Choose Custom / Load LUT to select or relink the file.");external_identity=value.identity;}
+    if(look.u.pd.value==static_cast<int>(fstr::builtin_look_count+1)&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0){PF_ParamDef file{};const auto e=PF_CHECKOUT_PARAM(in_data,LUTReference,in_data->current_time,in_data->time_step,in_data->time_scale,&file);if(e)return e;const auto value=fstr::ae::external_reference(in_data,file.u.arb_d.value);if(!value.look)throw fstr::ae::ExternalLUTError("Custom LUT unavailable. Choose Load LUT to select or relink the file.");external_identity=value.identity;}
     const auto analysis_cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);
     if(extra->cb->GuidMixInPtr){std::string guid=std::string("FSTR_NATIVE_BASE_V2/")+fstr::color_build_id+"/"+(active&&analysis_cache?analysis_cache->guid():active&&automatic?automatic->guid():"inactive");
         // The anchor dependency set is constant throughout a clip. Distinguish
@@ -481,9 +481,11 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
             case PF_Cmd_UPDATE_PARAMS_UI:if(params){fstr::ae::remember_external_selection(in_data,params[Look]->u.pd.value);return fstr::ae::refresh_external_menu(in_data,params);}break;
             case PF_Cmd_USER_CHANGED_PARAM:if(extra&&static_cast<PF_UserChangedParamExtra*>(extra)->param_index==Look){
                 const auto previous=fstr::ae::previous_external_selection(in_data);
-                if(params[Look]->u.pd.value==static_cast<int>(fstr::builtin_look_count+1)){
+                if(params[Look]->u.pd.value==static_cast<int>(fstr::builtin_look_count+2)||
+                   (params[Look]->u.pd.value==static_cast<int>(fstr::builtin_look_count+1)&&
+                    fstr::ae::external_reference(in_data,params[LUTReference]->u.arb_d.value).path.empty())){
                     try{const auto e=fstr::ae::import_external_lut(in_data,out_data,params);if(e)return e;}
-                    catch(const std::exception&){params[Look]->u.pd.value=previous;params[Look]->uu.change_flags|=PF_ChangeFlag_CHANGED_VALUE;throw fstr::ae::ExternalLUTError("Could not load LUT. The previous look is unchanged.");}
+                    catch(const std::exception&){params[Look]->u.pd.value=previous;params[Look]->uu.change_flags|=PF_ChangeFlag_CHANGED_VALUE;out_data->out_flags|=PF_OutFlag_DISPLAY_ERROR_MESSAGE|PF_OutFlag_REFRESH_UI;std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Could not load LUT. The previous look is unchanged.");}
                 }
                 fstr::ae::remember_external_selection(in_data,params[Look]->u.pd.value);return fstr::ae::refresh_external_menu(in_data,params);
             }break;
@@ -505,9 +507,9 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
 
 extern "C" DllExport PF_Err EffectMain(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {
     const auto trace=std::getenv("FSTR_LUT_SCENE_TRACE");const bool rendering=cmd==PF_Cmd_SMART_PRE_RENDER||cmd==PF_Cmd_SMART_RENDER||cmd==PF_Cmd_RENDER||cmd==PF_Cmd_QUERY_DYNAMIC_FLAGS;
-    if(trace&&rendering)std::fprintf(stderr,"FSTR_NATIVE ENTER selector=%d\n",int(cmd));
+    if(trace&&(rendering||cmd==PF_Cmd_USER_CHANGED_PARAM))std::fprintf(stderr,"FSTR_NATIVE ENTER selector=%d\n",int(cmd));
     const auto err=effect_main_impl(cmd,in_data,out_data,params,output,extra);
-    if(trace&&rendering)std::fprintf(stderr,"FSTR_NATIVE EXIT selector=%d code=%d\n",int(cmd),int(err));
+    if(trace&&(rendering||cmd==PF_Cmd_USER_CHANGED_PARAM))std::fprintf(stderr,"FSTR_NATIVE EXIT selector=%d code=%d\n",int(cmd),int(err));
     if(err&&std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_NATIVE ERROR selector=%d code=%d\n",int(cmd),int(err));
     return err;
 }

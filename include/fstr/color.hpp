@@ -8,9 +8,10 @@ namespace fstr {
 // This is a grading operator, not SDR -> camera Log or recovered scene radiance.
 struct GradeSettings {
     double exposure_stops = 0.0; // [-10,10], uniform exp2 gain
-    double contrast = 1.0;       // [0.1,3], channelwise signed-log contrast
+    double contrast = 1.0;       // [0.1,3], legacy signed-log or natural luminance contrast
     double saturation = 1.0;     // [0,2], linear Rec709 luminance interpolation
     double temperature = 0.0, tint = 0.0; // [-1,1], creative RGB gains; not Kelvin/CCT.
+    bool natural_contrast = false; // Luminance-only bounded SDR curve; legacy remains default in core.
 };
 bool grade_is_neutral(const GradeSettings&) noexcept;
 void validate_grade(const GradeSettings&);

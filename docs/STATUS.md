@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Natural Contrast — 2026-10-18
+
+Shared luminance contrast now defaultsOn in fresh/reset AE effects; old projects initializeOff through the SDK compatibility flag and retain exact prior renders.14Release/14sanitizer targets and11actual host exports pass, plus keys/expression/save-reopen checks. Smart toning-mode change:2computes/7RAMhits. Current **923695974aa8fc72** installed, prior bytes archived. Control comparison is explicitly artificially flattened SDR; actual flat-SDR artistic acceptance and Advanced-checkbox visual inspection remain open. No installer. [Contract/evidence](NATURAL_CONTRAST.md).
+
+
 ## Real EXR workflow and input help — 2026-10-18
 
 Official OpenEXR Blobbies CG reference explicitly converted from its custom primaries into two known spaces. Four actual AE linear-project exports (Linear RGB/ACEScg × Natural/Teal&Orange) agree within one8bit code; unmanaged import negative control retained.14Release/14sanitizer targets pass. Simple source guidance/About updated; actual help typography inspection NOT_RUN (AE screenshot unavailable). Current **2c6caa579d3fa42f** installed; prior bytes archived. No installer. Professional-looking flat-SDR outcome remains **not accepted** by these technical checks; C2098 side-by-side is only a manual example. [Scope/evidence](EXR_HELP.md).

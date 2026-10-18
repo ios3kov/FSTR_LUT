@@ -15,6 +15,24 @@ void check(bool value,const char* text){++checks;if(!value)throw std::runtime_er
 void near(double a,double b,double e=2e-7){check(std::abs(a-b)<=e,"Color numeric oracle mismatch");}
 FrameView view(const std::vector<float>& v,std::size_t w=1,std::size_t h=1,std::size_t stride=4){return {v.data(),v.size(),w,h,stride};}
 RenderResult ok(RenderResult r){check(r.status==Status::Ok&&r.rgba.size()>=4,"Expected successful complete color frame");return r;}
+void natural_contrast(){
+    GradeSettings s;s.contrast=2;s.natural_contrast=true;
+    auto a=grade_linear({.5,.5,.5},s);near(a.r,.82,1e-12);near(a.g,.82,1e-12);near(a.b,.82,1e-12);
+    a=grade_linear({.1,.1,.1},s);near(a.r,41./770,1e-12);
+    auto gray=grade_linear({.18,.18,.18},s);near(gray.r,.18,1e-12);
+    near(grade_linear({0,0,0},s).r,0,0);near(grade_linear({1,1,1},s).r,1,0);
+    auto extended=grade_linear({2,3,4},s);near(extended.r,2,0);near(extended.g,3,0);
+    auto negative=grade_linear({-.5,-.5,-.5},s);near(negative.r,-.5,0);
+    for(double c:{.1,.5,1.,1.5,3.}){s.contrast=c;double prev=-1;for(int i=0;i<=1000;++i){double x=i/1000.;auto y=grade_linear({x,x,x},s).r;check(y>=prev&&y>=0&&y<=1,"Natural contrast not monotone/bounded");prev=y;}}
+    s.contrast=1.6;RGB color{.3,.12,.04};a=grade_linear(color,s);
+    near(a.r/a.g,color.r/color.g,1e-12);near(a.b/a.g,color.b/color.g,1e-12);
+    auto old=s;old.natural_contrast=false;auto legacy=grade_linear(color,old);check(std::abs(legacy.r/legacy.g-color.r/color.g)>.05,"Legacy contrast ablation did not change ratios");
+    s.contrast=1;auto neutral=grade_linear(color,s);near(neutral.r,color.r,0);near(neutral.g,color.g,0);
+    ColorSettings settings;settings.grade=s;settings.grade.contrast=1.6;ColorProcessor process(settings,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Premultiplied);
+    auto px=process.apply({.15f,.06f,.02f,.5f});near(px[0]/px[1],2.5,2e-6);near(px[3],.5,0);
+    check(process.apply({4,3,2,0})==std::array<float,4>{{4,3,2,0}},"Natural contrast changed hidden RGB");
+    settings.mix=0;const std::array<float,4> raw{{-.1f,2,4,.5f}};check(ColorProcessor(settings,Transfer::SRGB,Primaries::SRGB_Rec709,Alpha::Premultiplied).apply(raw)==raw,"Natural contrast Mix0 changed pixels");
+}
 void profiles() {
     ColorSettings cg;cg.source=static_cast<SourceProfile>(7);
     auto hdr=ColorProcessor(cg,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Straight).apply({-.1f,2,4,1});
@@ -124,5 +142,5 @@ void frames() {
     for(auto& t:tasks){auto actual=t.get();check(actual.status==Status::Ok&&actual.rgba==expected.rgba,"Color render depends on order/thread");}
 }
 }
-int main(){try{profiles();frames();std::cout<<"PASS "<<checks<<" color-only assertions; AE/profile loader: NOT RUN\n";return 0;}
+int main(){try{natural_contrast();profiles();frames();std::cout<<"PASS "<<checks<<" color-only assertions; AE/profile loader: NOT RUN\n";return 0;}
 catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<" assertion "<<checks<<"\n";return 1;}}

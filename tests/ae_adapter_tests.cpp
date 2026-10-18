@@ -94,6 +94,10 @@ void check_dynamic_flags(){
 }
 void cinema(){
     check_dynamic_flags();
+    Fixture tone;tone.params[NaturalContrast].u.bd.value=TRUE;tone.params[Contrast].u.fs_d.value=2;tone.params[WorkingSpace].u.pd.value=3;
+    std::vector<PF_PixelFloat> gray_in{{1,.5f,.5f,.5f}},gray_out(1);
+    set_world(tone.input,gray_in,1,1,1,PF_PixelFormat_ARGB128);set_world(tone.output,gray_out,1,1,1,PF_PixelFormat_ARGB128);
+    check(run(tone,true)==0&&std::abs(gray_out[0].red-.82f)<1e-6f,"Natural contrast failed native parameter/render path");
     Fixture ui;active=&ui;
     check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Cinema schema setup failed");
     check(ui.params[SmartColor].uu.id==13&&ui.params[SmartColor].u.bd.dephault==FALSE&&ui.params[CameraInfo].uu.id==12,"Smart default/legacy IDs wrong");
@@ -110,6 +114,8 @@ void cinema(){
     check(ui.params[Look].u.pd.num_choices==17&&ui.params[Look].uu.id==6,"Cinema menu or persistent ID wrong");
     check(ui.params[Source].uu.id==1&&ui.params[Source].u.pd.num_choices==8&&ui.params[Source].u.pd.dephault==1,"Input profile schema/legacy default changed");
     check(Source>AdvancedStart&&Source<AdvancedEnd,"Technical input profile must stay inside Advanced");
+    check(ui.params[NaturalContrast].uu.id==16&&ui.params[NaturalContrast].u.bd.dephault==TRUE&&ui.params[NaturalContrast].u.bd.value==FALSE&&(ui.params[NaturalContrast].flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS),"Natural contrast new/legacy default contract wrong");
+    check(NaturalContrast>AdvancedStart&&NaturalContrast<AdvancedEnd,"Natural contrast must stay in Advanced");
     for(int profile=3;profile<=8;++profile){
         ui.params[Source].u.pd.value=profile;ui.params[Exposure].u.fs_d.value=0;ui.params[WorkingSpace].u.pd.value=3;
         auto code=float(fstr::linear_to_source_channel(.18,static_cast<fstr::SourceProfile>(profile-1)));white[0]={.5f,code*.5f,code*.5f,code*.5f};

@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "requirement": "NATURAL-CONTRAST-001",
+  "baseline_revision": "35691535c7b6b38b89e578a48c595482dfb6d970",
+  "created_utc": "2026-10-18T14:41:49.127874+00:00",
+  "build_id": "923695974aa8fc72",
+  "source_sha256": {
+    "docs/NATURAL_CONTRAST.md": "271e777ff13a28b6889ae4134807dd88eda775558091335cce0d764acd281431",
+    "tools/ae_host_runner/natural_contrast_acceptance.jsx.in": "af4dd1b788acb981a3cb996f27400465eb2376910a7edfbe0e29b8ed661117e6",
+    "README.md": "4ef4bf9749239ee1bdb5efaccd9efc3f1fa9257acb43e305937fb91affd7713d",
+    "docs/PLAN.md": "ead1b22eed8f922e58d882b792e4b90b72b97e70bb0dc825662176aa171a78a4",
+    "docs/QUICK_START_RU.md": "212b6af8d2f293336e86ebc9b3523689f0984ef270800027813d33414f8c0f51",
+    "docs/SDR_LOG_GUIDE.md": "779dbe58f6c8edeb8420f49aabbce131a5820fd41c61696656e57672c4b8cd77",
+    "docs/STATUS.md": "27912e948f97491349d5ca0efb5aa6481e4898c740255ab8718e68f1abb58d2e",
+    "include/fstr/color.hpp": "5fe423347c62760681c5039c12a64ff1ac8ba3b393dd34ab6b664bffb90f9199",
+    "src/ae/plugin.cpp": "ca15029189827103ba23ecdee8663080b5baf452fa9bc7bb7100f567b0914bb5",
+    "src/ae/plugin.hpp": "901d7c8b5e2d9cc52729659f50581b1add31dca9148c5889e2b6d9d2acbb30c6",
+    "src/color/grade.cpp": "9bad14db89b8445a5634f1812914c33ffd29b8fbca82310767b670e532256646",
+    "tests/ae_adapter_tests.cpp": "a75d36df4a8ff55da7ea531775060ac8396f634279e89f77396595135f012bac",
+    "tests/color_tests.cpp": "a103cf459f29ea53340eb06f3934bf18ffde9ccf61a4efb68b237b1290fc1e65",
+    "tools/benchmark/color_main.cpp": "af2c0417f9c829ffa198f0b6ba92db859e01a7d86b6d0d2c0042809149f9d7aa"
+  },
+  "external_receipts": [
+    {
+      "path": "../natural-contrast-20261018/red-build.log",
+      "sha256": "99bd39e531c50b32ffd5048efac64811c90eb163238ed2487169076fbb4f07e6"
+    },
+    {
+      "path": "../natural-contrast-20261018/red.log",
+      "sha256": "a1a91cb0fc567fead079d89f90ccab42270986de81e8e0230e70ad8d59f57700"
+    },
+    {
+      "path": "../natural-contrast-20261018/release.log",
+      "sha256": "e481b571522f622a85749449b823123790d55ca78ae6ae9b6cf77f655aadd798"
+    },
+    {
+      "path": "../natural-contrast-20261018/sanitize.log",
+      "sha256": "2aa6cfa845dbb04bd36c93773b37348de99a3523d74b333486a86d5951cf99f8"
+    },
+    {
+      "path": "../natural-contrast-20261018/preview.py",
+      "sha256": "b431d091b2b9b833846ed75480b53bf049d17f1c0ef833e2c656c97229cb4244"
+    },
+    {
+      "path": "../natural-contrast-20261018/preview-verification.json",
+      "sha256": "4e6f1704aa9c4fc4853e2b1cb3429e97a75df2a91361c43c7c05fa7803911bcb"
+    },
+    {
+      "path": "../natural-contrast-20261018/controlled-flat.png",
+      "sha256": "dc53c190f9327bc57f5595c883d3c19b6686bcfe47d384185b41cdabe8a5b4c3"
+    },
+    {
+      "path": "../natural-contrast-20261018/controlled-flat.rgba32f",
+      "sha256": "f1e6b1719c28d22c394821415c5ca34eeaef6c7230c5c7fc833c3e58001fb614"
+    },
+    {
+      "path": "../natural-contrast-20261018/legacy.rgba32f",
+      "sha256": "fee46c62eabcbb53ac8c7cefed0c750f9316a7f4753ec19e6e62fbf8202e1ff2"
+    },
+    {
+      "path": "../natural-contrast-20261018/natural.rgba32f",
+      "sha256": "be6ebff284694a07ca2b06e734fa0c5af051f1596a63c05672f18886d23d2cee"
+    },
+    {
+      "path": "../natural-contrast-20261018/natural-teal.rgba32f",
+      "sha256": "bbad4e6f6534175c56075904af2033f28aa95ce9a775205b92ca14b6339211eb"
+    },
+    {
+      "path": "../natural-contrast-20261018/comparison.png",
+      "sha256": "4b12234d292160bca32b4fdfe27c56320787a8d4222d164d78483883c98313aa"
+    },
+    {
+      "path": "../natural-contrast-20261018/ae-comparison.png",
+      "sha256": "b82e860a8ff61fd2a90fc30c1e2a5b18b01254590c598d28d115ed4df3172d47"
+    },
+    {
+      "path": "../natural-contrast-20261018/prepare_host.py",
+      "sha256": "9dd10343e2c1e0660206529707b06fb0913a54493bfdfee5b164416ca7e37afc"
+    },
+    {
+      "path": "../natural-contrast-20261018/build_host_impl.py",
+      "sha256": "6d91e37c895bb03b0060209a13897b784f361d0ea12a68b2fbf4751e010d2c05"
+    },
+    {
+      "path": "../natural-contrast-20261018/refresh_candidate.py",
+      "sha256": "12571c008e17b52bdc939bcebce4cacf9b928515dd9fcc4244ee4487a938fc1f"
+    },
+    {
+      "path": "../natural-contrast-20261018/launch.py",
+      "sha256": "0959856c2901086b404bbadf9d427d4ad393d7d0a8a43673b92f5d7aefbffcfb"
+    },
+    {
+      "path": "../natural-contrast-20261018/verify_host.py",
+      "sha256": "c59ea9db3827a957c5d34c398bb656136f933a212bf08c97ab9e961415040664"
+    },
+    {
+      "path": "../natural-contrast-20261018/host-verification.json",
+      "sha256": "b3c8f308d76998b3ef79fdee87e5e9c66e4cb0c846f40bbcad90cc2da56704f8"
+    },
+    {
+      "path": "../natural-contrast-20261018/final-review.json",
+      "sha256": "83aff0d91a4de764aeff6992c4cda74dd34760e6dcfee44ff6bef808d3997eb7"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/build.log",
+      "sha256": "73f07472373eadd22306cad19796dd9fd5b7206310da0ba04832662fe8a66085"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/package-inventory.json",
+      "sha256": "d54ecc4647e0794753df0218ee358fa805629d788ba607dd6298ef8793eb7f68"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/config.json",
+      "sha256": "034fe3ae5294051cd2e5f89cdd44a5b90dc331d5b6b61ef04882d0c96ed18433"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/test.jsx",
+      "sha256": "f85ab8cfc946b6a3a6989b38cd639eca3f3c56eea56ea39108b802f9c51ff529"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/installation.json",
+      "sha256": "6058bd667bc0562344eabae5f702763ec719c3633d6c750fc00c4b890f466181"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/launch.json",
+      "sha256": "9c70e7f5d275bd6f4fe8b2126512ab3954293fee911d64afcfac572b524e8ad7"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/host-report.txt",
+      "sha256": "7e7bb331d5f2b7755bcbcc8f73d2ae0be15328b8a04b5943e4d61ed9b51fd332"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/process-error.log",
+      "sha256": "4517d8003e4a0cddf376a01e04d7aa65ee29282db9ce33da18342070afe854cc"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/cleanup.json",
+      "sha256": "420f81e713aebb9ea082ecd5febe70b822732a7fdbcd7083087ee04dc71e4fdb"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/natural-contrast.aep",
+      "sha256": "c011935d936f5473eb38520f15001fe012a17041346afeeed10aab14b5bf406a"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/legacy-aces_00000.psd",
+      "sha256": "84166bb214448b454932b32370c4e7fd2ef3dba1c33166bd94156c90bf2c24ec"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/legacy-controls0_00000.psd",
+      "sha256": "a28ee10df8c55c3f967008ac9f9e18bc16b2f7d17613f42100a68b3ac07f72b0"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/legacy-controls6_00006.psd",
+      "sha256": "fd7e77baff5975e39019df7dd0d33549aeb0285611da30dae74e1e73be39957c"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/legacy-host_00000.psd",
+      "sha256": "fca291199eb30685b739c3482324f47e99db1c8d0ee440ac1a02f39504d6f98f"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/legacy_00000.psd",
+      "sha256": "6d9451be227cd950e2425a84b6229ea6807416f5d5230a33a9843fa62a5a4066"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/natural-teal_00000.psd",
+      "sha256": "482b2a46efff0c2fce6e5e2a41c8c92fcbb905d8004a5797ddab38e4b377dd54"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/natural_00000.psd",
+      "sha256": "4518d8f4bfeb193656e5511425045a62be591104794de32ffcb9ee99f1e8ac4b"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/new3d_00000.psd",
+      "sha256": "a487897c3980a6392bca21085e2f2b827c87e55f0abb403378ac5382667090fc"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/smart-legacy_00000.psd",
+      "sha256": "e0b0cb1440389c65aa0228ca6272fe3f9e32743f1996c805964c688fa48167a5"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/smart-natural0_00000.psd",
+      "sha256": "1653678c32d7eaa95cb4c5ee3488d6f64a56c4f04683a76bc8ef9ce526506665"
+    },
+    {
+      "path": "../natural-contrast-20261018/candidate/smart-natural1_00000.psd",
+      "sha256": "b330a1c1f29a7df8322850748a7bf690e577c1be5b59c4938f91d59485b8f4e9"
+    }
+  ],
+  "scanner": {
+    "path": "/tmp/fstr-naturalcontrast-20261018-final-v2.json",
+    "sha256": "e29640c6eec073af903f62a2a9f8bd6a1a27d218e57681b3e3384f38f9d6ac13",
+    "result": "PASS static scanned scope only"
+  },
+  "review": {
+    "status": "PASS scoped feature; artistic/UI gaps retained",
+    "production_source_match": [
+      "src/ae/FSTR_LUT_PiPL.r",
+      "src/ae/Info.plist.in",
+      "src/ae/embedded_look.hpp.in",
+      "src/ae/metadata_ui.cpp",
+      "src/ae/metadata_ui.hpp",
+      "src/ae/plugin.cpp",
+      "src/ae/plugin.hpp",
+      "src/analysis/automatic_scene_cache.cpp",
+      "src/analysis/face_topology.hpp",
+      "src/analysis/native_scene.cpp",
+      "src/analysis/region_cache.cpp",
+      "src/analysis/regions.cpp",
+      "src/analysis/scene_cache.cpp",
+      "src/analysis/scene_window.cpp",
+      "src/analysis/vision_regions.mm",
+      "src/color/frame.cpp",
+      "src/color/grade.cpp",
+      "src/color/pixel.cpp",
+      "src/color/profiles.cpp",
+      "src/color/scene_color.cpp",
+      "src/color/skin_tone.cpp",
+      "src/color/smart_color.cpp",
+      "src/color/transfer.cpp",
+      "src/core/pipeline.cpp",
+      "src/inference/face_model.cpp",
+      "src/inference/mediapipe_abi.hpp",
+      "src/inference/ort_backend.cpp",
+      "src/inference/parts_model.cpp",
+      "src/inference/scene_model.cpp",
+      "src/looks/lut.cpp",
+      "src/metadata/metadata.cpp",
+      "src/restoration/ffdnet.cpp",
+      "include/fstr/automatic_scene_cache.hpp",
+      "include/fstr/color.hpp",
+      "include/fstr/core.hpp",
+      "include/fstr/face_model.hpp",
+      "include/fstr/metadata.hpp",
+      "include/fstr/native_scene.hpp",
+      "include/fstr/ort_backend.hpp",
+      "include/fstr/parts_model.hpp",
+      "include/fstr/region_cache.hpp",
+      "include/fstr/regions.hpp",
+      "include/fstr/scene_cache.hpp",
+      "include/fstr/scene_color.hpp",
+      "include/fstr/scene_model.hpp",
+      "include/fstr/scene_window.hpp",
+      "include/fstr/skin_tone.hpp",
+      "include/fstr/smart_color.hpp"
+    ],
+    "review": [
+      "Signed source snapshot matches repository production files except owned trial names",
+      "Global/PiPL flags unchanged; dynamic query remains no-op",
+      "No new global previous-frame state/resources; shared gain positive for positive SDR luminance",
+      "Persistent IDs unchanged except appended16; oldvalue0/default1 migration host-proven",
+      "Analysis identity changes only for non-neutral natural contrast; LUT/intensity remain excluded",
+      "New curve has no claim of perceptual hue/gamut invariance, HDR tone mapping or footage normalization"
+    ],
+    "limits": [
+      "No actual flat-SDR artistic acceptance",
+      "No Advanced-checkbox screenshot inspection",
+      "Core/CLI default legacy; newly applied/reset AE effect defaultsNatural",
+      "Two comment-only changes after unit suites; final exact current source built and host-tested"
+    ]
+  },
+  "results": {
+    "unit": "14Release +14ASan/UBSan PASS",
+    "host": "11exports PASS",
+    "artistic_real_flat_sdr": "NOT_ACCEPTED",
+    "advanced_visual": "NOT_RUN",
+    "installer": "NOT_RUN per user exclusion"
+  },
+  "publication": "No push, merge or release"
+}

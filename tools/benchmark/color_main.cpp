@@ -8,7 +8,7 @@ using namespace fstr;
 
 int main(int argc,char** argv) {
     try {
-        if(argc!=15)throw std::invalid_argument("Usage: fstr_color_render width height input.rgba32f output.rgba32f srgb|linear|gamma24 source-key exposure contrast saturation shoulder look.cube|none look_amount mix straight|premult; source-key: host, sony-slog3-cine, arri-logc3-ei800, arri-logc4, panasonic-vlog, acescct, acescg, linear-rec709");
+        if(argc!=15&&argc!=16)throw std::invalid_argument("Usage: fstr_color_render width height input.rgba32f output.rgba32f srgb|linear|gamma24 source-key exposure contrast saturation shoulder look.cube|none look_amount mix straight|premult [legacy|natural]; source-key: host, sony-slog3-cine, arri-logc3-ei800, arri-logc4, panasonic-vlog, acescct, acescg, linear-rec709");
         auto integer=[](const char* text){std::size_t count=0;auto v=std::stoull(text,&count);if(count!=std::string(text).size())throw std::invalid_argument("Invalid integer");return v;};
         auto number=[](const char* text){std::size_t count=0;double v=std::stod(text,&count);if(count!=std::string(text).size())throw std::invalid_argument("Invalid number");return v;};
         const auto width=integer(argv[1]),height=integer(argv[2]);ColorContext context;
@@ -29,6 +29,7 @@ int main(int argc,char** argv) {
         settings.grade={number(argv[7]),number(argv[8]),number(argv[9])};settings.shoulder=number(argv[10]);
         if(std::string(argv[11])!="none") {std::ifstream cube(argv[11]);if(!cube)throw std::runtime_error("Cannot load look");settings.look=std::make_shared<LUT>(LUT::parse(cube));}
         settings.look_amount=number(argv[12]);settings.mix=number(argv[13]);
+        if(argc==16){const std::string mode=argv[15];if(mode!="legacy"&&mode!="natural")throw std::invalid_argument("Unknown contrast mode");settings.grade.natural_contrast=mode=="natural";}
         if(std::string(argv[14])=="premult")frame.alpha=Alpha::Premultiplied;
         else if(std::string(argv[14])!="straight")throw std::invalid_argument("Alpha must be straight or premult");
         auto result=render_color({frame,0},settings,context);

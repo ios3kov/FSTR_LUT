@@ -44,9 +44,22 @@ RGB grade_linear(RGB input, const GradeSettings& s) {
         result.r*=red/normal;result.g*=green/normal;result.b*=blue/normal;
     }
     if(s.contrast!=1) {
-        result.r=contrast_channel(result.r,s.contrast);
-        result.g=contrast_channel(result.g,s.contrast);
-        result.b=contrast_channel(result.b,s.contrast);
+        if(s.natural_contrast) {
+            const double y=.2126*result.r+.7152*result.g+.0722*result.b;
+            // SDR tone scale: keep black/white fixed, preserve linear RGB ratios.
+            // Nonpositive luminance and HDR highlights retain their values.
+            if(y>0&&y<1) {
+                const double p=std::log(pivot)-std::log1p(-pivot);
+                const double z=p+s.contrast*(std::log(y)-std::log1p(-y)-p);
+                const double mapped=z>=0?1/(1+std::exp(-z)):std::exp(z)/(1+std::exp(z));
+                const double gain=mapped/y;
+                result.r*=gain;result.g*=gain;result.b*=gain;
+            }
+        } else {
+            result.r=contrast_channel(result.r,s.contrast);
+            result.g=contrast_channel(result.g,s.contrast);
+            result.b=contrast_channel(result.b,s.contrast);
+        }
     }
     if(s.saturation!=1) {
         const double y=.2126*result.r+.7152*result.g+.0722*result.b;

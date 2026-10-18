@@ -100,6 +100,7 @@ fstr::ColorSettings settings(const Params& p) {
     if(source<1||source>fstr::source_profile_count||look<1||look>static_cast<int>(fstr::builtin_look_count))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
     s.source=static_cast<fstr::SourceProfile>(source-1);
     s.grade={p[Exposure].u.fs_d.value,p[Contrast].u.fs_d.value,p[Saturation].u.fs_d.value/100};
+    s.grade.natural_contrast=p[NaturalContrast].u.bd.value!=0;
     s.grade.temperature=p[Temperature].u.fs_d.value/100;s.grade.tint=p[Tint].u.fs_d.value/100;
     s.shoulder=p[Shoulder].u.fs_d.value/100;s.look_amount=p[LookAmount].u.fs_d.value/100;s.mix=p[Mix].u.fs_d.value/100;
     if(look>1) {
@@ -135,6 +136,12 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     PF_ADD_TOPICX("Advanced",PF_ParamFlag_COLLAPSE_TWIRLY,AdvancedStartId);
     AEFX_CLR_STRUCT(def);PF_ADD_POPUP("Input Profile",static_cast<A_short>(fstr::source_profile_count),1,fstr::source_profile_menu,SourceId);
     AEFX_CLR_STRUCT(def);PF_ADD_POPUP("AE Pixel Encoding",4,2,"Choose pixel encoding...|sRGB|Linear Rec.709 / sRGB|Rec.709 Gamma 2.4",WorkingSpaceId);
+    // SDK old-project value0 retains legacy math; freshly applied/reset effects use1.
+    AEFX_CLR_STRUCT(def);def.param_type=PF_Param_CHECKBOX;
+    PF_STRNNCPY(def.PF_DEF_NAME,"Natural Contrast",sizeof(def.PF_DEF_NAME));
+    def.u.bd.u.PF_DEF_NAMEPTR="On";def.u.bd.value=FALSE;def.u.bd.dephault=TRUE;
+    def.flags=PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS;def.uu.id=NaturalContrastId;
+    if((err=PF_ADD_PARAM(in_data,-1,&def))!=PF_Err_NONE)return err;
     AEFX_CLR_STRUCT(def);PF_END_TOPIC(AdvancedEndId);
     AEFX_CLR_STRUCT(def);PF_ADD_CHECKBOX("Smart Color Grading","On",FALSE,0,SmartColorId);
     AEFX_CLR_STRUCT(def);def.ui_flags=PF_PUI_CONTROL|PF_PUI_DONT_ERASE_CONTROL;def.ui_width=300;def.ui_height=64;
@@ -154,6 +161,7 @@ void delete_smart_pre(void* data){delete static_cast<SmartPreData*>(data);}
 template<class P>std::string analysis_source_identity(PF_InData*in_data,const PF_EffectWorld&world,const fstr::ColorSettings&s,fstr::Transfer transfer){
     if(world.width<1||world.height<1||!world.data||world.rowbytes<=0||world.width>world.rowbytes/static_cast<A_long>(sizeof(P)))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
     std::ostringstream meta;meta.imbue(std::locale::classic());meta<<std::setprecision(17)<<"FSTR_UPSTREAM_V1 "<<sizeof(P)<<' '<<world.width<<' '<<world.height<<' '<<world.origin_x<<' '<<world.origin_y<<' '<<int(s.source)<<' '<<int(transfer)<<' '<<s.grade.exposure_stops<<' '<<s.grade.contrast<<' '<<s.grade.saturation<<' '<<s.grade.temperature<<' '<<s.grade.tint<<' '<<s.shoulder;
+    if(s.grade.natural_contrast&&s.grade.contrast!=1)meta<<" NATURAL_CONTRAST_V1";
     picosha2::hash256_one_by_one hash;hash.init();auto text=meta.str();hash.process(text.begin(),text.end());
     // Hash valid channels only, excluding undefined row padding and ROI output.
     for(A_long y=0;y<world.height;++y){auto error=PF_ABORT(in_data);if(error)throw error;auto row=reinterpret_cast<const P*>(reinterpret_cast<const char*>(world.data)+std::size_t(y)*std::size_t(world.rowbytes));for(A_long x=0;x<world.width;++x){const auto&p=row[x];for(const auto*channel:{&p.alpha,&p.red,&p.green,&p.blue}){auto begin=reinterpret_cast<const unsigned char*>(channel);hash.process(begin,begin+sizeof(*channel));}}}hash.finish();return picosha2::get_hash_hex_string(hash);

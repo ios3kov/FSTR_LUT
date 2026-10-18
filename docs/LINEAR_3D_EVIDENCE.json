@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "requirement": "LINEAR-3D-001",
+  "baseline_revision": "3f634360fccd90c6328a62150ca161a9f8a2af2a",
+  "branch": "dev/ai-enhance-prototype",
+  "created_utc": "2026-10-18T14:14:51.708392+00:00",
+  "build_id": "f6153fc453e7167e",
+  "source_sha256": {
+    "docs/LINEAR_3D_INPUT.md": "8d751c5fcab8815f45884012845ccede9a7708607a05cc31aab954b95bb1d2a0",
+    "tools/ae_host_runner/linear_3d_acceptance.jsx.in": "2e1fdc383a1c423c72318b0b09b7465360265f8f126b2f323884c4f2fbe88bdd",
+    "README.md": "449cca0c69247575d9d2235a17b03735ee55cc6509161d281aae07322ad56206",
+    "docs/INPUT_PROFILES.md": "1ed206964efd873b096482cc2c72e939a897d1006c737bde91a2ca68052fef61",
+    "docs/PLAN.md": "0d2e64677667e7e92eb5dbd4be11dbe41319fae96c6101ea8395af6262362d4d",
+    "docs/SDR_LOG_GUIDE.md": "83ae3eb162b53f00c987345098c0118eacb326a9a34d2373cb40f3ed59396ee4",
+    "docs/STATUS.md": "6a5cee818e9a6a6b6ed04a0bcd7e9937a912e7d713e6efe00207480d01c2f15c",
+    "include/fstr/color.hpp": "349b90cd38fad0e6ba6735b065d561b9e1f6fa4d7dcda91852c12285747d1938",
+    "src/ae/plugin.cpp": "98ffe6eb13790dfcb91deab6114de682beb3009db2b17b7190a8febd919876b0",
+    "src/ae/plugin.hpp": "801601f3b33277239a769b085fa2273876d2fc6fa7138fa19f6c108144b3a98e",
+    "src/color/profiles.cpp": "161c43cd76246cd827ec6f02ac0c1dd78010c305640d47ea256ee561ac786465",
+    "tests/ae_adapter_tests.cpp": "294f69d7dc9a5333455c5f7567715c0799f472029586dfba0283115562b500be",
+    "tests/color_tests.cpp": "03d29b5bd346700d81f81f8f786b8433ae8ee714c0bc5ee9df42ac54150b4c41",
+    "tools/ae_host_runner/profile_acceptance.jsx.in": "df95d9a2e5bccbb02055e3b80f782b95cd09f1ed15648930bb9befa426e751b6",
+    "tools/benchmark/color_main.cpp": "7ad080de976235bf2a4444ec1435a8efd93d3396c798061e4a820345fb58e766"
+  },
+  "external_receipts": [
+    {
+      "path": "../linear-3d-20261018/red.log",
+      "sha256": "e2e3a41b28644267c784011441f1c42d07db3a2a352d1322b1158891e5218313"
+    },
+    {
+      "path": "../linear-3d-20261018/release.log",
+      "sha256": "521f7927ebbe7a60fdf18810db0829bbe928698adfe9bb1c2e4cfa8820d5425a"
+    },
+    {
+      "path": "../linear-3d-20261018/sanitize.log",
+      "sha256": "5c57ddd3cc3c17d8e756322b746c58763dcf77d113c89335f057730fac96f38e"
+    },
+    {
+      "path": "../linear-3d-20261018/cli-verification.json",
+      "sha256": "43f7ec8d4ca7f858ad3dfd8671edfa9f5ac70d4b4c80cb944939e3d60fa0fe66"
+    },
+    {
+      "path": "../linear-3d-20261018/verify_cli.py",
+      "sha256": "289dab754d3f4edcc88bee218bf607e6209687c94fc7d95a50ab6ecde3dfeeff"
+    },
+    {
+      "path": "../linear-3d-20261018/host-verification.json",
+      "sha256": "bf04b847ffab57877dc23611b92755e3847ff348774306545a0ec682d5365fd4"
+    },
+    {
+      "path": "../linear-3d-20261018/verify_host.py",
+      "sha256": "d26dac4a0201124bf3a5a9d0f5ab4afc1075d1b6f0c316a0377ae56b6a01ca95"
+    },
+    {
+      "path": "../linear-3d-20261018/prior-profile-oracle/verification.json",
+      "sha256": "8d412527adc93ff4aebdebcdab51eb3f9c079f91c4251e431532fc429c3b7881"
+    },
+    {
+      "path": "../linear-3d-20261018/source-match.json",
+      "sha256": "d95754ec3e82f118c2a95905db1d212cec14f76a0aa481c6ace35350f59ebfe8"
+    },
+    {
+      "path": "../linear-3d-20261018/final-review.json",
+      "sha256": "c78bcf0592f6a53e55cbd10b57e6b457c385b583c896ad33dbcef3037cfdb28a"
+    },
+    {
+      "path": "../linear-3d-20261018/prepare_host.py",
+      "sha256": "4437fa06e7b9f77175dba8d37ecb30d1aff8bebbabf9af92876c12fe7e724aa1"
+    },
+    {
+      "path": "../linear-3d-20261018/host_phase.py",
+      "sha256": "758cfab3ed129add1d7ce0ecce6e7f81f92d1324cb5300ccd99bb36113217553"
+    },
+    {
+      "path": "../linear-3d-20261018/prepare_float.py",
+      "sha256": "cdb086387a03c771ed598d6e4dd78a6607f989d92eeac0350ca6cc30b2dedf4f"
+    },
+    {
+      "path": "../linear-3d-20261018/launch_float.py",
+      "sha256": "1765612c928b55d3f03c9819ebf061c441addb07eddf3f614a348973e74810a4"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/host-report.txt",
+      "sha256": "55260c6b1e9bd3e8612c910b959e30999bfc54809156b968d3bd41f9cbd80478"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/test.jsx",
+      "sha256": "27e3ab9bf887a786eb9b5735c77a4c5dfbf8ff6601281f588898d94e2c606c77"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/old-profiles.aep",
+      "sha256": "f054942a320586a358d8334d5ace6415a265d180608a4be202ef14f33da37bda"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/launch.json",
+      "sha256": "1c490ea63f5023340b4d5d6152ec635db9a03146a9cfd872ce5d6907033d3133"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/installation.json",
+      "sha256": "17ee3de66f71d1b4d61dff5e0b1514e816390cd9a023dbe3b261f64b68592b53"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/package-inventory.json",
+      "sha256": "bb4376c9a0e9548d86741c841b2b90db0671a05ff27c22f3f52db6f98f93f07b"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/installation.json",
+      "sha256": "19ecfa22178096915ebce82824138e8a1a61290b08974326ed56a610cd937ea3"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/host-report.txt",
+      "sha256": "769acba2936f65d1fe150b6db1cad0b6a4a4e955c0ef1f9117ca031ca9cd2c9d"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/test.jsx",
+      "sha256": "37a8ff36d7cf695735b24b79d4cad3d6fea1979125e067a27eda87ac27c89163"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/launch.json",
+      "sha256": "dba6cad6ad7609c479b4133b4d126db5661f59d864ce126eea7209e2e312dc9e"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/test.jsx",
+      "sha256": "47cc0c52bd25a57aa0d97fb4eabf2f57388d1a133f8152c4ca4d7e1e27d0f9ac"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/config.json",
+      "sha256": "def3ffc9ed455973e3592d2201c28615987918aead537491c8c0803c7d164aac"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/host-report.txt",
+      "sha256": "1962a8a4482e8e7c9b45c8d1c46f6366503f251feef9af6c58023fd8ea4173ea"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/float-report.txt",
+      "sha256": "f76b123c59a70606a14aa304bd0dea8f57e17b22476f9ee9bf6fe4a706b7bd12"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/process-error.log",
+      "sha256": "67615500a1c6dc35ca7813e520a58e69ed680e911df3840e2c7a8614ab6eb666"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/installation.json",
+      "sha256": "0e79f019482894734a0b60658b8695bdc4761b76722205f70ce6a8837a08c63d"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/launch.json",
+      "sha256": "4f65b1b5e9bb1e9a4e3e92376f1da5a0960a77c6e6d911ec612f2bd7724dc109"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/shutdown.json",
+      "sha256": "85168252f007a886295aaf5b0dbf23cdc1ae4cece4819c99c9455efbd1df0121"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/cleanup.json",
+      "sha256": "29a798578b309ace7c6de750fa395976d0a7780b2dd47fa877961d17e7a20216"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/linear3d-reopened.aep",
+      "sha256": "73276c9e8802ce6109505926fa25925fd99f93357a0af7e349886ea1107a17e6"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/helper-source/runner.cpp",
+      "sha256": "c7eb5dfefd264debf9440a6a4595defc41ae2140bea9dcec055154a8aa23a626"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/helper-source/CMakeLists.txt",
+      "sha256": "9c714562c3ad14f09280444e10ea1f5164970c1dd5f74852dead5d759a3e8d29"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/helper-build/generated/owned.hpp",
+      "sha256": "02bb401d4919f6d0de8483d1b137eff3c878881b4795a44bb3e410817fdb54fc"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/legacy-aces_00000.psd",
+      "sha256": "df9cb5faa80af60b7dd1c7d5cbda31d954e747add989b4f03d6f27cc90850ed7"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/legacy-controls0_00000.psd",
+      "sha256": "ba54bf5470f3199e7ec16b300c2cb8e92ef6fbb07e5200db64fe6795674e835f"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/legacy-controls6_00006.psd",
+      "sha256": "1195d405035b511664f4a72e8d270bc6059e77e7ad1731fd1eccc33aa1151e83"
+    },
+    {
+      "path": "../linear-3d-20261018/baseline/legacy-host_00000.psd",
+      "sha256": "d130a9e31432a769dbce845736e12bb882565d5a6270fbe001b99d6d02866f56"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/legacy-aces_00000.psd",
+      "sha256": "afca2293dc6e5e45c4c326022d93b418f4ba748b801995a66f98aad04f802322"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/legacy-controls0_00000.psd",
+      "sha256": "ba171c1f435e6bf5378588627f0d4550ab01622ead7166b4f823462bf92fd36e"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/legacy-controls6_00006.psd",
+      "sha256": "b3d85785076eb25189b5424bbdcf924dc53871945303b27df987daecc1bbe684"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/legacy-host_00000.psd",
+      "sha256": "2183eb34c11c5a1373b101fde56232365ec08df0f012550d221482666983308f"
+    },
+    {
+      "path": "../linear-3d-20261018/candidate/new3d_00000.psd",
+      "sha256": "d5eb1af6ee7a56314739b475ebd6ed8eccc81bd4f98fc7f98436413ab6873c31"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/legacy-aces_00000.psd",
+      "sha256": "ca6e3cb9eabfbcc121bcc2a859b28007c9d4e32ea73d91f7791596227a4d081a"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/legacy-controls0_00000.psd",
+      "sha256": "8edb2819655ced97b453e08cee04a2fc4fdf8dec19c793e4232e23e1fcfd195b"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/legacy-controls6_00006.psd",
+      "sha256": "af42c142bdc03dcc9336054801873a0dacb9c089a435cee2b30643b78f4aedb8"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/legacy-host_00000.psd",
+      "sha256": "8af04d93c34f475ff87446f9f0bb5b2a04fcd716dc20d6cbf18bc8d552ceedc0"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/new3d_00000.psd",
+      "sha256": "bbf8e1f731a2c2d641846236f959f54300873324cd9bc6f53aa5ed0085c41116"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/linear2.rgba32f",
+      "sha256": "c977e0359802f6819f4fd3e4dd4b0b138fda8a473cbce80f7a6f5b0102df22fa"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/linear4.rgba32f",
+      "sha256": "1b6d3fc5afe19d1848c52ef84a214c9c9a92b96e0759b28faa6ca3a37f90c377"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/look2.rgba32f",
+      "sha256": "c977e0359802f6819f4fd3e4dd4b0b138fda8a473cbce80f7a6f5b0102df22fa"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/look4.rgba32f",
+      "sha256": "1b6d3fc5afe19d1848c52ef84a214c9c9a92b96e0759b28faa6ca3a37f90c377"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/raw2.rgba32f",
+      "sha256": "c8d93aec173710b5b4764e50cf83f332aa68cf823ad2d257ec7cb0bd114ed081"
+    },
+    {
+      "path": "../linear-3d-20261018/float-retry/raw4.rgba32f",
+      "sha256": "85c9bd97919e0796dc26e7d766d234bd94a17c4f69bad9809fbe0d69a07272dc"
+    }
+  ],
+  "scanner": {
+    "path": "/tmp/fstr-linear3d-20261018-final-review-v2.json",
+    "sha256": "6b2aff6c4f3b2ed6d9c8f740d85fc1964d97d4c9712e17edc199cf1cbd8d5a58",
+    "status": "PASS static scanned scope only"
+  },
+  "acceptance": {
+    "status": "PASS for scoped production change",
+    "requirements": {
+      "linear_input": "Appended enum7/popup8; finite identity linear Rec709, no AP1 matrix",
+      "compatibility": "Persistent disk IDs unchanged; old/new render deltas0, saved keys/name expression retained",
+      "ui": "Technical source inside existing collapsed Advanced; defaults unchanged",
+      "hdr": "Core negative/premult/hidden-RGB/Mix0 plus host floating receipt checks",
+      "safety": "No new product ownership/concurrency resources, no unwind boundary changes; model and cache implementation unchanged"
+    },
+    "limits": [
+      "No unknown Log/gamut inference",
+      "No artistic acceptance across all renderer outputs",
+      "OpenEXR file export NOT_RUN",
+      "Float-helper normal shutdown NOT_PASS; preserved external report, no product attribution"
+    ],
+    "checks": [
+      "Separate final production diff review",
+      "Source snapshot exact match except trial registration names",
+      "14 Release and14 ASan+UBSan targets",
+      "718 existing independent profile vectors",
+      "Actual old/new AE saved project and six frame receipts"
+    ]
+  },
+  "publication": "No push, merge or release"
+}

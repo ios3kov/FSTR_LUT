@@ -7,6 +7,7 @@
 #include <limits>
 #include <stdexcept>
 #include <vector>
+#include <sstream>
 using namespace fstr;
 namespace {
 int checks=0;
@@ -15,6 +16,21 @@ void near(double a,double b,double e=2e-7){check(std::abs(a-b)<=e,"Color numeric
 FrameView view(const std::vector<float>& v,std::size_t w=1,std::size_t h=1,std::size_t stride=4){return {v.data(),v.size(),w,h,stride};}
 RenderResult ok(RenderResult r){check(r.status==Status::Ok&&r.rgba.size()>=4,"Expected successful complete color frame");return r;}
 void profiles() {
+    ColorSettings cg;cg.source=static_cast<SourceProfile>(7);
+    auto hdr=ColorProcessor(cg,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Straight).apply({-.1f,2,4,1});
+    near(hdr[0],-.1,1e-7);near(hdr[1],2,1e-7);near(hdr[2],4,1e-7);
+    auto encoded=ColorProcessor(cg,Transfer::SRGB,Primaries::SRGB_Rec709,Alpha::Straight).apply({-.1f,2,4,1});
+    near(encoded[0],-1.292,1e-6);near(encoded[1],1.3532560461493863,1e-6);near(encoded[2],1.8247962952761159,1e-6);
+    cg.look=std::make_shared<LUT>(LUT::identity(17));
+    auto identity=ColorProcessor(cg,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Straight).apply({-.1f,2,4,1});
+    near(identity[0],-.1,1e-6);near(identity[1],2,1e-6);near(identity[2],4,1e-6);
+    std::ostringstream cube;cube<<"LUT_3D_SIZE 2\n";
+    for(int b=0;b<2;++b)for(int g=0;g<2;++g)for(int r=0;r<2;++r)cube<<r*.8<<' '<<g*.8<<' '<<b*.8<<'\n';
+    std::istringstream lut(cube.str());cg.look=std::make_shared<LUT>(LUT::parse(lut));
+    auto creative=ColorProcessor(cg,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Premultiplied).apply({-.025f,.5f,1.f,.25f});
+    check(creative[1]>.25f&&creative[2]>creative[1]&&creative[3]==.25f,"3D creative look flattened bright levels or alpha");
+    cg.mix=0;const std::array<float,4> original{{-.025f,.5f,1.f,.25f}};
+    check(ColorProcessor(cg,Transfer::SRGB,Primaries::SRGB_Rec709,Alpha::Premultiplied).apply(original)==original,"3D Mix0 changed original samples");
     // New popup slot3: explicitly selected ARRI LogC3 EI800, not Host/Sony.
     ColorSettings arri;arri.source=static_cast<SourceProfile>(2);
     ColorProcessor decoder(arri,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Straight);

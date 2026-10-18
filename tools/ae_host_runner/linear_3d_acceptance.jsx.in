@@ -1,0 +1,35 @@
+// Candidate phase requires the nonce-owned native float-checkout helper archived in LINEAR_3D_EVIDENCE.json.
+// Format is read-only in AE scripting; do not replace native checkout with setSettings(Format).
+(function(){
+var cfg=@FSTR_LINEAR_CONFIG@,owned=false;
+function log(s){var f=new File(cfg.folder+'/host-report.txt');f.encoding='UTF-8';if(!f.open('a'))throw new Error('Report unavailable');f.writeln(s);f.close();}
+if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
+if(app.project&&(app.project.file!==null||app.project.numItems!==0)){log('BLOCKED existing project');return;}
+function prop(e,name){var p=e.property(name);if(!p&&e.property('Advanced'))p=e.property('Advanced').property(name);if(!p)throw new Error('Missing '+name);return p;}
+function effect(c){return c.layer(1).property('ADBE Effect Parade').property(1);}
+function add(name,color){var c=app.project.items.addComp(name,64,64,1,1,12);c.layers.addSolid(color,'Owned fixture',64,64,1,1);return c;}
+function attach(c){var e=c.layer(1).property('ADBE Effect Parade').addProperty(cfg.match);e.name='Owned FSTR';return e;}
+function render(c,label,frame,exr){if(exr){c.name='FSTR_FLOAT_'+label;return;}app.purge(PurgeTarget.ALL_CACHES);var q=app.project.renderQueue.items.add(c);q.timeSpanStart=frame/12;q.timeSpanDuration=1/12;var om=q.outputModule(1);om.applyTemplate('Photoshop');om.file=new File(cfg.folder+'/'+label+'_[#####].psd');app.project.renderQueue.render();if(q.status!==RQItemStatus.DONE)throw new Error('Render '+label);q.remove();log('RENDER '+label);}
+function find(name){for(var i=1;i<=app.project.numItems;i++)if(app.project.item(i).name===name)return app.project.item(i);throw new Error('Missing comp '+name);}
+function values(e){var names=['Input Profile','Temperature','Tint','Contrast','Saturation','Highlight Rolloff','Look','Look Amount','Mix','AE Pixel Encoding','Smart Color Grading'];var v=[2,12,-7,1.1,85,30,9,125,80,2,0];for(var i=0;i<names.length;i++)if(Math.abs(prop(e,names[i]).value-v[i])>1e-5)throw new Error('Old control changed '+names[i]);var p=prop(e,'Exposure');if(p.numKeys!==2||Math.abs(p.keyValue(1)-.25)>1e-6||Math.abs(p.keyValue(2)-.75)>1e-6||!p.expressionEnabled||p.expressionError||Math.abs(p.valueAtTime(0,false)-.45)>1e-5)throw new Error('Keyframe/expression migration failed');}
+try{
+app.beginSuppressDialogs();owned=true;
+if(cfg.phase==='baseline'){
+ app.newProject();app.project.workingSpace='';app.project.bitsPerChannel=32;
+ var c=add('Legacy Controls',[.42,.42,.42]),e=attach(c);prop(e,'Input Profile').setValue(2);var names=['Temperature','Tint','Contrast','Saturation','Highlight Rolloff','Look','Look Amount','Mix'];var v=[12,-7,1.1,85,30,9,125,80];for(var i=0;i<names.length;i++)prop(e,names[i]).setValue(v[i]);prop(e,'Exposure').setValueAtTime(0,.25);prop(e,'Exposure').setValueAtTime(.5,.75);prop(e,'Exposure').expression="value + .1 * effect('Owned FSTR')('Input Profile')";values(e);render(c,'legacy-controls0',0,false);render(c,'legacy-controls6',6,false);
+ c=add('Legacy ACES',[.18,.18,.18]);e=attach(c);prop(e,'Input Profile').setValue(7);render(c,'legacy-aces',0,false);
+ c=add('Legacy Host',[.18,.18,.18]);attach(c);render(c,'legacy-host',0,false);
+ app.project.save(new File(cfg.saved_project));log('PASS baseline controls/keys/expressions');
+}else{
+ app.open(new File(cfg.saved_project));var c=find('Legacy Controls'),e=effect(c);values(e);render(c,'legacy-controls0',0,false);render(c,'legacy-controls6',6,false);
+ c=find('Legacy ACES');if(prop(effect(c),'Input Profile').value!==7)throw new Error('Old ACES choice changed');render(c,'legacy-aces',0,false);c=find('Legacy Host');if(prop(effect(c),'Input Profile').value!==1)throw new Error('Old Host choice changed');render(c,'legacy-host',0,false);
+ c=add('New 3D',[.18,.18,.18]);e=attach(c);if(prop(e,'Input Profile').value!==1)throw new Error('Default input changed');prop(e,'Input Profile').setValue(8);render(c,'new3d',0,false);log('ORDER Source='+prop(e,'Input Profile').propertyIndex+' Exposure='+prop(e,'Exposure').propertyIndex);
+ for(var level=2;level<=4;level+=2){
+  var raw=add('Raw '+level,[.5,.5,.5]),up=attach(raw);prop(up,'AE Pixel Encoding').setValue(3);prop(up,'Exposure').setValue(level===2?2:3);render(raw,'raw'+level,0,true);
+  var outer=app.project.items.addComp('HDR '+level,64,64,1,1,12);outer.layers.add(raw);var grade=attach(outer);prop(grade,'Input Profile').setValue(8);render(outer,'linear'+level,0,true);var styled=outer.duplicate();prop(effect(styled),'Look').setValue(9);render(styled,'look'+level,0,true);
+ }
+ var saved=cfg.folder+'/linear3d-reopened.aep';app.project.save(new File(saved));app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.open(new File(saved));values(effect(find('Legacy Controls')));if(prop(effect(find('New 3D')),'Input Profile').value!==8)throw new Error('New3D choice lost');
+ log('PASS legacy migration and new3D save/reopen; pending native float checkout');var ready=new File(cfg.folder+'/ready.txt');ready.open('w');ready.write(cfg.nonce);ready.close();
+}
+}catch(e){log('FAIL '+String(e.message)+' line='+String(e.line));}finally{app.endSuppressDialogs(false);if(cfg.phase==='baseline'){if(owned)app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '"+cfg.nonce+"') app.quit();",1000,false);}}
+})();

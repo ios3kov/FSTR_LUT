@@ -8,7 +8,7 @@ using namespace fstr;
 
 int main(int argc,char** argv) {
     try {
-        if(argc!=15)throw std::invalid_argument("Usage: fstr_color_render width height input.rgba32f output.rgba32f srgb|linear|gamma24 source-key exposure contrast saturation shoulder look.cube|none look_amount mix straight|premult; source-key: host, sony-slog3-cine, arri-logc3-ei800, arri-logc4, panasonic-vlog, acescct, acescg");
+        if(argc!=15)throw std::invalid_argument("Usage: fstr_color_render width height input.rgba32f output.rgba32f srgb|linear|gamma24 source-key exposure contrast saturation shoulder look.cube|none look_amount mix straight|premult; source-key: host, sony-slog3-cine, arri-logc3-ei800, arri-logc4, panasonic-vlog, acescct, acescg, linear-rec709");
         auto integer=[](const char* text){std::size_t count=0;auto v=std::stoull(text,&count);if(count!=std::string(text).size())throw std::invalid_argument("Invalid integer");return v;};
         auto number=[](const char* text){std::size_t count=0;double v=std::stod(text,&count);if(count!=std::string(text).size())throw std::invalid_argument("Invalid number");return v;};
         const auto width=integer(argv[1]),height=integer(argv[2]);ColorContext context;

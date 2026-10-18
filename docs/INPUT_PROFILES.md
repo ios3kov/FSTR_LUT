@@ -1,5 +1,7 @@
 # INPUT-PROFILES-001 / META-XMP-001
 
+Follow-up: **3D - Linear RGB** is appended as choice8; Input Profile now resides in Advanced. Prior seven choices retain their values. New build and separate migration/HDR evidence: [LINEAR_3D_INPUT.md](LINEAR_3D_INPUT.md). Historical INPUT-PROFILES-001 results below retain their original build identity.
+
 Baseline7fc6543. User authorized broader camera Log and non-camera sources after accepting installed Smart. This slice adds explicit ARRI LogC3 EI800/AWG3, LogC4/AWG4, Panasonic V-Log/V-Gamut, ACEScct/AP1 and linear ACEScg/AP1. Existing Host0/Sony1 enum and AE popup choices1/2 retain meanings; new choices append. Output remains the existing explicit host Rec709 transfer. This is source linearization plus colorimetry, not an ACES display rendering transform or manufacturer display look. Already-converted AE footage must remain Host; metadata does not select a source override.
 
 COLOR-01: manufacturer/Academy curves, full-range normalized source codes, explicit primaries and D65 working white. ACES D60→D65 adaptation is Bradford, declared and tested. No hidden camera EI guessing; LogC3 label states EI800. Preserve wide-gamut negative/HDR values except ACEScct's specified65504 decoding cap. Retain premultiplied-alpha and exact Mix0/transparent behavior.

@@ -122,7 +122,6 @@ fstr::Transfer host_transfer(const Params& p) {
 PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     PF_Err err=PF_Err_NONE;
     PF_ParamDef def{};
-    PF_ADD_POPUP("Input Profile",static_cast<A_short>(fstr::source_profile_count),1,fstr::source_profile_menu,SourceId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Exposure",-10,10,-5,5,0,PF_Precision_HUNDREDTHS,0,0,ExposureId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Temperature",-100,100,-100,100,0,PF_Precision_HUNDREDTHS,0,0,TemperatureId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Tint",-100,100,-100,100,0,PF_Precision_HUNDREDTHS,0,0,TintId);
@@ -134,6 +133,7 @@ PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Look Amount",0,300,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,LookAmountId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Mix",0,100,0,100,100,PF_Precision_HUNDREDTHS,PF_ValueDisplayFlag_PERCENT,0,MixId);
     PF_ADD_TOPICX("Advanced",PF_ParamFlag_COLLAPSE_TWIRLY,AdvancedStartId);
+    AEFX_CLR_STRUCT(def);PF_ADD_POPUP("Input Profile",static_cast<A_short>(fstr::source_profile_count),1,fstr::source_profile_menu,SourceId);
     AEFX_CLR_STRUCT(def);PF_ADD_POPUP("AE Pixel Encoding",4,2,"Choose pixel encoding...|sRGB|Linear Rec.709 / sRGB|Rec.709 Gamma 2.4",WorkingSpaceId);
     AEFX_CLR_STRUCT(def);PF_END_TOPIC(AdvancedEndId);
     AEFX_CLR_STRUCT(def);PF_ADD_CHECKBOX("Smart Color Grading","On",FALSE,0,SmartColorId);

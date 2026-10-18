@@ -3,7 +3,7 @@ var cfg=@FSTR_PROFILE_CONFIG@,owned=false;
 function log(s){var f=new File(cfg.folder+'/host-report.txt');f.encoding='UTF-8';if(!f.open('a'))throw new Error('Report unavailable');f.writeln(s);f.close();}
 if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
 if(app.project&&(app.project.file!==null||app.project.numItems!==0)){log('BLOCKED existing project');return;}
-function input(e){return e.property('Input Profile');}
+function input(e){var p=e.property('Input Profile');if(!p&&e.property('Advanced'))p=e.property('Advanced').property('Input Profile');if(!p)throw new Error('Input profile missing');return p;}
 function add(name,profile,code){var c=app.project.items.addComp(name,64,64,1,1,12),l=c.layers.addSolid([code,code,code],'Owned encoded gray fixture',64,64,1,1),e=l.property('ADBE Effect Parade').addProperty(cfg.match);if(input(e).value!==1)throw new Error('Fresh input default changed');if(profile!==1)input(e).setValue(profile);return c;}
 function render(c,label){app.purge(PurgeTarget.ALL_CACHES);var q=app.project.renderQueue.items.add(c);q.timeSpanStart=0;q.timeSpanDuration=1/12;q.outputModule(1).applyTemplate('Photoshop');q.outputModule(1).file=new File(cfg.folder+'/'+label+'_[#####].psd');app.project.renderQueue.render();if(q.status!==RQItemStatus.DONE)throw new Error('Render '+label);q.remove();log('RENDER '+label);}
 function find(name){for(var i=1;i<=app.project.numItems;i++)if(app.project.item(i).name===name)return app.project.item(i);throw new Error('Missing '+name);}

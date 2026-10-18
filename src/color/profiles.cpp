@@ -52,7 +52,7 @@ double source_channel_to_linear(double x,SourceProfile p){
   case SourceProfile::ArriLogC4:value=x>=0?(std::exp2(14*(x-arri4_c)/arri4_b+6)-64)/arri4_a:x*arri4_s+arri4_t;break;
   case SourceProfile::PanasonicVLog:value=x<.181?(x-.125)/5.6:std::pow(10.,(x-.598206)/.241514)-.00873;break;
   case SourceProfile::ACEScct:value=x<=.155251141552511?(x-.0729055341958355)/10.5402377416545:x>=(std::log2(65504.)+9.72)/17.52?65504.:std::exp2(x*17.52-9.72);break;
-  case SourceProfile::ACEScg:return x;
+  case SourceProfile::ACEScg:case SourceProfile::LinearRec709:return x;
   default:throw UnsupportedColorProfile("Explicit source profile required");
  }return finite(value);
 }
@@ -64,13 +64,13 @@ double linear_to_source_channel(double x,SourceProfile p){
   case SourceProfile::ArriLogC4:value=x>=arri4_t?(std::log2(arri4_a*x+64)-6)/14*arri4_b+arri4_c:(x-arri4_t)/arri4_s;break;
   case SourceProfile::PanasonicVLog:value=x<.01?5.6*x+.125:.241514*std::log10(x+.00873)+.598206;break;
   case SourceProfile::ACEScct:value=x<=.0078125?10.5402377416545*x+.0729055341958355:(std::log2(x)+9.72)/17.52;break;
-  case SourceProfile::ACEScg:return x;
+  case SourceProfile::ACEScg:case SourceProfile::LinearRec709:return x;
   default:throw UnsupportedColorProfile("Explicit source profile required");
  }return finite(value);
 }
 RGB source_to_linear_rec709(RGB x,SourceProfile p){
  x={source_channel_to_linear(x.r,p),source_channel_to_linear(x.g,p),source_channel_to_linear(x.b,p)};
- switch(p){case SourceProfile::SonySLog3Cine:return sony_cine_to_rec709(x);case SourceProfile::ArriLogC3EI800:return multiply(awg3,x);case SourceProfile::ArriLogC4:return multiply(awg4,x);case SourceProfile::PanasonicVLog:return multiply(vgamut,x);case SourceProfile::ACEScct:case SourceProfile::ACEScg:return multiply(ap1,x);default:throw UnsupportedColorProfile("Explicit source profile required");}
+ switch(p){case SourceProfile::SonySLog3Cine:return sony_cine_to_rec709(x);case SourceProfile::ArriLogC3EI800:return multiply(awg3,x);case SourceProfile::ArriLogC4:return multiply(awg4,x);case SourceProfile::PanasonicVLog:return multiply(vgamut,x);case SourceProfile::ACEScct:case SourceProfile::ACEScg:return multiply(ap1,x);case SourceProfile::LinearRec709:return x;default:throw UnsupportedColorProfile("Explicit source profile required");}
 }
 double decode_host(double x,Transfer t) {
     finite(x);

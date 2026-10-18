@@ -1,3 +1,7 @@
+## 3D Linear input — 2026-10-18
+
+Added **3D - Linear RGB** beside ACEScg, moved Input Profile inside Advanced and preserved sRGB/Already converted defaults.14Release/14sanitizer targets,718prior profile vectors, eight exact legacy host comparisons, animated/name-expression migration and save/reopen pass. Six actual32bpc AE frame checkouts retain distinct above-white values with/without a look. Signed Current **f6153fc453e7167e** installed; prior Current archived. Unknown Log or arbitrary renderer gamut is not inferred from bit depth. OpenEXR file export NOT_RUN; actual host float receipts used instead. [Contract/evidence](LINEAR_3D_INPUT.md).
+
 ## Current input extension — INPUT-PROFILES-001 / META-XMP-001
 
 Five explicit sources append to Host/Sony: ARRI LogC3 EI800/AWG3, LogC4/AWG4, Panasonic V-Log/V-Gamut, ACEScct/AP1, ACEScg/AP1.14Release/14sanitizer targets,718OCIO vectors and nine actual AE exports pass; old Host/Sony results match exactly. Generic bounded XMP TIFF manufacturer/model reader added for MP4/MOV; it does not infer gamma/gamut. Six synthetic vendor-name contracts, a decodable authored MP4 and two real Sony regressions pass. Untouched non-Sony layouts and remaining vendor profiles stay pending. New Current build8d3e3dda483dffcf installed with prior bytes preserved. See INPUT_PROFILES.md.

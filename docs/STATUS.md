@@ -1,5 +1,10 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## 3D Linear input — 2026-10-18
+
+Added **3D - Linear RGB** beside ACEScg, moved Input Profile inside Advanced and preserved sRGB/Already converted defaults.14Release/14sanitizer targets,718prior profile vectors, eight exact legacy host comparisons, animated/name-expression migration and save/reopen pass. Six actual32bpc AE frame checkouts retain distinct above-white values with/without a look. Signed Current **f6153fc453e7167e** installed; prior Current archived. Unknown Log or arbitrary renderer gamut is not inferred from bit depth. OpenEXR file export NOT_RUN; actual host float receipts used instead. [Contract/evidence](LINEAR_3D_INPUT.md).
+
+
 ## Input profiles and XMP — 2026-10-18
 
 Implemented five explicit appended profiles: ARRI LogC3 EI800/AWG3, LogC4/AWG4, Panasonic V-Log/V-Gamut, ACEScct/AP1 and ACEScg/AP1.14Release/14sanitizer targets,718independent OCIO vectors and nine actual AE exports pass. Legacy Host/Sony outputs match exactly; all seven choices survive save/reopen. Generic bounded XMP TIFF Make/Model now reads standard MP4 UUID / QuickTime XMP_ without guessing color. Six synthetic vendor-name contracts, a decodable owned MP4 and both real user Sony files pass. Non-Sony untouched-file/layout and actual XMP ECW draw checks NOT_RUN; more camera Log profiles remain pending. Installed Current build8d3e3dda483dffcf, prior bytes preserved. [Scope/evidence](INPUT_PROFILES.md).

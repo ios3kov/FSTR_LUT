@@ -1,3 +1,7 @@
+# Accepted quality and acceleration baseline — 2026-10-18
+
+User accepts shown quality of42ee1edaaff01753. Preserve that bundle and the linked accepted comparison artifacts while accelerating. SMART-STAGE-PROFILE-001 measures six standalone inputs and16AE diagnostic exports; it changes no color, mask, model, encoding defaults or installed product bytes. Actual RAM-warm Smart still takes1509ms at960x540 in the scoped trial; no real-time claim. [Measurements and next work](SMART_STAGE_PROFILING.md).
+
 # Scene-aware SDR preparation — 2026-10-18
 
 Auto Prepare SDR now supports a complete bounded clip scan with independent correction per detected shot. Advanced → Detect Scene Changes isOn for fresh effects andOff for missing old-project values. Off retains the established three-anchor behavior. Explicit Log/3D paths and encoding defaults are unchanged. See [SDR_SHOT_DETECTION.md](SDR_SHOT_DETECTION.md) for187native exports, cache/compatibility evidence,16384-frame limit and unverified cases.

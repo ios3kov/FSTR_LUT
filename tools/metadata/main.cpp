@@ -8,7 +8,7 @@ int main(int argc,char** argv) {
         nlohmann::json output={{"status",fstr::metadata_status_name(value.status)},
             {"declared_profile",fstr::declared_profile_name(value.profile)},
             {"manufacturer",value.manufacturer},{"camera",value.model},{"gamma",value.gamma},
-            {"primaries",value.primaries},{"coding",value.coding},{"bytes_read",value.bytes_read},
+            {"primaries",value.primaries},{"coding",value.coding},{"provenance",value.provenance},{"bytes_read",value.bytes_read},
             {"scope","Source declarations only; AE pixel encoding and prior conversions remain explicit"}};
         std::cout<<output.dump(2)<<'\n';
         return value.status==fstr::MetadataStatus::Found||value.status==fstr::MetadataStatus::NotFound?0:1;

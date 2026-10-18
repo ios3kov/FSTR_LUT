@@ -1,5 +1,9 @@
 # FSTR-LUT — current development checkpoint, 2026-10-15
 
+## Input profiles and XMP — 2026-10-18
+
+Implemented five explicit appended profiles: ARRI LogC3 EI800/AWG3, LogC4/AWG4, Panasonic V-Log/V-Gamut, ACEScct/AP1 and ACEScg/AP1.14Release/14sanitizer targets,718independent OCIO vectors and nine actual AE exports pass. Legacy Host/Sony outputs match exactly; all seven choices survive save/reopen. Generic bounded XMP TIFF Make/Model now reads standard MP4 UUID / QuickTime XMP_ without guessing color. Six synthetic vendor-name contracts, a decodable owned MP4 and both real user Sony files pass. Non-Sony untouched-file/layout and actual XMP ECW draw checks NOT_RUN; more camera Log profiles remain pending. Installed Current build8d3e3dda483dffcf, prior bytes preserved. [Scope/evidence](INPUT_PROFILES.md).
+
 ## Smart accepted by user — 2026-10-18
 
 User reports that Smart checks on the installed new sRGB-default Current build d774807231370f48 passed. Treat this installed-build acceptance as closed; no repeat of those visual checks or automatic promotion of experimental anchor/SAM2 paths. CACHE-RECOVERY-001 now adds safe versioned interrupted-write cleanup;14Release/14sanitizer tests and six actual AE renders pass. Installed Current build450636dfa3af11bb matches prior Off/On pixels exactly; one analysis plus three RAM hits. Accepted prior bytes preserved. See CACHE_RECOVERY.md. This does not certify unperformed time-remap/MFR/platform workflows.

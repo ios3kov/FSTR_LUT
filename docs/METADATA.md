@@ -1,3 +1,7 @@
+# Metadata extension — 2026-10-18
+
+META-XMP-001 adds bounded standard XMP TIFF Make/Model via MP4 Adobe UUID and legacy QuickTime moov/udta/XMP_. It merges complementary Sony NRT/XMP fields with conflict rejection and records schema provenance. No manufacturer/model-based Log inference or automatic input selection. Source file IO remains exclusively outside render callbacks. Synthetic multi-vendor contracts, an authored decodable MP4 and two real Sony regressions pass; untouched non-Sony layouts and new-XMP ECW draw remain NOT_RUN. See INPUT_PROFILES.md. The initial Sony contract and historical scope below describe their original artifacts; no universal vendor-support claim.
+
 # Camera metadata — authorized addition to the color MVP
 
 Direct user request2026-10-14: automatically read useful embedded camera metadata when present. Existing color processing, parameter IDs and deferred AI/performance work remain unchanged. Initial supported source is Sony NonRealTimeMeta XML in MP4/MOV ISO-BMFF meta/xml boxes, including moov/udta/meta containers. rtmd, sidecars, arbitrary UUID XML, nested compositions and image sequences are not this slice.

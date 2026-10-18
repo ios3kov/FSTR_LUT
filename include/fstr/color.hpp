@@ -16,7 +16,14 @@ bool grade_is_neutral(const GradeSettings&) noexcept;
 void validate_grade(const GradeSettings&);
 RGB grade_linear(RGB, const GradeSettings&);
 
-enum class SourceProfile { Host, SonySLog3Cine };
+// Values0/1 are persistent. Append profiles; never reorder saved AE choices.
+enum class SourceProfile { Host, SonySLog3Cine, ArriLogC3EI800, ArriLogC4, PanasonicVLog, ACEScct, ACEScg };
+inline constexpr int source_profile_count=7;
+inline constexpr const char* source_profile_keys[]{"host","sony-slog3-cine","arri-logc3-ei800","arri-logc4","panasonic-vlog","acescct","acescg"};
+inline constexpr char source_profile_menu[]="Already converted / SDR|Sony S-Log3 / S-Gamut3.Cine|ARRI LogC3 EI800 / AWG3|ARRI LogC4 / AWG4|Panasonic V-Log / V-Gamut|ACEScct / AP1|ACEScg / Linear AP1";
+double source_channel_to_linear(double code,SourceProfile);
+double linear_to_source_channel(double linear,SourceProfile);
+RGB source_to_linear_rec709(RGB code,SourceProfile);
 double slog3_to_linear(double code);
 double linear_to_slog3(double linear);
 RGB sony_cine_to_rec709(RGB linear);

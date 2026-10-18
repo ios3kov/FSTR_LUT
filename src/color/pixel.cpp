@@ -23,7 +23,7 @@ ColorProcessor::ColorProcessor(const ColorSettings& s,Transfer t,Primaries p,Alp
     if(!bypass_&&(p!=Primaries::SRGB_Rec709||
        (t!=Transfer::SRGB&&t!=Transfer::Linear&&t!=Transfer::Gamma24)||
        (a!=Alpha::Straight&&a!=Alpha::Premultiplied)||
-       (s.source!=SourceProfile::Host&&s.source!=SourceProfile::SonySLog3Cine)))
+       (static_cast<int>(s.source)<0||static_cast<int>(s.source)>=source_profile_count)))
         throw UnsupportedColorProfile("Explicit host Rec709 and supported source profile required");
 }
 std::array<float,4> ColorProcessor::apply(std::array<float,4> pixel,double color_protection) const {
@@ -35,7 +35,7 @@ std::array<float,4> ColorProcessor::apply(std::array<float,4> pixel,double color
     RGB raw{pixel[0],pixel[1],pixel[2]};
     if(alpha_==Alpha::Premultiplied){raw.r/=alpha;raw.g/=alpha;raw.b/=alpha;}
     RGB work;
-    if(s.source==SourceProfile::SonySLog3Cine)work=sony_cine_to_rec709({slog3_to_linear(raw.r),slog3_to_linear(raw.g),slog3_to_linear(raw.b)});
+    if(s.source!=SourceProfile::Host)work=source_to_linear_rec709(raw,s.source);
     else work={decode_host(raw.r,transfer_),decode_host(raw.g,transfer_),decode_host(raw.b,transfer_)};
     work=shoulder(grade_linear(work,s.grade),s.shoulder);
     if(s.look&&s.look_amount>0) {

@@ -11,6 +11,7 @@ struct CameraMetadata {
     MetadataStatus status=MetadataStatus::NotFound;
     DeclaredProfile profile=DeclaredProfile::Unknown;
     std::string manufacturer,model,gamma,primaries,coding;
+    std::string provenance; // Recognized source schema; no private identifiers.
     std::string message;
     std::size_t bytes_read=0;
 };
@@ -21,6 +22,7 @@ struct MetadataLimits {
 };
 // Source declarations only. Never selects the effect's incoming pixel encoding.
 CameraMetadata parse_sony_metadata_xml(std::string_view xml,MetadataLimits limits={});
+CameraMetadata parse_xmp_metadata(std::string_view xml,MetadataLimits limits={});
 // Bounded seek/read of small metadata boxes; skips compressed frame payloads.
 // Caller must keep filesystem work outside frame rendering.
 CameraMetadata read_camera_metadata(const std::filesystem::path& path,MetadataLimits limits={});

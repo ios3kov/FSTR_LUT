@@ -97,8 +97,8 @@ public:
 fstr::ColorSettings settings(const Params& p) {
     fstr::ColorSettings s;
     const auto source=p[Source].u.pd.value,look=p[Look].u.pd.value;
-    if(source<1||source>2||look<1||look>static_cast<int>(fstr::builtin_look_count))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
-    s.source=source==2?fstr::SourceProfile::SonySLog3Cine:fstr::SourceProfile::Host;
+    if(source<1||source>fstr::source_profile_count||look<1||look>static_cast<int>(fstr::builtin_look_count))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
+    s.source=static_cast<fstr::SourceProfile>(source-1);
     s.grade={p[Exposure].u.fs_d.value,p[Contrast].u.fs_d.value,p[Saturation].u.fs_d.value/100};
     s.grade.temperature=p[Temperature].u.fs_d.value/100;s.grade.tint=p[Tint].u.fs_d.value/100;
     s.shoulder=p[Shoulder].u.fs_d.value/100;s.look_amount=p[LookAmount].u.fs_d.value/100;s.mix=p[Mix].u.fs_d.value/100;
@@ -122,7 +122,7 @@ fstr::Transfer host_transfer(const Params& p) {
 PF_Err params_setup(PF_InData* in_data,PF_OutData* out_data) {
     PF_Err err=PF_Err_NONE;
     PF_ParamDef def{};
-    PF_ADD_POPUP("Input Profile",2,1,"Already converted / SDR|Sony S-Log3 / S-Gamut3.Cine",SourceId);
+    PF_ADD_POPUP("Input Profile",static_cast<A_short>(fstr::source_profile_count),1,fstr::source_profile_menu,SourceId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Exposure",-10,10,-5,5,0,PF_Precision_HUNDREDTHS,0,0,ExposureId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Temperature",-100,100,-100,100,0,PF_Precision_HUNDREDTHS,0,0,TemperatureId);
     AEFX_CLR_STRUCT(def);PF_ADD_FLOAT_SLIDERX("Tint",-100,100,-100,100,0,PF_Precision_HUNDREDTHS,0,0,TintId);

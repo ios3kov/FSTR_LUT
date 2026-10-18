@@ -1,3 +1,7 @@
+# Explicit input extension — 2026-10-18
+
+INPUT-PROFILES-001 now appends ARRI LogC3 EI800/AWG3, LogC4/AWG4, Panasonic V-Log/V-Gamut, ACEScct/AP1 and ACEScg/AP1 to the original Host/Sony choices. This extends the initial Sony-only scope below under the user's later authorization. Output remains the explicit existing host Rec709 transfer; source normalization is not an ACES display rendering transform. See INPUT_PROFILES.md for exact checks and remaining formats.
+
 # Current encoding default decision — 2026-10-18
 
 User explicitly selected sRGB by default with manual override and canceled Auto altogether. This supersedes older unspecified-default/automatic-discovery obligations below. Existing saved encoding values retain their meanings; source Log versus already-converted Host remains explicit. See docs/COLOR_AUTO_FOLLOWUP.md SRGB-DEFAULT-001 for compatibility acceptance. Historical requirements/results below remain tied to their original artifacts.

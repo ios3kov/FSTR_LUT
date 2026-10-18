@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "requirements": [
+    "INPUT-PROFILES-001",
+    "META-XMP-001"
+  ],
+  "baseline_revision": "7fc6543a669eeacd515516aac58df431e9fffb92",
+  "branch": "dev/ai-enhance-prototype",
+  "created_utc": "2026-10-18T13:53:33.627130+00:00",
+  "source_sha256": {
+    "README.md": "3fc31ffb8854ae0387ef271778792f8ba54144ccbfb83c304a286ff6c2843874",
+    "docs/METADATA.md": "a80e8a3ba41c2fe63924f6ebd932bb4a0f09e7a3775e87d8e9d2b6a7659fc4d2",
+    "docs/MVP_COLOR.md": "48c6565ee58ba0468768cf2ca813486ec5d6d40127ae2c1e820bf6e5a80cbb72",
+    "docs/PLAN.md": "be246b76cd42fa587c7c39d2a969165a06dcdba0c618780c80755386530d2491",
+    "docs/SDR_LOG_GUIDE.md": "c4791a8dfc6b98773c25cbba5a2f006b71a4d1d355038ac657f24b8232622c3d",
+    "docs/STATUS.md": "1479f029c6c4d1e9b36228bc4351a1194039930cadd291d7adbfb0c2e1c0cbe1",
+    "include/fstr/color.hpp": "867560e522616ec4ec92c9ccc03decae50ae80b1cd2b0d40c1a9922f5be46aa0",
+    "include/fstr/metadata.hpp": "82ef7649cd6995dbbeed372a0590c423017618d1b7c31d64170252d2e26c5657",
+    "src/ae/plugin.cpp": "bbb53333fd90e654f4f94148929ff5f75b58ce4cbcdaa46198ad798e8cddfde6",
+    "src/color/pixel.cpp": "7741cc743ae21c4e51e3c67d5445ce6099f68f121fbc964ea5951c4ee5aa8283",
+    "src/color/profiles.cpp": "6670cdfc1dcd63c85eb7e027a120a1928fa1fe5c9488fb9f0f1661d1d3decfdc",
+    "src/metadata/metadata.cpp": "5bb1a28d43354b7f7716eabb7d98086d6521434f42158b88cab05a9da011495a",
+    "tests/ae_adapter_tests.cpp": "e9ffb04c698084c127f1039137465c3b146f4f5de9278144808f45bbb321637f",
+    "tests/color_tests.cpp": "89f9852515db94f37a1ea19a4432a86a57e5ec9931c16a00b066d0fabdf22d32",
+    "tests/metadata_tests.cpp": "eaf9d1c18289f166fcae45429d01cdff95246996d92afc607e1a8fdfd4f93c11",
+    "tools/benchmark/color_main.cpp": "50c174e566cc3abb25019e4164a61c85539b4231e06ee15ecac87fabfc031222",
+    "tools/metadata/main.cpp": "52e3ef3cdd2dba6f049304e5f6696195b85f465f1f83c7cab2e60a87c6f77742",
+    "docs/INPUT_PROFILES.md": "5f312c611b056dd46e10ec8aeb6648ffc5ab57a7614a9e1b532c15f06d98c30e",
+    "tools/ae_host_runner/profile_acceptance.jsx.in": "b8a9b11970a06ea601fdfcb56cc843895c6d598271c1cb97eba1824fdd76808c",
+    "tools/benchmark/verify_input_profiles.py": "0db2cbc88c407594cbe8b8d8d3516506a140ee2cfebabf1f1fb8155c8ac7ff81"
+  },
+  "external_receipts": [
+    {
+      "path": "../input-profiles-20261018/red.log",
+      "sha256": "dcb5262e952ded092d2b32c092d4c26713b2b3a39bd5c150946905fdbce83ac1"
+    },
+    {
+      "path": "../input-profiles-20261018/build-fixed.log",
+      "sha256": "da38394b2bdb84f47f6431201f9bde2e971baec174b68760eedd44a9b1dbac7f"
+    },
+    {
+      "path": "../input-profiles-20261018/release.log",
+      "sha256": "53bec293f44a1e9acc058eb818f93208ee0f28aff08f8148034d77fe9a79ee4c"
+    },
+    {
+      "path": "../input-profiles-20261018/sanitize.log",
+      "sha256": "5b92972717bdacc5d79c4e8e0ddb27caee2db028506e4803229c101c63a5ed87"
+    },
+    {
+      "path": "../input-profiles-20261018/oracle-v2/verification.json",
+      "sha256": "7f1854fc97ca7604f7c944603a253200173d5b9a6b3589171e4ccd6160d6e652"
+    },
+    {
+      "path": "../input-profiles-20261018/oracle-v3/verification.json",
+      "sha256": "422d6b8deb672c474e74ed63499c09f0a5fd032c9b0cbe986e9a7f7adf8d200a"
+    },
+    {
+      "path": "../input-profiles-20261018/host-verification.json",
+      "sha256": "4b75a13b7f9ffcb38b9cc88b3fc2dea69f0be8224f5721af470838cf1124aafd"
+    },
+    {
+      "path": "../input-profiles-20261018/baseline/host-report.txt",
+      "sha256": "10ab72bf129e22482232534f4b1d53d2092f7f210b71f43c49d9cba5e53f0bb9"
+    },
+    {
+      "path": "../input-profiles-20261018/baseline/installation.json",
+      "sha256": "b0d46bf37148095d9c61e29c92e3a460fc090906857516b6ad41a63aca294930"
+    },
+    {
+      "path": "../input-profiles-20261018/candidate/host-report.txt",
+      "sha256": "3cde92283ce202e1fb0514391fc6497e107c5c56af9612a12068a3544f5ea0f7"
+    },
+    {
+      "path": "../input-profiles-20261018/candidate/installation.json",
+      "sha256": "4faf0f72385d11762b50c4cae0c73a4d4f684c29242c5ea6834c6dc5207c6804"
+    },
+    {
+      "path": "../input-profiles-20261018/candidate/package-inventory.json",
+      "sha256": "608b27c152096286f3c1bfd7468030568eacaa1eb8354bf3fa4e264f65aaa55e"
+    },
+    {
+      "path": "../input-profiles-20261018/candidate/cleanup.json",
+      "sha256": "f1fe7a28d8587789f2bf1561ad11419ac4396c5d684d445e26a1b78c20258464"
+    },
+    {
+      "path": "../input-profiles-20261018/prepare_host.py",
+      "sha256": "de3c493ac0c4bc74f17e5a0dbc66e4c219d09fcf695af336c3b143eff9b927c9"
+    },
+    {
+      "path": "../input-profiles-20261018/host_phase.py",
+      "sha256": "e21fe6d6f4d60c1d295b50abfd6c087fa3e43fc94db3a06dfd55eb979bf3192f"
+    },
+    {
+      "path": "../input-profiles-20261018/owned-xmp-fixture.json",
+      "sha256": "ff5bdd8e3a4a0b9dbeaa9a9d7dad5338348178406392cb2bcb7b65272df9c7c5"
+    },
+    {
+      "path": "../input-profiles-20261018/C2098.MP4-metadata.json",
+      "sha256": "71fde72528d5231a5945655bf9dc9d0c41ca0b7499cb2c9a6c662408e42b2523"
+    },
+    {
+      "path": "../input-profiles-20261018/C2111.MP4-metadata.json",
+      "sha256": "ff2d13d404f92bad92367636461ab48073918a99af2cf43eb66b0256eb2b5724"
+    },
+    {
+      "path": "../input-profiles-20261018/reference/sources.json",
+      "sha256": "e30e31ce83959aabff974f041ad824d1a509788741d79d2f857ffff7cc88a5a3"
+    },
+    {
+      "path": "/tmp/fstr-input-profiles-20261018-checkpoint.json",
+      "sha256": "864dfde5b02e2cc7bc02ef51769d31f25af918031cde193e83924dd7e0efe5e9"
+    },
+    {
+      "path": "/tmp/fstr-input-profiles-20261018-evidence-check.json",
+      "sha256": "8d08946e9f9add9a0aba85d054f298e4c7f04cdf41f9e99ee77f53b6e09b7514"
+    }
+  ],
+  "reference_spec_sha256": {
+    "../input-profiles-20261018/reference/arri-logc3.pdf": "348d2761d3b1df259011204c7080ff9cfdc0512b3073f521384794f88fe1b665",
+    "../input-profiles-20261018/reference/panasonic-vlog.pdf": "d8a1837725abcca5da348b2dc6f212446db6a598cb61b093891af7ecbc0c8dcc",
+    "../input-profiles-20261018/reference/xmp-storage.pdf": "2e80d671f87501c91ab18c0722c233e35a72d1c9245c70accb743917ebe2eb18"
+  },
+  "checks": {
+    "release": "PASS 14/14",
+    "asan_ubsan": "PASS 14/14",
+    "independent_oracle": {
+      "result": "PASS",
+      "reference": "OpenColorIO2.4.2 CPU, no optimization",
+      "renderer_sha256": "46a6b5199a0530f2bd98902d4d3f43ea6076ae2c29f76f2d30e7fa60efdc5a1d",
+      "producer_sha256": "0db2cbc88c407594cbe8b8d8d3516506a140ee2cfebabf1f1fb8155c8ac7ff81",
+      "profiles": [
+        {
+          "profile": "arri-logc3-ei800",
+          "passed": true,
+          "samples": 143,
+          "maximum_absolute_error": 0.0007476806640625,
+          "atol": 3e-05,
+          "rtol": 0.0001,
+          "scale": "per-pixel RGB infinity norm (matrix cancellation)",
+          "style": "ARRI_ALEXA-LOGC-EI800-AWG_to_ACES2065-1"
+        },
+        {
+          "profile": "arri-logc4",
+          "passed": true,
+          "samples": 143,
+          "maximum_absolute_error": 0.000579833984375,
+          "atol": 2e-05,
+          "rtol": 2e-05,
+          "scale": "per-pixel RGB infinity norm (matrix cancellation)",
+          "style": "ARRI_LOGC4_to_ACES2065-1"
+        },
+        {
+          "profile": "panasonic-vlog",
+          "passed": true,
+          "samples": 143,
+          "maximum_absolute_error": 1.52587890625e-05,
+          "atol": 2e-05,
+          "rtol": 2e-05,
+          "scale": "per-pixel RGB infinity norm (matrix cancellation)",
+          "style": "PANASONIC_VLOG-VGAMUT_to_ACES2065-1"
+        },
+        {
+          "profile": "acescct",
+          "passed": true,
+          "samples": 143,
+          "maximum_absolute_error": 7.62939453125e-05,
+          "atol": 2e-05,
+          "rtol": 2e-05,
+          "scale": "per-pixel RGB infinity norm (matrix cancellation)",
+          "style": "ACEScct_to_ACES2065-1"
+        },
+        {
+          "profile": "acescg",
+          "passed": true,
+          "samples": 146,
+          "maximum_absolute_error": 1.9073486328125e-06,
+          "atol": 2e-05,
+          "rtol": 2e-05,
+          "scale": "per-pixel RGB infinity norm (matrix cancellation)",
+          "style": "ACEScg_to_ACES2065-1"
+        }
+      ],
+      "limits": "Numeric source conversion only; not an ACES output transform, camera-footage or host/visual approval"
+    },
+    "host_build_id": "8d3e3dda483dffcf",
+    "host_source_matches_root_except_registration_identity": true,
+    "host": "PASS nine actual AE exports, old Host/Sony and five new source choices survive save/reopen",
+    "host_images": [
+      {
+        "check": "legacy-host old/new",
+        "max_code_difference": 0.0
+      },
+      {
+        "check": "legacy-sony old/new",
+        "max_code_difference": 0.0
+      },
+      {
+        "check": "profile3 18percent neutral",
+        "max_code_error": 0.6458130226126144
+      },
+      {
+        "check": "profile4 18percent neutral",
+        "max_code_error": 0.6458130226126144
+      },
+      {
+        "check": "profile5 18percent neutral",
+        "max_code_error": 0.6458130226126144
+      },
+      {
+        "check": "profile6 18percent neutral",
+        "max_code_error": 0.6458130226126144
+      },
+      {
+        "check": "profile7 18percent neutral",
+        "max_code_error": 0.6458130226126144
+      }
+    ],
+    "metadata": "PASS six synthetic vendor names, valid authored MP4, namespace/conflict/budget cases and two real Sony files",
+    "signature_and_installed_prior_inventory": "PASS",
+    "helpers": "Archived after owned process exit",
+    "final_review": "Source enum/menu stability, alpha/Mix0, numeric branches/gamuts/whitepoints, namespace/data whitelist, bounded IO outside render and conflict propagation reviewed",
+    "scanner": "PASS no findings or omissions; release not assessed",
+    "final_scanner_files": 844
+  },
+  "limits": [
+    "Untouched non-Sony proprietary metadata layouts NOT_RUN",
+    "Actual XMP ECW draw NOT_RUN",
+    "Real non-Sony camera-image visual validation NOT_RUN",
+    "Remaining vendor Log profiles pending in PLAN",
+    "Source normalization only, no ACES output/display transform",
+    "No new full Smart visual acceptance claim"
+  ],
+  "publication": "No push, merge or release"
+}

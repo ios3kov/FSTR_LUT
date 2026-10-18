@@ -15,6 +15,30 @@ void near(double a,double b,double e=2e-7){check(std::abs(a-b)<=e,"Color numeric
 FrameView view(const std::vector<float>& v,std::size_t w=1,std::size_t h=1,std::size_t stride=4){return {v.data(),v.size(),w,h,stride};}
 RenderResult ok(RenderResult r){check(r.status==Status::Ok&&r.rgba.size()>=4,"Expected successful complete color frame");return r;}
 void profiles() {
+    // New popup slot3: explicitly selected ARRI LogC3 EI800, not Host/Sony.
+    ColorSettings arri;arri.source=static_cast<SourceProfile>(2);
+    ColorProcessor decoder(arri,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Straight);
+    const auto black=decoder.apply({.092809f,.092809f,.092809f,1});
+    near(black[0],0,1e-7);near(black[1],0,1e-7);near(black[2],0,1e-7);
+    near(source_channel_to_linear(.125,SourceProfile::PanasonicVLog),0,1e-15);
+    near(source_channel_to_linear(.181,SourceProfile::PanasonicVLog),.01,1e-6);
+    near(source_channel_to_linear(95./1023,SourceProfile::ArriLogC4),0,1e-14);
+    near(source_channel_to_linear(.0729055341958355,SourceProfile::ACEScct),0,1e-15);
+    near(source_channel_to_linear(.155251141552511,SourceProfile::ACEScct),.0078125,1e-14);
+    near(source_channel_to_linear(4,SourceProfile::ACEScct),65504,1e-10);
+    for(auto p:{SourceProfile::ArriLogC3EI800,SourceProfile::ArriLogC4,SourceProfile::PanasonicVLog,SourceProfile::ACEScct,SourceProfile::ACEScg}){
+        for(double x:{-.05,0.,.0001,.01,.18,1.,16.})near(source_channel_to_linear(linear_to_source_channel(x,p),p),x,2e-6);
+        auto gray=source_to_linear_rec709({linear_to_source_channel(.18,p),linear_to_source_channel(.18,p),linear_to_source_channel(.18,p)},p);
+        near(gray.r,.18,1e-6);near(gray.g,.18,1e-6);near(gray.b,.18,1e-6);
+        ColorSettings settings;settings.source=p;settings.mix=0;
+        const std::array<float,4> raw{{-.25f,.5f,2.f,.25f}};
+        check(ColorProcessor(settings,Transfer::SRGB,Primaries::SRGB_Rec709,Alpha::Premultiplied).apply(raw)==raw,"New profile Mix0 changed pixels");
+        settings.mix=1;ColorProcessor process(settings,Transfer::Linear,Primaries::SRGB_Rec709,Alpha::Premultiplied);
+        auto code=float(linear_to_source_channel(.18,p));auto v=process.apply({code*.25f,code*.25f,code*.25f,.25f});
+        near(v[0],.045,2e-7);near(v[1],.045,2e-7);near(v[2],.045,2e-7);near(v[3],.25,1e-15);
+        check(process.apply({4,3,2,0})==std::array<float,4>{{4,3,2,0}},"New profile changed hidden RGB");
+        bool rejected=false;try{source_channel_to_linear(std::numeric_limits<double>::infinity(),p);}catch(const std::invalid_argument&){rejected=true;}check(rejected,"Nonfinite source accepted");
+    }
     // Independent Sony published black/middle gray/white codes, not just reciprocal tests.
     near(slog3_to_linear(95.0/1023),0,1e-15);
     near(slog3_to_linear(420.0/1023),.18,1e-14);

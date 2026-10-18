@@ -21,6 +21,10 @@ std::string box(const char* type,const std::string& payload) {
     result.append(type,4);return result+payload;
 }
 std::string metadata_box(const std::string& text) {return box("meta",std::string(4,'\0')+box("xml ",std::string(4,'\0')+text));}
+std::string xmp(const std::string& make,const std::string& model="Camera"){
+    return "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\"><r:RDF xmlns:r=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"><r:Description r:about=\"\" xmlns:t=\"http://ns.adobe.com/tiff/1.0/\" t:Make=\""+make+"\"><t:Model>"+model+"</t:Model></r:Description></r:RDF></x:xmpmeta>";
+}
+std::string xmp_box(const std::string& text){return box("uuid",std::string("\xbe\x7a\xcf\xcb\x97\xa9\x42\xe8\x9c\x71\x99\x94\x91\xe3\xaf\xac",16)+text);}
 struct File {
     std::filesystem::path path;
     File():path(std::filesystem::temp_directory_path()/("fstr-metadata-test-"+std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())+".mp4")){}
@@ -95,5 +99,27 @@ int main(){try {
     f.write(ftyp+deep);check(read_camera_metadata(f.path).status==MetadataStatus::LimitExceeded,"Container depth budget ignored");
     f.write("not-mp4-source");check(read_camera_metadata(f.path).status==MetadataStatus::Unsupported,"Unknown file scanned as MP4");
     check(read_camera_metadata(f.path.string()+"-missing").status==MetadataStatus::IoError,"Missing source silently succeeded");
+    for(const auto* make:{"Canon","Panasonic","Nikon","FUJIFILM","Blackmagic Design","ARRI"}){
+        auto m=parse_xmp_metadata(xmp(make));check(m.status==MetadataStatus::Found&&m.manufacturer==make&&m.model=="Camera"&&m.provenance=="XMP TIFF"&&m.profile==DeclaredProfile::Unknown&&m.gamma.empty(),"Vendor XMP name guessed a color profile");
+    }
+    auto packet=xmp("Canon","EOS R5");f.write(ftyp+xmp_box(packet));auto m=read_camera_metadata(f.path);
+    check(m.status==MetadataStatus::Found&&m.model=="EOS R5"&&m.bytes_read<2000,"Adobe UUID XMP not read");
+    f.write(box("moov",box("udta",box("XMP_",packet))));check(read_camera_metadata(f.path).manufacturer=="Canon","QuickTime without ftyp XMP not read");
+    f.write(ftyp+box("XMP_",packet));check(read_camera_metadata(f.path).status==MetadataStatus::NotFound,"Wrong-location XMP promoted");
+    f.write(ftyp+box("uuid",std::string(16,'x')+packet));check(read_camera_metadata(f.path).status==MetadataStatus::NotFound,"Foreign UUID promoted");
+    f.write(ftyp+box("moov",xmp_box(packet)));check(read_camera_metadata(f.path).status==MetadataStatus::NotFound,"Nested UUID promoted");
+    f.write(ftyp+xmp_box(packet)+xmp_box(packet));check(read_camera_metadata(f.path).status==MetadataStatus::Found,"Duplicate XMP rejected");
+    f.write(ftyp+xmp_box(packet)+xmp_box(xmp("Panasonic")));check(read_camera_metadata(f.path).status==MetadataStatus::Ambiguous,"Conflicting XMP packets accepted");
+    f.write(ftyp+metadata_box(xml())+xmp_box(xmp("Sony","ILME-FX3")));m=read_camera_metadata(f.path);check(m.profile==DeclaredProfile::Rec709&&m.provenance=="Sony NRT + XMP TIFF","Complementary schemas did not merge");
+    f.write(ftyp+metadata_box(xml())+xmp_box(packet));check(read_camera_metadata(f.path).status==MetadataStatus::Ambiguous,"Sony/XMP identity conflict ignored");
+    auto spoof=packet;spoof.replace(spoof.find("http://ns.adobe.com/tiff/1.0/"),26,"urn:foreign");check(parse_xmp_metadata(spoof).status==MetadataStatus::NotFound,"Spoofed TIFF namespace promoted");
+    auto related=packet;related.replace(related.find("r:about=\"\""),10,"r:about=\"related.mov\"");check(parse_xmp_metadata(related).status==MetadataStatus::NotFound,"Related-resource camera promoted");
+    auto conflict_xmp=packet;conflict_xmp.insert(conflict_xmp.find("<t:Model>"),"<t:Make>Nikon</t:Make>");check(parse_xmp_metadata(conflict_xmp).status==MetadataStatus::Ambiguous,"Conflicting XMP property forms accepted");
+    auto complex=packet;complex.replace(complex.find("EOS R5"),6,"<r:Bag><r:li>EOS R5</r:li></r:Bag>");check(parse_xmp_metadata(complex).status==MetadataStatus::Invalid,"Complex XMP name accepted");
+    check(parse_xmp_metadata("<!DOCTYPE x>"+packet).status==MetadataStatus::Invalid,"XMP DTD accepted");
+    check(parse_xmp_metadata(packet+packet).status==MetadataStatus::Ambiguous,"Multiple XMP roots accepted");
+    check(parse_xmp_metadata(xmp(std::string(129,'X'))).status==MetadataStatus::Invalid,"Oversized XMP name accepted");
+    check(parse_xmp_metadata(packet,MetadataLimits{4096,16,100}).status==MetadataStatus::LimitExceeded,"XMP budget ignored");
+    f.write(ftyp+xmp_box(std::string(262145,'X')));check(read_camera_metadata(f.path).status==MetadataStatus::LimitExceeded,"Embedded XMP byte budget ignored");
     std::cout<<"PASS "<<checks<<" camera metadata contract assertions\n";return 0;
 }catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<" assertion "<<checks<<'\n';return 1;}}

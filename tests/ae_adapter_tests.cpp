@@ -98,6 +98,12 @@ void cinema(){
     ui.params[Exposure].u.fs_d.value=-1;set_world(ui.input,white,1,1,1,PF_PixelFormat_ARGB128);set_world(ui.output,half_white,1,1,1,PF_PixelFormat_ARGB128);
     check(run(ui,true)==0&&std::abs(half_white[0].red-.735356983f)<1e-6f&&half_white[0].alpha==1,"Fresh sRGB effect must render without encoding selection");
     check(ui.params[Look].u.pd.num_choices==17&&ui.params[Look].uu.id==6,"Cinema menu or persistent ID wrong");
+    check(ui.params[Source].uu.id==1&&ui.params[Source].u.pd.num_choices==7&&ui.params[Source].u.pd.dephault==1,"Input profile schema/legacy default changed");
+    for(int profile=3;profile<=7;++profile){
+        ui.params[Source].u.pd.value=profile;ui.params[Exposure].u.fs_d.value=0;ui.params[WorkingSpace].u.pd.value=3;
+        auto code=float(fstr::linear_to_source_channel(.18,static_cast<fstr::SourceProfile>(profile-1)));white[0]={.5f,code*.5f,code*.5f,code*.5f};
+        check(run(ui,true)==0&&std::abs(half_white[0].red-.09f)<2e-6f&&half_white[0].alpha==.5f,"Appended profile failed SDK callback/premult path");
+    }
     check(std::strncmp(ui.params[Look].u.pd.u.namesptr,"Natural|(-|",11)==0,"Natural/retired Warm schema wrong");
     check(ui.params[LookAmount].u.fs_d.dephault==100&&ui.params[LookAmount].u.fs_d.slider_max==100&&ui.params[LookAmount].u.fs_d.valid_max==300,"Strength soft/hard/default range wrong");
     std::vector<PF_PixelFloat> input{{.5f,.15f,.22f,.3f}},output(1);

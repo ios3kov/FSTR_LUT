@@ -36,27 +36,32 @@ struct Fixture {
     int checkout=0,checkin=0,acquire=0,release=0,pixels_out=0,pixels_in=0,abort_calls=0;
     std::vector<std::string> guids;bool fail_guid=false;
     PF_LRect maximum_rect{0,0,96,96};
-    std::vector<int> layer_ids;std::vector<PF_LRect> requests;int fail_layer=-1,fail_pixel_id=-1;
+    std::vector<int> layer_ids;std::vector<PF_LRect> requests;std::vector<PF_Field> fields;int fail_layer=-1,fail_pixel_id=-1;
     int fail_param=0;bool fail_suite=false,fail_output=false,fail_pixel_checkout=false,fail_format=false;
     bool fail_checkin=false,fail_pixel_checkin=false,fail_release=false,abort_now=false;
     PF_ParamUtilsSuite3 param_utils{};std::string popup_label;
+    std::vector<PF_EffectWorld> scene_worlds;int source_id=0,abort_after_scan=-1;int revision=1,state_reads=0,scan_reads=0,anchor_reads=0;
     Fixture();
     ~Fixture(){if(params[LUTReference].param_type==PF_Param_ARBITRARY_DATA&&params[LUTReference].u.arb_d.dephault)dispose_handle(params[LUTReference].u.arb_d.dephault);}
 };
 Fixture& fixture(PF_ProgPtr ref){return *reinterpret_cast<Fixture*>(ref);}
-PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==AdvancedStart||id==AdvancedEnd)return 74;if(f.fail_param&&id==f.fail_param)return 73;*value=f.params[id];return PF_Err_NONE;}
+PF_Err checkout_cb(PF_ProgPtr ref,PF_ParamIndex id,A_long time,A_long,A_u_long,PF_ParamDef* value){auto& f=fixture(ref);++f.checkout;if(id==AdvancedStart||id==AdvancedEnd)return 74;if(f.fail_param&&id==f.fail_param)return 73;*value=f.params[id];if(id==Input&&!f.scene_worlds.empty()){if(time<0||std::size_t(time)>=f.scene_worlds.size())return 84;value->u.ld=f.scene_worlds[std::size_t(time)];}return PF_Err_NONE;}
 PF_Err checkin_cb(PF_ProgPtr ref,PF_ParamDef*){auto& f=fixture(ref);++f.checkin;return f.fail_checkin?74:PF_Err_NONE;}
 PF_Err add(PF_ProgPtr ref,PF_ParamIndex,PF_ParamDef* value){auto& f=fixture(ref);f.params[++f.checkout]=*value;return PF_Err_NONE;}
 PF_Err register_ui_cb(PF_ProgPtr,PF_CustomUIInfo* value){return value&&value->events==PF_CustomEFlag_EFFECT?PF_Err_NONE:PF_Err_BAD_CALLBACK_PARAM;}
-PF_Err abort_cb(PF_ProgPtr ref){auto& f=fixture(ref);++f.abort_calls;return f.abort_now?75:PF_Err_NONE;}
+PF_Err abort_cb(PF_ProgPtr ref){auto& f=fixture(ref);++f.abort_calls;return (f.abort_now||(f.abort_after_scan>=0&&f.scan_reads>=f.abort_after_scan))?75:PF_Err_NONE;}
 SPErr acquire_cb(const char* name,int32 version,const void** suite){++active->acquire;if(active->fail_suite)return 76;if(!std::strcmp(name,kPFParamUtilsSuite)&&version==kPFParamUtilsSuiteVersion3){*suite=&active->param_utils;return 0;}if(std::strcmp(name,kPFWorldSuite)||version!=kPFWorldSuiteVersion2)return 77;*suite=&active->worlds;return 0;}
 SPErr release_cb(const char*,int32){++active->release;return active->fail_release?78:0;}
 PF_Err pixel_format(const PF_EffectWorld* world,PF_PixelFormat* format){if(active->fail_format)return 79;if(!world->width||!world->height)return 80;*format=static_cast<PF_PixelFormat>(reinterpret_cast<std::uintptr_t>(world->reserved0));return PF_Err_NONE;}
-PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;*world=id>=2000&&id<2003&&f.preparation[id-2000]?f.preparation[id-2000]:(id>=0&&id<5&&f.temporal[id]?f.temporal[id]:&f.input);return PF_Err_NONE;}
+PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;if(id>=100000){const auto frame=std::size_t((id-100000)/4);if(frame>=f.scene_worlds.size())return 84;if((id-100000)%4==0)++f.scan_reads;else if((id-100000)%4==2)++f.anchor_reads;else return 84;*world=&f.scene_worlds[frame];return 0;}*world=id>=2000&&id<2003&&f.preparation[id-2000]?f.preparation[id-2000]:(id>=0&&id<5&&f.temporal[id]?f.temporal[id]:&f.input);return PF_Err_NONE;}
 PF_Err checkout_output(PF_ProgPtr ref,PF_EffectWorld** world){auto& f=fixture(ref);if(f.fail_output)return 82;*world=&f.output;return PF_Err_NONE;}
 PF_Err checkin_pixels(PF_ProgPtr ref,A_long){auto& f=fixture(ref);++f.pixels_in;return f.fail_pixel_checkin?83:PF_Err_NONE;}
 PF_Err update_ui_cb(PF_ProgPtr ref,PF_ParamIndex id,const PF_ParamDef* ui){auto& f=fixture(ref);if(id!=Look||!ui||ui->param_type!=PF_Param_POPUP)return PF_Err_BAD_CALLBACK_PARAM;f.popup_label=ui->u.pd.u.namesptr;return 0;}
+PF_Err current_state(PF_ProgPtr ref,PF_ParamIndex id,const A_Time* start,const A_Time* duration,PF_State* state){auto&f=fixture(ref);++f.state_reads;if(id!=Input||start||duration)return 87;*state={};state->reservedAL[0]=f.revision;state->reservedAL[1]=f.source_id;return 0;}
+PF_Err same_state(PF_ProgPtr,const PF_State*a,const PF_State*b,A_Boolean*same){*same=std::memcmp(a,b,sizeof(*a))==0;return 0;}
 Fixture::Fixture(){
+    static std::atomic<int> identity{1};source_id=identity.fetch_add(1);
+    param_utils.PF_GetCurrentState=current_state;param_utils.PF_AreStatesIdentical=same_state;
     param_utils.PF_UpdateParamUI=update_ui_cb;
     in.utils=&utils;utils.host_new_handle=new_handle;utils.host_lock_handle=lock_handle;utils.host_unlock_handle=unlock_handle;utils.host_dispose_handle=dispose_handle;utils.host_get_handle_size=handle_size;
     in.appl_id=kAppID_AfterEffects;
@@ -152,12 +157,12 @@ void cinema(){
     }
 }
 PF_Err checkout_layer(PF_ProgPtr ref,PF_ParamIndex,A_long id,const PF_RenderRequest* request,A_long time,A_long,A_u_long,PF_CheckoutResult* result){
- auto&f=fixture(ref);f.layer_ids.push_back(id);f.layer_times.emplace_back(id,time);f.requests.push_back(request->rect);if(id==f.fail_layer)return 85;
+ auto&f=fixture(ref);f.layer_ids.push_back(id);f.layer_times.emplace_back(id,time);f.requests.push_back(request->rect);f.fields.push_back(request->field);if(id==f.fail_layer)return 85;
  result->result_rect=request->rect;result->max_result_rect=f.maximum_rect;return PF_Err_NONE;
 }
 PF_Err mix_guid(PF_ProgPtr,A_u_long,const void*);
 PF_Err declared_render(Fixture& f){
- active=&f;PF_PreRenderInput pi{};pi.output_request.rect={f.output.origin_x,f.output.origin_y,f.output.origin_x+f.output.width,f.output.origin_y+f.output.height};
+ active=&f;PF_PreRenderInput pi{};pi.bitdepth=32;pi.output_request.field=f.in.field;pi.output_request.rect={f.output.origin_x,f.output.origin_y,f.output.origin_x+f.output.width,f.output.origin_y+f.output.height};
  PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};
  auto err=effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe);if(err)return err;
  PF_SmartRenderInput ri{};ri.pre_render_data=po.pre_render_data;PF_SmartRenderCallbacks rc{};rc.checkout_layer_pixels=checkout_pixels;rc.checkout_output=checkout_output;rc.checkin_layer_pixels=checkin_pixels;
@@ -169,6 +174,29 @@ template<class P>void prepared_integer(PF_PixelFormat format,double maximum){
  set_world(f.input,input,96,1,96,format);set_world(f.output,output,96,1,97,format);for(auto& w:f.preparation)w=&f.input;
  auto recipe=fstr::analyze_sdr_shot({{rgba.data(),rgba.size(),96,1,96*4,fstr::Transfer::Linear}}).settings;check(declared_render(f)==0,"Integer automatic preparation failed");
  for(int x=0;x<96;++x){auto c=fstr::prepare_sdr_linear({rgba[x*4],rgba[x*4+1],rgba[x*4+2]},recipe);check(std::abs(double(output[x].red)-std::floor(c.r*maximum+.5))<=1&&output[x].alpha==maximum,"Integer auto preparation scale differs from core");}
+}
+void scene_timeline_callbacks(){
+ Fixture f;const int w=96,h=54,n=6;std::vector<std::vector<PF_PixelFloat>> pixels(n,std::vector<PF_PixelFloat>(w*h));std::vector<PF_PixelFloat> output(w*h);f.scene_worlds.resize(n);
+ for(int k=0;k<n;++k){for(int y=0;y<h;++y)for(int x=0;x<w;++x){float v=.04f+.36f*float(x)/float(w-1);pixels[k][y*w+x]=k<3?PF_PixelFloat{1,v,v,v}:PF_PixelFloat{1,v*.2f,v*.4f,v};}set_world(f.scene_worlds[k],pixels[k],w,h,w,PF_PixelFormat_ARGB128);}
+ f.input=f.scene_worlds[0];set_world(f.output,output,w,h,w,PF_PixelFormat_ARGB128);f.maximum_rect={0,0,w,h};f.in.width=w;f.in.height=h;f.in.total_time=n;f.params[AutoPrepare].u.bd.value=TRUE;f.params[DetectSceneChanges].u.bd.value=TRUE;
+ auto close=[&]{active=&f;check(effect_fn(PF_Cmd_SEQUENCE_SETDOWN,&f.in,&f.out,nullptr,nullptr,nullptr)==0,"Scene sequence cleanup failed");};
+ auto reference=[&](int k){std::vector<float> rgba;for(auto&p:pixels[k])rgba.insert(rgba.end(),{p.red,p.green,p.blue,p.alpha});return fstr::analyze_sdr_shot({{rgba.data(),rgba.size(),w,h,w*4,fstr::Transfer::Linear}}).settings;};
+ auto verify=[&](int k){auto settings=reference(k);for(int x=0;x<w;++x){auto&p=pixels[k][x];auto v=fstr::prepare_sdr_linear({p.red,p.green,p.blue},settings);check(std::abs(output[x].red-v.r)<2e-6&&std::abs(output[x].blue-v.b)<2e-6,"Native selected wrong shot recipe");}};
+ check(declared_render(f)==0,"Native complete timeline failed");check(f.scan_reads==n&&f.anchor_reads==n,"Native timeline did not read unique scan/anchor frames");verify(0);int scans=f.scan_reads,anchors=f.anchor_reads;
+ for(int k:{5,3,0,4}){f.in.current_time=k;f.input=f.scene_worlds[k];auto declarations=f.layer_ids.size();check(declared_render(f)==0,"Out-of-order scene render failed");verify(k);check(f.scan_reads==scans&&f.anchor_reads==anchors,"Warm request rescanned timeline");check(f.layer_ids.size()-declarations>=std::size_t(n*3),"Warm cache omitted all-time dependencies");}
+ f.params[LookAmount].u.fs_d.value=120;check(declared_render(f)==0&&f.scan_reads==scans,"Strength edit recomputed scene analysis");
+ Fixture clone;clone.source_id=f.source_id;clone.scene_worlds=f.scene_worlds;clone.in.width=w;clone.in.height=h;clone.in.total_time=n;clone.maximum_rect=f.maximum_rect;clone.params=f.params;clone.input=f.input;clone.output=f.output;check(declared_render(clone)==0&&clone.scan_reads==0&&clone.anchor_reads==0,"AE render clone did not reuse identical input state");
+ ++f.revision;check(declared_render(f)==0&&f.scan_reads==scans+n,"Upstream state change retained stale timeline");scans=f.scan_reads;
+ f.in.pixel_aspect_ratio={2,1};check(declared_render(f)==0&&f.scan_reads==scans+n,"Geometry change retained stale timeline");scans=f.scan_reads;
+ ++f.revision;f.fail_pixel_id=100004;auto out_before=f.pixels_out,in_before=f.pixels_in;check(declared_render(f)==81,"Scan failure swallowed");check(f.pixels_out-out_before==f.pixels_in-in_before+1,"Scan failure leaked a checked-out world");f.fail_pixel_id=-1;scans=f.scan_reads;check(declared_render(f)==0&&f.scan_reads==scans+n,"Failed partial analysis was published");
+ ++f.revision;f.fail_pixel_id=100002;out_before=f.pixels_out;in_before=f.pixels_in;check(declared_render(f)==81,"Anchor failure swallowed");check(f.pixels_out-out_before==f.pixels_in-in_before+1,"Anchor failure leaked input");f.fail_pixel_id=-1;scans=f.scan_reads;check(declared_render(f)==0&&f.scan_reads==scans+n,"Failed anchor recipe was published");
+ ++f.revision;f.abort_after_scan=f.scan_reads+3;out_before=f.pixels_out;in_before=f.pixels_in;check(declared_render(f)==75,"Mid-scan cancellation ignored");check(f.pixels_out-out_before==f.pixels_in-in_before,"Cancelled scan leaked input");f.abort_after_scan=-1;scans=f.scan_reads;check(declared_render(f)==0&&f.scan_reads==scans+n,"Cancelled timeline was published");
+ close();scans=f.scan_reads;auto legacy_out=f.checkout,legacy_in=f.checkin;check(run(f,false)==0,"Legacy scene path failed");verify(4);check(f.checkout-legacy_out==f.checkin-legacy_in,"Legacy scene checkouts unbalanced");close();
+ f.params[Mix].u.fs_d.value=0;auto states=f.state_reads;check(declared_render(f)==0&&f.state_reads==states,"Mix zero performed scene analysis");f.params[Mix].u.fs_d.value=100;f.params[AutoPrepare].u.bd.value=FALSE;check(declared_render(f)==0&&f.state_reads==states,"Auto Off performed scene analysis");f.params[AutoPrepare].u.bd.value=TRUE;f.params[Source].u.pd.value=3;check(declared_render(f)==0&&f.state_reads==states,"Explicit Log performed SDR scene analysis");f.params[Source].u.pd.value=1;
+ f.params[WorkingSpace].u.pd.value=1;states=f.state_reads;check(declared_render(f)!=0&&f.state_reads==states,"Unspecified encoding triggered scan");f.params[WorkingSpace].u.pd.value=3;
+ f.in.field=PF_Field_UPPER;auto begin=f.layer_ids.size();check(declared_render(f)==0,"Field output scene analysis failed");for(auto i=begin;i<f.layer_ids.size();++i)if(f.layer_ids[i]>=100000)check(f.fields[i]==PF_Field_FRAME,"Scene scan inherited partial-field request");check(run(f,false)!=0,"Legacy partial-field scene analysis accepted");f.in.field=PF_Field_FRAME;
+ f.in.total_time=16385;check(declared_render(f)!=0&&std::strstr(f.out.return_msg,"too long"),"Over-budget clip was not actionable");close();
+ Fixture schema;active=&schema;check(effect_fn(PF_Cmd_PARAMS_SETUP,&schema.in,&schema.out,nullptr,nullptr,nullptr)==0,"Scene schema failed");const auto&p=schema.params[DetectSceneChanges];check(p.uu.id==21&&p.u.bd.dephault==TRUE&&p.u.bd.value==FALSE&&(p.flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS)&&(p.flags&PF_ParamFlag_CANNOT_TIME_VARY),"Scene default/legacy ID contract wrong");
 }
 void custom_lut_reference(){
  Fixture f;active=&f;const auto before=handles.size();std::vector<PF_ArbitraryH> owned;
@@ -221,7 +249,7 @@ void automatic_preparation(){
  set_world(f.output,output,96,1,96,PF_PixelFormat_ARGB128);auto before_out=f.pixels_out,before_in=f.pixels_in;f.fail_pixel_id=2001;check(declared_render(f)!=0&&f.pixels_out-before_out==f.pixels_in-before_in+1,"Anchor checkout failure leaked earlier worlds");f.fail_pixel_id=-1;
  for(int profile:{2,static_cast<int>(fstr::source_profile_count)}){f.params[Source].u.pd.value=profile;f.fail_pixel_id=2000;check(declared_render(f)==0,"Default SDR preparation blocked non-SDR input");const auto non_sdr=output;f.params[AutoPrepare].u.bd.value=FALSE;check(declared_render(f)==0&&std::memcmp(output.data(),non_sdr.data(),output.size()*sizeof(PF_PixelFloat))==0,"SDR preparation changed Log/3D output");f.params[AutoPrepare].u.bd.value=TRUE;}f.fail_pixel_id=-1;f.params[Source].u.pd.value=1;
  Fixture legacy;legacy.params[AutoPrepare].u.bd.value=TRUE;legacy.in.total_time=72;legacy.input=f.input;legacy.output=f.output;check(run(legacy,false)==0&&legacy.checkin==RenderParamCount+3,"Legacy timed preparation checkouts unbalanced");
- Fixture schema;active=&schema;check(effect_fn(PF_Cmd_PARAMS_SETUP,&schema.in,&schema.out,nullptr,nullptr,nullptr)==0&&schema.params[AutoPrepare].uu.id==17&&schema.params[AutoPrepare].u.bd.dephault==TRUE&&schema.params[AutoPrepare].u.bd.value==FALSE&&(schema.params[AutoPrepare].flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS)&&AutoPrepare==1&&CameraInfo==17,"Auto-first default or legacy value policy changed");
+ Fixture schema;active=&schema;check(effect_fn(PF_Cmd_PARAMS_SETUP,&schema.in,&schema.out,nullptr,nullptr,nullptr)==0&&schema.params[AutoPrepare].uu.id==17&&schema.params[AutoPrepare].u.bd.dephault==TRUE&&schema.params[AutoPrepare].u.bd.value==FALSE&&(schema.params[AutoPrepare].flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS)&&AutoPrepare==1&&CameraInfo==18,"Auto-first default or legacy value policy changed");
  check(schema.params[Exposure].uu.id==2&&schema.params[Look].uu.id==6&&schema.params[ImportLUT].uu.id==18&&schema.params[ImportLUT].param_type==PF_Param_BUTTON&&(schema.params[ImportLUT].ui_flags&PF_PUI_NO_ECW_UI),"Legacy disk IDs/hidden former button changed");
  check((schema.params[Look].flags&PF_ParamFlag_SUPERVISE)&&std::string(schema.params[Look].u.pd.u.namesptr).find("|Custom|Load LUT...")!=std::string::npos,"Custom load entry not supervised/last");check(schema.params[LUTFileInfo].ui_flags&PF_PUI_NO_ECW_UI,"Separate LUT filename block is still visible");check(schema.popup_label.empty(),"Setup unexpectedly mutated UI");
  PF_ParamDef* ui[ParamCount];for(int i=0;i<ParamCount;++i)ui[i]=&schema.params[i];schema.params[Look].u.pd.value=3;check(effect_fn(PF_Cmd_UPDATE_PARAMS_UI,&schema.in,&schema.out,ui,nullptr,nullptr)==0,"UI snapshot failed");PF_UserChangedParamExtra changed{};changed.param_index=Look;schema.params[Look].u.pd.value=4;check(effect_fn(PF_Cmd_USER_CHANGED_PARAM,&schema.in,&schema.out,ui,nullptr,&changed)==0&&schema.params[Look].u.pd.value==4,"Built-in selection incorrectly opened chooser");
@@ -231,7 +259,7 @@ void smart_requests(){
  for(int mode=0;mode<6;++mode){
   Fixture f;active=&f;f.in.current_time=10;f.in.total_time=100;
   f.params[SmartColor].u.bd.value=mode!=0;f.params[Look].u.pd.value=3;
-  PF_PreRenderInput pi{};pi.output_request.rect={10,10,20,20};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;
+  PF_PreRenderInput pi{};pi.bitdepth=32;pi.output_request.field=f.in.field;pi.output_request.rect={10,10,20,20};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;
   PF_PreRenderExtra pe{&pi,&po,&pc};if(mode==2)f.fail_layer=2;
   auto err=effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe);
   if(mode==2){check(err==85&&!po.pre_render_data,"Pre-render failure leaked/succeeded");continue;}
@@ -258,7 +286,7 @@ void automatic_scene(const char* config_path){
  if(cfg.contains("neighbors")){
   check(cfg.at("neighbors").size()==4,"Automatic explicit window size");f.maximum_rect={0,0,w,h};f.in.time_scale=12;f.in.current_time=cfg.at("frame");f.in.total_time=cfg.at("total_frames");f.temporal[0]=&f.input;
   for(int id=1;id<5;++id){std::vector<unsigned char> data(count*4);std::ifstream source(cfg.at("neighbors")[id-1].get<std::string>(),std::ios::binary);source.read(reinterpret_cast<char*>(data.data()),std::streamsize(data.size()));check(bool(source)&&source.peek()==EOF,"Explicit neighbor input invalid");adjacent[id].resize(count);for(std::size_t i=0;i<count;++i)adjacent[id][i]={1,data[i*4]/255.f,data[i*4+1]/255.f,data[i*4+2]/255.f};set_world(worlds[id],adjacent[id],w,h,w,PF_PixelFormat_ARGB128);f.temporal[id]=&worlds[id];}
-  f.params[SmartColor].u.bd.value=TRUE;active=&f;PF_PreRenderInput pi{};pi.output_request.rect={0,0,w,h};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Automatic explicit pre-render failed");si.pre_render_data=po.pre_render_data;
+  f.params[SmartColor].u.bd.value=TRUE;active=&f;PF_PreRenderInput pi{};pi.bitdepth=32;pi.output_request.field=f.in.field;pi.output_request.rect={0,0,w,h};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Automatic explicit pre-render failed");si.pre_render_data=po.pre_render_data;
  }
  struct PreCleanup{PF_PreRenderOutput& value;~PreCleanup(){if(value.pre_render_data)value.delete_pre_render_data_func(value.pre_render_data);}} cleanup{po};
  auto render_on=[&]{if(!cfg.contains("neighbors"))return run(f,true);active=&f;PF_SmartRenderCallbacks cb{};cb.checkout_layer_pixels=checkout_pixels;cb.checkout_output=checkout_output;cb.checkin_layer_pixels=checkin_pixels;PF_SmartRenderExtra se{};se.input=&si;se.cb=&cb;return effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&se);};
@@ -295,7 +323,7 @@ void real_recovery(const char* path,int center=50,bool expected_recovery=true){
  if(!expected_recovery)f.params[SmartColor].u.bd.value=FALSE;
  check(run(f,true)==0,"Current-only real frame failed");
  f.params[SmartColor].u.bd.value=TRUE;
- PF_PreRenderInput pi{};pi.output_request.rect={0,0,width,height};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Recovery pre-render failed");
+ PF_PreRenderInput pi{};pi.bitdepth=32;pi.output_request.field=f.in.field;pi.output_request.rect={0,0,width,height};PF_PreRenderOutput po{};PF_PreRenderCallbacks pc{};pc.checkout_layer=checkout_layer;pc.GuidMixInPtr=mix_guid;PF_PreRenderExtra pe{&pi,&po,&pc};check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&pe)==0,"Recovery pre-render failed");
  PF_SmartRenderInput si{};si.pre_render_data=po.pre_render_data;PF_SmartRenderCallbacks sc{};sc.checkout_layer_pixels=checkout_pixels;sc.checkin_layer_pixels=checkin_pixels;sc.checkout_output=checkout_output;PF_SmartRenderExtra se{};se.input=&si;se.cb=&sc;set_world(f.output,recovered,width,height,width,PF_PixelFormat_ARGB32);
  auto err=effect_fn(PF_Cmd_SMART_RENDER,&f.in,&f.out,nullptr,nullptr,&se);po.delete_pre_render_data_func(po.pre_render_data);check(err==0,"Actual temporal recovery failed");
  std::size_t changed=0;for(std::size_t i=0;i<count;++i){check(recovered[i].alpha==255,"Recovered alpha changed");if(std::memcmp(&raw[i],&recovered[i],sizeof(PF_Pixel)))++changed;}
@@ -374,7 +402,7 @@ int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_direct
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
     formats(PF_PixelFormat_ARGB32,PF_Pixel{127,51,75,99});
     formats(PF_PixelFormat_ARGB64,PF_Pixel16{12345,65535,7777,5123});
-    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();automatic_preparation();custom_lut_reference();if(argc==4&&std::string(argv[2])=="--automatic"){std::ifstream jobs(argv[3]);auto batch=nlohmann::json::parse(jobs);if(batch.contains("jobs")){for(const auto&path:batch.at("jobs"))automatic_scene(path.get<std::string>().c_str());}else automatic_scene(argv[3]);}else {if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}}
+    formats(PF_PixelFormat_ARGB128,PF_PixelFloat{.5f,-.2f,2.0f,.1f});processing();cinema();failures();smart_requests();automatic_preparation();scene_timeline_callbacks();custom_lut_reference();if(argc==4&&std::string(argv[2])=="--automatic"){std::ifstream jobs(argv[3]);auto batch=nlohmann::json::parse(jobs);if(batch.contains("jobs")){for(const auto&path:batch.at("jobs"))automatic_scene(path.get<std::string>().c_str());}else automatic_scene(argv[3]);}else {if(argc>=3)real_smart(argv[2]);if(argc==4){real_recovery(argv[3]);for(int frame:{54,55,56})real_recovery(argv[3],frame,false);}}
     std::vector<std::future<bool>> tasks;
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==RenderParamCount&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");

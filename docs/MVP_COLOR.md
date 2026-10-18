@@ -1,3 +1,7 @@
+# Scene-aware SDR preparation — 2026-10-18
+
+Auto Prepare SDR now supports a complete bounded clip scan with independent correction per detected shot. Advanced → Detect Scene Changes isOn for fresh effects andOff for missing old-project values. Off retains the established three-anchor behavior. Explicit Log/3D paths and encoding defaults are unchanged. See [SDR_SHOT_DETECTION.md](SDR_SHOT_DETECTION.md) for187native exports, cache/compatibility evidence,16384-frame limit and unverified cases.
+
 # Explicit input extension — 2026-10-18
 
 INPUT-PROFILES-001 now appends ARRI LogC3 EI800/AWG3, LogC4/AWG4, Panasonic V-Log/V-Gamut, ACEScct/AP1 and ACEScg/AP1 to the original Host/Sony choices. This extends the initial Sony-only scope below under the user's later authorization. Output remains the explicit existing host Rec709 transfer; source normalization is not an ACES display rendering transform. See INPUT_PROFILES.md for exact checks and remaining formats.

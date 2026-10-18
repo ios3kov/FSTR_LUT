@@ -1,0 +1,104 @@
+{
+  "requirement": "SDR-SHOTS-001",
+  "date": "2026-10-18",
+  "candidate": "42ee1edaaff01753",
+  "status": "PASS_SCOPED",
+  "artifacts": [
+    {
+      "path": "../sdr-shot-detection-20261018/shared-tests.log",
+      "sha256": "0122bd474fcc838c252fdc02262a7ae3a08dddd26cbaccbc115906a278b900fa"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/shared-sanitize-tests.log",
+      "sha256": "653aafee9d62572b037a3ca80948685d234a3412affe7fcd20adee4df4e6427e"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/cancel-tests.log",
+      "sha256": "8678cedd97f30e9f1d0dd0762e726c6b71c3114aa6e3e61732955f31eb5fc4f6"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/cancel-sanitize-tests.log",
+      "sha256": "bed10ff880adc3cb6d6c53ebe0483535d079df1998cc21d4dbe5f3a4db9bac68"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/real-result.json",
+      "sha256": "73ee5a0f112839798116198119c42bffda8343c04200248382b2953ba0b37e6b"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/core-reference.json",
+      "sha256": "083b32ee439764855f2c08d70cd69dcef8d79b176835fe7df258af6ad339a5fc"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/native-verification-final.json",
+      "sha256": "c041bcce97eb0d227ef218342ef15122eb8b059f260d563616d1f3b5f49ba4fd"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/native-extra-verification.json",
+      "sha256": "d2937b86ff96a2495960b14bcd4340012fbae3dd2114bc6bf07d8237c0d92cf7"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/fresh-verification.json",
+      "sha256": "29a1a2ed6f2dbefea047fe5a3fa94e89be39c7ff51003bb4526ed1d000be856c"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/host-v3/installation.json",
+      "sha256": "8002465001d0c3937ff8a6afef6219161899de7f3bc4fa66f28ed77d92a28dc8"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/host-v3/cleanup.json",
+      "sha256": "8dc947a722d6430db1af638b9140bfd4d67fa5684e6758dd0450cec16dfff1ac"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/host-fresh/cleanup.json",
+      "sha256": "f2287c5ad1b4ea46a105bbdfa47fcd2be44f15ff3a6fd2ed278e8f7e98a6ed19"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/video-verification.json",
+      "sha256": "ac216ff14baf729c176a2c0e31252a0ee15b4d2870ee955a34bd9d528e63f4ed"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/final-source-binding.json",
+      "sha256": "eed029f0e872d726f90c073ebedf0935c2f805c7895a59000bc797139a5ef823"
+    },
+    {
+      "path": "../sdr-shot-detection-20261018/code-audit-final.json",
+      "sha256": "3f127ac4fe25fb55c6071f6684fc2b832f61be2a7c134af784177bf13b9ad317"
+    }
+  ],
+  "criteria": {
+    "R1": "PASS scoped; see contract/limits",
+    "R2": "PASS scoped; see contract/limits",
+    "R3": "PASS scoped; see contract/limits",
+    "R4": "PASS scoped; see contract/limits",
+    "R5": "PASS scoped; see contract/limits",
+    "R6": "PASS scoped; see contract/limits",
+    "R7": "PASS scoped; see contract/limits"
+  },
+  "not_run": [
+    "continuous user visual acceptance of new comparison",
+    "universal hard-cut/dissolve accuracy",
+    "real interlaced host rendering",
+    "aerender/background/RAM Preview",
+    "retiming/reversed/long/animated-bounds material",
+    "portable/real-time speed certification"
+  ],
+  "visual_review": {
+    "stills": [
+      0,
+      71,
+      72,
+      119,
+      120,
+      167
+    ],
+    "smart_stills": [
+      71,
+      72,
+      119,
+      120
+    ],
+    "result": "no observed defect in inspected stills; continuous playback not established"
+  },
+  "installation": "signature/inventory verified after normal owned exits; baseline492 preserved",
+  "publication": "none"
+}

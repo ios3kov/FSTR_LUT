@@ -1,0 +1,150 @@
+{
+  "id": "SDR-DEFAULT-REVIEW-001",
+  "date": "2026-10-18",
+  "source_commit": "0fe12f5760c4e47e7750f57bbd36b97ed394cf27",
+  "source_dirty": false,
+  "installed_build": "49235442fbda89fd",
+  "product_changed": false,
+  "host": "After Effects25.6x101 / macOS arm64 / unmanaged32bpc explicit sRGB",
+  "core_binaries": {
+    "fstr_sdr_prepare_cli": "5d5f8af1c227755a8135286524257a557fcd5e5e56261766d3c35fbbda4fdbbb",
+    "fstr_color_render": "502a0286028bf16a6a749118d70fc9c0f846ac8c5140e7d76ca1d960ed1e1815"
+  },
+  "exports": 496,
+  "cases": [
+    {
+      "name": "kitchen",
+      "frames": 72,
+      "artificial": false,
+      "input_import_max_byte": 1,
+      "auto_natural_anchor_max_byte": 1,
+      "modes": {
+        "natural": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 1.0000912845134788,
+          "mean_abs_change_code": 2.9758679138289557,
+          "max_adjacent_mean_correction_code": 0.046045541763305664
+        },
+        "cinema": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 0.9998993873596107,
+          "mean_abs_change_code": 8.999565203984579,
+          "max_adjacent_mean_correction_code": 0.2883176803588867
+        }
+      }
+    },
+    {
+      "name": "performers",
+      "frames": 48,
+      "artificial": false,
+      "input_import_max_byte": 1,
+      "auto_natural_anchor_max_byte": 1,
+      "modes": {
+        "natural": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 0.9992860853672009,
+          "mean_abs_change_code": 0.20575988354782263,
+          "max_adjacent_mean_correction_code": 0.0019560158252716064
+        },
+        "cinema": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 1.0000039339065436,
+          "mean_abs_change_code": 6.249446580807368,
+          "max_adjacent_mean_correction_code": 0.06200838088989258
+        }
+      }
+    },
+    {
+      "name": "wide",
+      "frames": 48,
+      "artificial": false,
+      "input_import_max_byte": 1,
+      "auto_natural_anchor_max_byte": 1,
+      "modes": {
+        "natural": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 1.0003262013196972,
+          "mean_abs_change_code": 1.6508490219712257,
+          "max_adjacent_mean_correction_code": 0.023726820945739746
+        },
+        "cinema": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 0.9996116161346456,
+          "mean_abs_change_code": 5.527466793855031,
+          "max_adjacent_mean_correction_code": 0.06907796859741211
+        }
+      }
+    },
+    {
+      "name": "controlled-flat",
+      "frames": 72,
+      "artificial": true,
+      "input_import_max_byte": 1,
+      "auto_natural_anchor_max_byte": 1,
+      "modes": {
+        "natural": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 1.001367181539534,
+          "mean_abs_change_code": 32.31663319799635,
+          "max_adjacent_mean_correction_code": 0.5352096557617188
+        },
+        "cinema": {
+          "max_rounded_reference_byte": 1,
+          "max_float_reference_code": 1.0009030103683527,
+          "mean_abs_change_code": 33.82639031940036,
+          "max_adjacent_mean_correction_code": 0.7827262878417969
+        }
+      }
+    }
+  ],
+  "videos": [
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018/natural-real.mp4",
+      "frames": 336,
+      "seconds": 14.0,
+      "sha256": "aa80737449e14e2d30aca244575165e53dde4ccd2ca3ba96dc599ba6ea501623",
+      "decode": "PASS"
+    },
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018/cinema-real.mp4",
+      "frames": 336,
+      "seconds": 14.0,
+      "sha256": "de30090fae86d4ef77813c0be2575f3fe564518de07f98dbce2a35fb6900ebe0",
+      "decode": "PASS"
+    },
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018/natural-flat-control.mp4",
+      "frames": 144,
+      "seconds": 6.0,
+      "sha256": "e4c10b7f35863e4400ac06802d1bc93ea5588efdcfeafa09827e2bd05d05ce4c",
+      "decode": "PASS"
+    },
+    {
+      "path": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018/cinema-flat-control.mp4",
+      "frames": 144,
+      "seconds": 6.0,
+      "sha256": "6d43f2a20c634713bdf3961a83b8b8039f884cb579339874b9cdeb971382e049",
+      "decode": "PASS"
+    }
+  ],
+  "cleanup": {
+    "owned_pid": 55509,
+    "normal_exit": true,
+    "helper_archived": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018/host/archived-runner.plugin",
+    "product_unchanged": true,
+    "installed_inventory": "PASS",
+    "signature": "PASS"
+  },
+  "visual_review": {
+    "sampled_frames": "PASS reviewed four-time crops for each real shot, full-size representative default/cinematic frames and artificial control four-stage board; labels/footer/picture aspect inspected",
+    "judgment": "Natural restrained on already edited real scenes; artificial flat control regains contrast; TealOrange65 warmer while sampled face/fabric detail retained; no obvious new patches or false double images in inspected samples",
+    "continuous_perceptual_flicker": "NOT_RUN: continuous visual judgement needs watching delivered clips",
+    "smart": "OFF in all color-base comparisons; no new Smart qualification",
+    "source_limit": "Real Nikon Flat reel was tweaked by publisher; control explicitly synthesized in encoded RGB; no RAW/Log-equivalence claim"
+  },
+  "diagnostic_notes": [
+    "Source byte-exact assertion initially failed by at most1export code, unchangedalpha; source import accepted at established native8bit export tolerance. Failure retained source-byte-exact-check.log.",
+    "Independent float reference differs at most1.001368code on anchor samples; strict1code+1e-6 assertion retained strict-float-export-check.log. All480output frames pass <=1code against separately quantized CPU reference. Float diagnostic recorded, not relabeled exact."
+  ],
+  "artifacts_root": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/sdr-default-review-20261018"
+}

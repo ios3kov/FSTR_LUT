@@ -1,3 +1,7 @@
+## Current-default SDR comparison — 2026-10-18
+
+**SDR-DEFAULT-REVIEW-001 complete for artifact/technical/sample-frame scope.** Unchanged installed49235442fbda89fd exports496frames across three real edited-SDR scenes plus an explicitly artificial-flat control. Four playable source/output comparisons, four-stage boards, motion crops and saved/reopened AE project are ready. All480processed rounded outputs agree with independent core references within one8bit code; separate float diagnostic maximum1.001368codes is retained. Default Natural and Auto-only are visually equivalent; no manual grading is hidden. Sampled faces/white fabric/shadows/clothes inspected without an observed product defect; no algorithm/default changes. Continuous perceptual motion/artistic acceptance remains NOT_RUN. See [review, outputs and limits](SDR_DEFAULT_REVIEW.md). Own helper archived; installed bytes unchanged; no installer/release.
+
 ## External LUT native matrix and reload/Undo fixes — 2026-10-18
 
 Installed signed **49235442fbda89fd**. Named Custom retains saved slot18 and filename; separate final **Load LUT...** action19 supports reliable repeated loading. No separate button or filename block. Human GUI Undo is verified onf2c3a3d598d8e15a: standard Undo restores the previous filename and rendered pixels. Removed redundant FORCE_RERENDER as directed by the SDK. Final492 changes the malformed-file failure path: return a user notification and commit restoration to the previous Look, preventing a transient19 from breaking subsequent renders.

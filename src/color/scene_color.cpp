@@ -44,4 +44,15 @@ std::array<float,4> SceneLook::apply(std::array<float,4> p,const SceneWeights&w,
     // One common scale preserves hue direction and LUT luminance at gamut edge.
     auto out=ordinary;for(std::size_t c=0;c<3;++c)out[c]=static_cast<float>(ordinary[c]+std::clamp(limit,0.,1.)*delta[c]);return out;
 }
+std::array<float,4> SceneLook::apply_people(std::array<float,4> p,const SceneWeights&w,const std::vector<SkinToneInfluence>& people,bool enabled)const{
+    const auto base=base_.apply(p);if(!enabled||base_.bypass()||p[3]==0)return base;
+    validate_scene_weights(w);double mass=0;for(const auto&v:people)mass+=v.weight;
+    if(!std::isfinite(mass)||mass>w[0]+1e-6)throw std::invalid_argument("Person ownership exceeds skin role budget");
+    auto result=skin_.apply_people(p,people);auto other_weights=w;other_weights[0]=0;
+    const auto other=apply(p,other_weights);double delta[3];for(std::size_t c=0;c<3;++c)delta[c]=double(other[c])-base[c];
+    const double dy=.2126*delta[0]+.7152*delta[1]+.0722*delta[2];double limit=1;
+    for(std::size_t c=0;c<3;++c){delta[c]-=dy;if(delta[c]>0)limit=std::min(limit,(1-result[c])/delta[c]);else if(delta[c]<0)limit=std::min(limit,-result[c]/delta[c]);}
+    for(std::size_t c=0;c<3;++c)result[c]=float(result[c]+std::clamp(limit,0.,1.)*delta[c]);return result;
+}
+
 }

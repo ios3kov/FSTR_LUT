@@ -47,4 +47,16 @@ std::array<float,4> SkinToneLook::apply(std::array<float,4> p,const SkinToneRefe
     for(std::size_t c=0;c<3;++c){delta[c]-=dy;if(delta[c]>0)limit=std::min(limit,(1-q[c])/delta[c]);else if(delta[c]<0)limit=std::min(limit,-q[c]/delta[c]);}
     for(std::size_t c=0;c<3;++c)q[c]=float(q[c]+limit*delta[c]);return q;
 }
+std::array<float,4> SkinToneLook::apply_people(std::array<float,4> p,const std::vector<SkinToneInfluence>& people,bool enabled)const{
+    const auto base=ordinary_.apply(p);if(!enabled||ordinary_.bypass()||p[3]==0)return base;
+    if(people.size()>16)throw std::invalid_argument("Person field budget exceeded");
+    double mass=0;for(const auto&v:people){unit(v.weight);mass+=v.weight;if(!v.reference)throw std::invalid_argument("Missing person reference");}
+    if(mass>1.000001)throw std::invalid_argument("Person field ownership exceeds one");
+    // Convex combination of complete results. Fractional overlap never grades twice.
+    double values[]{base[0],base[1],base[2]};
+    const double normalize=std::max(1.,mass);
+    for(const auto&v:people){const auto next=apply(p,*v.reference,1);for(std::size_t c=0;c<3;++c)values[c]+=(v.weight/normalize)*(double(next[c])-base[c]);}
+    auto result=base;for(std::size_t c=0;c<3;++c)result[c]=float(values[c]);return result;
+}
+
 }

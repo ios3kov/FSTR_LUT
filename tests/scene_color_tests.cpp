@@ -26,5 +26,9 @@ int main(int argc,char**argv){try{
  fstr::SkinToneReference unknown_person;fstr::ColorSettings ordinary_settings;ordinary_settings.look=lut;fstr::ColorProcessor plain(ordinary_settings,fstr::Transfer::Linear,fstr::Primaries::SRGB_Rec709,fstr::Alpha::Straight);
  check(scene.apply(p,skin,true,&unknown_person)==plain.apply(p),"Unknown person must use ordinary LUT");
  for(int i=0;i<=100;++i){fstr::SceneWeights mixed{};mixed[0]=float(i)/100;mixed[3]=1-mixed[0];auto v=scene.apply(p,mixed,true,&reference),b=plain.apply(p);double dy=0;for(int c=0;c<3;++c){check(std::isfinite(v[c])&&v[c]>=0&&v[c]<=1,"Mixed skin/scene gamut");dy+=(v[c]-b[c])*std::array<double,3>{.2126,.7152,.0722}[c];}check(std::abs(dy)<1e-7,"Mixed roles changed LUT luminance");}
+ check(scene.apply_people(p,skin,{{&reference,1}})==scene.apply(p,skin,true,&reference),"Multi-person scene routing differs");
+ fstr::SceneWeights mixed_people{};mixed_people[0]=.6f;mixed_people[3]=.4f;
+ auto combined=scene.apply_people(p,mixed_people,{{&reference,.6}});auto ordinary_combined=plain.apply(p);double combined_dy=0;for(int c=0;c<3;++c){check(combined[c]>=0&&combined[c]<=1,"Multi-person scene gamut");combined_dy+=(combined[c]-ordinary_combined[c])*std::array<double,3>{.2126,.7152,.0722}[c];}check(std::abs(combined_dy)<1e-7,"Multi-person scene luminance");
+ caught=false;try{scene.apply_people(p,mixed_people,{{&reference,.8}});}catch(...){caught=true;}check(caught,"Person exceeds skin mass");
  std::cout<<"PASS scene unknown/off, roles, luminance, alpha, range and overlap contracts\n";return 0;
  }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

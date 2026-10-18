@@ -31,6 +31,12 @@ int main(int argc,char**argv){try{
   for(int c=0;c<3;++c)check(std::abs(av[c]-bv[c])<1e-5,"Gamut boundary discontinuity");
  }
  for(float level:{.999e-6f,1.001e-6f}){std::array<float,4> dark{level,level,level,1};auto v=look.apply(dark,refs[1],1);auto b=base.apply(dark);for(int c=0;c<3;++c)check(std::abs(v[c]-b[c])<1e-6,"Near-black threshold discontinuity");}
+ auto single=look.apply_people(p,{{&refs[0],1}});check(single==look.apply(p,refs[0],1),"Single-person routing wrong");
+ auto multi=look.apply_people(p,{{&refs[0],.4},{&refs[2],.6}}),reordered=look.apply_people(p,{{&refs[2],.6},{&refs[0],.4}});
+ for(int c=0;c<3;++c){check(std::abs(multi[c]-reordered[c])<1e-7,"Person order changed color");check(multi[c]>=0&&multi[c]<=1,"Person mixture gamut");}
+ check(std::abs(y(multi)-y(base.apply(p)))<1e-7,"Person mixture changed luminance");
+ check(look.apply_people(p,{{&refs[0],1},{&refs[2],1}},false)==base.apply(p),"Off inspects people");
+ caught=false;try{look.apply_people(p,{{&refs[0],.8},{&refs[2],.8}});}catch(const std::invalid_argument&){caught=true;}check(caught,"Overlapping person ownership accepted");
  fstr::SkinToneLook other(lut,.5);caught=false;try{other.apply(p,refs[0],1);}catch(const std::invalid_argument&){caught=true;}check(caught,"Stale LUT/strength reference accepted");
  auto identity=std::make_shared<fstr::LUT>(fstr::LUT::identity(2));fstr::SkinToneLook identity_look(identity,1);
  auto identity_ref=identity_look.reference(std::vector<fstr::SkinSample>(40,{{.2,.1,.08},1}));

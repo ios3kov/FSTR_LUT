@@ -13,9 +13,11 @@ private:
     friend class SkinToneLook;
     std::shared_ptr<const int> binding_; // In-process immutable look instance; never serialize.
 };
+struct SkinToneInfluence { const SkinToneReference* reference=nullptr; double weight=0; };
 class SkinToneLook final {
 public:
     SkinToneLook(std::shared_ptr<const LUT>,double strength);
+    std::array<float,4> apply_people(std::array<float,4>,const std::vector<SkinToneInfluence>&,bool enabled=true) const;
     SkinToneReference reference(const std::vector<SkinSample>&) const;
     std::array<float,4> apply(std::array<float,4>,const SkinToneReference&,double mask,bool enabled=true) const;
 private:

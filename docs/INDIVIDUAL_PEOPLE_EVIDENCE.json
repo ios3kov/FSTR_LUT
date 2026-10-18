@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-18",
+  "base_commit": "5c2c280",
+  "source_sha256": {
+    "include/fstr/skin_tone.hpp": "7176f32dbd2909369039ea7930dd3d8b4c23fbf9c99b6bc7b32b05222ac60a78",
+    "src/color/skin_tone.cpp": "e7dc97c5e7653cdc4cd616015f6364f735653bb6895f7827a392fdda61d2b944",
+    "include/fstr/scene_color.hpp": "eed02f40e9a5c0388e8ad119cc8484848a9cdebf01acbd02a268392052140a56",
+    "src/color/scene_color.cpp": "ad9d08a9972eaa958a42182456bf422c54a8cacfeb58635dd2dc615484015c72",
+    "tools/benchmark/skin_people_main.cpp": "a5c15c8a9d4b28a5c2c6302f5b4660b402140351bab578452ae29cff5910267a",
+    "tools/benchmark/person_tone_analysis.py": "dd62f320557d1e7cf8994d467169a4efbb8857a0d37b27bb672f88d74469103d",
+    "tools/benchmark/person_tone_trial.py": "af2b966076ebd4d49784f2a240a82960ee61e8b4f6e175b0d5397fd5fa4f33c1",
+    "tests/person_tone_tests.py": "18cdb630fdbf275bd2ea8506963289bb0f23cd4890bd1a1dcdb44c469f6afef7",
+    "tests/person_render_cli_tests.py": "9152487c141a25895dab279d60457224b2efd9a75ea7cbdeaf7ed1c5385aea82",
+    "tests/skin_tone_tests.cpp": "6f04c40d54885a2403b66a43cd3143a50eabb9a7b097cf9ca278b1d5a10146d0",
+    "tests/scene_color_tests.cpp": "6c28e9d040b94e60894374d93b9d843cf5b4b58ecc851b1a6406ab1cee59696e"
+  },
+  "trial_evidence_sha256": "a525913f56f6c7787c70248d0b0bfb8d32d05ae57180a97b90f911529eac1770",
+  "frames": 36,
+  "off_exact": true,
+  "reverse_exact": true,
+  "max_luminance_error": 6.45041465759718e-08,
+  "checks": {
+    "release_cpp": "11/11 passed during implementation",
+    "final_asan_ubsan_cpp": "11/11 PASS",
+    "python_association_body_temporal": "14 PASS",
+    "native_cli_boundary": "PASS release and final ASan/UBSan",
+    "visual": "selected v5 frame20 crops inspected; continuous acceptance NOT RUN",
+    "native_ae_integration": "NOT IMPLEMENTED",
+    "auto_encoding": "NOT IMPLEMENTED"
+  },
+  "limitations": [
+    "Bounded geometry/color association, not biometric identity",
+    "Body skin only when unique face-pose AND material evidence",
+    "Similar-palette cuts can escape existing cut veto",
+    "Diverse real skin tones/complex lighting not qualified",
+    "Temporal masks capped by current evidence; missing people not invented",
+    "Final senior review unavailable due agent usage limit; root source review performed"
+  ],
+  "artifact_directory": "/Users/os3kov/Documents/Codex/2026-10-14/new-chat/work/individual-people-2026-10-17-v6"
+}

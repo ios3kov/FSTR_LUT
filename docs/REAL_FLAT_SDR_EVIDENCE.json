@@ -1,0 +1,1043 @@
+{
+  "schema_version": 1,
+  "requirement": "REAL-FLAT-SDR-001",
+  "baseline_revision": "bd5a73aedfdb8213b0edcc45c5890292ef0900a0",
+  "created_utc": "2026-10-18T14:58:30.513699+00:00",
+  "installed_build_id": "923695974aa8fc72",
+  "product_unchanged": true,
+  "source_sha256": {
+    "docs/REAL_FLAT_SDR_TRIAL.md": "96c73977e0cf0965b673443fd4870107975e8c4c38e502b04385f4c766d8da15",
+    "tools/ae_host_runner/real_sdr_acceptance.jsx.in": "957d9fb8074b6ea6abf00a11338b9dc2fb4bbd3c90e2bdf9c12c2b9603099aeb",
+    "docs/NATURAL_CONTRAST.md": "315f09b316ebeaf613a84c3aaa76d533db96f5ec3cf2a91ea054f207b564d438",
+    "docs/PLAN.md": "4a0193dd3e453f92f819b5f20c19dc4a8cc20a7ea1b85a5cf04b3fe35741e514",
+    "docs/STATUS.md": "8bb22fcab172aa56b14306a3e2650c5c8fc9c9e6e3dc837a9be5bd015182dbc1"
+  },
+  "external_original": {
+    "path": "../real-flat-sdr-20261018/Nikon_Z6_Video_Reel.mp4",
+    "sha256": "feee71667db4cc6ff59a9380fb915efe234c3a069e4267183bb5be9688f4e102",
+    "bytes": 391288816,
+    "source_url": "https://www.dpreview.com/articles/8063289145/nikon-z6-video-footage-outshines-z7-similar-to-a7-iii/"
+  },
+  "external_receipts": [
+    {
+      "path": "../real-flat-sdr-20261018/source-pages.json",
+      "sha256": "fb35975af1168f2aec7d54eb5baac9335da008ae03850290d1b7e6c4827e9c28"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/download_nikon.py",
+      "sha256": "023332e7626b2c85daba1dc70bee45dc6f3b9bf05dd62582ccbd28e18aa96745"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/download.json",
+      "sha256": "6558de39fd8eddc8f55d36e5de1bb5ac5b0e7476691583383d23ac2873e0c096"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-probe.json",
+      "sha256": "c322ef9fc883861f1ad08ea9dfbb107f421cc4bd0824203ae375e4e846f5a736"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/browse-05.jpg",
+      "sha256": "f376a2725e697a4d0bac848c06335889df0f0bed35100e48d3214eaa5c47de99"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/settings.json",
+      "sha256": "611c3b7d02d737b91916ab12ef1e5fcf12850fef7be7377fab625b431dfd07cd"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/prepare_cpu.py",
+      "sha256": "d42d5e613a2ca02ade50a3b52c2a657275f8d471cd8abfcdf62ffea7a3850044"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/prepare_host.py",
+      "sha256": "d739a96f5ac388310b1decc98c9450895a11d43073ce4272562a68b93cb87e32"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/launch_host.py",
+      "sha256": "7ad9813cbdd7403410aaaa6c1d92238565e023f75c94fb57bea109294b571a86"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/verify_natural.py",
+      "sha256": "89b3e3229c37df9d0de6b9f01f45a2d96517caf21259ccc18ae720282321074c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/natural-verification.json",
+      "sha256": "8f39e79c713dee2f36201bda7255c2ca517d05e3861c481323a75a9c0cd62fdd"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/verify_complete.py",
+      "sha256": "748c7969def68b7211c67730a3ef303178ae99c0980a2691a02591dbd8ab0c43"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host-verification.json",
+      "sha256": "ba8bac5ecc4f747f243152272955654491b43f257ffa175a08af7c4c87dbf046"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/encode_comparison.py",
+      "sha256": "0ebe9fb08b0065ae217bed63e7f0c0d449df85ba8d9d5920db6ff276467cadc7"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/natural-video-verification.json",
+      "sha256": "abb54d9f016316d94737b2c2c8c4088f089a71455d72f53a2a89212876bec8de"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/teal-smart-video-verification.json",
+      "sha256": "abb54d9f016316d94737b2c2c8c4088f089a71455d72f53a2a89212876bec8de"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/natural-comparison.mp4",
+      "sha256": "c3e5bfe031bb6f1326f47257755efcd6b7a67f00990f27a34155f6ed596e7b51"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/teal-smart-comparison.mp4",
+      "sha256": "145845e8fda09be84611772f81fc6ece3c185ac4e241aa0b7dc1394da725b439"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/natural-comparison.png",
+      "sha256": "5a8b4f3236ccfefd86b1ee9d49d1be0011f5271d6faf6bb3565b917b6538d5e9"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/teal-smart-comparison.png",
+      "sha256": "89216dc3113fca2874aafaab31d9171dd43cd5cbc80203391abccd1876e06391"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/smart-sampled-contact.png",
+      "sha256": "014f410d1d402a9bfa8c785f8f97b1addcb7dbe8682855e96f065b19acbf6e7b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/final-review.json",
+      "sha256": "b77cf3145179a9c8a80259fcbe8ad15a4a66def865ed582cea3744510dfe3b66"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/config.json",
+      "sha256": "7ab6ca6fd2c3bbd3d2474ef22f60af90814cc846cd180e348981619813545354"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/test.jsx",
+      "sha256": "c8b478690693a122527b943848f2e906c28ff5078545bc4658614964c5f5bf8e"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/build.log",
+      "sha256": "835b310f783090e9547309282a19155161a5b93786e3329aa957a7f4485e5a12"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/installation.json",
+      "sha256": "afb752670fe9d67dfff6269a7c7dc7a49737cc79906055ecf560bb46484eed25"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/launch.json",
+      "sha256": "fad99b36c9572eb89c43039c5528d63bb7ddd62eb52c9f2b1dd26124229e666c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/host-report.txt",
+      "sha256": "91355f0d1a04ec10f872c57a597471070f53d34747e6cd93a326b6fb33aeebd7"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/process-error.log",
+      "sha256": "dca279f70289e361d291255f392f2ab130d5ef79ffd7b3944499832c24b507d6"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/cleanup.json",
+      "sha256": "0314e4b8868170886027ffd6b69989490ef88c8f39462957d9cec42f5213fbdd"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/real-flat-sdr.aep",
+      "sha256": "d18b75eff39d222a1f184c1e77055ceefce04b6ab3157b39f16b0b372e3dcafa"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000001.png",
+      "sha256": "1b4139c0d239144cd411a48817f12d5114b5bb25a9d98be5791b47db936f2d10"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000002.png",
+      "sha256": "2799239fa77b1ca0fc5b26c752056eaf840110cb545ce2e0e75a90d04afdb579"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000003.png",
+      "sha256": "40a59f13bad5503a5225094f3716cc1c972c7e6b2fb508ce5977343eb6c7ceb3"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000004.png",
+      "sha256": "84630603c3eac4876ad35cfe570dca3b50d78083115d93c1ca1d9a3c7b65c1f6"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000005.png",
+      "sha256": "2e1fddfd0389a77f724018601a9c007a11c7341b90685d1dbb38aa21d21e61d7"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000006.png",
+      "sha256": "21077cc787aca08583901d4b947f1643e93fc9e3682c56f283cd3da3a8f34f6e"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000007.png",
+      "sha256": "730432a79df764e496aa026806d4a0fc458f7ee55fdb92508666d21cb6daeae0"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000008.png",
+      "sha256": "a84305b20d773c0532f7aeb7adee033160e07baf4b34cb557b9996d821522ce7"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000009.png",
+      "sha256": "f0a1ef9892d495fc0d8f9cc7ed52e4dfbb4c0e04dc35337c380ffc91a84aa6ad"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000010.png",
+      "sha256": "c0f6226a778986c59b713ae95a7cd0ebeab2ae6b56bc5eb5c7ac505f22b895d0"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000011.png",
+      "sha256": "3c74407dab8a67f25df4f9ad372eefa9a819ea93bdee3c723b652ae9e409a785"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000012.png",
+      "sha256": "f93c3f50ab9f4c18de6b7a0dd907efa81f67cad05bfe2ef8998f7511f4711f92"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000013.png",
+      "sha256": "4b238ba59d0faaf0a5472b7969ae44f98d768dcda9466bd064348f1711dd97ca"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000014.png",
+      "sha256": "cd6dda88630c2252da94621c8b597d563c7acb3e0b6bbddfb5a5015a053c9aee"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000015.png",
+      "sha256": "3212c7dd83ef2962a63c389e7afebe3f5c3c7ddd24b16d62b3e140dab45e1426"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000016.png",
+      "sha256": "a606203e8bc8da390d4bcd39064951e7917b73c5a77daf8cc31fa427f0786e73"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000017.png",
+      "sha256": "3b5c1442f9bd2c1de8622ce36c3dbe5dbf60c9d8a18119a04a015d112ff53f49"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000018.png",
+      "sha256": "6bf14d57250303ee179b85657ae8b481b2e8f09dc23978799f721ef03f41508d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000019.png",
+      "sha256": "da9f8b3ea5defeca29370b18fb6f19f81e63ffc65b688d79469660a285e0b979"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000020.png",
+      "sha256": "a2bb37a37d83221f7399cb39fa35f0ee89a09733a257d679cd7fe9ef523943b8"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000021.png",
+      "sha256": "21cb2ba431d59f3a3d1f61f1f8b9f3380aa592af1b57f5ad0dc572de47cb4ecf"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000022.png",
+      "sha256": "3b736e305b5c01c4834a30498676008b16fec93aa8950ac8b0fc082bbb54c1df"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000023.png",
+      "sha256": "07a949ecaa069ca73ce0a7ac45f58f10123045b126f716910ff6f15267ebaa74"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000024.png",
+      "sha256": "490cc08cbb1a7d699e70e7af19ea9e9b327d638bceef071513d9fe8eeec28dcb"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000025.png",
+      "sha256": "ff4083f2cddc33c559cb62183544e9a470e5f76ee8fca717f5cd9e5b0806bcd7"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000026.png",
+      "sha256": "011f2bf059f1b5ea709a3837652c42968eb1b5fb1b30cf9ec860508646cc0e43"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000027.png",
+      "sha256": "590759a2876f742f66d26abe41bfb0b82f2dac54e535cd7c33401d079278755f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000028.png",
+      "sha256": "82814793ee39a6a472319dfd57dce88ff4db262cbe9bdefa35bc72e552114ffa"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000029.png",
+      "sha256": "87438acacaa7b17c507eb7594ca1843a7c113dd759688c91f5f397970b569165"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000030.png",
+      "sha256": "676f1a1a00f3e472fc0ffc6bc2b4e28d3a7fc627c8a89767eda31f1ae35085d8"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000031.png",
+      "sha256": "eda52d55e8b23a196901c36ce51bc13b39efeb3c3f6c49682bf6970f559e70ed"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000032.png",
+      "sha256": "f5c5170a8293a4c20f1e0b621c5637066184ca16d5f3b8cf6deb80ecd85c91e4"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000033.png",
+      "sha256": "486ed93e307aa5446f625c1ce766d46d460ca2a88a1a0375e162a7c999fd98b5"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000034.png",
+      "sha256": "959b5ab4a93aaaa92f5a9d04c778500fafe2cbd0732e81eafada1375779d48f7"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000035.png",
+      "sha256": "1f8aec1eee05a28386c7928465d389339729ad0a9d0fb94255fe4ed863167c21"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000036.png",
+      "sha256": "6bc2e65f0cca374650bc033f98557d8f930b91cbd50490dc6ad1e5f7b4c67527"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000037.png",
+      "sha256": "73354f751878c610a43b69abd501d5b0d16d8c3034c7a85f4b45f5e994716f4f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000038.png",
+      "sha256": "0618d080f626cbf1f70b140aea9b7643d0531c16414a26ccf53e053a8255966a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000039.png",
+      "sha256": "33c3a76521ef3581ca160d7f551ae91fd83fe2fe0cc401263be3fcc92fbcaca2"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000040.png",
+      "sha256": "53c387146331e28d06861e3b6c53634c1d8bd871d13d88a171d235c6bf0cf068"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000041.png",
+      "sha256": "0c8311c3e4d19e6c72ac50b9e76df5593cae02d007aecdc79cbb20c781ec58ae"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000042.png",
+      "sha256": "8cec27446cb85c30c0b90e7b793fca514c1f54d6ecd5896b1b47d472c285e70e"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000043.png",
+      "sha256": "ab10486fa1f90700ee93d4e5c65913f84627e71faa5fae8d3a028379bccd2f3b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000044.png",
+      "sha256": "78238337e6f4de1c507c3f267067fa9c97e1bf83cdf772069c1f84bcb090df02"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000045.png",
+      "sha256": "f96ba6f4134df2606891bd12b9a803c174ed487c3824a5e4fe671e1f8955b463"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000046.png",
+      "sha256": "f38d8112e0d18af0db37e20d4d3464c7f39db28d72e6f48b65e5ac979af6ab84"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000047.png",
+      "sha256": "a9975cd06120a21641b2c4724e8cc22a900ee67505260392e6af494cd637ac45"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000048.png",
+      "sha256": "65f5df99ad13481a5aef2a70cff043669b9cad800b0d08793509581ebd96a403"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000049.png",
+      "sha256": "b0a693a1f34e2f5242dfd31104cbbb1af089e37766ca1bc4a8a82bf981c9470e"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000050.png",
+      "sha256": "de3b68fb6ce2ff26c54315075d1692368233a5b325b6ac8481a6505fa6bae6c0"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000051.png",
+      "sha256": "b659d33ebefcffd432cccd89f79aae1ab201162105a19771b206241570e0bcf2"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000052.png",
+      "sha256": "84df1293545a5052eaa2bc7f8e52f67b4674650f26aaea53c705336f1175a30f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000053.png",
+      "sha256": "4f5796e89ddd4128210a68c10894f311781f60bc80e7996b8559d6645bce9f31"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000054.png",
+      "sha256": "8acd97f7bc1f622ae0fc4423e8097623f32a19d113febd15248bd3f88d21ebda"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000055.png",
+      "sha256": "f60197f45252381840ee91b54ce306b465978e79a69db791e58e8529440c8071"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000056.png",
+      "sha256": "7b2c0e72b6326ec85aafee0ab64b09efb59dd6772ef8462043d58ef80f79baca"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000057.png",
+      "sha256": "18a15746891358b469a8db9f357b551837310e1bbe06a402d7624cf23c352e4f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000058.png",
+      "sha256": "08004a33b46f561ad3de303306fc2dec88ed901f6684f9fa7373a8f87e7fc401"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000059.png",
+      "sha256": "f127f76e2324d49acdab479cf487a801ce864b349cc7b9229de673b236e23bab"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000060.png",
+      "sha256": "395c2e22cdf82ee30dc37552d43f49d8c64589562b9d7db0f3fa889c7ce9364b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000061.png",
+      "sha256": "1c5bd350eb643175f8d6904555384f910ef6e7b3ce35b8e425e4a1bbc6db02b3"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000062.png",
+      "sha256": "c9641813da2915e4a8f70a62237f180d083dc7f38a39a3c0f342a0d920a9f067"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000063.png",
+      "sha256": "1733f59762728d8e6e2f7c31a40b840d4f5cbbe0fe396b1dd34e07a1df02ff3c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000064.png",
+      "sha256": "fa8266fe82fab28559665bc1cb3e9aff7a361193a65f17d46306d1502431317c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000065.png",
+      "sha256": "526e9e11d5576fe2799b7d552715c8a04579c93ea7feb7284b4637cf87dfe912"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000066.png",
+      "sha256": "7bbd41ef50d3625a446c68832d76275bab8e4c4bcb2055af866ac3211eae690f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000067.png",
+      "sha256": "18078fec979129e413526bb41701bec658665f190242df906f5fa8e463c7df62"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000068.png",
+      "sha256": "b77ba2e00fd11fc16b7dfccc6e0fbe2cbbf70afe09e6caac9dbdfc0627f0604c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000069.png",
+      "sha256": "76c95df24d5a25372c3d4080c30832ad0f1cc84daf1a4d4ba1635f4e4effb965"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000070.png",
+      "sha256": "c8a2bd230ecd757f542455d239838d7f3ba0fe6861baa3d0fac086d03673e8c2"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000071.png",
+      "sha256": "c38b2b39e96103c04e7afaf6e7903ebbb127c73bbdbb84b054f1f0a1e2b307c8"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/source-frames/frame-000072.png",
+      "sha256": "6c65a977b36f5faca62542c7f852828f4556eec06b43c4ad2a58137fa3904eeb"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00000.psd",
+      "sha256": "cdad5b18308e771f9a820477775fda34a9c8d7bb6f5d59001616683a16d73f92"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00001.psd",
+      "sha256": "5d662c81a773b00fb7e9faedf615a24e80cbfffe7a5cdf0645a4fb8c56d58017"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00002.psd",
+      "sha256": "2f8554aee7291f09e250eccdf7948b9b4516533bcc1f91917290d394c83b6df9"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00003.psd",
+      "sha256": "d8ac76f2e761366e0556ff91414a91bd6fb1d1795453e217f7da18df2ff9ddb9"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00004.psd",
+      "sha256": "654e7eba193f74cd7cd1043ad96d0b096228deee72f9355be8e6970376d822e9"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00005.psd",
+      "sha256": "dc31a71612b08424c0eb683689694919d50550478dcd19a98049b0b4dbaa14fd"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00006.psd",
+      "sha256": "41c9da2f27f00c02d2872972e2a1c00302fb60d908026c50d3f0fe03711548f2"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00007.psd",
+      "sha256": "5ad6aba86c3b0c4042ff3d8505215a692a0d41d3c13cdc1be3f39441376808f2"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00008.psd",
+      "sha256": "373d02ef4a4f6a691789c0843f73e84d0d4ed4f20cedc9100d95fbc89687f3d4"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00009.psd",
+      "sha256": "c13d322430a9d7aab4abdd35625493f32879eb44af3946950a3e5638fa9b78d3"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00010.psd",
+      "sha256": "53e6f86b1dd1c6205245ee28a8ffa26b47b84ce38d6c7595e937aaab86fb2a4a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00011.psd",
+      "sha256": "7f16c5c9cc935898f373549380497e6cbcd3a2547c8425614d5de410355f0c46"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00012.psd",
+      "sha256": "c6dc34b41c7c8774f2ed06e3f4d8db2ae1fc72c646b235a0a5d96f6a1ba64e66"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00013.psd",
+      "sha256": "841bda15b11bb814f19f9cbdf7fce47783fbd7b2cb6c7d4d0ac45b153eefaafe"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00014.psd",
+      "sha256": "8543f219a32edf70545dc2a723252d66894096a48c0948f98596a553326e0057"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00015.psd",
+      "sha256": "5d5ecf3e8345b5b5dde70742969048f49deeb41ab37b1c3fdbeb174fc3907a6d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00016.psd",
+      "sha256": "866d064e0fb8965f7c35dd252c33f3a4b1875f2755b34279a0614e51de7de04a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00017.psd",
+      "sha256": "f93c075bb9e6856e24d21fae63dd0696a54255105bf8d2b88efd0240270ca4d6"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00018.psd",
+      "sha256": "1c55d5e47a7e257ace762403ca34c69118861dd55792af35c354b271f5b25001"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00019.psd",
+      "sha256": "a03fc79fadaa8fb95cc31c1be716711edd1e50f98f539c5597f95676e68a65bb"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00020.psd",
+      "sha256": "4c77912b48850d124d70a14e50011780c15e117ad037a6ae329ff0d27950e501"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00021.psd",
+      "sha256": "9b726a9ad81b27a3169321484469f3d43738f934697417c9464a3ef3e9bca67a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00022.psd",
+      "sha256": "2fce0cfc8447aa842500ca55d23a3ba18e27e05f5c51c56d9ddb4c140347a00d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00023.psd",
+      "sha256": "f77d8dd3e6bbe09bf90c08f1e0fe2959d8b637e190ba36235bb363ed9ca2a1cb"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00024.psd",
+      "sha256": "b921bf1a4c1020220b422e696db5d306a4445c65f0b12b8dbc5cc3f2797a1176"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00025.psd",
+      "sha256": "351c96c1e72d24190fc9bb87f32148b6d17f64a4d82ce16781a9eaca7f863053"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00026.psd",
+      "sha256": "d01fc530ffe271842fb5987ff39b7612b4a694429be52bea77bccd8ea5a7394c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00027.psd",
+      "sha256": "41e8ee18886bb131177c4f611d7fbcc4819dd085d5680b5d026514e0ebb535ad"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00028.psd",
+      "sha256": "266bb7136253a9cb087e14bf45b42047b545c5d0484c3ab3c8fb58e857fedabc"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00029.psd",
+      "sha256": "f300a7466208b9278af3ba6afc0390de43d471e30f1da0a2bc62e6460f87b871"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00030.psd",
+      "sha256": "83297b8ad5be3a42bb5829b15db920df041892936650caee12ab672b5934a522"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00031.psd",
+      "sha256": "803843bbe34752696795ec1ae334e38bfc86cd0c81c83f70659f62089b8fa3ff"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00032.psd",
+      "sha256": "9f7c0715391531ca4c55ddc085c249c5075c084ac58009ec558555cf38a04a17"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00033.psd",
+      "sha256": "796c0c8ede767a54beeb48b5082685723178ea1d0847c06d53ac812463d9ce86"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00034.psd",
+      "sha256": "ecaafd9279aaf0af85adca23fe33c551adf42b9caf87c1a1a7c7b885077abaf5"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00035.psd",
+      "sha256": "903c1f01a7d1acfe93d38023df9d94504a7729eaf72b591df6af777a399f1f9c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00036.psd",
+      "sha256": "3fd534630f4c5e8ab3d383900d231bb3c979de5fb1c050bfaa461fd03df3b5fa"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00037.psd",
+      "sha256": "34404ea5df76f2b4d2c6060579ea639ca65eebbabb2f835a578a5dafc5117fef"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00038.psd",
+      "sha256": "6ea38f4a064ee4c1909b8200687e282723bec09efdd8620e7c46284692e1f0f7"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00039.psd",
+      "sha256": "9f26bc9916114ce57bc457c1f4620c15ceb4e255cd49a92c3124e00df5f2bc3e"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00040.psd",
+      "sha256": "f22b9cd6d1c3c857b9fbef0111156ebf7603f97f582c5bd1e611362462061394"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00041.psd",
+      "sha256": "100005b78f21da78b9e22b8e4203aac03c977c0495125603cf4475dc963e50ad"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00042.psd",
+      "sha256": "c719acef68fd2eca9cf672181d6d05431b093d278d75e14223debad21b487563"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00043.psd",
+      "sha256": "d73ec748342f91bd30192bb781aa62cdbed0b39cab55e10f0a229a6f965b20b0"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00044.psd",
+      "sha256": "df0cf0d4e4c067c3885469bcb24249915581acbed88236da03d061390279ed3f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00045.psd",
+      "sha256": "38ce218bda4f273365bd1a79919793a59932852c31f03113192374bdd7d61857"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00046.psd",
+      "sha256": "7bc76f7623b8733a057f33d96a9a1e2f2528fa5699e20cb4f855a7fd84e1667b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00047.psd",
+      "sha256": "49797299e34439ef3e89dd67791f93f0388f3f34de86ada8e478c4278003946c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00048.psd",
+      "sha256": "7e0822625d89ecce62c0bcab3fd4c4bb275d58df36ad21a51812a82a0dcc4e33"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00049.psd",
+      "sha256": "c1c26b54a46811cbfa704ab1c2451dad0a7a4d332aed518a98a197f4596e68c6"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00050.psd",
+      "sha256": "1450258924e8eb587fa79ba27b8d03c9958dc7cc91ba7ba5e1d492e7a6303f75"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00051.psd",
+      "sha256": "116df95223808d3ff7236473236383c01dfe9ebe92b4e49214e5a1c20a713950"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00052.psd",
+      "sha256": "044c87d6fb6b1da12277f17b7d94b9c529eee61c2d47965227db6f7cdbcde252"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00053.psd",
+      "sha256": "9374a8625fe3076148e46b99c4f8954f0c901113085ace513e1baae8e7829a7d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00054.psd",
+      "sha256": "8ba1845ce630a540ba293cf286ca1ecb509431b3120bdc31a7c223bfddf4f73d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00055.psd",
+      "sha256": "6c17b6df218d21e0679d4464b2d750f528edc7b25a0fff52575e6541dcaa1357"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00056.psd",
+      "sha256": "e6489fb6de96862706e488e74a2a99393149eec31541a20155cbe7f4410829aa"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00057.psd",
+      "sha256": "17242a41f6182b2da92d7582515d0bbea81eaef90683164d3840a3a652cab6f6"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00058.psd",
+      "sha256": "7bb55ac8f5b6a44dba2875258db81b43f776a8487524f8604d432868bef9776c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00059.psd",
+      "sha256": "21e4428f01ebe1010d5eb4affaf3c247b4a805bb0b8578fdfcb139d378c9b138"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00060.psd",
+      "sha256": "be9f8ec0dca33edede2d9c3c699188a216f1621b95a92a32860560d1ded6d0c5"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00061.psd",
+      "sha256": "cf79c4209114a6cbf67a037d72afcdc172681de2c0174b811a51201eb7ef06bf"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00062.psd",
+      "sha256": "acebb72ea96e80331b221b4000f9b1e57c37ddbfc3f88930404e80cec5436f46"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00063.psd",
+      "sha256": "676b90ad42c805003f26019f27aad6ebac8cc3e3f16d26c8e81dd7b1c3079835"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00064.psd",
+      "sha256": "804badf81222fc29eaabb327ac489abcd28354e119dcf2a71955984ba5236c81"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00065.psd",
+      "sha256": "900ba22a16ee2ff1b3ffa9475846795bfab7e0e47a0c7f52103ca6bdd21c4df4"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00066.psd",
+      "sha256": "bf30647b66837aff9b02cb9b3572082f34f02cca30151e9719f8731f0459bf5d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00067.psd",
+      "sha256": "b52a6e595351d618dae32a2e090d85026c33d5ea9eadf6fb9266ea8a1c545a5b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00068.psd",
+      "sha256": "4eee6a50d07cca9df00011bb9b4b87cbc8f7918ac76dcbaf90b57d313c0a2929"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00069.psd",
+      "sha256": "3551ff7cf4e40b36e9f889ae8fefe238d6fab811bb1c1c2dc872a76a9e4a2af1"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00070.psd",
+      "sha256": "610cb541ee6b4e8b0e9f719d04c912424c32663d1afdf68c322ae55ed87d0107"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/natural_00071.psd",
+      "sha256": "bbcffadabbea561f4f5758bb68e54d63d8eb46ab4b13105a98ff038aeb537cd5"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/source_00000.psd",
+      "sha256": "8a03c0642fcfb6a4b4f5052b051df30fa9445cdc70e1040511b5701554d32b33"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-off_00000.psd",
+      "sha256": "d8407d164eabd3b6f0ef09ace476bf402573ffa85e534d1163b35425f5c8f762"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00000.psd",
+      "sha256": "fa5fea908a4a383b66c51b85718b5afbe6a06dad47f556615fcacc1bc8ffd669"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00001.psd",
+      "sha256": "14f3f5d5e8cb58d8335c5e821a26b510d5bc774c15e031c075c29dfbd10b0dc2"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00002.psd",
+      "sha256": "0bf62d7c007eee37dc6ba34ce28c56065e783e000f2a3ae54964d7c50012d7fe"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00003.psd",
+      "sha256": "609ee01cad729d04016e7948d0d1f98660b1f25f6c8783fea5b725a905c9229c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00004.psd",
+      "sha256": "afed5a6a9cfc680b02a584865f4f4b26554d5bd1ded489979a6d9148ddced83d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00005.psd",
+      "sha256": "8c182e8c0f29d257130efe0db1a7d5604e88562c6e4c2b569ef8a84226f4341b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00006.psd",
+      "sha256": "de9afd848adbe1035c6e14422d36bae6a3abf7133a42c17d1eee39c95712e5da"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00007.psd",
+      "sha256": "11ba1d16d93cdee1063c3100fa15fffa9c0adf3fe236296269a26e5e80e0ba4c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00008.psd",
+      "sha256": "cd4d5eb4c55941af1d766d141beafc544eb01593e16fb32d84e5904e9ce3f2dc"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00009.psd",
+      "sha256": "937eb50e24aa7d1dd727ba7ffec35decb576d9be1d64dbb867fd1bc7acd54cfc"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00010.psd",
+      "sha256": "fea1830a451bcdfaa2fcfa4cf195e4cfd0779a4bbeaa716b0b22f040203298aa"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00011.psd",
+      "sha256": "d8feb20b753857a364e82266402ba7abdcb9522790bc0d52ea4fa471c4ddbb7a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00012.psd",
+      "sha256": "984dafed2a89aa3ba22a6b0c5401dc23030db44edb15b4ea3405353fd9799a90"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00013.psd",
+      "sha256": "131a8a37637d9f60ef63a8a0f1c18ae7a293f48d11793695626a484a490e393e"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00014.psd",
+      "sha256": "a73ac6dd2fcea6a13f0e9efbbe496bd23802b811026c73ba1cbd215fd051af13"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00015.psd",
+      "sha256": "0b248d32cf3c6111f108e659dd9de3d6021a809b715d715e5aebd470f4e6f545"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00016.psd",
+      "sha256": "61c94ad080feeb32b94d79713135440ed17fe8603c9c62bd3f3ef28ed15054b9"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00017.psd",
+      "sha256": "3d8f9c495ae5ee740b65f9687d023eed8fc5d1f0b3050f11af2d13403f6acaf3"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00018.psd",
+      "sha256": "d0845052d037dca3fdaa4686a7041a680c532df48c0402f72f1d5ef832b44277"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00019.psd",
+      "sha256": "a49c1b4497eb8c16c1104bc0f4cce93678e823cc70e937b0131e03ae4dc8fd25"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00020.psd",
+      "sha256": "78b97b65dfbd1bfae3fc02086c691bf371c46b6324492c3d5b44a6a10676bf8c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00021.psd",
+      "sha256": "6db8f36150a42028be20202b16e84691867816bf3901743ae195cd76367a8c45"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00022.psd",
+      "sha256": "5825ef8b7fa19d127e2a28ae0307c0e0ef45607bc1e296805f24256b0a00af33"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00023.psd",
+      "sha256": "ac5240a4ef60b13177cdb1e369b9b5d619112f0ce116945e1ca9f4c60c572bfa"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00024.psd",
+      "sha256": "eea15a6d8771a924950309e30051ec264bf74b9f26be49c1f3f871629f7cde01"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00025.psd",
+      "sha256": "f643bd8ee9a9624ed4b3423f6593052e7b6155f05b3722b34c771253f6980b7a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00026.psd",
+      "sha256": "16b5e44acb3bd7442c6be73c666b37d4a1273de779a6403cfd05cf829bdfa08c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00027.psd",
+      "sha256": "e2f9be64dafa2538463de60001888bc41de77dcc50066f852e78082b849d93b4"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00028.psd",
+      "sha256": "9a111b601e3a1cef794f30ff4b6f748802221cd8572ace66b41060e85d2bf6e5"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00029.psd",
+      "sha256": "b69ddaf4e895be198c57f1e79b949b49c6450bcf645720cd6134ba992fd8450d"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00030.psd",
+      "sha256": "d937226f5f1713542dd2e85b2c5ab1c4e3665d6f450e5052626eb1e0260ab22b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00031.psd",
+      "sha256": "d008ce80f7683ae739e50308d916d1a270a6c1c74eecbb6a4adbd17e7010687b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00032.psd",
+      "sha256": "99ba64a7a79c1506bdfa0e5cb3166c7669cbe75eb7ba64542cd025a1a0d10697"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00033.psd",
+      "sha256": "f4bac1c4187fb32c5d02b57117c21f8e123a8a888099f1fc92db3951f5fd23f9"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00034.psd",
+      "sha256": "09bbe5113c6bfa23bbc7a2a1b6114858c56b08d54fd3ae143b2c563989efa01a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00035.psd",
+      "sha256": "37ade1f253d2b5959578b0067050936b766fd389c186e23a89474f64cf13ed81"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00036.psd",
+      "sha256": "760bba1b304b02464a0a2984cf3a3db6007e79b8964153f60d53c9ed81033db8"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00037.psd",
+      "sha256": "27674edd3c2eb21747aba32153058e1e71dc2c18e462ff849276c69e14bcef3f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00038.psd",
+      "sha256": "242bb72a08481461720cb402e52ac395380e7705a86106353ea4d54f225ce1c8"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00039.psd",
+      "sha256": "7f0c808934515f77ff93f43b1f0d5e8a41e86f233ed986bf7cb346276534f1cd"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00040.psd",
+      "sha256": "e1a8010a3d69adfeb637f99885add628289b22aae20901dd4d273bd5b258573b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00041.psd",
+      "sha256": "ef8d1b3b52eed5739dd1827c5bd81af56a31fad42848ad2189f7627af672a458"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00042.psd",
+      "sha256": "3b153fc9daf17b34e4cc85ae63a6b0831932f331652b82d80b059ca9bcd28bd3"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00043.psd",
+      "sha256": "cbc3f5cd0613b8951e1455b3208889c65f85b2ca7234c58036b9a877d7ccc1d8"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00044.psd",
+      "sha256": "8a373450b6369af319905c54b1bbc5d935e5ce7d748d7dc60a68b54a6adeacaa"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00045.psd",
+      "sha256": "650e4746c32012f79349e4bd6bae14e14e58999d261d6488d970e82129aa6069"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00046.psd",
+      "sha256": "56c052c1a4199ad8fb70e35fbca7d20c12ef87f4f682a1f10dc72ff3b708bd17"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00047.psd",
+      "sha256": "277490148d5da6c81029a1c95c7d994adf3505a3c1fc73a770ec309a4c95a894"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00048.psd",
+      "sha256": "e888efc5868cb32ef22f08b24acaf9f3186457f142f3b2caaf9d56bc005a5990"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00049.psd",
+      "sha256": "3a80d49d809b678bfe6846070dc0e5d609b6f0a83bfd3bec5732e442fa4c6ac3"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00050.psd",
+      "sha256": "1472bb668930a29751ca93f373a9ca13b6595321b5d018fa83b6606205376e8c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00051.psd",
+      "sha256": "54d0b25392b5ef18eab0caccc63d00db4125db9c09b98b6d9ec7709183ebdade"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00052.psd",
+      "sha256": "feaadb59a6856f5571ba3d395df93d03fead33094ad36c3eeff3f39c61bb40ec"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00053.psd",
+      "sha256": "f1a50ae84e80cca64d80b446068ab3b3078fa17513e90ceb20630d3a0865cab6"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00054.psd",
+      "sha256": "33438478d0f86b5e1d5e2b2fa1810349bb149fb3ddcd8684f693f19b491c881f"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00055.psd",
+      "sha256": "007652ebbf53e81f4abd35a1106abe684b190eb15088fb24ca00e1a525c9a676"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00056.psd",
+      "sha256": "fe2969d2cc914617ef5480551b77ec1a30e4123c9556b73401efb705647d420a"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00057.psd",
+      "sha256": "799931e1e84fbc03b44961ffbdafb2f32c06abfe8c211b8a6f4083cb6103c584"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00058.psd",
+      "sha256": "68a7b4ad5d21f10af8b60e75fa588101979bc5b0842e8ea82abec7be9d723994"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00059.psd",
+      "sha256": "2c7a59d29ab567ebad8981977599988511d5f2bae44d97a3c8bc93ed3ade3ab1"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00060.psd",
+      "sha256": "bc845648fc181c04019282b3445e75bb870197b5bf7441742f38c1850f7503dc"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00061.psd",
+      "sha256": "4fcf3f794255242b69251c101926ec6fc813759ad4edc19c0ba7e88065378b53"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00062.psd",
+      "sha256": "015ac0576e2cd10e9f7f393b6859033dcfdc4d97cc8023859ce9f75eef28ef5b"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00063.psd",
+      "sha256": "e9bf20e3ddcd259bd5ec4ecb18ed297d6ccf088d099b979bafae204677acd2e0"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00064.psd",
+      "sha256": "8903e5cec824a2001cfd2cb3288b038c0ed883977d64f78aac93faeab6fb08fb"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00065.psd",
+      "sha256": "0623146a4ee0b8f2b287f888ea5716419055db250e92c0f43179f22c052ab6c2"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00066.psd",
+      "sha256": "a823d68310673664254634731b061fde4a2cf99435eca4756927535b10613e5c"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00067.psd",
+      "sha256": "8ef2b60d9443ec9cfb82d6c146f38e3160b7ffd3c4eeeaae1d823f5a245603b3"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00068.psd",
+      "sha256": "24f5a5bb152dc7d2a551f88a55eccd3b360bcf4d25a6d6ecf3463443ce0a0332"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00069.psd",
+      "sha256": "90b7d13d60190d04e39c748b37fe9ab7e1d8dfd82e98fe9efff004c8666f5752"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00070.psd",
+      "sha256": "9c330cd8e0106ad6ec5d5a08585615b25c8e81282832433ad03392859f34dc95"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/host/teal-smart_00071.psd",
+      "sha256": "9e3e7a86de116ee564699ac2934908baa68eb2d3fe4beb5fc3f0149e660915ac"
+    },
+    {
+      "path": "../real-flat-sdr-20261018/sequence-verification.json",
+      "sha256": "fae9b79609afd7307da6f3be6c232757c07754c5cb204371a114ce1fdac15a03"
+    }
+  ],
+  "final_review": {
+    "status": "PASS scoped acquisition/render/completeness; artistic limits retained",
+    "requirements": {
+      "source": "Public official publisher download, original hash and intro provenance preserved; no auth bypass",
+      "fidelity": "No synthetic flattening; manual Host/sRGB workflow, only decode/downscale before plugin",
+      "runtime": "146exports on exact installed Current; alpha/dimensions/reference checks",
+      "media": "Two9s216-frame files; corrected footer overlap and spacing, visual still/crop review",
+      "limits": "Edited reel, no true ungraded original/pairedLog guarantee, no full continuous-motion artistic/flicker acceptance"
+    },
+    "production_code": "Unchanged",
+    "installed_build_id": "923695974aa8fc72",
+    "next": "Review delivered color result visually; define desired artistic target before claiming professional-grade completion"
+  },
+  "tests": "No product rebuild/unit rerun: product code and installed bytes unchanged; scoped actual host/media checks performed",
+  "publication": "No push, merge, release, installer or media redistribution in repository",
+  "scanner": {
+    "path": "/tmp/fstr-realsdr-20261018-final-review.json",
+    "sha256": "43883f1d3f3e642ce5ea77c0185e44680c0790a445500c374d9fcf5749c0490c",
+    "result": "PASS scanned static scope only"
+  }
+}

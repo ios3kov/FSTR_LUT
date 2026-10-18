@@ -1,0 +1,11 @@
+(function(){var cfg=@FSTR_REAL_SDR_CONFIG@,owned=false;
+function log(s){var f=new File(cfg.folder+'/host-report.txt');f.open('a');f.writeln(s);f.close();}
+if($.getenv('FSTR_LUT_OWNED_TOKEN')!==cfg.nonce)return;
+if(app.project&&(app.project.file!==null||app.project.numItems!==0)){log('BLOCKED existing project');return;}
+function prop(e,n){return e.property(n)||e.property('Advanced').property(n);}
+function render(c,label,seconds){app.purge(PurgeTarget.ALL_CACHES);var q=app.project.renderQueue.items.add(c);q.timeSpanStart=0;q.timeSpanDuration=seconds;var om=q.outputModule(1);om.applyTemplate('Photoshop');om.file=new File(cfg.folder+'/'+label+'_[#####].psd');app.project.renderQueue.render();if(q.status!==RQItemStatus.DONE)throw new Error('Render '+label);q.remove();log('RENDER '+label);}
+try{app.beginSuppressDialogs();owned=true;app.newProject();app.project.bitsPerChannel=32;app.project.workingSpace='';var opts=new ImportOptions(new File(cfg.source));opts.sequence=true;var f=app.project.importFile(opts);f.mainSource.conformFrameRate=24;if(f.width!==960||f.height!==540||f.duration<2.99)throw new Error('Footage sequence wrong');
+var c=app.project.items.addComp('Real SDR comparison',960,540,1,3,24);var l=c.layers.add(f);render(c,'source',1/24);var e=l.property('ADBE Effect Parade').addProperty(cfg.match);if(prop(e,'Natural Contrast').value!==1)throw new Error('Natural default missing');prop(e,'Exposure').setValue(-.3);prop(e,'Contrast').setValue(1.25);prop(e,'Saturation').setValue(100);prop(e,'Highlight Rolloff').setValue(25);render(c,'natural',3);
+prop(e,'Look').setValue(9);prop(e,'Look Amount').setValue(65);render(c,'teal-off',1/24);prop(e,'Smart Color Grading').setValue(1);render(c,'teal-smart',3);
+app.project.save(new File(cfg.folder+'/real-flat-sdr.aep'));log('PASS actual real-SDR source, Natural and Smart look sequences');
+}catch(e){log('FAIL '+e.message+' line='+e.line);}finally{if(owned)app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES);app.endSuppressDialogs(false);app.scheduleTask("if ($.getenv('FSTR_LUT_OWNED_TOKEN') === '"+cfg.nonce+"') app.quit();",1000,false);}})();

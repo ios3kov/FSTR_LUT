@@ -1,3 +1,7 @@
+## Real SDR motion sample — 2026-10-18
+
+User delegated source finding. Official DPReview Nikon Z6 Flat-capture reel acquired; intro acknowledges FinalCut tweaks, so not an untouched/ungraded camera original. Real20–23s kitchen segment has two people/steam/white uniforms. Unchanged Current923695974aa8fc72 renders146actual AE exports; numerical references within one8bit code; both72-frame sequences and two9scomparison videos decode.64retained analysis entries each describe2people. Sampled full-size/crop visual review performed; continuous flicker/professional artistic acceptance remains open. First Smart export is slow; no real-time claim. No new product build or installer. [Source, checks, limits](REAL_FLAT_SDR_TRIAL.md).
+
 ## Natural Contrast — 2026-10-18
 
 Shared luminance contrast now defaultsOn in fresh/reset AE effects; old projects initializeOff through the SDK compatibility flag and retain exact prior renders.14Release/14sanitizer targets and11actual host exports pass, plus keys/expression/save-reopen checks. Smart toning-mode change:2computes/7RAMhits. Current **923695974aa8fc72** installed, prior bytes archived. Control comparison is explicitly artificially flattened SDR; actual flat-SDR artistic acceptance and Advanced-checkbox visual inspection remain open. No installer. [Contract/evidence](NATURAL_CONTRAST.md).

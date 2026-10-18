@@ -7,10 +7,12 @@
 #include <filesystem>
 #include <algorithm>
 #include <cstdio>
+#include "AE_EffectSuites.h"
 namespace fstr::ae {namespace {
 using Json=nlohmann::json;
 constexpr std::size_t reference_budget=32768,resource_budget=128*1024*1024;
 struct Entry {ExternalLookValue value;std::size_t refs=1,bytes=0;};
+std::map<PF_ProgPtr,A_short> selections;
 std::mutex mutex;std::map<std::uint64_t,Entry> entries;std::uint64_t next_token=1;std::size_t total_bytes=0;
 std::uint64_t token(PF_InData* in_data,PF_ArbitraryH h){
     if(!h)return 0;if(PF_GET_HANDLE_SIZE(h)!=sizeof(std::uint64_t))throw std::invalid_argument("Invalid LUT reference handle");
@@ -41,7 +43,17 @@ PF_ArbitraryH unflatten(PF_InData* in_data,const char* p,std::size_t n){
 }
 PF_ArbitraryH new_external_reference(PF_InData* in_data){return handle(in_data,0);}
 ExternalLookValue external_reference(PF_InData* in_data,PF_ArbitraryH h){std::lock_guard<std::mutex> guard(mutex);const auto id=token(in_data,h);if(!id)return {};const auto it=entries.find(id);if(it==entries.end())throw std::invalid_argument("Invalid LUT reference token");return it->second.value;}
-void clear_external_references(){std::lock_guard<std::mutex> guard(mutex);entries.clear();total_bytes=0;}
+PF_Err refresh_external_menu(PF_InData* in,PF_ParamDef* params[]){
+    const auto value=external_reference(in,params[LUTReference]->u.arb_d.value);std::string label="Custom / Load LUT...";
+    if(!value.path.empty()){auto name=display_lut_name(std::filesystem::path(value.path).filename().string());for(auto& c:name)if(c=='|'||static_cast<unsigned char>(c)<32)c=' ';if(name.size()>160){std::size_t end=157;while(end&&((static_cast<unsigned char>(name[end])&0xc0)==0x80))--end;name.resize(end);name+="...";}label=(value.error.empty()?"Custom: ":"Missing: ")+name;}
+    const std::string menu=std::string(fstr::builtin_look_menu)+"|"+label;PF_ParamDef ui=*params[Look];ui.u.pd.u.PF_DEF_NAMESPTR=menu.c_str();
+    const PF_ParamUtilsSuite3* suite=nullptr;const auto acquired=in->pica_basicP->AcquireSuite(kPFParamUtilsSuite,kPFParamUtilsSuiteVersion3,reinterpret_cast<const void**>(&suite));if(acquired||!suite)return PF_Err_BAD_CALLBACK_PARAM;
+    const auto error=suite->PF_UpdateParamUI(in->effect_ref,Look,&ui);const auto released=in->pica_basicP->ReleaseSuite(kPFParamUtilsSuite,kPFParamUtilsSuiteVersion3);return error?error:(released?PF_Err_BAD_CALLBACK_PARAM:PF_Err_NONE);
+}
+void remember_external_selection(PF_InData* in,int look){std::lock_guard<std::mutex> guard(mutex);selections[in->effect_ref]=static_cast<A_short>(look);}
+A_short previous_external_selection(PF_InData* in){std::lock_guard<std::mutex> guard(mutex);const auto it=selections.find(in->effect_ref);return it==selections.end()?1:it->second;}
+void forget_external_selection(PF_InData* in){std::lock_guard<std::mutex> guard(mutex);selections.erase(in->effect_ref);}
+void clear_external_references(){std::lock_guard<std::mutex> guard(mutex);entries.clear();selections.clear();total_bytes=0;}
 PF_Err external_arbitrary(PF_InData* in_data,PF_ArbParamsExtra* e){
     if(!e||e->id!=ExternalLUTId)return PF_Err_BAD_CALLBACK_PARAM;
     switch(e->which_function){
@@ -60,7 +72,7 @@ PF_Err external_arbitrary(PF_InData* in_data,PF_ArbParamsExtra* e){
     }return PF_Err_NONE;
 }
 PF_Err import_external_lut(PF_InData* in_data,PF_OutData* out,PF_ParamDef* params[]){
-    const auto old=external_reference(in_data,params[LUTReference]->u.arb_d.value);const auto path=choose_lut_file(old.path);if(path.empty())return PF_Err_NONE;
+    const auto old=external_reference(in_data,params[LUTReference]->u.arb_d.value);const auto path=choose_lut_file(old.path);if(path.empty()){params[Look]->u.pd.value=previous_external_selection(in_data);params[Look]->uu.change_flags|=PF_ChangeFlag_CHANGED_VALUE;out->out_flags|=PF_OutFlag_REFRESH_UI;return PF_Err_NONE;}
     const auto id=load(path,{},false);auto h=params[LUTReference]->u.arb_d.value;
     if(h){try{std::lock_guard<std::mutex> guard(mutex);const auto old_id=token(in_data,h);auto* p=PF_LOCK_HANDLE(h);if(!p)throw std::bad_alloc();std::memcpy(p,&id,sizeof(id));PF_UNLOCK_HANDLE(h);release_locked(old_id);}catch(...){release(id);throw;}}
     else params[LUTReference]->u.arb_d.value=own(in_data,id);

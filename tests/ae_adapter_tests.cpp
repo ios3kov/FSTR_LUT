@@ -2,6 +2,7 @@
 #include "plugin.hpp"
 #include "fstr/sdr_prepare.hpp"
 #include "AE_EffectUI.h"
+#include "AE_EffectSuites.h"
 #include <cstring>
 #include <algorithm>
 #include <cmath>
@@ -38,6 +39,7 @@ struct Fixture {
     std::vector<int> layer_ids;std::vector<PF_LRect> requests;int fail_layer=-1,fail_pixel_id=-1;
     int fail_param=0;bool fail_suite=false,fail_output=false,fail_pixel_checkout=false,fail_format=false;
     bool fail_checkin=false,fail_pixel_checkin=false,fail_release=false,abort_now=false;
+    PF_ParamUtilsSuite3 param_utils{};std::string popup_label;
     Fixture();
     ~Fixture(){if(params[LUTReference].param_type==PF_Param_ARBITRARY_DATA&&params[LUTReference].u.arb_d.dephault)dispose_handle(params[LUTReference].u.arb_d.dephault);}
 };
@@ -47,13 +49,15 @@ PF_Err checkin_cb(PF_ProgPtr ref,PF_ParamDef*){auto& f=fixture(ref);++f.checkin;
 PF_Err add(PF_ProgPtr ref,PF_ParamIndex,PF_ParamDef* value){auto& f=fixture(ref);f.params[++f.checkout]=*value;return PF_Err_NONE;}
 PF_Err register_ui_cb(PF_ProgPtr,PF_CustomUIInfo* value){return value&&value->events==PF_CustomEFlag_EFFECT?PF_Err_NONE:PF_Err_BAD_CALLBACK_PARAM;}
 PF_Err abort_cb(PF_ProgPtr ref){auto& f=fixture(ref);++f.abort_calls;return f.abort_now?75:PF_Err_NONE;}
-SPErr acquire_cb(const char* name,int32 version,const void** suite){++active->acquire;if(active->fail_suite)return 76;if(std::strcmp(name,kPFWorldSuite)||version!=kPFWorldSuiteVersion2)return 77;*suite=&active->worlds;return 0;}
+SPErr acquire_cb(const char* name,int32 version,const void** suite){++active->acquire;if(active->fail_suite)return 76;if(!std::strcmp(name,kPFParamUtilsSuite)&&version==kPFParamUtilsSuiteVersion3){*suite=&active->param_utils;return 0;}if(std::strcmp(name,kPFWorldSuite)||version!=kPFWorldSuiteVersion2)return 77;*suite=&active->worlds;return 0;}
 SPErr release_cb(const char*,int32){++active->release;return active->fail_release?78:0;}
 PF_Err pixel_format(const PF_EffectWorld* world,PF_PixelFormat* format){if(active->fail_format)return 79;if(!world->width||!world->height)return 80;*format=static_cast<PF_PixelFormat>(reinterpret_cast<std::uintptr_t>(world->reserved0));return PF_Err_NONE;}
 PF_Err checkout_pixels(PF_ProgPtr ref,A_long id,PF_EffectWorld** world){auto& f=fixture(ref);++f.pixels_out;if(f.fail_pixel_checkout||id==f.fail_pixel_id)return 81;*world=id>=2000&&id<2003&&f.preparation[id-2000]?f.preparation[id-2000]:(id>=0&&id<5&&f.temporal[id]?f.temporal[id]:&f.input);return PF_Err_NONE;}
 PF_Err checkout_output(PF_ProgPtr ref,PF_EffectWorld** world){auto& f=fixture(ref);if(f.fail_output)return 82;*world=&f.output;return PF_Err_NONE;}
 PF_Err checkin_pixels(PF_ProgPtr ref,A_long){auto& f=fixture(ref);++f.pixels_in;return f.fail_pixel_checkin?83:PF_Err_NONE;}
+PF_Err update_ui_cb(PF_ProgPtr ref,PF_ParamIndex id,const PF_ParamDef* ui){auto& f=fixture(ref);if(id!=Look||!ui||ui->param_type!=PF_Param_POPUP)return PF_Err_BAD_CALLBACK_PARAM;f.popup_label=ui->u.pd.u.namesptr;return 0;}
 Fixture::Fixture(){
+    param_utils.PF_UpdateParamUI=update_ui_cb;
     in.utils=&utils;utils.host_new_handle=new_handle;utils.host_lock_handle=lock_handle;utils.host_unlock_handle=unlock_handle;utils.host_dispose_handle=dispose_handle;utils.host_get_handle_size=handle_size;
     in.appl_id=kAppID_AfterEffects;
     in.effect_ref=reinterpret_cast<PF_ProgPtr>(this);in.time_scale=24;in.time_step=1;in.pica_basicP=&basic;
@@ -96,7 +100,7 @@ void processing(){
 void check_dynamic_flags(){
     // AE supplies its current flags. The query may only change documented dynamic bits;
     // this effect has no parameter-dependent capability changes, so preserve both words.
-    const PF_OutFlags first[]{0,0x02008042,PF_OutFlag_WIDE_TIME_INPUT,PF_OutFlag_PIX_INDEPENDENT};
+    const PF_OutFlags first[]{0,0x06008042,PF_OutFlag_WIDE_TIME_INPUT,PF_OutFlag_PIX_INDEPENDENT};
     const PF_OutFlags2 second[]{0,0x08221401,PF_OutFlag2_SUPPORTS_SMART_RENDER,PF_OutFlag2_REVEALS_ZERO_ALPHA};
     for(auto a:first)for(auto b:second){
         Fixture query;active=&query;query.out.out_flags=a;query.out.out_flags2=b;
@@ -173,13 +177,13 @@ void custom_lut_reference(){
  auto flatten=[&](PF_ArbitraryH h){PF_ArbParamsExtra e{};A_u_long n=0;e.which_function=PF_Arbitrary_FLAT_SIZE_FUNC;e.u.flat_size_func_params.arbH=h;e.u.flat_size_func_params.flat_data_sizePLu=&n;check(call(e)==0&&n<32768,"LUT flat size invalid");std::string s(n,' ');e={};e.which_function=PF_Arbitrary_FLATTEN_FUNC;e.u.flatten_func_params.arbH=h;e.u.flatten_func_params.buf_sizeLu=n;e.u.flatten_func_params.flat_dataPV=s.data();check(call(e)==0,"LUT flatten failed");return s;};
  auto scan=[&](const std::string& s){PF_ArbitraryH h=nullptr;PF_ArbParamsExtra e{};e.which_function=PF_Arbitrary_SCAN_FUNC;e.u.scan_func_params.bufPC=s.data();e.u.scan_func_params.bytes_to_scanLu=static_cast<A_u_long>(s.size());e.u.scan_func_params.arbPH=&h;check(call(e)==0&&h,"LUT reference scan failed");owned.push_back(h);return h;};
  PF_ArbitraryH empty=nullptr;PF_ArbParamsExtra e{};e.which_function=PF_Arbitrary_NEW_FUNC;e.u.new_func_params.arbPH=&empty;check(call(e)==0&&empty,"Default external reference allocation failed");owned.push_back(empty);auto flat_empty=flatten(empty);check(nlohmann::json::parse(flat_empty).at("path")=="","Default reference nonempty");scan(flat_empty);
- const auto folder=std::filesystem::temp_directory_path()/("fstr-custom-reference-"+std::to_string(::getpid()));std::filesystem::create_directories(folder);struct Clean{std::filesystem::path p;~Clean(){std::error_code e;std::filesystem::remove_all(p,e);}}clean{folder};const auto path=folder/"Test LUT.cube";
+ const auto folder=std::filesystem::temp_directory_path()/("fstr-custom-reference-"+std::to_string(::getpid()));std::filesystem::create_directories(folder);struct Clean{std::filesystem::path p;~Clean(){std::error_code e;std::filesystem::remove_all(p,e);}}clean{folder};const auto path=folder/"Проверка LUT.cube";
  std::string cube="LUT_3D_SIZE 2\n";for(int b=0;b<2;++b)for(int g=0;g<2;++g)for(int r=0;r<2;++r)cube+=std::to_string(g)+" "+std::to_string(b)+" "+std::to_string(r)+"\n";
  {std::ofstream out(path);out<<cube;}
  const auto serialized=nlohmann::json{{"schema",1},{"path",path.string()},{"fingerprint",""}}.dump();auto loaded=scan(serialized);const auto flat=flatten(loaded);check(flat.size()<1024&&flat.find("LUT_3D_SIZE")==std::string::npos&&nlohmann::json::parse(flat).at("path")==path.string(),"Project embeds LUT source rather than reference");
  PF_ArbitraryH copied=nullptr;e={};e.which_function=PF_Arbitrary_COPY_FUNC;e.u.copy_func_params.src_arbH=loaded;e.u.copy_func_params.dst_arbPH=&copied;check(call(e)==0&&copied!=loaded,"Reference copy failed/aliased host handle");owned.push_back(copied);
  e={};e.which_function=PF_Arbitrary_COMPARE_FUNC;PF_ArbCompareResult comparison=-1;e.u.compare_func_params.a_arbH=loaded;e.u.compare_func_params.b_arbH=copied;e.u.compare_func_params.compareP=&comparison;check(call(e)==0&&comparison==PF_ArbCompare_EQUAL,"Copied reference differs");
- std::vector<PF_PixelFloat> input{{1,.2f,.4f,.7f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Look].u.pd.value=18;f.params[LookAmount].u.fs_d.value=100;f.params[LUTReference].u.arb_d.value=copied;
+ std::vector<PF_PixelFloat> input{{1,.2f,.4f,.7f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Look].u.pd.value=18;f.params[LookAmount].u.fs_d.value=100;f.params[LUTReference].u.arb_d.value=copied;f.params[Look].param_type=PF_Param_POPUP;PF_ParamDef* ui_params[ParamCount];for(int i=0;i<ParamCount;++i)ui_params[i]=&f.params[i];active=&f;check(effect_fn(PF_Cmd_UPDATE_PARAMS_UI,&f.in,&f.out,ui_params,nullptr,nullptr)==0&&f.popup_label.find("Proverka LUT.cube")!=std::string::npos,"Selected external LUT filename missing from menu");
 #ifdef FSTR_TEST_EXTERNAL_LUT
  check(declared_render(f)==0&&std::abs(output[0].red-.4f)<3e-6&&std::abs(output[0].green-.7f)<3e-6&&std::abs(output[0].blue-.2f)<3e-6,"Custom LUT native rendering failed");auto original_guid=f.guids.back();
 #endif
@@ -187,7 +191,7 @@ void custom_lut_reference(){
 #ifdef FSTR_TEST_EXTERNAL_LUT
  check(declared_render(f)==0&&std::abs(output[0].red-.4f)<3e-6,"Existing resource lost after source removal");
 #endif
- auto missing=scan(flat);f.params[LUTReference].u.arb_d.value=missing;check(declared_render(f)!=0,"Reopened missing LUT silently succeeded");f.params[Mix].u.fs_d.value=0;check(declared_render(f)==0&&std::memcmp(input.data(),output.data(),sizeof(PF_PixelFloat))==0,"Custom missing-file Mix0 not exact/no-analysis");f.params[Mix].u.fs_d.value=100;
+ auto missing=scan(flat);f.params[LUTReference].u.arb_d.value=missing;active=&f;check(effect_fn(PF_Cmd_UPDATE_PARAMS_UI,&f.in,&f.out,ui_params,nullptr,nullptr)==0&&f.popup_label.find("|Missing: ")!=std::string::npos,"Missing-file menu label not explicit");check(declared_render(f)!=0,"Reopened missing LUT silently succeeded");f.params[Mix].u.fs_d.value=0;check(declared_render(f)==0&&std::memcmp(input.data(),output.data(),sizeof(PF_PixelFloat))==0,"Custom missing-file Mix0 not exact/no-analysis");f.params[Mix].u.fs_d.value=100;
 #ifdef FSTR_TEST_EXTERNAL_LUT
  {std::ofstream out(path);out<<"LUT_3D_SIZE 2\n";for(int b=0;b<2;++b)for(int g=0;g<2;++g)for(int r=0;r<2;++r)out<<r<<' '<<g<<' '<<b<<'\n';}auto revised=scan(flat);f.params[LUTReference].u.arb_d.value=revised;check(declared_render(f)==0&&std::abs(output[0].red-.2f)<3e-6&&f.guids.back()!=original_guid,"Changed external file reused old mapping/host GUID");
 #endif
@@ -213,9 +217,13 @@ void automatic_preparation(){
  f.params[Mix].u.fs_d.value=0;f.fail_pixel_id=2000;check(declared_render(f)==0&&std::memcmp(input.data(),output.data(),input.size()*sizeof(PF_PixelFloat))==0,"Prepared Mix0 checked anchors or changed pixels");f.fail_pixel_id=-1;f.params[Mix].u.fs_d.value=100;
  std::vector<PF_PixelFloat> roi(2);roi[1]={.1f,.2f,.3f,.4f};auto guard=roi[1];set_world(f.output,roi,1,1,2,PF_PixelFormat_ARGB128,25,0);check(declared_render(f)==0&&std::abs(roi[0].red-value(25).r)<3e-7&&std::memcmp(&roi[1],&guard,sizeof(guard))==0,"Auto preparation changed ROI or padding");
  set_world(f.output,output,96,1,96,PF_PixelFormat_ARGB128);auto before_out=f.pixels_out,before_in=f.pixels_in;f.fail_pixel_id=2001;check(declared_render(f)!=0&&f.pixels_out-before_out==f.pixels_in-before_in+1,"Anchor checkout failure leaked earlier worlds");f.fail_pixel_id=-1;
- f.params[Source].u.pd.value=2;check(declared_render(f)!=0,"Auto preparation accepted camera Log override");f.params[Source].u.pd.value=1;
+ for(int profile:{2,static_cast<int>(fstr::source_profile_count)}){f.params[Source].u.pd.value=profile;f.fail_pixel_id=2000;check(declared_render(f)==0,"Default SDR preparation blocked non-SDR input");const auto non_sdr=output;f.params[AutoPrepare].u.bd.value=FALSE;check(declared_render(f)==0&&std::memcmp(output.data(),non_sdr.data(),output.size()*sizeof(PF_PixelFloat))==0,"SDR preparation changed Log/3D output");f.params[AutoPrepare].u.bd.value=TRUE;}f.fail_pixel_id=-1;f.params[Source].u.pd.value=1;
  Fixture legacy;legacy.params[AutoPrepare].u.bd.value=TRUE;legacy.in.total_time=72;legacy.input=f.input;legacy.output=f.output;check(run(legacy,false)==0&&legacy.checkin==RenderParamCount+3,"Legacy timed preparation checkouts unbalanced");
- Fixture schema;active=&schema;check(effect_fn(PF_Cmd_PARAMS_SETUP,&schema.in,&schema.out,nullptr,nullptr,nullptr)==0&&schema.params[AutoPrepare].uu.id==17&&schema.params[AutoPrepare].u.bd.dephault==FALSE&&CameraInfo==16&&AutoPrepare==17,"Appended auto control changed old indices/defaults");
+ Fixture schema;active=&schema;check(effect_fn(PF_Cmd_PARAMS_SETUP,&schema.in,&schema.out,nullptr,nullptr,nullptr)==0&&schema.params[AutoPrepare].uu.id==17&&schema.params[AutoPrepare].u.bd.dephault==TRUE&&schema.params[AutoPrepare].u.bd.value==FALSE&&(schema.params[AutoPrepare].flags&PF_ParamFlag_USE_VALUE_FOR_OLD_PROJECTS)&&AutoPrepare==1&&CameraInfo==17,"Auto-first default or legacy value policy changed");
+ check(schema.params[Exposure].uu.id==2&&schema.params[Look].uu.id==6&&schema.params[ImportLUT].uu.id==18&&schema.params[ImportLUT].param_type==PF_Param_BUTTON&&(schema.params[ImportLUT].ui_flags&PF_PUI_NO_ECW_UI),"Legacy disk IDs/hidden former button changed");
+ check((schema.params[Look].flags&PF_ParamFlag_SUPERVISE)&&std::string(schema.params[Look].u.pd.u.namesptr).find("|Custom / Load LUT...")!=std::string::npos,"Custom load entry not supervised/last");check(schema.params[LUTFileInfo].ui_flags&PF_PUI_NO_ECW_UI,"Separate LUT filename block is still visible");check(schema.popup_label.empty(),"Setup unexpectedly mutated UI");
+ PF_ParamDef* ui[ParamCount];for(int i=0;i<ParamCount;++i)ui[i]=&schema.params[i];schema.params[Look].u.pd.value=3;check(effect_fn(PF_Cmd_UPDATE_PARAMS_UI,&schema.in,&schema.out,ui,nullptr,nullptr)==0,"UI snapshot failed");PF_UserChangedParamExtra changed{};changed.param_index=Look;schema.params[Look].u.pd.value=4;check(effect_fn(PF_Cmd_USER_CHANGED_PARAM,&schema.in,&schema.out,ui,nullptr,&changed)==0&&schema.params[Look].u.pd.value==4,"Built-in selection incorrectly opened chooser");
+
 }
 void smart_requests(){
  for(int mode=0;mode<6;++mode){
@@ -357,7 +365,7 @@ int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_direct
     auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);cleanup_module=module;check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
-    check(setup.out.out_flags==0x02008042&&setup.out.out_flags2==0x08221401&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
+    check(setup.out.out_flags==0x06008042&&setup.out.out_flags2==0x08221401&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
     check_dynamic_flags();
     Fixture ui;active=&ui;check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE&&ui.out.num_params==ParamCount,"Native control schema failed");
     check(ui.params[Contrast].uu.id==3&&ui.params[WorkingSpace].uu.id==9&&ui.params[Temperature].uu.id==10&&ui.params[Tint].uu.id==11,"Persistent IDs changed with UI order");

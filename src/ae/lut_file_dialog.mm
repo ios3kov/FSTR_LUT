@@ -4,6 +4,17 @@
 #include <pthread.h>
 #include <stdexcept>
 namespace fstr::ae {
+std::string display_lut_name(const std::string& utf8){
+    @autoreleasepool {
+        NSString* text=[NSString stringWithUTF8String:utf8.c_str()];
+        if(!text)return "External LUT";
+        text=[text stringByApplyingTransform:NSStringTransformToLatin reverse:NO];
+        text=[text stringByApplyingTransform:NSStringTransformStripCombiningMarks reverse:NO];
+        NSData* ascii=[text dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+        if(!ascii)return "External LUT";
+        return std::string(static_cast<const char*>(ascii.bytes),ascii.length);
+    }
+}
 std::string choose_lut_file(const std::string& current){
     if(!pthread_main_np())throw std::runtime_error("Import LUT requires the main thread");
     @autoreleasepool {

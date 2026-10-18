@@ -394,6 +394,26 @@ int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_direct
     check(argc>=2&&argc<=4,"Provide the actual built plugin executable");
     auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);cleanup_module=module;check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
+    if(argc==3&&(std::string(argv[2])=="--background-loading"||std::string(argv[2])=="--background-failure")){
+        const bool failure=std::string(argv[2])=="--background-failure";
+        if(failure){unsetenv("HOME");unsetenv("FSTR_LUT_AUTOMATIC_CACHE");}
+        Fixture f;active=&f;const auto began=std::chrono::steady_clock::now();
+        check(effect_fn(PF_Cmd_GLOBAL_SETUP,&f.in,&f.out,nullptr,nullptr,nullptr)==0,"Async global setup failed ordinary route");
+        auto elapsed=[&]{return std::chrono::duration<double,std::milli>(std::chrono::steady_clock::now()-began).count();};
+        const auto setup_ms=elapsed();check(setup_ms<5000,"Setup waited on model factory");
+        if(!failure){check(effect_fn(PF_Cmd_ABOUT,&f.in,&f.out,nullptr,nullptr,nullptr)==0&&std::strstr(f.out.return_msg,"loading model"),"Loading status absent");}
+        std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);
+        f.params[Exposure].u.fs_d.value=1;f.params[SmartColor].u.bd.value=FALSE;
+        check(run(f,true)==0&&output[0].red==.2f,"Off waited or failed during loading/failure");const auto off_ms=elapsed()-setup_ms;
+        f.params[SmartColor].u.bd.value=TRUE;f.params[Look].u.pd.value=9;f.params[LookAmount].u.fs_d.value=65;
+        if(!failure)f.abort_now=true;
+        const auto before_cancel=elapsed();auto err=run(f,true);const auto cancel_ms=elapsed()-before_cancel;
+        check(failure?err==PF_Err_BAD_CALLBACK_PARAM:err==75,"Active loading ignored cancellation/failure");check(cancel_ms<1000,"Cancellation waited for constructor");f.abort_now=false;
+        f.params[SmartColor].u.bd.value=FALSE;check(run(f,true)==0,"Failed/cancelled wait broke ordinary grading");
+        const auto before_stop=elapsed();check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&f.in,&f.out,nullptr,nullptr,nullptr)==0,"Async setdown failed");const auto stop_ms=elapsed()-before_stop;
+        check(dlclose(module)==0,"Async unload failed");cleanup_module=nullptr;
+        std::cout<<"PASS SDK callback background "<<(failure?"failure":"loading/cancel/setdown")<<" setup_ms="<<setup_ms<<" off_ms="<<off_ms<<" cancel_ms="<<cancel_ms<<" stop_ms="<<stop_ms<<"; actual AE cancellation NOT RUN\n";return 0;
+    }
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
     check(setup.out.out_flags==0x06008042&&setup.out.out_flags2==0x08221401&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
     check_dynamic_flags();

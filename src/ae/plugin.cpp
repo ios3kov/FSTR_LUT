@@ -4,6 +4,7 @@
 #include "fstr/regions.hpp"
 #include "fstr/scene_cache.hpp"
 #include "fstr/automatic_scene_cache.hpp"
+#include "fstr/background_resource.hpp"
 #include "fstr/scene_window.hpp"
 #include "fstr/sdr_prepare_cache.hpp"
 #include "sdr_timeline_host.hpp"
@@ -39,9 +40,8 @@ using LookLibrary=std::array<std::shared_ptr<const fstr::LUT>,fstr::builtin_look
 std::shared_ptr<const LookLibrary> looks;
 std::mutex initialization;
 std::shared_ptr<fstr::SceneCache> scene_cache;
-std::shared_ptr<fstr::AutomaticSceneCache> automatic_cache;
+fstr::BackgroundResource<fstr::AutomaticSceneCache> automatic_loader;
 std::shared_ptr<fstr::SdrPreparationCache> preparation_cache;
-std::shared_ptr<const std::string> automatic_error;
 class SmartAnalysisError final : public std::runtime_error {public:using std::runtime_error::runtime_error;};
 class PreparationError final:public std::runtime_error {public:using std::runtime_error::runtime_error;};
 void initialize_preparation_cache(){
@@ -79,21 +79,50 @@ public:
 };
 void initialize_automatic_analysis(){
 #ifdef FSTR_NATIVE_SMART
-    std::lock_guard<std::mutex> lock(initialization);
-    if(std::atomic_load(&automatic_cache)||std::atomic_load(&automatic_error))return;
-    try{
+    try {
         if(std::atomic_load(&scene_cache))return; // Explicit prepared development snapshot retains its original path.
         std::filesystem::path resources;
         if(const char* configured=std::getenv("FSTR_LUT_NATIVE_RESOURCES"))resources=configured;
         else {Dl_info info{};if(!dladdr(reinterpret_cast<void*>(&EffectMain),&info)||!info.dli_fname)throw std::runtime_error("Smart resources unavailable");resources=std::filesystem::path(info.dli_fname).parent_path().parent_path()/"Resources"/"Smart";}
-        auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string());
         std::filesystem::path directory;
         if(const char* configured=std::getenv("FSTR_LUT_AUTOMATIC_CACHE"))directory=configured;
         else {const char* user_home=std::getenv("HOME");if(!user_home)throw std::runtime_error("Smart cache location unavailable");directory=std::filesystem::path(user_home)/"Library/Caches/FSTR.Tools/FSTR_LUT/automatic-v1";}
-        auto cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),analyzer->policy(),[analyzer](const auto&image,double height,const auto&cancel){return analyzer->analyze(image,height,cancel);});
-        std::atomic_store(&automatic_cache,std::move(cache));
-    }catch(const std::exception& e){std::atomic_store(&automatic_error,std::make_shared<const std::string>(std::string("Smart analysis unavailable: ")+e.what()));}
+        automatic_loader.start([resources=std::move(resources),directory=std::move(directory)]{
+            if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD BEGIN\n");
+            auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string());
+            auto cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),analyzer->policy(),[analyzer](const auto&image,double height,const auto&cancel){return analyzer->analyze(image,height,cancel);});
+            if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD READY\n");
+            return cache;
+        });
+    }catch(...){
+        // Configuration failures disable Smart, not ordinary grading.
+        auto error=std::current_exception();automatic_loader.start([error]()->std::shared_ptr<fstr::AutomaticSceneCache>{std::rethrow_exception(error);});
+    }
 #endif
+}
+std::shared_ptr<fstr::AutomaticSceneCache> automatic_analysis(PF_InData* in_data,bool active){
+#ifdef FSTR_NATIVE_SMART
+    if(active&&!std::atomic_load(&scene_cache)){
+        auto cancel=[&]{auto error=PF_ABORT(in_data);if(error)throw error;};
+        try{return automatic_loader.wait(cancel);}
+        catch(const std::exception&){throw SmartAnalysisError("Smart model loading failed");}
+    }
+#else
+    (void)in_data;(void)active;
+#endif
+    return {};
+}
+const char* loading_status(){
+#ifdef FSTR_NATIVE_SMART
+    using State=fstr::BackgroundResource<fstr::AutomaticSceneCache>::State;
+    switch(automatic_loader.state()){
+        case State::Loading:return "Smart: loading model. First Smart render will wait.";
+        case State::Ready:return "Smart: ready";
+        case State::Failed:return "Smart unavailable. Check model installation.";
+        default:break;
+    }
+#endif
+    return "";
 }
 void initialize_scene_cache(){
     const char* directory=std::getenv("FSTR_LUT_SCENE_CACHE");const char* policy=std::getenv("FSTR_LUT_SCENE_POLICY");
@@ -232,7 +261,8 @@ template<class P,class Processor>fstr::AnalysisImage analysis_image(PF_InData* i
     if(in_data->downsample_x.num>0&&in_data->downsample_x.den>0&&in_data->downsample_y.num>0&&in_data->downsample_y.den>0)
         aspect*=double(in_data->downsample_x.den)/in_data->downsample_x.num*in_data->downsample_y.num/in_data->downsample_y.den;
     if(!std::isfinite(aspect)||aspect<.01||aspect>100)throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
-    const double factor=std::min(1.,(std::atomic_load(&automatic_cache)?384.:960.)/std::max(world.width*aspect,double(world.height)));fstr::AnalysisImage image;
+    const bool native=automatic_loader.state()==fstr::BackgroundResource<fstr::AutomaticSceneCache>::State::Ready;
+    const double factor=std::min(1.,(native?384.:960.)/std::max(world.width*aspect,double(world.height)));fstr::AnalysisImage image;
     image.width=std::max(1,int(world.width*aspect*factor));image.height=std::max(1,int(world.height*factor));image.rgba.resize(std::size_t(image.width)*image.height*4);
     const double scale=channel_max<P>();
     for(int y=0;y<image.height;++y){auto abort=PF_ABORT(in_data);if(abort)throw abort;
@@ -317,13 +347,12 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
     auto preparation=settings;preparation.look.reset();preparation.look_amount=0;preparation.mix=1;
     const ColorPass prepare(enabled?preparation:settings,transfer,primaries,recipe);
     std::vector<fstr::ColorRegion> regions;
-    const auto cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);const bool scene_active=bool(cache)||bool(automatic);std::shared_ptr<const fstr::SceneAnalysis> analysis;
+    const auto cache=std::atomic_load(&scene_cache);const auto automatic=automatic_analysis(in_data,enabled&&!processor.bypass()&&in.width>0&&in.height>0);const bool scene_active=bool(cache)||bool(automatic);std::shared_ptr<const fstr::SceneAnalysis> analysis;
     std::unique_ptr<fstr::SceneLook> scene;
     std::vector<fstr::SkinToneReference> references;std::vector<fstr::SkinToneInfluence> influences;std::vector<fstr::StableToneWeight> stable;
     double source_height=in.height;
     if(in_data->downsample_y.num>0&&in_data->downsample_y.den>0)source_height*=double(in_data->downsample_y.den)/in_data->downsample_y.num;
     if(enabled&&!processor.bypass()&&in.width>0&&in.height>0){
-        if(const auto error=std::atomic_load(&automatic_error))throw SmartAnalysisError(*error);
         if(scene_active){
             // The all-time input state comes from pre-render, before pixel
             // checkout. Explicit frame/context/pre-look keys separate checkouts.
@@ -465,7 +494,7 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
     const bool detect_active=prepare_active&&detection.u.bd.value;PF_State input_state{};if(detect_active){if(encoding.u.pd.value<2||encoding.u.pd.value>4)throw PreparationError("Choose the AE Pixel Encoding in Advanced before scene detection");scene_frame_count(in_data);input_state=fstr::ae::sdr_input_state(in_data);}
     std::string external_identity;
     if(look.u.pd.value==static_cast<int>(fstr::builtin_look_count+1)&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0){PF_ParamDef file{};const auto e=PF_CHECKOUT_PARAM(in_data,LUTReference,in_data->current_time,in_data->time_step,in_data->time_scale,&file);if(e)return e;const auto value=fstr::ae::external_reference(in_data,file.u.arb_d.value);if(!value.look)throw fstr::ae::ExternalLUTError("Custom LUT unavailable. Choose Load LUT to select or relink the file.");external_identity=value.identity;}
-    const auto analysis_cache=std::atomic_load(&scene_cache);const auto automatic=std::atomic_load(&automatic_cache);
+    const auto analysis_cache=std::atomic_load(&scene_cache);const auto automatic=automatic_analysis(in_data,active);
     if(extra->cb->GuidMixInPtr){std::string guid=std::string("FSTR_NATIVE_BASE_V2/")+fstr::color_build_id+"/"+(active&&analysis_cache?analysis_cache->guid():active&&automatic?automatic->guid():"inactive");
         // The anchor dependency set is constant throughout a clip. Distinguish
         // which time supplies the output pixels, even when AE coalesces that set.
@@ -549,9 +578,9 @@ extern "C" DllExport PF_Err PluginDataEntryFunction2(PF_PluginDataPtr data,PF_Pl
 static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {
     try {
         switch(cmd) {
-            case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR Grading | Build %s\rReady-to-use image: keep default input.\rCamera Log: match its profile in Advanced.\r3D: choose Linear RGB or ACEScg to match the render.\rUnknown profile? Check with the source creator.",fstr::color_build_id);break;
+            case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR Grading | Build %s\rReady-to-use image: keep default input.\rCamera Log: match its profile in Advanced.\r3D: choose Linear RGB or ACEScg to match the render.\rUnknown profile? Check with the source creator.\r%s",fstr::color_build_id,loading_status());break;
             case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();initialize_automatic_analysis();initialize_preparation_cache();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
-            case PF_Cmd_GLOBAL_SETDOWN:fstr::ae::clear_prepared_inputs();fstr::ae::clear_sdr_timelines();std::atomic_store(&preparation_cache,std::shared_ptr<fstr::SdrPreparationCache>{});std::atomic_store(&automatic_cache,std::shared_ptr<fstr::AutomaticSceneCache>{});std::atomic_store(&automatic_error,std::shared_ptr<const std::string>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();fstr::ae::clear_external_references();break;
+            case PF_Cmd_GLOBAL_SETDOWN:automatic_loader.stop();fstr::ae::clear_prepared_inputs();fstr::ae::clear_sdr_timelines();std::atomic_store(&preparation_cache,std::shared_ptr<fstr::SdrPreparationCache>{});std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();fstr::ae::clear_external_references();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_SEQUENCE_SETDOWN:fstr::ae::forget_external_selection(in_data);fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             // AE supplies the current flag words; never rewrite static capability bits here.
@@ -570,7 +599,7 @@ static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_dat
                 }
                 fstr::ae::remember_external_selection(in_data,params[Look]->u.pd.value);return fstr::ae::refresh_external_menu(in_data,params);
             }break;
-            case PF_Cmd_EVENT:return fstr::ae::metadata_event(in_data,static_cast<PF_EventExtra*>(extra));
+            case PF_Cmd_EVENT:return fstr::ae::metadata_event(in_data,static_cast<PF_EventExtra*>(extra),loading_status());
             case PF_Cmd_RENDER:return render(in_data,params[Input]->u.ld,*output,false);
             case PF_Cmd_SMART_PRE_RENDER:return pre_render(in_data,static_cast<PF_PreRenderExtra*>(extra));
             case PF_Cmd_SMART_RENDER:return smart_render(in_data,static_cast<PF_SmartRenderExtra*>(extra));

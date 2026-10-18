@@ -175,11 +175,12 @@ std::array<std::string,3> metadata_lines(const CameraMetadata& value){
     }
     return lines;
 }
-PF_Err metadata_event(PF_InData* in,PF_EventExtra* extra) {
+PF_Err metadata_event(PF_InData* in,PF_EventExtra* extra,const char* smart_status) {
     if(!extra||extra->effect_win.index!=CameraInfo||extra->effect_win.area!=PF_EA_CONTROL)return PF_Err_NONE;
     if(extra->e_type==PF_Event_DO_CLICK){clear_metadata_cache(in->effect_ref);extra->evt_out_flags|=PF_EO_HANDLED_EVENT|PF_EO_UPDATE_NOW;return PF_Err_NONE;}
     if(extra->e_type!=PF_Event_DRAW)return PF_Err_NONE;
-    const auto result=draw(in,extra,metadata_lines(cached_metadata(in)));if(!result)extra->evt_out_flags|=PF_EO_HANDLED_EVENT;return result;
+    auto lines=metadata_lines(cached_metadata(in));if(smart_status&&*smart_status)lines[2]=smart_status;
+    const auto result=draw(in,extra,lines);if(!result)extra->evt_out_flags|=PF_EO_HANDLED_EVENT;return result;
 }
 void clear_metadata_cache(PF_ProgPtr effect){std::lock_guard<std::mutex> lock(cache_mutex);cache.erase(effect);}
 void clear_all_metadata_cache(){std::lock_guard<std::mutex> lock(cache_mutex);cache.clear();}

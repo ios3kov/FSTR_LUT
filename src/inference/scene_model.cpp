@@ -1,4 +1,8 @@
 #include "fstr/scene_model.hpp"
+#include <cstdlib>
+#ifdef FSTR_SCENE_COREML
+#include <sys/sysctl.h>
+#endif
 #include "onnxruntime_cxx_api.h"
 #include "picosha2.h"
 #include "json.hpp"
@@ -27,7 +31,21 @@ struct SceneModel::Impl {
   const auto&labels=manifest.at("output").at("id2label");if(labels.size()!=150||labels.at("12")!="person")throw std::invalid_argument("Scene model labels mismatch");
   const std::array<std::set<std::string>,5> groups{{{"sky"},{"tree","grass","plant","field","flower","palm"},{"water","sea","river","waterfall","lake","swimming pool"},{"wall","building","floor","ceiling","road","sidewalk","house","skyscraper","bridge","path","stairs","fence"},{"lamp","light","chandelier","streetlight"}}};
   roles.fill(-1);for(int i=0;i<150;++i)for(int r=0;r<5;++r)if(groups[std::size_t(r)].count(labels.at(std::to_string(i)).get<std::string>()))roles[std::size_t(i)]=r+3;
-  options.SetIntraOpNumThreads(4);options.SetInterOpNumThreads(1);options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);session=std::make_unique<Ort::Session>(env,path.c_str(),options);
+  options.SetIntraOpNumThreads(4);options.SetInterOpNumThreads(1);options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+#ifdef FSTR_SCENE_COREML
+  char os_build[128]{};std::size_t os_size=sizeof(os_build);
+  if(sysctlbyname("kern.osversion",os_build,&os_size,nullptr,0)||!os_size||os_size>sizeof(os_build)||os_build[os_size-1]!=0)throw std::runtime_error("CoreML OS identity unavailable");
+  std::filesystem::path cache_root;
+  if(const char* configured=std::getenv("FSTR_LUT_COREML_CACHE"))cache_root=configured;
+  else {const char* home=std::getenv("HOME");if(!home)throw std::runtime_error("CoreML cache location unavailable");cache_root=std::filesystem::path(home)/"Library/Caches/FSTR.Tools/FSTR_LUT/coreml-v1";}
+  if(!cache_root.is_absolute())throw std::invalid_argument("Absolute CoreML cache path required");
+  const auto compiler_cache=cache_root/os_build/(manifest.at("onnx_sha256").get<std::string>()+"-"+runtime+"-MLProgram-ALL-static-v1");
+  std::filesystem::create_directories(compiler_cache);
+  options.AppendExecutionProvider("CoreML",{{"ModelFormat","MLProgram"},{"MLComputeUnits","ALL"},{"RequireStaticInputShapes","1"},{"ModelCacheDirectory",compiler_cache.string()}});
+  // Never enable ProfileComputePlan in the host (ORT1.23.2 can stall on errors).
+  runtime+="/CoreML-MLProgram-ALL-static-v1/";runtime+=os_build;
+#endif
+  session=std::make_unique<Ort::Session>(env,path.c_str(),options);
   if(session->GetInputCount()!=1||session->GetOutputCount()!=1||session->GetInputTypeInfo(0).GetTensorTypeAndShapeInfo().GetShape()!=std::vector<std::int64_t>{1,3,512,512}||session->GetOutputTypeInfo(0).GetTensorTypeAndShapeInfo().GetShape()!=std::vector<std::int64_t>{1,150,512,512})throw std::invalid_argument("Scene runtime tensor contract mismatch");
  }
 };

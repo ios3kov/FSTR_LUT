@@ -11,12 +11,14 @@ def box_iou(a,b):
     return area/max(1e-12,float(np.prod(a[2:]-a[:2])+np.prod(b[2:]-b[:2]))-area)
 
 
-def observation(box,mask,rgb,confidence=1.):
+def observation(box,mask,rgb,confidence=1.,descriptor_support=None):
     b=np.asarray(box,float);m=np.asarray(mask,np.float32)
     if b.shape!=(4,) or not np.isfinite(b).all() or np.any(b[2:]<=b[:2]):raise ValueError('Invalid face box')
     if rgb.ndim!=3 or rgb.shape[2]!=3 or m.shape!=rgb.shape[:2] or not np.isfinite(rgb).all() or not np.isfinite(m).all() or m.min()<0 or m.max()>1:raise ValueError('Invalid observation pixels')
     if not np.isfinite(confidence) or not 0<=confidence<=1:raise ValueError('Invalid observation confidence')
-    support=m>.25
+    descriptor_mask=m if descriptor_support is None else np.asarray(descriptor_support,np.float32)
+    if descriptor_mask.shape!=m.shape or not np.isfinite(descriptor_mask).all() or descriptor_mask.min()<0 or descriptor_mask.max()>1:raise ValueError('Invalid independent geometry support')
+    support=descriptor_mask>.25
     if support.sum()<8:return None
     colors=rgb[support];y=colors@np.array([.2126,.7152,.0722]);valid=(y>1e-5)&(colors.min(1)>0)&(colors.max(1)<1)
     if valid.sum()<8:return None
@@ -93,7 +95,7 @@ def attach_body_skin(observations,poses,parts,linear):
     """
     shape=linear.shape[:2];poses=np.asarray(poses,np.float32);parts=np.asarray(parts,np.float32)
     if poses.ndim!=3 or poses.shape[1:]!=shape or parts.shape!=(*shape,6) or not np.isfinite(poses).all() or not np.isfinite(parts).all() or poses.min(initial=0)<0 or poses.max(initial=0)>1 or parts.min()<0 or parts.max()>1 or np.max(parts.sum(-1))>1.00001:raise ValueError('Invalid body evidence')
-    result=[dict(o,mask=o['mask'].copy()) for o in observations]
+    result=[dict(o,mask=o['mask'].copy(),ceiling=o.get('ceiling',o['mask']).copy()) for o in observations]
     scores=np.zeros((len(observations),len(poses)))
     for i,o in enumerate(observations):
         for j,person in enumerate(poses):scores[i,j]=float((o['mask']*person).sum()/max(1e-12,float(o['mask'].sum())))
@@ -111,6 +113,8 @@ def attach_body_skin(observations,poses,parts,linear):
         clothing=np.clip((parts[...,4]-.3)/.4,0,1);veto=1-clothing*clothing*(3-2*clothing)
         body=parts[...,2]*person*affinity*veto
         result[i]['mask']=np.maximum(result[i]['mask'],body.astype(np.float32))
+        non_skin=np.clip((parts[...,0]+parts[...,1]+parts[...,4]-.6)/.3,0,1);permission=person*affinity*(1-non_skin*non_skin*(3-2*non_skin))
+        result[i]['ceiling']=np.maximum(result[i]['ceiling'],permission.astype(np.float32))
     return result
 
 
@@ -129,7 +133,7 @@ def stabilize_fields(images,frames,ids,cut_before=()):
         raw.append({t:m for (o,t),m in zip(active,fields)})
     output=[]
     for center,(observations,tracks) in enumerate(zip(frames,ids)):
-        current=sorted(raw[center]);result={}
+        current=sorted(raw[center]);result={};boosted={}
         for start in range(0,len(current),8):
             group=current[start:start+8];window={}
             for offset in (-2,-1,0,1,2):
@@ -140,6 +144,77 @@ def stabilize_fields(images,frames,ids,cut_before=()):
                     if track in raw[j]:fields[...,channel]=raw[j][track]
                 window[offset]=(images[j],fields)
             stable=stabilize_window(window)
-            for channel,track in enumerate(group):result[track]=stable[...,channel]
-        output.append([dict(o,mask=np.minimum(result[t],o['mask']) if t is not None else np.zeros_like(o['mask'])) for o,t in zip(observations,tracks)])
+            boost=two_sided_confidence(window) if any('ceiling' in o for o in observations) else np.zeros_like(stable)
+            stable=np.maximum(stable,boost)
+            for channel,track in enumerate(group):result[track]=stable[...,channel];boosted[track]=boost[...,channel]
+        output.append([dict(o,mask=np.minimum(result[t],np.maximum(o.get('ceiling',o['mask']),np.minimum(o.get('recovery_ceiling',o.get('ceiling',o['mask'])),boosted[t]))) if t is not None else np.zeros_like(o['mask'])) for o,t in zip(observations,tracks)])
     return output
+
+
+def two_sided_confidence(window):
+    """Restore unknown confidence only when both raw temporal sides agree.
+
+    This returns a proposal, never overrides caller's current material/geometry veto.
+    """
+    import cv2
+    from scene_analysis import smooth
+    image,current=window[0];h,w=image.shape[:2];grid=np.stack(np.meshgrid(np.arange(w),np.arange(h)),-1).astype(np.float32)
+    gray=lambda v:np.rint(cv2.cvtColor(v,cv2.COLOR_RGB2GRAY)*255).astype(np.uint8)
+    warped={}
+    for offset in (-2,-1,1,2):
+        direction=-1 if offset<0 else 1;distance=abs(offset)
+        if offset not in window or any(direction*k not in window for k in range(1,distance+1)):continue
+        other,mask=window[offset]
+        forward=cv2.calcOpticalFlowFarneback(gray(image),gray(other),None,.5,3,15,3,5,1.2,0)
+        backward=cv2.calcOpticalFlowFarneback(gray(other),gray(image),None,.5,3,15,3,5,1.2,0)
+        xy=grid+forward;remap=lambda v:cv2.remap(v,xy[...,0],xy[...,1],cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT)
+        valid=(xy[...,0]>=0)&(xy[...,0]<=w-1)&(xy[...,1]>=0)&(xy[...,1]<=h-1)
+        trust=valid*(1-smooth(.5,2.,np.linalg.norm(forward+remap(backward),axis=-1)))*(1-smooth(.025,.10,np.abs(image-remap(other)).mean(-1)))
+        warped[offset]=remap(mask)*trust[...,None]
+    result=np.zeros_like(current)
+    # At most two missing frames: -2/+2 would bridge a forbidden three-frame gap.
+    for left,right in ((-1,1),(-1,2),(-2,1)):
+        if left not in warped or right not in warped:continue
+        a,b=warped[left],warped[right];agreement=1-smooth(.10,.40,np.abs(a-b))
+        result=np.maximum(result,np.minimum(a,b)*agreement)
+    return result.astype(np.float32)
+
+
+def mean_face_fields(raw_frames,render_frames,ids):
+    """One robust face-local field per explicit track/shot, not a final-RGB average.
+
+    Weak/missing skin observations do not vote as known non-skin. Current geometry
+    and exclusion permission remain authoritative. No cross-person pooled template.
+    """
+    import cv2
+    if not len(raw_frames)==len(render_frames)==len(ids):raise ValueError('Face mean window mismatch')
+    size=64;uv=np.arange(size,dtype=np.float32)+.5;gx,gy=np.meshgrid(uv,uv);samples={}
+    for observations,tracks in zip(raw_frames,ids):
+        for o,t in zip(observations,tracks):
+            if t is None or 'face_geometry' not in o:continue
+            x0,y0,x1,y1=o['box'];xyx=(x0+gx*(x1-x0)/size).astype(np.float32);xyy=(y0+gy*(y1-y0)/size).astype(np.float32)
+            mask=cv2.remap(o['mask'],xyx,xyy,cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT)
+            geometry=cv2.remap(o['face_geometry'],xyx,xyy,cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT)
+            samples.setdefault(t,[]).append((mask,(geometry>.1)&(mask>.03)))
+    templates={}
+    rim=np.minimum.reduce([gx/size,1-gx/size,gy/size,1-gy/size]);u=np.clip(rim/.06,0,1);feather=u*u*(3-2*u)
+    for t,observations in samples.items():
+        fields=np.stack([m for m,v in observations]);valid=np.stack([v for m,v in observations]);count=valid.sum(0)
+        ordered=np.sort(np.where(valid,fields,np.inf),axis=0);lo=np.floor(count*.1).astype(int);hi=count-lo;indices=np.arange(len(ordered))[:,None,None]
+        use=(indices>=lo)&(indices<hi)&np.isfinite(ordered);total=np.where(use,ordered,0).sum(0)
+        templates[t]=(np.divide(total,np.maximum(1,hi-lo))*feather).astype(np.float32)
+    result=[]
+    for observations,tracks in zip(render_frames,ids):
+        current=[]
+        for o,t in zip(observations,tracks):
+            updated=dict(o,mask=o['mask'].copy())
+            if t in templates and 'face_geometry' in o:
+                h,w=o['mask'].shape;yy,xx=np.mgrid[:h,:w].astype(np.float32);x0,y0,x1,y1=o['box']
+                mx=((xx-x0)*size/(x1-x0)-.5).astype(np.float32);my=((yy-y0)*size/(y1-y0)-.5).astype(np.float32)
+                field=cv2.remap(templates[t],mx,my,cv2.INTER_LINEAR,borderMode=cv2.BORDER_CONSTANT)
+                inside=(xx>=x0)&(xx<x1)&(yy>=y0)&(yy<y1)
+                ceiling=o.get('face_ceiling',o['face_geometry'])
+                updated['mask'][inside]=np.minimum(field,ceiling)[inside]
+            current.append(updated)
+        result.append(current)
+    return result

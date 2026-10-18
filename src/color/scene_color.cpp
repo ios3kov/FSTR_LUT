@@ -55,4 +55,19 @@ std::array<float,4> SceneLook::apply_people(std::array<float,4> p,const SceneWei
     for(std::size_t c=0;c<3;++c)result[c]=float(result[c]+std::clamp(limit,0.,1.)*delta[c]);return result;
 }
 
+std::array<float,4> SceneLook::apply_stable_people(std::array<float,4> p,const SceneWeights&w,const std::vector<SkinToneInfluence>& people,const std::vector<StableToneWeight>& stable,bool enabled)const{
+    const auto ordinary=base_.apply(p);if(!enabled||base_.bypass()||p[3]==0)return ordinary;
+    const auto current=apply_people(p,w,people);
+    if(stable.empty())return current;
+    if(stable.size()!=people.size())throw std::invalid_argument("Stable person count mismatch");
+    double mass=0;for(const auto&v:stable){if(!std::isfinite(v.support)||!std::isfinite(v.strength)||v.support<0||v.support>1||v.strength<0||v.strength>1)throw std::invalid_argument("Stable tone requires unit weights");mass+=v.support;}
+    if(mass==0)return current;
+    for(std::size_t c=0;c<3;++c)if(ordinary[c]<0||ordinary[c]>1)return ordinary;
+    double delta[3]{};for(std::size_t c=0;c<3;++c)delta[c]=(1-std::min(1.,mass))*(double(current[c])-ordinary[c]);
+    for(std::size_t i=0;i<people.size();++i){if(stable[i].support==0)continue;const auto full=skin_.apply(p,*people[i].reference,1);for(std::size_t c=0;c<3;++c)delta[c]+=(double(full[c])-ordinary[c])*stable[i].support*stable[i].strength/std::max(1.,mass);}
+    const double dy=.2126*delta[0]+.7152*delta[1]+.0722*delta[2];double limit=1;
+    for(std::size_t c=0;c<3;++c){delta[c]-=dy;if(delta[c]>0)limit=std::min(limit,(1-ordinary[c])/delta[c]);else if(delta[c]<0)limit=std::min(limit,-ordinary[c]/delta[c]);}
+    auto result=ordinary;for(std::size_t c=0;c<3;++c)result[c]=float(ordinary[c]+std::clamp(limit,0.,1.)*delta[c]);return result;
+}
+
 }

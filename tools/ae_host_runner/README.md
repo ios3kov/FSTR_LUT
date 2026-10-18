@@ -25,3 +25,14 @@ Archive the exact helper after host work ends. It is not a product dependency. T
 ## Smart Color acceptance template
 
 `smart_acceptance.jsx.in` accepts one JSON replacement `FSTR_SMART_HOST_CONFIG_JSON` with `nonce`, `folder`, and `match` (extra provenance fields allowed). Use a fresh owned folder containing156opaque540x960 PNGs named `frames/frame000.png` through `frame155.png`, interpreted as sRGB25fps. It tests a distinctly named trial effect so the installed original remains untouched. It renders On/Off48/50/54/55/56 at8/16/32bpc, saves/reopens state, and exits only its nonce-owned empty process. Preserve exact source, bundle, output and PSD precision; a Photoshop8-bit export from16/32bpc includes conversion/dither. A separate pre-export Difference comparison is needed before attributing1LSB export differences to the effect. No normal-speed perceptual acceptance is implied.
+
+## Local macOS development signing
+
+After all executable, Info.plist, PkgInfo and PiPL resource writes, sign the complete test bundle, then verify it before installing/launching. The linker's automatic Mach-O signature alone is insufficient after adding bundle resources (`code has no resources but signature indicates they must be present`). For local development only:
+
+```
+codesign --force --sign - --timestamp=none /absolute/owned/test.plugin
+codesign --verify --strict /absolute/owned/test.plugin
+```
+
+Apply this to both the owned runner and tested effect. Record fresh signed file inventories; signing changes artifact identity. This is an ad-hoc local test signature, not distribution certification. Preserve any previous failed artifact. Do not alter global macOS security policy or remove quarantine as a substitute.

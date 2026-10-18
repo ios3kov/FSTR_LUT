@@ -30,7 +30,7 @@ try:
   result=pose.detect(mp.Image(image_format=mp.ImageFormat.SRGB,data=np.ascontiguousarray(np.rint(rgb*255).astype(np.uint8))))
   masks=[m.numpy_view().copy().squeeze() for m in (result.segmentation_masks or [])]
   people,person_detail=person_field(rgb,np.load(pp,allow_pickle=False),masks,scale)
-  out=a.output/(name+'.npz');np.savez_compressed(out,face=face,people=people,raw_face_mask=mask,raw_pose_masks=np.stack(masks) if masks else np.empty((0,*rgb.shape[:2]),np.float32))
+  out=a.output/(name+'.npz');np.savez_compressed(out,face=face,people=people,raw_face_mask=mask,raw_face_support=support,raw_pose_masks=np.stack(masks) if masks else np.empty((0,*rgb.shape[:2]),np.float32))
   record=dict(name=name,source_sha256=case['sha256'],source_height=case['source_height'],parts=binding,evidence_sha256=hashlib.sha256(out.read_bytes()).hexdigest(),models=dict(face=FACE_SHA,detector=DETECTOR_SHA,pose=POSE_SHA,skin=MODEL_SHA),seconds=time.perf_counter()-start,faces=face_detail,people=person_detail,raw_face_details=detail,pose_capacity=4)
   (a.output/(name+'.json')).write_text(json.dumps(record,indent=2));records.append(record);print(name,len(face_detail),len(masks),flush=True)
 finally:

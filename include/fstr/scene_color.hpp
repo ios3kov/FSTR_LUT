@@ -11,10 +11,12 @@ using SceneWeights=std::array<float,scene_role_count>;
 void validate_scene_weights(const SceneWeights&);
 // Experimental Teal & Orange v1 residual. Straight linear Rec709 only, after
 // explicit source normalization. Not an illumination estimator or a skin target.
+struct StableToneWeight { double support=0,strength=0; };
 class SceneLook final {
 public:
     SceneLook(std::shared_ptr<const LUT> teal_orange,double strength);
     std::array<float,4> apply_people(std::array<float,4>,const SceneWeights&,const std::vector<SkinToneInfluence>&,bool enabled=true) const;
+    std::array<float,4> apply_stable_people(std::array<float,4>,const SceneWeights&,const std::vector<SkinToneInfluence>&,const std::vector<StableToneWeight>&,bool enabled=true) const;
     SkinToneReference skin_reference(const std::vector<SkinSample>& samples)const{return skin_.reference(samples);}
     std::array<float,4> apply(std::array<float,4>,const SceneWeights&,bool enabled=true,const SkinToneReference* person=nullptr) const;
 private:

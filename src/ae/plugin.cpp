@@ -2,6 +2,9 @@
 #include "fstr_embedded_look.hpp"
 #include "metadata_ui.hpp"
 #include "fstr/regions.hpp"
+#include "fstr/scene_cache.hpp"
+#include <cstdlib>
+#include <limits>
 #include <vector>
 #include <algorithm>
 #include <atomic>
@@ -14,12 +17,19 @@
 
 namespace {
 constexpr PF_OutFlags flags=PF_OutFlag_DEEP_COLOR_AWARE|PF_OutFlag_WIDE_TIME_INPUT|PF_OutFlag_USE_OUTPUT_EXTENT|PF_OutFlag_CUSTOM_UI;
-constexpr PF_OutFlags2 flags2=PF_OutFlag2_SUPPORTS_SMART_RENDER|PF_OutFlag2_FLOAT_COLOR_AWARE|PF_OutFlag2_SUPPORTS_THREADED_RENDERING|PF_OutFlag2_AUTOMATIC_WIDE_TIME_INPUT;
-static_assert(flags==0x02008042&&flags2==0x08021400,"PiPL flags must match runtime");
+constexpr PF_OutFlags2 flags2=PF_OutFlag2_SUPPORTS_SMART_RENDER|PF_OutFlag2_FLOAT_COLOR_AWARE|PF_OutFlag2_SUPPORTS_THREADED_RENDERING|PF_OutFlag2_AUTOMATIC_WIDE_TIME_INPUT|PF_OutFlag2_I_MIX_GUID_DEPENDENCIES|PF_OutFlag2_SUPPORTS_QUERY_DYNAMIC_FLAGS;
+static_assert(flags==0x02008042&&flags2==0x08221401,"PiPL flags must match runtime");
 static_assert(PF_VERSION(0,1,0,PF_Stage_DEVELOP,1)==32769,"PiPL version must match runtime");
 using LookLibrary=std::array<std::shared_ptr<const fstr::LUT>,fstr::builtin_look_count>;
 std::shared_ptr<const LookLibrary> looks;
 std::mutex initialization;
+std::shared_ptr<fstr::SceneCache> scene_cache;
+void initialize_scene_cache(){
+    const char* directory=std::getenv("FSTR_LUT_SCENE_CACHE");const char* policy=std::getenv("FSTR_LUT_SCENE_POLICY");
+    if(!directory&&!policy)return;
+    if(!directory||!policy)throw std::invalid_argument("Incomplete scene cache configuration");
+    std::atomic_store(&scene_cache,std::make_shared<fstr::SceneCache>(directory,policy));
+}
 void initialize_look() {
     std::lock_guard<std::mutex> lock(initialization);
     if(!std::atomic_load(&looks)) {
@@ -135,15 +145,25 @@ bool compatible_image(const fstr::AnalysisImage&a,const fstr::AnalysisImage&b){
     return count&&sum/count<25.; // conservative whole-frame cut/appearance gate
 }
 template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& in,PF_EffectWorld& out,
-                                    const fstr::ColorProcessor& processor,bool smart, bool enabled,const fstr::ColorProcessor& prepare,fstr::Transfer transfer,const std::vector<TemporalInput>& neighbors) {
+                                    const fstr::ColorProcessor& processor,bool smart, bool enabled,const fstr::ColorProcessor& prepare,fstr::Transfer transfer,const std::vector<TemporalInput>& neighbors,const fstr::ColorSettings& settings,bool scene_residual) {
     if(out.width<0||out.height<0||in.width<0||in.height<0)return PF_Err_BAD_CALLBACK_PARAM;
     if(out.width==0||out.height==0)return PF_Err_NONE;
     if(!out.data||out.rowbytes<=0||out.width>out.rowbytes/static_cast<A_long>(sizeof(P)))return PF_Err_BAD_CALLBACK_PARAM;
     if(in.width&&in.height&&(!in.data||in.rowbytes<=0||in.width>in.rowbytes/static_cast<A_long>(sizeof(P))))return PF_Err_BAD_CALLBACK_PARAM;
     std::vector<fstr::ColorRegion> regions;
+    const auto cache=std::atomic_load(&scene_cache);std::shared_ptr<const fstr::SceneAnalysis> analysis;
+    std::unique_ptr<fstr::SceneLook> scene;std::unique_ptr<fstr::ColorProcessor> scene_plain;
+    std::vector<fstr::SkinToneReference> references;std::vector<fstr::SkinToneInfluence> influences;std::vector<fstr::StableToneWeight> stable;
     double source_height=in.height;
     if(in_data->downsample_y.num>0&&in_data->downsample_y.den>0)source_height*=double(in_data->downsample_y.den)/in_data->downsample_y.num;
     if(enabled&&!processor.bypass()&&in.width>0&&in.height>0){
+        if(cache){
+            analysis=cache->get(analysis_image<P>(in_data,in,prepare,transfer),source_height);
+            if(analysis){scene=std::make_unique<fstr::SceneLook>(settings.look,settings.look_amount);fstr::ColorSettings plain;plain.look=settings.look;plain.look_amount=settings.look_amount;scene_plain=std::make_unique<fstr::ColorProcessor>(plain,fstr::Transfer::Linear,fstr::Primaries::SRGB_Rec709,fstr::Alpha::Straight);
+                references.reserve(analysis->people.size());for(const auto&person:analysis->people){auto abort=PF_ABORT(in_data);if(abort)throw abort;references.push_back(scene->skin_reference(person.samples));}
+                stable.resize(references.size());influences.resize(references.size());for(std::size_t i=0;i<references.size();++i)influences[i].reference=&references[i];
+            }
+        }else{
         std::vector<fstr::RegionFrame> window;
         auto current=analysis_image<P>(in_data,in,prepare,transfer);regions=fstr::detect_color_regions(current,source_height);
         window.push_back({0,std::move(current),regions});
@@ -157,6 +177,7 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
         auto recovered=fstr::recover_color_regions(window);
         auto stable=fstr::stabilize_color_regions(regions,left,right);
         stable.insert(stable.end(),recovered.begin()+regions.size(),recovered.end());regions=std::move(stable);
+        }
     }
     const auto scale=channel_max<P>();
     // SmartFX origins are layer coordinates. Legacy does not change buffer size.
@@ -171,7 +192,21 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
             if(sx<0||sy<0||sx>=in.width||sy>=in.height){dst[x]={};continue;}
             const auto src=reinterpret_cast<const P*>(reinterpret_cast<const unsigned char*>(in.data)+std::size_t(sy)*std::size_t(in.rowbytes))+sx;
             if(processor.bypass()||src->alpha==0){dst[x]=*src;continue;}
-            const auto v=processor.apply({float(src->red/scale),float(src->green/scale),float(src->blue/scale),float(src->alpha/scale)},enabled?.8*fstr::color_region_weight((sx+.5)/in.width,(sy+.5)/in.height,source_height,regions):0);
+            const std::array<float,4> raw{float(src->red/scale),float(src->green/scale),float(src->blue/scale),float(src->alpha/scale)};
+            auto v=processor.apply(raw,enabled&&!cache?.8*fstr::color_region_weight((sx+.5)/in.width,(sy+.5)/in.height,source_height,regions):0);
+            if(analysis){
+                const double ax=std::clamp((sx+.5)*analysis->width/in.width-.5,0.,double(analysis->width-1)),ay=std::clamp((sy+.5)*analysis->height/in.height-.5,0.,double(analysis->height-1));
+                const int x0=int(ax),y0=int(ay),x1=std::min(x0+1,analysis->width-1),y1=std::min(y0+1,analysis->height-1);const double fx=ax-x0,fy=ay-y0;
+                const std::size_t indices[]{std::size_t(y0)*analysis->width+x0,std::size_t(y0)*analysis->width+x1,std::size_t(y1)*analysis->width+x0,std::size_t(y1)*analysis->width+x1};
+                const double weights[]{(1-fx)*(1-fy),fx*(1-fy),(1-fx)*fy,fx*fy};fstr::SceneWeights roles{};
+                for(auto&influence:influences)influence.weight=0;for(std::size_t c=0;c<stable.size();++c){stable[c].support=0;stable[c].strength=analysis->people[c].toning_strength;}
+                for(std::size_t k=0;k<4;++k){for(std::size_t c=0;c<roles.size();++c)roles[c]+=float(weights[k]*analysis->scene[indices[k]][c]);for(std::size_t c=0;c<influences.size();++c){influences[c].weight+=weights[k]*analysis->people[c].mask[indices[k]];if(!analysis->people[c].toning_support.empty())stable[c].support+=weights[k]*analysis->people[c].toning_support[indices[k]];}}
+                for(auto&weight:stable)weight.support=std::clamp(weight.support,0.,1.);
+                if(!scene_residual)for(std::size_t c=1;c<roles.size();++c)roles[c]=0;
+                auto prepared=prepare.apply(raw);for(std::size_t c=0;c<3;++c)prepared[c]=float(fstr::decode_host(prepared[c]/prepared[3],transfer));prepared[3]=1;
+                const auto styled=scene->apply_stable_people(prepared,roles,influences,stable),plain=scene_plain->apply(prepared);
+                for(std::size_t c=0;c<3;++c){const double delta=double(styled[c])-plain[c];if(delta==0)continue;const double linear=fstr::decode_host(v[c]/raw[3],transfer)+settings.mix*delta;const double value=fstr::encode_host(linear,transfer)*raw[3];if(!std::isfinite(value)||std::abs(value)>std::numeric_limits<float>::max())throw std::invalid_argument("Scene result exceeds finite range");v[c]=float(value);}
+            }
             if constexpr(std::is_same_v<P,PF_PixelFloat>){dst[x]={src->alpha,v[0],v[1],v[2]};}
             else {
                 auto quantize=[scale](float value){return static_cast<decltype(P::red)>(std::clamp(double(value),0.0,1.0)*scale+.5);};
@@ -207,9 +242,9 @@ PF_Err render(PF_InData* in_data,PF_EffectWorld& input,PF_EffectWorld& output,bo
             if(err||nf!=format){err=PF_Err_BAD_CALLBACK_PARAM;break;}
         }
         if(!err)switch(format) {
-            case PF_PixelFormat_ARGB32:err=process_world<PF_Pixel>(in_data,input,output,processor,smart,enabled,prepare,transfer,neighbors);break;
-            case PF_PixelFormat_ARGB64:err=process_world<PF_Pixel16>(in_data,input,output,processor,smart,enabled,prepare,transfer,neighbors);break;
-            case PF_PixelFormat_ARGB128:err=process_world<PF_PixelFloat>(in_data,input,output,processor,smart,enabled,prepare,transfer,neighbors);break;
+            case PF_PixelFormat_ARGB32:err=process_world<PF_Pixel>(in_data,input,output,processor,smart,enabled,prepare,transfer,neighbors,s,params[Look].u.pd.value==9);break;
+            case PF_PixelFormat_ARGB64:err=process_world<PF_Pixel16>(in_data,input,output,processor,smart,enabled,prepare,transfer,neighbors,s,params[Look].u.pd.value==9);break;
+            case PF_PixelFormat_ARGB128:err=process_world<PF_PixelFloat>(in_data,input,output,processor,smart,enabled,prepare,transfer,neighbors,s,params[Look].u.pd.value==9);break;
             default:err=PF_Err_BAD_CALLBACK_PARAM;
         }
     }catch(...){in_data->pica_basicP->ReleaseSuite(kPFWorldSuite,kPFWorldSuiteVersion2);throw;}
@@ -224,6 +259,8 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
         auto e=PF_CHECKOUT_PARAM(in_data,pair.first,in_data->current_time,in_data->time_step,in_data->time_scale,pair.second);if(e)return e;
     }
     const bool active=enabled.u.bd.value&&look.u.pd.value>1&&amount.u.fs_d.value>0&&mix.u.fs_d.value>0;
+    const auto analysis_cache=std::atomic_load(&scene_cache);
+    if(extra->cb->GuidMixInPtr){const std::string base_guid="FSTR_NATIVE_BASE_V1";const auto&guid=active&&analysis_cache?analysis_cache->guid():base_guid;const auto error=extra->cb->GuidMixInPtr(in_data->effect_ref,static_cast<A_u_long>(guid.size()),guid.data());if(error)return error;}else if(active&&analysis_cache)return PF_Err_BAD_CALLBACK_PARAM;
     PF_CheckoutResult result{};
     auto err=extra->cb->checkout_layer(in_data->effect_ref,Input,active?1000:Input,&request,in_data->current_time,in_data->time_step,in_data->time_scale,&result);
     if(err)return err;
@@ -232,7 +269,7 @@ PF_Err pre_render(PF_InData* in_data,PF_PreRenderExtra* extra) {
     request.rect=result.max_result_rect;
     err=extra->cb->checkout_layer(in_data->effect_ref,Input,Input,&request,in_data->current_time,in_data->time_step,in_data->time_scale,&result);if(err)return err;
     auto data=std::make_unique<SmartPreData>();
-    if(in_data->time_step>0)for(int offset:{-1,1,-2,2}){
+    if(in_data->time_step>0&&!analysis_cache)for(int offset:{-1,1,-2,2}){
         const auto time=std::int64_t(in_data->current_time)+std::int64_t(offset)*in_data->time_step;
         if(time<0||time>=in_data->total_time||time>INT32_MAX)continue;
         int id=offset==-1?1:offset==1?2:offset==-2?3:4;
@@ -266,14 +303,15 @@ extern "C" DllExport PF_Err PluginDataEntryFunction2(PF_PluginDataPtr data,PF_Pl
     result=PF_REGISTER_EFFECT_EXT2(data,callback,"FSTR-LUT Development","FSTR LUT Color MVP","FSTR.Tools",AE_RESERVED_INFO,"EffectMain","https://github.com/ios3kov/FSTR_LUT");
     return result;
 }
-extern "C" DllExport PF_Err EffectMain(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {
+static PF_Err effect_main_impl(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {
     try {
         switch(cmd) {
             case PF_Cmd_ABOUT:std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT color MVP 0.1 development\rBuild %s\rSDR + Sony S-Log3 / S-Gamut3.Cine",fstr::color_build_id);break;
-            case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
-            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
+            case PF_Cmd_GLOBAL_SETUP:if(in_data->appl_id!=kAppID_AfterEffects)return PF_Err_INVALID_CALLBACK;initialize_look();initialize_scene_cache();out_data->my_version=32769;out_data->out_flags=flags;out_data->out_flags2=flags2;break;
+            case PF_Cmd_GLOBAL_SETDOWN:std::atomic_store(&scene_cache,std::shared_ptr<fstr::SceneCache>{});std::atomic_store(&looks,std::shared_ptr<const LookLibrary>{});fstr::ae::clear_all_metadata_cache();break;
             case PF_Cmd_SEQUENCE_SETUP:fstr::prepare_region_cache();fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
             case PF_Cmd_SEQUENCE_SETDOWN:fstr::ae::clear_metadata_cache(in_data->effect_ref);break;
+            case PF_Cmd_QUERY_DYNAMIC_FLAGS:out_data->out_flags=flags;out_data->out_flags2=flags2;break;
             case PF_Cmd_PARAMS_SETUP:return params_setup(in_data,out_data);
             case PF_Cmd_EVENT:return fstr::ae::metadata_event(in_data,static_cast<PF_EventExtra*>(extra));
             case PF_Cmd_RENDER:return render(in_data,params[Input]->u.ld,*output,false);
@@ -286,4 +324,13 @@ extern "C" DllExport PF_Err EffectMain(PF_Cmd cmd,PF_InData* in_data,PF_OutData*
      catch(const std::bad_alloc&){return PF_Err_OUT_OF_MEMORY;}
      catch(const fstr::UnsupportedColorProfile&){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"Choose AE Pixel Encoding. Linearized project: select Linear. Sony override requires preserved, unconverted Log samples.");return PF_Err_BAD_CALLBACK_PARAM;}
      catch(...){std::snprintf(out_data->return_msg,sizeof(out_data->return_msg),"FSTR-LUT color processing failed; input, settings or range unsupported.");return PF_Err_BAD_CALLBACK_PARAM;}
+}
+
+extern "C" DllExport PF_Err EffectMain(PF_Cmd cmd,PF_InData* in_data,PF_OutData* out_data,PF_ParamDef* params[],PF_LayerDef* output,void* extra) {
+    const auto trace=std::getenv("FSTR_LUT_SCENE_TRACE");const bool rendering=cmd==PF_Cmd_SMART_PRE_RENDER||cmd==PF_Cmd_SMART_RENDER||cmd==PF_Cmd_RENDER||cmd==PF_Cmd_QUERY_DYNAMIC_FLAGS;
+    if(trace&&rendering)std::fprintf(stderr,"FSTR_NATIVE ENTER selector=%d\n",int(cmd));
+    const auto err=effect_main_impl(cmd,in_data,out_data,params,output,extra);
+    if(trace&&rendering)std::fprintf(stderr,"FSTR_NATIVE EXIT selector=%d code=%d\n",int(cmd),int(err));
+    if(err&&std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_NATIVE ERROR selector=%d code=%d\n",int(cmd),int(err));
+    return err;
 }

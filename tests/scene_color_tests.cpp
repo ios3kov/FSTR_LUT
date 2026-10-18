@@ -30,5 +30,13 @@ int main(int argc,char**argv){try{
  fstr::SceneWeights mixed_people{};mixed_people[0]=.6f;mixed_people[3]=.4f;
  auto combined=scene.apply_people(p,mixed_people,{{&reference,.6}});auto ordinary_combined=plain.apply(p);double combined_dy=0;for(int c=0;c<3;++c){check(combined[c]>=0&&combined[c]<=1,"Multi-person scene gamut");combined_dy+=(combined[c]-ordinary_combined[c])*std::array<double,3>{.2126,.7152,.0722}[c];}check(std::abs(combined_dy)<1e-7,"Multi-person scene luminance");
  caught=false;try{scene.apply_people(p,mixed_people,{{&reference,.8}});}catch(...){caught=true;}check(caught,"Person exceeds skin mass");
+
+ const auto raw_result=scene.apply_people(p,skin,{{&reference,1}}),ordinary_pixel=plain.apply(p);
+ check(scene.apply_stable_people(p,skin,{{&reference,1}},{{0,.5}})==raw_result,"Zero support changed old result");
+ check(scene.apply_stable_people(p,skin,{{&reference,1}},{{1,0}})==ordinary_pixel,"Zero strength not ordinary");
+ auto stable_result=scene.apply_stable_people(p,skin,{{&reference,1}},{{1,.5}});
+ for(std::size_t c=0;c<3;++c)check(std::abs(stable_result[c]-(ordinary_pixel[c]+.5*(raw_result[c]-ordinary_pixel[c])))<1e-7,"Stable scalar is not arithmetic interpolation");
+ check(scene.apply_stable_people(p,skin,{{nullptr,1}},{{-1,0}},false)==ordinary_pixel,"Off consumed analysis");
+ caught=false;try{scene.apply_stable_people(p,skin,{{&reference,1}},{{1,1.1}});}catch(...){caught=true;}check(caught,"Invalid stable scalar accepted");
  std::cout<<"PASS scene unknown/off, roles, luminance, alpha, range and overlap contracts\n";return 0;
  }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

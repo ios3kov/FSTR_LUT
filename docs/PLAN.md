@@ -1,5 +1,17 @@
 # FSTR-LUT — AI Enhance + Looks v3
 
+## Scalar toning in AE — host slice verified, 2026-10-18
+
+Native stable-strength core and schema2read-only analysis bridge now render in isolated AE25.6. Fixed the measured GUID-protocol export regression.77image-reference checks,3switch/upstream checks, fresh-process disk read and unseen-shot hard-cut fallback pass;12release +12sanitizer targets pass. This is prepared-clip integration: arbitrary-media native analysis, time-remap invalidation, Auto encoding and continuous visual acceptance remain open. [Exact host/artifact scope and evidence](SCALAR_NATIVE_INTEGRATION.md).
+
+## Scalar Smart strength averaging — 2026-10-18
+
+Implemented per-person anchor strength interpolation using current-frame native grading and geometry.36frame face-color motion diagnostic improves10.50%; same-geometry raw-strength ablation improves11.08%.4new schedule tests pass. Native AE integration and continuous visual acceptance remain open. [Algorithm, checks and limits](REFERENCE_CORRECTION.md#follow-up-scalar-strength-current-frame-geometry--2026-10-18).
+
+## Reference-frame averaging — 2026-10-18
+
+Added and tested explicit interpolation of added color correction between automatic per-person anchors.5math/policy tests and20existing analysis tests pass.36frame trial worsens measured face color motion42.10%; not promoted to AE. [Contract, result and checkpoint](REFERENCE_CORRECTION.md). Prior native bridge work remains preserved; host/Auto/flicker acceptance open.
+
 ## Automatic individual people — 2026-10-18
 
 Standalone automatic3-person/36frame combined scene+individual tone trial passes exact Off/reverse checks;14Python and11sanitizer C++ checks pass. [Implementation, evidence and open native/visual work](INDIVIDUAL_PEOPLE.md). AE integration and Auto encoding remain incomplete.

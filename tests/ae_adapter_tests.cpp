@@ -8,6 +8,9 @@
 #include <vector>
 #include <dlfcn.h>
 #include <fstream>
+#include "scene_cache_fixture.hpp"
+#include <cstdlib>
+#include <unistd.h>
 
 namespace {
 int checks=0;
@@ -20,6 +23,7 @@ struct Fixture {
     std::array<PF_ParamDef,ParamCount> params{};
     PF_EffectWorld input{},output{};std::array<PF_EffectWorld*,5> temporal{};
     int checkout=0,checkin=0,acquire=0,release=0,pixels_out=0,pixels_in=0,abort_calls=0;
+    std::vector<std::string> guids;bool fail_guid=false;
     std::vector<int> layer_ids;std::vector<PF_LRect> requests;int fail_layer=-1,fail_pixel_id=-1;
     int fail_param=0;bool fail_suite=false,fail_output=false,fail_pixel_checkout=false,fail_format=false;
     bool fail_checkin=false,fail_pixel_checkin=false,fail_release=false,abort_now=false;
@@ -77,6 +81,7 @@ void processing(){
     check(run(unknown,true)==PF_Err_BAD_CALLBACK_PARAM&&unknown.acquire==0&&unknown.checkin==RenderParamCount&&unknown.pixels_in==1,"Unknown space error/resources wrong");
 }
 void cinema(){
+    Fixture query;active=&query;check(effect_fn(PF_Cmd_QUERY_DYNAMIC_FLAGS,&query.in,&query.out,nullptr,nullptr,nullptr)==0&&query.out.out_flags2==0x08221401,"Dynamic query lost static capabilities");
     Fixture ui;active=&ui;
     check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Cinema schema setup failed");
     check(ui.params[SmartColor].uu.id==13&&ui.params[SmartColor].u.bd.dephault==FALSE&&ui.params[CameraInfo].uu.id==12,"Smart default/legacy IDs wrong");
@@ -182,13 +187,48 @@ void failures(){
     check(run(empty,true)==PF_Err_NONE&&output[0].alpha==0,"Empty input must be transparent without querying null pixel format");
     empty.output.width=empty.output.height=0;check(run(empty,true)==PF_Err_NONE,"Empty output failed");
 }
+PF_Err mix_guid(PF_ProgPtr ref,A_u_long n,const void* data){auto&f=fixture(ref);f.guids.emplace_back(static_cast<const char*>(data),n);return f.fail_guid?91:0;}
+void cached_scene_bridge(){
+    char pattern[]="/tmp/fstr-native-scene-XXXXXX";auto name=mkdtemp(pattern);check(name!=nullptr,"Scene fixture directory");const std::filesystem::path root(name);
+    struct Guard{std::filesystem::path path;~Guard(){unsetenv("FSTR_LUT_SCENE_CACHE");unsetenv("FSTR_LUT_SCENE_POLICY");std::error_code e;std::filesystem::remove_all(path,e);}} guard{root};
+    const std::string policy(64,'a');fstr::AnalysisImage image{2,1,{120,70,40,255,180,120,90,255}};const auto key=scene_fixture::write(root,image,1,policy,true);
+    setenv("FSTR_LUT_SCENE_CACHE",root.c_str(),1);setenv("FSTR_LUT_SCENE_POLICY",policy.c_str(),1);
+    Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==0,"Scene global setup");
+    {Fixture f;active=&f;f.in.current_time=5;f.in.total_time=10;f.params[SmartColor].u.bd.value=TRUE;f.params[Look].u.pd.value=9;
+     PF_PreRenderInput input{};input.output_request.rect={0,0,2,1};PF_PreRenderOutput output{};PF_PreRenderCallbacks cb{};cb.checkout_layer=checkout_layer;cb.GuidMixInPtr=mix_guid;PF_PreRenderExtra extra{&input,&output,&cb};
+     check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&extra)==0,"Cached pre-render failed");check(f.guids.size()==1&&f.guids[0].size()==64&&f.layer_ids==std::vector<int>({1000,Input}),"Scene snapshot GUID or current-only checkout missing");if(output.delete_pre_render_data_func)output.delete_pre_render_data_func(output.pre_render_data);
+     f.fail_guid=true;f.layer_ids.clear();check(effect_fn(PF_Cmd_SMART_PRE_RENDER,&f.in,&f.out,nullptr,nullptr,&extra)==91&&f.layer_ids.empty(),"GUID failure did not propagate before checkout");}
+    auto check_look=[&](int look,const char* file){
+        Fixture f;std::vector<PF_PixelFloat> input{{1,120.f/255,70.f/255,40.f/255},{1,180.f/255,120.f/255,90.f/255}},output(2);
+        set_world(f.input,input,2,1,2,PF_PixelFormat_ARGB128);set_world(f.output,output,2,1,2,PF_PixelFormat_ARGB128);
+        f.params[WorkingSpace].u.pd.value=2;f.params[Look].u.pd.value=look;f.params[LookAmount].u.fs_d.value=100;f.params[SmartColor].u.bd.value=TRUE;
+        std::ifstream cube(std::string(FSTR_TEST_LOOK_ROOT)+"/"+file);auto lut=std::make_shared<fstr::LUT>(fstr::LUT::parse(cube));fstr::SceneLook scene(lut,1);auto reference=scene.skin_reference(std::vector<fstr::SkinSample>(40,{{.23f,.12f,.07f},1}));fstr::SceneWeights roles{};roles[0]=1;
+        check(run(f,true)==0,"Cached native render failed");
+        std::array<std::array<float,4>,2> expected;
+        for(std::size_t i=0;i<2;++i){auto v=scene.apply_stable_people({float(fstr::srgb_to_linear(input[i].red)),float(fstr::srgb_to_linear(input[i].green)),float(fstr::srgb_to_linear(input[i].blue)),1},roles,{{&reference,1}},{{.75,.5}});for(std::size_t c=0;c<3;++c)v[c]=float(fstr::linear_to_srgb(v[c]));expected[i]=v;check(std::abs(output[i].red-v[0])<2e-6&&std::abs(output[i].green-v[1])<2e-6&&std::abs(output[i].blue-v[2])<2e-6,"AE bridge differs from independent scene core");}
+        auto full=output;
+        f.params[SmartColor].u.bd.value=FALSE;check(run(f,true)==0,"Scene Off failed");check(std::memcmp(output.data(),full.data(),output.size()*sizeof(PF_PixelFloat))!=0,"Native scene has no effect");auto ordinary=output;
+        f.params[SmartColor].u.bd.value=TRUE;check(run(f,true)==0&&std::memcmp(output.data(),full.data(),output.size()*sizeof(PF_PixelFloat))==0,"On/Off/On cache changed output");
+        for(auto&p:input){p.alpha*=.5f;p.red*=.5f;p.green*=.5f;p.blue*=.5f;}check(run(f,true)==0,"Premultiplied scene failed");
+        for(std::size_t i=0;i<2;++i)check(output[i].alpha==.5f&&std::abs(output[i].red-full[i].red*.5f)<2e-6&&std::abs(output[i].green-full[i].green*.5f)<2e-6&&std::abs(output[i].blue-full[i].blue*.5f)<2e-6,"Cached scene broke premultiplied alpha");
+        for(auto&p:input){p.alpha*=2;p.red*=2;p.green*=2;p.blue*=2;}
+        std::vector<PF_PixelFloat> roi(2);roi[1]={.7f,.8f,.9f,.6f};set_world(f.output,roi,1,1,2,PF_PixelFormat_ARGB128,1,0);check(run(f,true)==0&&std::abs(roi[0].red-full[1].red)<2e-6&&roi[1].alpha==.7f,"Cached scene ROI/row padding changed");
+        set_world(f.output,output,2,1,2,PF_PixelFormat_ARGB128);input[0].red+=1.f/255;check(run(f,true)==0,"Stale cache render failed");auto stale=output;f.params[SmartColor].u.bd.value=FALSE;check(run(f,true)==0&&std::memcmp(output.data(),stale.data(),output.size()*sizeof(PF_PixelFloat))==0,"Changed upstream reused stale scene mask");
+    };
+    check_look(9,"teal-orange-v1.cube");
+    std::filesystem::rename(root/(key+".fstrscene"),root/(key+".hidden"));
+    check_look(10,"neon-pink-cyan-v1.cube"); // Different LUT reuses immutable RAM analysis even without a ready header.
+    check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&setup.in,&setup.out,nullptr,nullptr,nullptr)==0,"Scene setdown failed");
+}
+
 }
 int main(int argc,char** argv){try{
     check(argc>=2&&argc<=4,"Provide the actual built plugin executable");
     auto module=dlopen(argv[1],RTLD_NOW|RTLD_LOCAL);check(module!=nullptr,"Native plugin dlopen failed");
     effect_fn=reinterpret_cast<PF_FilterProc>(dlsym(module,"EffectMain"));check(effect_fn!=nullptr,"EffectMain export missing");
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
-    check(setup.out.out_flags==0x02008042&&setup.out.out_flags2==0x08021400&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
+    check(setup.out.out_flags==0x02008042&&setup.out.out_flags2==0x08221401&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
+    Fixture query;active=&query;check(effect_fn(PF_Cmd_QUERY_DYNAMIC_FLAGS,&query.in,&query.out,nullptr,nullptr,nullptr)==0&&query.out.out_flags2==0x08221401,"Dynamic query lost static capabilities");
     Fixture ui;active=&ui;check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE&&ui.out.num_params==ParamCount,"Native control schema failed");
     check(ui.params[Contrast].uu.id==3&&ui.params[WorkingSpace].uu.id==9&&ui.params[Temperature].uu.id==10&&ui.params[Tint].uu.id==11,"Persistent IDs changed with UI order");
     Fixture non_ae;non_ae.in.appl_id=0;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&non_ae.in,&non_ae.out,nullptr,nullptr,nullptr)==PF_Err_INVALID_CALLBACK,"Non-AE host accepted");
@@ -199,6 +239,7 @@ int main(int argc,char** argv){try{
     for(int i=0;i<8;++i)tasks.push_back(std::async(std::launch::async,[]{Fixture f;std::vector<PF_PixelFloat> input{{1,.1f,.2f,.3f}},output(1);set_world(f.input,input,1,1,1,PF_PixelFormat_ARGB128);set_world(f.output,output,1,1,1,PF_PixelFormat_ARGB128);f.params[Exposure].u.fs_d.value=1;return run(f,true)==PF_Err_NONE&&output[0].red==.2f&&f.checkin==RenderParamCount&&f.pixels_in==1;}));
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");
     check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setdown failed");
+    cached_scene_bridge();
     check(dlclose(module)==0,"Native module cleanup failed");
     std::cout<<"PASS "<<checks<<" owned native callback assertions; actual AE loader/MFR: NOT RUN\n";return 0;
 }catch(const std::exception& e){std::cerr<<"FAIL "<<e.what()<<" assertion "<<checks<<"\n";return 1;}}

@@ -2,7 +2,7 @@ import sys,unittest
 from pathlib import Path
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools/benchmark'))
-from person_tone_analysis import associate,ownership,observation,attach_body_skin,stabilize_fields
+from person_tone_analysis import associate,ownership,observation,attach_body_skin,stabilize_fields,two_sided_confidence,mean_face_fields
 
 def obs(x,color=(1.5,.9,.5)):
  return dict(box=np.array([x,0,x+20,20],float),descriptor=np.array(color))
@@ -66,6 +66,37 @@ class PersonToneTests(unittest.TestCase):
   observations=[[dict(box=np.array([0,0,24,24]),mask=m,descriptor=np.ones(3))] for m in (left,right)]
   result=stabilize_fields([rgb,rgb],observations,[[0],[1]],[1]);np.testing.assert_array_equal(result[0][0]['mask'],left)
   self.assertEqual(stabilize_fields([rgb],[[]],[[]]),[[]])
+ def test_unknown_is_recovered_but_known_exclusion_is_not(self):
+  rgb=np.full((24,24,3),.3,np.float32);full=np.full((24,24),.8,np.float32);middle=full.copy();middle[10:14,10:14]=0
+  ceiling=np.ones((24,24),np.float32);ceiling[10:12,10:12]=0
+  frames=[[dict(box=np.array([0,0,24,24]),mask=m,ceiling=ceiling,descriptor=np.ones(3))] for m in (full,middle,full)]
+  result=stabilize_fields([rgb]*3,frames,[[0],[0],[0]])[1][0]['mask']
+  self.assertTrue((result[10:12,10:12]==0).all());self.assertGreater(float(result[13,13]),.75)
+ def test_unknown_face_still_has_independent_geometry(self):
+  rgb=np.full((10,10,3),.2,np.float32);raw=np.zeros((10,10),np.float32);geometry=np.ones((10,10),np.float32)
+  self.assertIsNotNone(observation([0,0,10,10],raw,rgb,descriptor_support=geometry))
+  self.assertIsNone(observation([0,0,10,10],raw,rgb))
+ def test_one_sided_cannot_invent_skin(self):
+  rgb=np.full((24,24,3),.3,np.float32);full=np.full((24,24),.8,np.float32);empty=np.zeros((24,24),np.float32)
+  frames=[[dict(box=np.array([0,0,24,24]),mask=m,ceiling=np.ones_like(m),descriptor=np.ones(3))] for m in (full,empty)]
+  self.assertEqual(float(stabilize_fields([rgb]*2,frames,[[0],[0]])[1][0]['mask'].max()),0.)
+ def test_three_frame_unknown_gap_does_not_bridge(self):
+  rgb=np.full((24,24,3),.3,np.float32);full=np.full((24,24,8),.0,np.float32);full[...,0]=.8;empty=full*0
+  window={i:(rgb,full if abs(i)==2 else empty) for i in (-2,-1,0,1,2)}
+  self.assertEqual(float(two_sided_confidence(window).max()),0.)
+ def test_person_mean_ignores_unknown_and_preserves_exclusion(self):
+  geometry=np.ones((24,24),np.float32);ceiling=geometry.copy();ceiling[10:12,10:12]=0
+  frames=[[dict(box=np.array([0,0,24,24]),mask=np.full((24,24),v,np.float32),face_geometry=geometry,face_ceiling=ceiling)] for v in (.7,0.,.9)]
+  result=mean_face_fields(frames,frames,[[0],[0],[0]])
+  self.assertTrue(all(abs(float(row[0]['mask'][15,15])-.8)<1e-5 for row in result))
+  self.assertTrue(all(float(row[0]['mask'][10,10])==0 for row in result))
+  split=mean_face_fields(frames,frames,[[0],[1],[2]])
+  self.assertGreater(float(split[2][0]['mask'][15,15]),float(split[0][0]['mask'][15,15]))
+ def test_probability_blend_tolerates_only_roundoff(self):
+  from person_sam_fields import blend_face_field
+  shape=(4,4);v=blend_face_field(np.full(shape,.8,np.float32),np.zeros(shape,np.float32),np.full(shape,1+1e-7,np.float32),np.zeros(shape,np.float32))
+  self.assertEqual(float(v.min()),0.)
+  with self.assertRaises(ValueError):blend_face_field(v,v,np.full(shape,1.1),v)
  def test_repeat(self):
   frames=[[obs(i),obs(100-i,(1.1,1.,.8))] for i in range(8)]
   self.assertEqual(associate(frames),associate(frames))

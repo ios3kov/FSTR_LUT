@@ -1,0 +1,70 @@
+{
+  "recorded_at": "2026-10-18T12:21:26.143629+02:00",
+  "source_base_commit": "b3d7f17ddafb49f64b03d6acbfc4d494a06f62fa",
+  "branch": "dev/ai-enhance-prototype",
+  "source_bindings": {
+    "src/ae/plugin.cpp": "626f0d09a17f554742d7d088a24d268f5cc1fb2f772e25a49c0b7c647611392a",
+    "src/ae/plugin.hpp": "8f435697a5d837ea776df36dc8c7138414588b138badf3a7bba76d01de030198",
+    "src/ae/FSTR_LUT_PiPL.r": "dfda46f4ff03b94f4bb385faa9c2f53ca1cae3115eacf139ee8de6f916e04669",
+    "src/analysis/scene_cache.cpp": "59bbeb90672334dba1878ceafe610909c9b2771623019b5d6afb74b8e2d8d908",
+    "include/fstr/scene_cache.hpp": "783a236fc92ba25b838f7cbc34aecf2f9fac2c98b4324fe32ef9264d4fafe4f1",
+    "include/fstr/scene_color.hpp": "f2bba2d31558ac2b1e0a1fff2b48ba434ab789d389d55725f4f59166fa996e3e",
+    "src/color/scene_color.cpp": "f3c16fc541346dd0ea3efd29aa7c977477c898f7ddd3d6ff0f8b40987ea146d8",
+    "src/color/skin_tone.cpp": "e7dc97c5e7653cdc4cd616015f6364f735653bb6895f7827a392fdda61d2b944",
+    "tools/benchmark/prepare_strength_cache.py": "3f0957582cb3b6547ab3abb6c629c85aaea5a6da7f8625297ecd21ca42e8ba71",
+    "tools/benchmark/export_scene_cache.py": "28ee8150374a23bb81efdece76e27343ca5aa70de36ae40947d3fc210a6ec813",
+    "tools/benchmark/verify_scalar_host.py": "021d640e166627dee875aed9bc31db1c6ce9ed7f3bd1cc1388322217c298d32d",
+    "tools/benchmark/reference_correction.py": "0b0a6fb21f44254564f95fafd902da5ea830180c4720af190490e50dc0c82eaf",
+    "tools/benchmark/strength_correction_trial.py": "beacb6aa04fbbe2b297a289332a6108274a322d9525754dc4efd4c86d1b238fe",
+    "tests/ae_adapter_tests.cpp": "ed0a082e74ca05ac608f6d28b52bbbaac61268e60c1dfd31cfaf451489be0cad",
+    "tests/scene_cache_tests.cpp": "329f392f996c3c995c291abcaa14cab25913ac729c3bbe7b28305c0675471860",
+    "tests/scene_color_tests.cpp": "7d3faa6b1a325a133a460d3efac78f26fb5ba6cbb2fcfc085026a251cad886ba",
+    "CMakeLists.txt": "56ec1b9630cd3494fa00b220af3fda03d2472bb735c08e6bff63847892fb95f6"
+  },
+  "effect_artifact": {
+    "path": "/Users/os3kov/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/FSTR_LUT_Scalar_Test_B20261018.plugin",
+    "files": {
+      "Contents/Info.plist": "5fa6de2866ef18743eb90846eea7ed1d708c532cdb9e88f59fecb9a946511787",
+      "Contents/PkgInfo": "e13c5afd5f73acd972f0bc6472b86b8b0adf50bb82ed19a4680978469d45675a",
+      "Contents/_CodeSignature/CodeResources": "ac5a40dd51d29e47a9e986879bba674fd307b3c019a867547d96ba248b70ad5f",
+      "Contents/MacOS/FSTR_LUT_Development": "d5f000138a5c16be4574b336a153b256f86b65e2e7bff41856c108d7cb6563d0",
+      "Contents/Resources/FSTR_LUT_Development.rsrc": "e6f7f016cdf8987a860c0546a61c1e39dd3e017a67a845dfd56c8acfe31a17c5"
+    }
+  },
+  "host": {
+    "version": "25.6x101",
+    "bpc": 32,
+    "output": "Photoshop8bit",
+    "render_scale": "Quarter",
+    "layer_quality": "Draft",
+    "working_space": "unmanaged, explicit sRGB encoding",
+    "image_verification_sha256": "aa3370ea508d6c6e24ec43a19915ce964be33b702c7f95721e5ac5e2d8084806",
+    "comparisons": 77,
+    "switch_pairs": 3,
+    "max_code_error": 1,
+    "report_sha256": "86254911a2cea3573f748e8bfab7c8e5f5dfe2a164c58b7064e9d6e7ae7bedb8",
+    "trace_sha256": "9bf34950584cf94595c3cbe866a3852c01435178676e2279681df93322445b3b"
+  },
+  "restart": {
+    "verification_sha256": "63909835c5da3b784685bf75b77339645bafd3fe71d430b847031f5831606a58",
+    "report_sha256": "ec065ba0b020f28961746513eabdea023b8e926b7ff4223f4ed935ee9bc4d464",
+    "passed": true
+  },
+  "checks": {
+    "release": "12/12 PASS",
+    "asan_ubsan": "12/12 PASS",
+    "python": "29 PASS",
+    "exact_installed_callbacks": "191 PASS",
+    "native_frame_equivalence": "36/36 within5.960464477539063e-8"
+  },
+  "not_run": [
+    "continuous perceptual flicker acceptance",
+    "all small/blurred-face plan sizes",
+    "native model backend for arbitrary new footage",
+    "temporal-context/time-remap cache invalidation",
+    "Auto pixel encoding",
+    "host HDR/transparent footage/Best resolution/MFR-specific invocation counts",
+    "production release"
+  ],
+  "scope": "Prepared-clip read-only native development integration; no production readiness claim"
+}

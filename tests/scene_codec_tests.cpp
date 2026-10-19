@@ -8,7 +8,7 @@ void check(bool value){if(!value)throw std::runtime_error("Lossless codec assert
 template<class F>void rejects(F fn){bool caught=false;try{fn();}catch(const std::exception&){caught=true;}check(caught);}
 int main(){try{
  std::mt19937 random(0x1843);std::size_t compared=0;
- for(auto count:{0,1,2,3,4,255,256,65535,65536,65537,262144})for(int mode=0;mode<3;++mode){std::string bytes(std::size_t(count),'\0');for(auto&c:bytes)c=mode==0?0:mode==1?char(random()&255):char(compared++&255);auto packed=encode(bytes);check(decode(packed,bytes.size())==bytes);++compared;
+ for(auto count:{0,1,2,3,4,255,256,65535,65536,65537,262144})for(int mode=0;mode<3;++mode){std::string bytes(std::size_t(count),'\0');std::size_t pattern_index=0;for(auto&c:bytes)c=mode==0?0:mode==1?char(random()&255):char(pattern_index++&255);auto packed=encode(bytes);check(decode(packed,bytes.size())==bytes);++compared;
   for(std::size_t cut:{std::size_t(0),packed.size()/2,packed.size()-1})rejects([&]{decode(std::string_view(packed).substr(0,cut),bytes.size());});
   rejects([&]{decode(packed+"x",bytes.size());});rejects([&]{decode(packed,bytes.size()+1);});if(bytes.size())rejects([&]{decode(packed,bytes.size()-1);});
   auto bad=packed;bad[bad.size()-1]^=1;rejects([&]{decode(bad,bytes.size());});

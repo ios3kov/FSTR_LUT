@@ -1,6 +1,6 @@
-## Product finishing checkpoint — 2026-10-19
+## Local CoreML product finish — 2026-10-19
 
-**PRODUCT-FINISH-001 partial; not promoted.** Added cancellable cross-process CoreML compiler initialization, completed-generation publication, live model leases and bounded inactive generation cleanup. Current23Release/23ASan+UBSan pass. Two actual simultaneous native processes:6raw comparisons against CPU <=3.636e-6, cancellation/recovery pass; contended timings are not a benchmark. Actual GUI trial702b645d02c24d66 has unresolved AE `{no current context}` alert; Mac locked, remaining26host exports/failure UI/canonical installation NOT_RUN. Installed signedCPU1c remains unchanged. [Scope, checks, alert and exact continuation](PRODUCT_FINISH.md). No installer/release.
+**PRODUCT-FINISH-001 implemented, locally validated and installed aa3b8f484020b1da.** Native background CoreML + process-safe compiler generations/cancellation/live leases.23Release/23ASan+UBSan;6concurrent raw comparisons <=3.636e-6. Actual installed21exports across2AE launches: accepted pixels <=1code, fresh8/16, saved Custom open/save/reopen; disk persistence, Off/re-enable/LUT reuse and upstream invalidation verified. Loading/Ready/unavailable UI and explicit missing-model/Off recovery checked in identified artifacts. Nested helper UI alert avoided by scheduled viewer opening; product source unchanged. CPU1c signed rollback retained, helpers cleaned, current signature exact. Initial context/host preparation can still wait; no FPS/universal-footage/Windows certification or installer/release. [Exact checks, failed attempts and limits](PRODUCT_FINISH.md).
 
 ## Actual GUI cancellation during Smart loading — 2026-10-19
 

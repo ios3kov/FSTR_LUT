@@ -19,5 +19,11 @@ int main(){char pattern[]="/tmp/fstr-scene-cache-XXXXXX";auto name=mkdtemp(patte
 
  auto stable_image=image;stable_image.rgba[0]=44;const auto stable_key=scene_fixture::write(root,stable_image,1,policy,true);fstr::SceneCache stable_cache(root.string(),policy);auto stable=stable_cache.get(stable_image,1);check(stable->people[0].toning_support==std::vector<float>(2,.75f)&&stable->people[0].toning_strength==.5,"Stable fields missing from cache");
  auto stable_header=root/(stable_key+".fstrscene");nlohmann::json sj;{std::ifstream f(stable_header);f>>sj;}sj["people"][0]["toning_strength"]=1.1;{std::ofstream f(stable_header);f<<sj.dump();}fstr::SceneCache bad_stable(root.string(),policy);caught=false;try{bad_stable.get(stable_image,1);}catch(...){caught=true;}check(caught,"Invalid stable strength accepted");
+ // Existing schema3 remains readable after the automatic writer moves to4.
+ auto legacy=image;legacy.rgba[0]=61;auto legacy_key=scene_fixture::write(root,legacy,1,policy,true);auto legacy_header=root/(legacy_key+".fstrscene");nlohmann::json old;{std::ifstream f(legacy_header);f>>old;}
+ old["version"]=3;old["people"][0]["box"]={.1,.2,.8,.9};old["people"][0]["descriptor"]={1.1,.9,.8};old["people"][0]["detection_confidence"]=.95;{std::ofstream f(legacy_header);f<<old.dump();}
+ fstr::SceneCache old_reader(root.string(),policy);auto old_value=old_reader.get(legacy,1);check(old_value->people[0].box==std::array<double,4>{.1,.2,.8,.9}&&old_value->people[0].toning_support==std::vector<float>(2,.75f),"Legacy schema3 detail changed");
+ // Unknown codecs cannot masquerade as successful schema4 analysis.
+ old["version"]=4;old["payload_codec"]="unknown";{std::ofstream f(legacy_header);f<<old.dump();}fstr::SceneCache unsupported(root.string(),policy);caught=false;try{unsupported.get(legacy,1);}catch(...){caught=true;}check(caught,"Unknown compressed codec accepted");
  std::cout<<"PASS scene cache integrity, invalidation, reopen and parallel sharing\n";return 0;
  }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

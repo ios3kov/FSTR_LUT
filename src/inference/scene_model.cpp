@@ -1,3 +1,4 @@
+#include "fstr/verified_sha256.hpp"
 #include "fstr/scene_model.hpp"
 #include <cstdlib>
 #ifdef FSTR_SCENE_COREML
@@ -17,7 +18,7 @@
 #include <dlfcn.h>
 namespace fstr {namespace {
 double smooth(double a,double b,double v){double t=std::clamp((v-a)/(b-a),0.,1.);return t*t*(3-2*t);}
-std::string digest(const std::filesystem::path& path){std::ifstream f(path,std::ios::binary);if(!f)throw std::runtime_error("Scene model asset unavailable");std::string hash;picosha2::hash256_hex_string(std::istreambuf_iterator<char>(f),std::istreambuf_iterator<char>(),hash);if(f.bad())throw std::runtime_error("Scene model asset read failed");return hash;}
+std::string digest(const std::filesystem::path& path){std::ifstream f(path,std::ios::binary);if(!f)throw std::runtime_error("Scene model asset unavailable");std::string hash;hash=verified_sha256(f);if(f.bad())throw std::runtime_error("Scene model asset read failed");return hash;}
 }
 struct SceneModel::Impl {
 #ifdef FSTR_SCENE_COREML

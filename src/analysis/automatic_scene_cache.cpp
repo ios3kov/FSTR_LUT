@@ -1,3 +1,4 @@
+#include "scene_payload_codec.hpp"
 #include "fstr/automatic_scene_cache.hpp"
 #include "json.hpp"
 #include "picosha2.h"
@@ -80,7 +81,7 @@ std::size_t validate(const SceneAnalysis&a,const AnalysisImage&i){
 }
 std::string floats(const float* data,std::size_t n){if(n>max_entry/4)throw std::invalid_argument("Automatic payload budget");std::string bytes(n*4,'\0');for(std::size_t i=0;i<n;++i){std::uint32_t value;std::memcpy(&value,data+i,4);for(std::size_t c=0;c<4;++c)bytes[i*4+c]=char((value>>(c*8))&255);}return bytes;}
 void write(const std::filesystem::path&p,const std::string&bytes){std::ofstream f(p,std::ios::binary);f.write(bytes.data(),std::streamsize(bytes.size()));f.close();if(!f)throw std::runtime_error("Automatic cache write failed");}
-std::string payload(const std::filesystem::path&p,const float*data,std::size_t n){auto bytes=floats(data,n);write(p,bytes);return picosha2::hash256_hex_string(bytes);}
+std::string payload(const std::filesystem::path&p,const float*data,std::size_t n){auto bytes=floats(data,n);write(p,cache_codec::encode(bytes));return picosha2::hash256_hex_string(bytes);}
 bool key_text(const std::string&s){return s.size()==64&&std::all_of(s.begin(),s.end(),[](char c){return(c>='0'&&c<='9')||(c>='a'&&c<='f');});}
 void store(const std::filesystem::path&root,const std::string&key,const std::string&policy,const SceneAnalysis&a,double height){
  std::filesystem::create_directories(root);RootWriteLock lock(root);if(!lock)return;remove_abandoned(root);
@@ -91,7 +92,7 @@ void store(const std::filesystem::path&root,const std::string&key,const std::str
  const std::string prefix=".building-";
 #endif
  std::filesystem::path temporary_path;std::random_device random;for(int attempt=0;attempt<32;++attempt){auto candidate=root/(prefix+std::to_string(random())+"-"+std::to_string(random()));if(std::filesystem::create_directory(candidate)){temporary_path=std::move(candidate);break;}}if(temporary_path.empty())throw std::runtime_error("Automatic cache temporary failed");struct Temporary{std::filesystem::path path;~Temporary(){std::error_code e;std::filesystem::remove_all(path,e);}} temporary{temporary_path};const auto dir=temporary.path;
- nlohmann::json j{{"version",3},{"key",key},{"policy",policy},{"width",a.width},{"height",a.height},{"source_height",height},{"people",nlohmann::json::array()}};std::vector<float> scene;scene.reserve(a.scene.size()*8);for(const auto&w:a.scene)scene.insert(scene.end(),w.begin(),w.end());j["scene_sha256"]=payload(dir/(key+".weights"),scene.data(),scene.size());
+ nlohmann::json j{{"version",4},{"payload_codec","zlib-1"},{"key",key},{"policy",policy},{"width",a.width},{"height",a.height},{"source_height",height},{"people",nlohmann::json::array()}};std::vector<float> scene;scene.reserve(a.scene.size()*8);for(const auto&w:a.scene)scene.insert(scene.end(),w.begin(),w.end());j["scene_sha256"]=payload(dir/(key+".weights"),scene.data(),scene.size());
  for(std::size_t i=0;i<a.people.size();++i){const auto&p=a.people[i];auto stem=key+"-p"+std::to_string(i);std::vector<float> samples;samples.reserve(p.samples.size()*4);for(const auto&s:p.samples)for(double v:{s.color.r,s.color.g,s.color.b,s.confidence})samples.push_back(float(v));nlohmann::json item{{"samples",p.samples.size()},{"samples_sha256",payload(dir/(stem+".samples"),samples.data(),samples.size())},{"mask_sha256",payload(dir/(stem+".mask"),p.mask.data(),p.mask.size())},{"box",p.box},{"descriptor",p.descriptor},{"detection_confidence",p.detection_confidence}};
   if(!p.toning_support.empty()){item["toning_support_sha256"]=payload(dir/(stem+".support"),p.toning_support.data(),p.toning_support.size());item["toning_strength"]=p.toning_strength;}j["people"].push_back(std::move(item));
  }auto header=j.dump();if(header.size()>65536)throw std::invalid_argument("Automatic cache header budget");write(dir/(key+".fstrscene"),header);

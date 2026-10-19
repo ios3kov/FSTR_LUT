@@ -1,3 +1,7 @@
+## Lossless mask retention and faster verification — 2026-10-19
+
+Installed6a8957b12ddcf143; first canonical15exports/15prior comparisonsPASS (8/16/32,SmartOff/re-enable,savedCustom). Experimentalfull1080p336exports/336comparisons <=1code, actual8MFRthreads/141overlaps. All168mask entries fit429721178bytes withinsame512MiB budget: repeat0newmodels instead168;89232ms vs169203ms on exact7sclip. Cold serial303346ms vs300639ms, no cold-render improvement claim. Full-file verification14.6xstagebenchmark withidenticaldigests; actualconstructoroneobservation11.365s vs14.881s.30Release/30ASan+UBSanSDK,targetedTSan2,998serializedpayloadbitcomparisonsPASS. Signed5b844rollback preserved, emptyAE normalquit, ownhelpers cleaned. Canonicalrestart/same-frameLUT-reuse/original1080p finalchecks pending; continuous playback/Windows/FPS not certified. [Contract and limits](SMART_LOSSLESS_CACHE.md).
+
 ## Full1080p Smart video / SDR boundary repair — 2026-10-19
 
 Narrow AE AutoPrepare boundary repair implemented; experimental eab60710ac94a6c9 passes336full1080p exports/168serial-MFR comparisons <=1PSD code, with8actual host threads/564overlapping distinct-frame pairs. Reproduced installed baseline516 atwhite1+1/32768; no general HDR clamp or model change.28Release SDK/25ASan+UBSan core contracts;604892frozen main/prepared/error comparisons. Installed5b844 unchanged. Original8baseline references blocked byits516, continuous visual review separate. Measured lossless-cache follow-up pending. [Contract, failures and exact limits](SMART_VIDEO_1080P.md).

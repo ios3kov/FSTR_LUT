@@ -1,3 +1,4 @@
+#include "fstr/verified_sha256.hpp"
 #include "fstr/parts_model.hpp"
 #include "mediapipe_abi.hpp"
 #include "picosha2.h"
@@ -13,7 +14,7 @@ namespace fstr {namespace {
 constexpr const char* model_sha="c6748b1253a99067ef71f7e26ca71096cd449baefa8f101900ea23016507e0e0";
 void verify(const std::string& path,const std::string& expected){
  if(!std::filesystem::path(path).is_absolute()||expected.size()!=64||!std::filesystem::is_regular_file(std::filesystem::symlink_status(path))||std::filesystem::file_size(path)>512*1024*1024)throw std::invalid_argument("Invalid native model asset");
- std::ifstream input(path,std::ios::binary);if(!input)throw std::runtime_error("Native model asset unavailable");std::string actual;picosha2::hash256_hex_string(std::istreambuf_iterator<char>(input),std::istreambuf_iterator<char>(),actual);if(input.bad()||actual!=expected)throw std::runtime_error("Native model asset checksum mismatch");
+ std::ifstream input(path,std::ios::binary);if(!input)throw std::runtime_error("Native model asset unavailable");std::string actual;actual=verified_sha256(input);if(input.bad()||actual!=expected)throw std::runtime_error("Native model asset checksum mismatch");
 }
 void check_image(const AnalysisImage&i){if(i.width<1||i.height<1||i.width>2048||i.height>2048||i.rgba.size()!=std::size_t(i.width)*std::size_t(i.height)*4)throw std::invalid_argument("Invalid native model input");}
 }

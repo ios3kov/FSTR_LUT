@@ -2,6 +2,7 @@
 #include "fstr_embedded_look.hpp"
 #include "metadata_ui.hpp"
 #include "color_pass.hpp"
+#include "row_iteration.hpp"
 #include "fstr/regions.hpp"
 #include "fstr/scene_cache.hpp"
 #include "fstr/automatic_scene_cache.hpp"
@@ -386,8 +387,8 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
     const std::int64_t dx=smart?std::int64_t(out.origin_x)-in.origin_x:-std::int64_t(in_data->output_origin_x);
     const std::int64_t dy=smart?std::int64_t(out.origin_y)-in.origin_y:-std::int64_t(in_data->output_origin_y);
     const bool share_prelook=analysis&&processor.can_share_prelook();
-    for(A_long y=0;y<out.height;++y) {
-        const auto abort=PF_ABORT(in_data);if(abort)return abort;
+    auto process_row=[&](A_long y,bool poll,auto& influences,auto& stable)->PF_Err {
+        if(poll){const auto abort=PF_ABORT(in_data);if(abort)return abort;}
         auto dst=reinterpret_cast<P*>(reinterpret_cast<unsigned char*>(out.data)+std::size_t(y)*std::size_t(out.rowbytes));
         const auto sy=std::int64_t(y)+dy;
         for(A_long x=0;x<out.width;++x) {
@@ -417,7 +418,19 @@ template<class P>PF_Err process_world(PF_InData* in_data,const PF_EffectWorld& i
                 dst[x]={src->alpha,quantize(v[0]),quantize(v[1]),quantize(v[2])};
             }
         }
+        return PF_Err_NONE;
+    };
+    // Host-owned scheduling respects AE's render workers; no private pool.
+    // Borrowed worlds stay checked out until synchronous iteration completes.
+    if(in_data->utils&&in_data->utils->iterate_generic&&out.height>=32&&std::int64_t(out.width)*out.height>=65536&&
+       fstr::ae::disjoint_rows(in.data,std::size_t(in.height),std::size_t(in.rowbytes),out.data,std::size_t(out.height),std::size_t(out.rowbytes))){
+        const auto abort=PF_ABORT(in_data);if(abort)return abort;
+        if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_ROWS HOST rows=%d\n",int(out.height));
+        auto parallel_row=[&](A_long y,bool poll){auto local_influences=influences;auto local_stable=stable;return process_row(y,poll,local_influences,local_stable);};
+        return fstr::ae::iterate_rows(out.height,in_data->utils->iterate_generic,parallel_row);
     }
+    for(A_long y=0;y<out.height;++y){const auto error=process_row(y,true,influences,stable);if(error)return error;}
+
     return PF_Err_NONE;
 }
 PF_Err render(PF_InData* in_data,PF_EffectWorld& input,PF_EffectWorld& output,bool smart,const std::vector<TemporalInput>& neighbors={},const std::vector<PreparationInput>& declared_anchors={},const fstr::ae::HostSdrTimeline* scene_timeline=nullptr,const PF_State* prepared_state=nullptr) {

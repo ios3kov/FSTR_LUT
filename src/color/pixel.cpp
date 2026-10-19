@@ -13,8 +13,7 @@ RGB shoulder(RGB v,double amount) {
 }
 }
 ColorProcessor::ColorProcessor(const ColorSettings& s,Transfer t,Primaries p,Alpha a)
-    :settings_(s),transfer_(t),alpha_(a),bypass_(false) {
-    validate_grade(s.grade);
+    :settings_(s),grade_(s.grade),transfer_(t),alpha_(a),bypass_(false) {
     for(double amount:{s.mix,s.shoulder})
         if(!std::isfinite(amount)||amount<0||amount>1)throw std::invalid_argument("Color strength must be finite [0,1]");
     if(!std::isfinite(s.look_amount)||s.look_amount<0||s.look_amount>3)
@@ -37,7 +36,7 @@ std::array<float,4> ColorProcessor::apply(std::array<float,4> pixel,double color
     RGB work;
     if(s.source!=SourceProfile::Host)work=source_to_linear_rec709(raw,s.source);
     else work={decode_host(raw.r,transfer_),decode_host(raw.g,transfer_),decode_host(raw.b,transfer_)};
-    work=shoulder(grade_linear(work,s.grade),s.shoulder);
+    work=shoulder(grade_.apply(work),s.shoulder);
     if(s.look&&s.look_amount>0) {
         const RGB before=work;
         auto mapped=s.look->sample({encode_host(work.r,Transfer::SRGB),encode_host(work.g,Transfer::SRGB),encode_host(work.b,Transfer::SRGB)});

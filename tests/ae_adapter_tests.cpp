@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <future>
+#include <thread>
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -389,6 +390,45 @@ void cached_scene_bridge(){
 }
 
 }
+
+std::atomic<int> host_iteration_calls{0};
+PF_Err parallel_host(A_long rows,void* ref,PF_Err(*fn)(void*,A_long,A_long,A_long)){
+    ++host_iteration_calls;std::atomic<A_long> next{0};std::atomic<PF_Err> error{0};
+    auto work=[&](A_long t){while(!error){auto y=next.fetch_add(1);if(y>=rows)break;auto e=fn(ref,t,y,rows);if(e)error=e;}};
+    std::thread a(work,1),b(work,2);work(0);a.join();b.join();return error;
+}
+template<class P>void host_rows(PF_PixelFormat format,P pixel){
+    Fixture serial,parallel;std::vector<P> input(256*256,pixel),expected(input.size()),actual(input.size());
+    for(auto* f:{&serial,&parallel}){f->params[Look].u.pd.value=9;f->params[Exposure].u.fs_d.value=.5;f->params[Temperature].u.fs_d.value=20;f->params[Tint].u.fs_d.value=-10;set_world(f->input,input,256,256,256,format);}
+    set_world(serial.output,expected,256,256,256,format);set_world(parallel.output,actual,256,256,256,format);parallel.utils.iterate_generic=parallel_host;
+    check(run(serial,true)==0&&run(parallel,true)==0,"Host row rendering failed");check(std::memcmp(expected.data(),actual.data(),actual.size()*sizeof(P))==0,"Host iterator pixels differ from serial");check(host_iteration_calls>0,"Host iterator not executed");
+    set_world(serial.input,expected,256,256,256,format);set_world(parallel.input,actual,256,256,256,format);const auto calls=host_iteration_calls.load();
+    check(run(serial,true)==0&&run(parallel,true)==0&&std::memcmp(expected.data(),actual.data(),actual.size()*sizeof(P))==0,"In-place serial fallback changed pixels");check(host_iteration_calls==calls,"Aliased input/output used host workers");
+    parallel.abort_now=true;check(run(parallel,true)==75,"Host row initial cancellation ignored");
+}
+
+void smart_host_rows(){
+ char pattern[]="/tmp/fstr-parallel-smart-XXXXXX";auto name=mkdtemp(pattern);check(name!=nullptr,"Parallel Smart temp");const std::filesystem::path root(name);
+ struct Guard{std::filesystem::path p;~Guard(){unsetenv("FSTR_LUT_SCENE_CACHE");unsetenv("FSTR_LUT_SCENE_POLICY");std::error_code e;std::filesystem::remove_all(p,e);}} guard{root};
+ const int n=256;fstr::AnalysisImage image{n,n,{}};image.rgba.resize(n*n*4);std::vector<PF_PixelFloat> input(n*n),a(n*n),b(n*n);
+ for(int y=0;y<n;++y)for(int x=0;x<n;++x){const auto i=y*n+x;auto*rgb=&image.rgba[4*i];const float alpha=x%31==0?0:.25f+.75f*y/255;
+  rgb[0]=alpha?120:0;rgb[1]=alpha?70:0;rgb[2]=alpha?40:0;rgb[3]=255;input[i]={alpha,alpha*120.f/255,alpha*70.f/255,alpha*40.f/255};}
+ const std::string policy(64,'b');const auto key=scene_fixture::write(root,image,n,policy,true);
+ auto payload=[&](const std::string&path,const std::vector<float>&v){std::string bytes(v.size()*4,'\0');for(std::size_t i=0;i<v.size();++i){std::uint32_t bits;std::memcpy(&bits,&v[i],4);for(int c=0;c<4;++c)bytes[4*i+c]=char((bits>>(c*8))&255);}std::ofstream f(root/path,std::ios::binary);f.write(bytes.data(),bytes.size());f.close();return picosha2::hash256_hex_string(bytes);};
+ nlohmann::json j;{std::ifstream f(root/(key+".fstrscene"));f>>j;}
+ j["people"].push_back(j["people"][0]);std::vector<float> mask(n*n),support(n*n);
+ for(int person=0;person<2;++person){for(int y=0;y<n;++y)for(int x=0;x<n;++x){auto i=y*n+x;double v=double(x)/255;mask[i]=float(person?v:1-v);support[i]=float(mask[i]*(double(y)/255));}
+  const auto stem=key+"-p"+std::to_string(person);j["people"][person]["mask_sha256"]=payload(stem+".mask",mask);j["people"][person]["toning_support_sha256"]=payload(stem+".support",support);j["people"][person]["toning_strength"]=person?.8:.3;
+  if(person){std::vector<float> samples;for(int i=0;i<40;++i)for(float v:{.45f,.27f,.18f,1.f})samples.push_back(v);j["people"][person]["samples_sha256"]=payload(stem+".samples",samples);}
+ }
+ {std::ofstream f(root/(key+".fstrscene"));f<<j.dump();}
+ setenv("FSTR_LUT_SCENE_CACHE",root.c_str(),1);setenv("FSTR_LUT_SCENE_POLICY",policy.c_str(),1);Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==0,"Parallel Smart global setup");
+ Fixture serial,parallel;for(auto*f:{&serial,&parallel}){set_world(f->input,input,n,n,n,PF_PixelFormat_ARGB128);f->params[WorkingSpace].u.pd.value=2;f->params[Look].u.pd.value=9;f->params[SmartColor].u.bd.value=TRUE;}
+ set_world(serial.output,a,n,n,n,PF_PixelFormat_ARGB128);set_world(parallel.output,b,n,n,n,PF_PixelFormat_ARGB128);parallel.utils.iterate_generic=parallel_host;const auto before=host_iteration_calls.load();
+ check(run(serial,true)==0&&run(parallel,true)==0,"Parallel two-person Smart failed");check(host_iteration_calls>before,"Smart failed to execute host iterator");check(std::memcmp(a.data(),b.data(),a.size()*sizeof(PF_PixelFloat))==0,"Smart people/support/alpha parallel mismatch");
+ serial.params[SmartColor].u.bd.value=FALSE;check(run(serial,true)==0&&std::memcmp(a.data(),b.data(),a.size()*sizeof(PF_PixelFloat))!=0,"Smart oracle had no correction");
+ active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&setup.in,&setup.out,nullptr,nullptr,nullptr)==0,"Parallel Smart setdown");
+}
 void* cleanup_module=nullptr;
 int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_directory_path()/("fstr-native-prep-owned-"+std::to_string(getpid()));struct PrepCleanup{std::filesystem::path p;~PrepCleanup(){std::error_code e;std::filesystem::remove_all(p,e);}} prep_cleanup{prep_root};setenv("FSTR_LUT_PREPARATION_CACHE",prep_root.c_str(),1);try{
     check(argc>=2&&argc<=4,"Provide the actual built plugin executable");
@@ -415,6 +455,8 @@ int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_direct
         std::cout<<"PASS SDK callback background "<<(failure?"failure":"loading/cancel/setdown")<<" setup_ms="<<setup_ms<<" off_ms="<<off_ms<<" cancel_ms="<<cancel_ms<<" stop_ms="<<stop_ms<<"; actual AE cancellation NOT RUN\n";return 0;
     }
     Fixture setup;active=&setup;check(effect_fn(PF_Cmd_GLOBAL_SETUP,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setup failed");
+    host_rows(PF_PixelFormat_ARGB32,PF_Pixel{255,80,60,40});host_rows(PF_PixelFormat_ARGB64,PF_Pixel16{32768,10000,7000,4000});host_rows(PF_PixelFormat_ARGB128,PF_PixelFloat{1,.2f,.1f,.05f});
+
     check(setup.out.out_flags==0x06008042&&setup.out.out_flags2==0x08221401&&setup.out.my_version==32769,"PiPL/runtime flags mismatch");
     check_dynamic_flags();
     Fixture ui;active=&ui;check(effect_fn(PF_Cmd_PARAMS_SETUP,&ui.in,&ui.out,nullptr,nullptr,nullptr)==PF_Err_NONE&&ui.out.num_params==ParamCount,"Native control schema failed");
@@ -428,6 +470,7 @@ int main(int argc,char** argv){const auto prep_root=std::filesystem::temp_direct
     for(auto& t:tasks)check(t.get(),"Parallel native snapshot mismatch");
     check(effect_fn(PF_Cmd_GLOBAL_SETDOWN,&setup.in,&setup.out,nullptr,nullptr,nullptr)==PF_Err_NONE,"Global setdown failed");
     cached_scene_bridge();
+    smart_host_rows();
     check(dlclose(module)==0,"Native module cleanup failed");cleanup_module=nullptr;
     std::cout<<"PASS "<<checks<<" owned native callback assertions; actual AE loader/MFR: NOT RUN\n";return 0;
 }catch(const std::exception& e){if(cleanup_module&&effect_fn){Fixture cleanup;active=&cleanup;effect_fn(PF_Cmd_GLOBAL_SETDOWN,&cleanup.in,&cleanup.out,nullptr,nullptr,nullptr);dlclose(cleanup_module);cleanup_module=nullptr;}std::cerr<<"FAIL "<<e.what()<<" assertion "<<checks<<"\n";return 1;}}

@@ -1,0 +1,40 @@
+{
+  "timestamp_utc": "2026-10-19T08:56:50.081701+00:00",
+  "base": "5f2ae8c",
+  "trial": "c958759833098f7c",
+  "state": "PASS scoped native, actual paired performance, installed canonical acceptance",
+  "code_sha256": {
+    "CMakeLists.txt": "8894376dbc9c027def51f1a77b5f6a4de19f44e3d5cda697ed018872d2523c67",
+    "include/fstr/color.hpp": "10bdd3ad7499019c23e93c7ca9568b9cac422a056a65a3dd336a0647cf58480f",
+    "src/color/grade.cpp": "e711312dfa211708f4e3b57d4179339cef2ceca483be682cfc21e00ba2e86971",
+    "src/color/pixel.cpp": "0a95f2d223b6691a1f04977233b42bd239ace0ab5516b440532d04ee559024fb",
+    "src/ae/plugin.cpp": "4e1e7297a6e72ef5c482c3e7b4f5b31ce81633e86834087207a0008c417ffa07",
+    "src/ae/row_iteration.hpp": "b63797d0746a90cf77236fbccba34471804ee6f0af83838ea45aa0f16d866c7c",
+    "tests/row_iteration_tests.cpp": "c24929fef844ad005518d59baf6ad47d3bc5dfb53c83ad00ff9d194954c4fa03",
+    "tests/ae_adapter_tests.cpp": "2b2f68c1d27767af7cfb51e7db18757a7b6ab14918ed4f248585b8fd474f2b2f",
+    "tests/prepared_grade_tests.cpp": "83907068a6e3f1b2910bd14ca5d583be25a90c7d469a11c89b214016b4eac3aa",
+    "tests/fixtures/grade_before_preparation.cpp": "cfb4272774daa3102df1ebab6543f8402e872b8b9b03b69a896aea55d989f84e"
+  },
+  "artifacts_sha256": {
+    "sdk-release-tests-final.log": "6cae362e94b5f11a999c41fcd7e22f7e44d245c82db69aef495108a51bbf7c0c",
+    "sdk-sanitize-tests-final.log": "24179573fbeac4427fe1ff8a12f65436ff9ec791c30dec3f3b59fc8328b1eef9",
+    "rows-tsan-final.log": "d84cdf2fdb9d6c280832e87be73b249e32a58911b20c5aae627a65ff54d8e2de",
+    "host-pixels-verification.json": "5021f396e86df951c8a55616c1d23ecaf87cd3cfa9e7b82271583d069e2322c8",
+    "initial-host-gate.log": "60d7724da7dc3c981f958d6628dd35ed0201cc6389950d3d6c97de23e8cb1eaf",
+    "warm-verification.json": "bfbb142891ad1685d42ca655f5938325c514562e71df0475e49b268ef25c965d",
+    "analysis-policy-parity.json": "4ea909790404be128fdd73f324a61b0bb0a50e226e093ddc2146e01967511c13",
+    "review.json": "69113328421feb8aced3752ca55a5a1b4b6bbfd39c9f52890f83a57aaaffca60",
+    "audit.json": "2106e74d5a13008c8938413f5abe48f0d0eb3ff2458996fca69420db114177ff",
+    "package-inventory.json": "85401594a4869c42291e901d7b35e6c8d2bdf84ea6046a79dc49b1ac01581491",
+    "current/package-inventory.json": "35f45e457fbe33ad8acdf3e687198beca9b587a516fa592eb1f6865a9c104973",
+    "warm-host/cleanup.json": "0882095da49a69ddc294c4674f15ddc4dcd8032daeaa380f8c1f32cb69808dfc"
+  },
+  "installed_build": "5b844ab803e76643",
+  "previous_installed_build": "ba8c5bd516081561",
+  "canonical_artifacts_sha256": {
+    "current/installation.json": "73cb18df1e1a0a1f9bd5d409e1e4ac91425d6efdbf082ab201b464b42a2d2cbe",
+    "current/verification.json": "d83b67f21eb3bb59b9aea34e684e460305ca885bbb9a24e461ed7763ad252b69",
+    "current/host/cleanup.json": "0c66751beac70882bc1d3a93b1b1d65ae76e1e8e7837a008a2ac728b9b7f99ed"
+  },
+  "updated_utc": "2026-10-19T09:00:14.875790+00:00"
+}

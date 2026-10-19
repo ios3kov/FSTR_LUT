@@ -16,6 +16,17 @@ struct GradeSettings {
 bool grade_is_neutral(const GradeSettings&) noexcept;
 void validate_grade(const GradeSettings&);
 RGB grade_linear(RGB, const GradeSettings&);
+// Validated immutable settings snapshot. Pixel-domain checks stay per sample;
+// expensive exposure/white-balance coefficients are evaluated once per context.
+class PreparedGrade final {
+public:
+    explicit PreparedGrade(const GradeSettings&);
+    RGB apply(RGB) const;
+private:
+    GradeSettings settings_;
+    bool neutral_;
+    double exposure_=1,red_=1,green_=1,blue_=1;
+};
 
 // Values0/1 are persistent. Append profiles; never reorder saved AE choices.
 enum class SourceProfile { Host, SonySLog3Cine, ArriLogC3EI800, ArriLogC4, PanasonicVLog, ACEScct, ACEScg, LinearRec709 };
@@ -51,6 +62,7 @@ public:
     std::array<float,4> apply(std::array<float,4> rgba,double color_protection=0) const;
 private:
     ColorSettings settings_;
+    PreparedGrade grade_;
     Transfer transfer_;
     Alpha alpha_;
     bool bypass_;

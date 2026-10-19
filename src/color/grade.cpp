@@ -25,23 +25,30 @@ double contrast_channel(double x, double amount) {
     return inverse_coordinate(p+amount*(log_coordinate(x)-p));
 }
 }
-RGB grade_linear(RGB input, const GradeSettings& s) {
+PreparedGrade::PreparedGrade(const GradeSettings& s):settings_(s),neutral_(grade_is_neutral(s)) {
     validate_grade(s);
+    if(s.exposure_stops!=0)exposure_=std::exp2(s.exposure_stops);
+    if(s.temperature!=0||s.tint!=0) {
+        const double red=std::exp2(.5*s.temperature),green=std::exp2(-.5*s.tint),blue=std::exp2(-.5*s.temperature);
+        const double normal=.2126*red+.7152*green+.0722*blue;
+        red_=red/normal;green_=green/normal;blue_=blue/normal;
+    }
+}
+RGB grade_linear(RGB input,const GradeSettings& s){return PreparedGrade(s).apply(input);}
+RGB PreparedGrade::apply(RGB input)const {
+    const auto& s=settings_;
     if(!std::isfinite(input.r)||!std::isfinite(input.g)||!std::isfinite(input.b))
         throw std::invalid_argument("Nonfinite linear grading input");
     const double limit=std::numeric_limits<float>::max();
     if(std::abs(input.r)>limit||std::abs(input.g)>limit||std::abs(input.b)>limit)
         throw std::invalid_argument("Linear grading input exceeds declared float domain");
-    if(grade_is_neutral(s)) return input; // Also preserves signed zero without arithmetic.
+    if(neutral_) return input; // Also preserves signed zero without arithmetic.
     RGB result=input;
     if(s.exposure_stops!=0) {
-        const double gain=std::exp2(s.exposure_stops);
-        result.r*=gain;result.g*=gain;result.b*=gain;
+        result.r*=exposure_;result.g*=exposure_;result.b*=exposure_;
     }
     if(s.temperature!=0||s.tint!=0) {
-        const double red=std::exp2(.5*s.temperature),green=std::exp2(-.5*s.tint),blue=std::exp2(-.5*s.temperature);
-        const double normal=.2126*red+.7152*green+.0722*blue;
-        result.r*=red/normal;result.g*=green/normal;result.b*=blue/normal;
+        result.r*=red_;result.g*=green_;result.b*=blue_;
     }
     if(s.contrast!=1) {
         if(s.natural_contrast) {

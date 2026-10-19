@@ -1,0 +1,27 @@
+{
+  "timestamp_utc": "2026-10-19T07:15:28.611340+00:00",
+  "base": "fecfcb8",
+  "installed_build": "ba8c5bd516081561",
+  "trial_build": "e690d22ea4cde03b",
+  "gate": "PASS scoped native/AE/performance; limits in SMART_PRELOOK_REUSE.md",
+  "artifacts_sha256": {
+    "bench-verification.json": "bb8914ad3bed024e99241ceb0aa93eb3928d3102013855ab3d61fb9e666b7a81",
+    "partial-host-verification.json": "d3bd05f34377779aa959c2002706488c7323ff06b94ccfb2eb023702b4b9443f",
+    "alpha-verification.json": "1191b49b163f08ee763231a282644244653de2b44cc1f39e07aa08b51eecd2bb",
+    "current/package-inventory.json": "c24aea20e4354835fd03a4112722b90508a7e5044967daa26e643d3c1c89d3cf",
+    "current/verification.json": "63b7c91aea47d10b1ec5145f6d4f9ed39bbd4cba1a79536f28d2681d81f58561",
+    "release-tests.log": "3aa5bbb077430efcf5ebabff5fa4b42a30a71bb3f13ef461458576e7e5c97d73",
+    "bypass-test.log": "84ad4c77a6b701b033e5de763593b3f7be369b1cfd84e4954467295de38767c8",
+    "sanitize-ocio-tests.log": "eb94a67786f68d7aa5c7ef76f530b44d1df472124cf8231856bf5a1fc03ede1e",
+    "sanitize-core-tests.log": "14cbd7ceeb0e6233f20f0555a6b6fa487038f35062f85247093cf278a35117c9",
+    "old-ocio-tests.log": "e7db56165180282507f2c1c57c6311354dd5ff66002dc2f5e29d03f66b403b97",
+    "audit.json": "c401576c3282bfcb3d36fc8278236ffebdf841deca714f3c31d0ab5769eb6c85"
+  },
+  "code_sha256": {
+    "CMakeLists.txt": "24058c859e41b81f478f2a8d2cdebd4bac62638b4d631aad24959ac4a806aec5",
+    "src/ae/plugin.cpp": "305119ee7bc9c976c56b8100c7254308767288b0061d284720659267a468230f",
+    "src/ae/color_pass.hpp": "fa1e93219e6d54aaa1232ce4e9c64abb7f2d1d6336d7a72b41102e0ee12cb833",
+    "tests/color_pass_tests.cpp": "e8564c4e7d6991dceeece729bab9b576b92ebd56276a3c2e0d931476889eb574",
+    "tests/fixtures/color_pass_before_prelook.hpp": "becdce9d31f79a2a269ab1c885963a77c943c01d3585829463c230caf66806fa"
+  }
+}

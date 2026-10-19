@@ -48,5 +48,11 @@ int main(){try{
  {ColorSettings s;s.look=lut;fstr::ae::ColorPass counted(s,Transfer::SRGB,Primaries::SRGB_Rec709,&active);std::array<float,4> captured{};const auto before=calls;counted.apply({.2f,.3f,.4f,1},0,&captured);check(calls==before+1,"Capture changed LUT sample count");}
  // Ordinary apply must retain invalid-protection checking; capture cannot hide it.
  ColorSettings s;s.look=lut;fstr::ae::ColorPass fresh(s,Transfer::SRGB,Primaries::SRGB_Rec709,&active);std::array<float,4> capture{};bool rejected=false;try{fresh.apply({.2f,.3f,.4f,1},2,&capture);}catch(const std::invalid_argument&){rejected=true;}check(rejected,"Invalid protection accepted");
+ // Mixed invalid channels must preserve the frozen transfer error precedence.
+ {ColorSettings s;frozen::BaselineColorPass old(s,Transfer::SRGB,Primaries::SRGB_Rec709,&active);fstr::ae::ColorPass fresh(s,Transfer::SRGB,Primaries::SRGB_Rec709,&active);
+  for(auto raw:{std::array<float,4>{std::numeric_limits<float>::quiet_NaN(),1.01f,.5f,1},std::array<float,4>{1.01f,std::numeric_limits<float>::infinity(),.5f,1}}){
+   auto a=run([&]{Result r;r.main=old.apply(raw);return r;});auto b=run([&]{Result r;r.main=fresh.apply(raw);return r;});check(a.error==b.error,"Mixed invalid error precedence changed");++compared;
+  }
+ }
  std::cout<<"PASS "<<compared<<" frozen main/prepared/error comparisons; "<<shared<<" eligible captures; fallback/mix0/hidden-alpha/SDR-range gates\n";return 0;
 }catch(const std::exception&e){std::cerr<<e.what()<<'\n';return 1;}}

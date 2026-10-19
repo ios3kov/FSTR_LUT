@@ -276,7 +276,7 @@ struct ShotSnapshot{
 template<class P>ShotSnapshot scene_snapshot(PF_InData*in,const PF_EffectWorld&w){
     if(!w.data||w.width<=0||w.height<=0||w.rowbytes<=0||w.width>w.rowbytes/static_cast<A_long>(sizeof(P)))throw PreparationError("Invalid scene input world");
     ShotSnapshot out;out.width=std::min<A_long>(96,w.width);out.height=std::min<A_long>(54,w.height);out.x=w.origin_x;out.y=w.origin_y;out.rgba.resize(out.width*out.height*4);const double scale=channel_max<P>();
-    for(std::size_t y=0;y<out.height;++y){if(y%8==0){auto e=PF_ABORT(in);if(e)throw e;}const auto sy=(2*y+1)*std::size_t(w.height)/(2*out.height);const auto*row=reinterpret_cast<const P*>(reinterpret_cast<const char*>(w.data)+sy*std::size_t(w.rowbytes));for(std::size_t x=0;x<out.width;++x){const auto&p=row[(2*x+1)*std::size_t(w.width)/(2*out.width)];auto*d=out.rgba.data()+(y*out.width+x)*4;d[0]=float(p.red/scale);d[1]=float(p.green/scale);d[2]=float(p.blue/scale);d[3]=float(p.alpha/scale);}}return out;
+    for(std::size_t y=0;y<out.height;++y){if(y%8==0){auto e=PF_ABORT(in);if(e)throw e;}const auto sy=(2*y+1)*std::size_t(w.height)/(2*out.height);const auto*row=reinterpret_cast<const P*>(reinterpret_cast<const char*>(w.data)+sy*std::size_t(w.rowbytes));for(std::size_t x=0;x<out.width;++x){const auto&p=row[(2*x+1)*std::size_t(w.width)/(2*out.width)];auto*d=out.rgba.data()+(y*out.width+x)*4;d[0]=float(p.red/scale);d[1]=float(p.green/scale);d[2]=float(p.blue/scale);d[3]=float(p.alpha/scale);fstr::ae::normalize_sdr_anchor(d);}}return out;
 }
 std::shared_ptr<const fstr::ae::HostSdrTimeline> analyze_scene_timeline(PF_InData*in,const PF_State&state,const std::string&metadata,fstr::Transfer transfer,const std::function<ShotSnapshot(std::size_t,bool)>&fetch){
     const auto n=scene_frame_count(in);return fstr::ae::get_sdr_timeline(in,state,metadata,[&]{
@@ -307,7 +307,7 @@ template<class P>fstr::CachedSdrPreparation clip_preparation(PF_InData* in_data,
         context<<' '<<anchors[i].time<<' '<<w->width<<' '<<w->height<<' '<<w->origin_x<<' '<<w->origin_y<<' '<<sizeof(P);
         const std::size_t nx=std::min<A_long>(96,w->width),ny=std::min<A_long>(54,w->height);snapshots.emplace_back(nx*ny*4);auto& data=snapshots.back();const double scale=channel_max<P>();
         for(std::size_t y=0;y<ny;++y){auto error=PF_ABORT(in_data);if(error)throw error;const auto sy=(2*y+1)*std::size_t(w->height)/(2*ny);const auto row=reinterpret_cast<const P*>(reinterpret_cast<const char*>(w->data)+sy*std::size_t(w->rowbytes));
-            for(std::size_t x=0;x<nx;++x){const auto& p=row[(2*x+1)*std::size_t(w->width)/(2*nx)];auto* out=data.data()+(y*nx+x)*4;out[0]=float(p.red/scale);out[1]=float(p.green/scale);out[2]=float(p.blue/scale);out[3]=float(p.alpha/scale);}
+            for(std::size_t x=0;x<nx;++x){const auto& p=row[(2*x+1)*std::size_t(w->width)/(2*nx)];auto* out=data.data()+(y*nx+x)*4;out[0]=float(p.red/scale);out[1]=float(p.green/scale);out[2]=float(p.blue/scale);out[3]=float(p.alpha/scale);fstr::ae::normalize_sdr_anchor(out);}
         }
     }
     // Build borrowed views only after snapshot storage has finished growing.

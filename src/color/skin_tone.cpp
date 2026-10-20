@@ -41,6 +41,7 @@ std::array<float,4> SkinToneLook::apply_from_ordinary(std::array<float,4> p,std:
     if(!std::isfinite(r.chroma_delta.r)||!std::isfinite(r.chroma_delta.g)||!std::isfinite(r.chroma_delta.b)||
        std::max({std::abs(r.chroma_delta.r),std::abs(r.chroma_delta.g),std::abs(r.chroma_delta.b)})>.500001||std::abs(luminance(r.chroma_delta))>1e-6)
         throw std::invalid_argument("Invalid skin reference");
+    if(mask==0)return q; // Reference validation remains observable for zero ownership.
     double boundary=1;for(std::size_t c=0;c<3;++c)boundary=std::min(boundary,smooth(0,.001,std::min({double(p[c]),1.-p[c],double(q[c]),1.-q[c]})));
     double weight=mask*r.confidence*boundary;if(weight==0||!usable({p[0],p[1],p[2]})||!usable({q[0],q[1],q[2]}))return q;
     const double y=luminance({p[0],p[1],p[2]}),qy=luminance({q[0],q[1],q[2]});weight*=smooth(1e-6,1e-5,y);if(weight==0)return q;
@@ -61,7 +62,7 @@ std::array<float,4> SkinToneLook::people_from_ordinary(std::array<float,4> p,std
     // Convex combination of complete results. Fractional overlap never grades twice.
     double values[]{base[0],base[1],base[2]};
     const double normalize=std::max(1.,mass);
-    for(const auto&v:people){const auto next=apply_from_ordinary(p,base,*v.reference,1,true);for(std::size_t c=0;c<3;++c)values[c]+=(v.weight/normalize)*(double(next[c])-base[c]);}
+    for(const auto&v:people){const auto next=apply_from_ordinary(p,base,*v.reference,v.weight==0?0:1,true);for(std::size_t c=0;c<3;++c)values[c]+=(v.weight/normalize)*(double(next[c])-base[c]);}
     auto result=base;for(std::size_t c=0;c<3;++c)result[c]=float(values[c]);return result;
 }
 

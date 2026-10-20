@@ -73,7 +73,7 @@ void initialize_automatic_analysis(){
             if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD BEGIN\n");
             auto stop_loading=[]{if(automatic_loader.state()==fstr::BackgroundResource<fstr::AutomaticSceneCache>::State::Stopped)throw std::runtime_error("Smart loading stopped");};
             auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string(),stop_loading);stop_loading();
-            auto cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),analyzer->policy(),[analyzer](const auto&image,double height,const auto&cancel){return analyzer->analyze(image,height,cancel);});
+            auto cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),analyzer->policy(),[analyzer](const auto&image,double height,const auto&cancel){return analyzer->analyze(image,height,cancel);},fstr::SceneDiskBudget{},2);
             stop_loading();if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD READY\n");
             return cache;
         });

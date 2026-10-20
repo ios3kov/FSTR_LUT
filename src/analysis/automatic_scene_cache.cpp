@@ -1,3 +1,5 @@
+#include <condition_variable>
+#include <map>
 #include "scene_payload_codec.hpp"
 #include "fstr/automatic_scene_cache.hpp"
 #include "json.hpp"
@@ -125,15 +127,36 @@ struct ActiveSceneMiss {
 };
 thread_local ActiveSceneMiss* ActiveSceneMiss::current=nullptr;
 }
+namespace {
+// Separate bounded lanes keep saved-mask reads independent of model work.
+// A lease never invokes caller code or cancellation while holding its mutex.
+class WorkLane {
+ std::mutex mutex;std::condition_variable changed;unsigned active=0,limit;
+public:
+ explicit WorkLane(unsigned n):limit(n){}
+ class Lease {
+  WorkLane* lane;
+ public:
+  Lease(WorkLane& value,const std::function<void()>& abort):lane(&value){
+   for(;;){abort();std::unique_lock<std::mutex> lock(lane->mutex);if(lane->active<lane->limit){++lane->active;return;}lane->changed.wait_for(lock,std::chrono::milliseconds(2));}
+  }
+  ~Lease(){ {std::lock_guard<std::mutex> lock(lane->mutex);--lane->active;}lane->changed.notify_one(); }
+  Lease(const Lease&)=delete;Lease& operator=(const Lease&)=delete;
+ };
+};
+}
 struct AutomaticSceneCache::Impl {
  std::filesystem::path directory;std::string policy;SceneCompute compute;SceneDiskBudget budget;
- // Never hold resident while waiting for miss, invoking callbacks or doing I/O.
- std::mutex resident,miss;std::size_t generation=0;
+ std::mutex resident;std::size_t generation=0;
+ WorkLane reads{2},backend,writes{1};
  struct Entry{std::string key;std::shared_ptr<const SceneAnalysis> analysis;std::size_t bytes;};
  std::list<Entry> entries;std::size_t bytes=0;
- Impl(std::string d,std::string p,SceneCompute c,SceneDiskBudget b):directory(std::move(d)),policy(std::move(p)),compute(std::move(c)),budget(b){if(budget.bytes && (budget.bytes<max_entry || budget.bytes>32ULL*1024*1024*1024))throw std::invalid_argument("Automatic cache disk budget must be64MiB..32GiB or zero");if(!directory.is_absolute()||!key_text(policy)||!compute)throw std::invalid_argument("Invalid automatic cache configuration");recover(directory);}
+ struct Flight{bool done=false;std::shared_ptr<const SceneAnalysis> result;std::condition_variable changed;};
+ using FlightKey=std::pair<std::string,std::size_t>;
+ std::map<FlightKey,std::shared_ptr<Flight>> flights; // Protected by resident.
+ Impl(std::string d,std::string p,SceneCompute c,SceneDiskBudget b,unsigned count):directory(std::move(d)),policy(std::move(p)),compute(std::move(c)),budget(b),backend(count){if(count<1||count>2)throw std::invalid_argument("Automatic compute limit must be1or2");if(budget.bytes && (budget.bytes<max_entry || budget.bytes>32ULL*1024*1024*1024))throw std::invalid_argument("Automatic cache disk budget must be64MiB..32GiB or zero");if(!directory.is_absolute()||!key_text(policy)||!compute)throw std::invalid_argument("Invalid automatic cache configuration");recover(directory);}
 };
-AutomaticSceneCache::AutomaticSceneCache(std::string d,std::string p,SceneCompute c,SceneDiskBudget b):impl_(new Impl(std::move(d),std::move(p),std::move(c),b)){}
+AutomaticSceneCache::AutomaticSceneCache(std::string d,std::string p,SceneCompute c,SceneDiskBudget b,unsigned count):impl_(new Impl(std::move(d),std::move(p),std::move(c),b,count)){}
 AutomaticSceneCache::~AutomaticSceneCache()=default;
 const std::string& AutomaticSceneCache::guid()const noexcept{return impl_->policy;}
 void AutomaticSceneCache::clear_memory(){
@@ -157,26 +180,51 @@ std::shared_ptr<const SceneAnalysis> AutomaticSceneCache::get(const AnalysisImag
  auto return_resident=[&]{abort();if(trace)std::fprintf(stderr,"FSTR_AUTO RAM %s\n",key.c_str());return result;};
  if(result)return return_resident();
  if(ActiveSceneMiss::contains(impl_.get()))throw std::logic_error("Recursive automatic scene cache miss");
- std::unique_lock<std::mutex> gate(impl_->miss,std::defer_lock);
- while(!gate.try_lock()){abort();std::this_thread::sleep_for(std::chrono::milliseconds(2));}
- ActiveSceneMiss active(impl_.get());abort();
- // Another owner may have populated this key while we waited. Backend calls
- // stay serialized: this is not a qualification of model parallelism.
- result=resident(false);if(result)return return_resident();
- auto directory=impl_->directory/(key+".entry");
- try{if(std::filesystem::is_directory(std::filesystem::symlink_status(directory))){SceneCache cache(directory.string(),policy);result=cache.get(i,height);if(result){validate(*result,i);if(trace)std::fprintf(stderr,"FSTR_AUTO DISK %s\n",key.c_str());}}}catch(const std::exception&){result.reset();/* Invalid data is a miss; no false analysis success. */}
- abort();if(!result){if(trace)std::fprintf(stderr,"FSTR_AUTO COMPUTE %s\n",key.c_str());result=impl_->compute(i,height,cancel);abort();if(!result)throw std::runtime_error("Automatic scene analysis returned no result");validate(*result,i);try{store(impl_->directory,key,policy,*result,height,impl_->budget);}catch(const std::exception&){/* Persistence failure retains valid current analysis. */}}
- const auto bytes=validate(*result,i);abort();std::list<Impl::Entry> retired;
- {
-  std::lock_guard<std::mutex> lock(impl_->resident);
-  // clear_memory invalidates publication by requests that began before it.
-  if(generation==impl_->generation){
-   impl_->entries.push_front({key,result,bytes});impl_->bytes+=bytes;
-   // Five explicit temporal frames fit, with room for a nearby request. The
-   // existing byte ceiling remains authoritative for large analyses.
-   while(impl_->entries.size()>8||impl_->bytes>max_resident){impl_->bytes-=impl_->entries.back().bytes;retired.splice(retired.begin(),impl_->entries,std::prev(impl_->entries.end()));}
+ ActiveSceneMiss active(impl_.get());
+ const Impl::FlightKey flight_key{key,generation};std::shared_ptr<Impl::Flight> flight;
+ for(;;){
+  abort();result=resident(false);if(result)return return_resident();
+  bool owner=false;
+  {std::lock_guard<std::mutex> lock(impl_->resident);auto found=impl_->flights.find(flight_key);if(found!=impl_->flights.end())flight=found->second;else{flight=std::make_shared<Impl::Flight>();impl_->flights.emplace(flight_key,flight);owner=true;}}
+  if(owner)break;
+  for(;;){
+   abort();std::unique_lock<std::mutex> lock(impl_->resident);
+   if(flight->done){result=flight->result;break;}
+   flight->changed.wait_for(lock,std::chrono::milliseconds(2));
   }
+  if(result){abort();if(trace)std::fprintf(stderr,"FSTR_AUTO JOIN %s\n",key.c_str());return result;}
+  // A failed/cancelled owner is not a cached error: waiters may retry with
+  // their own cancellation while retaining their original clear generation.
  }
+ auto finish=[&](std::shared_ptr<const SceneAnalysis> value){
+  {std::lock_guard<std::mutex> lock(impl_->resident);flight->result=std::move(value);flight->done=true;impl_->flights.erase(flight_key);}
+  flight->changed.notify_all();
+ };
+ try{
+  // Recheck after becoming owner: a preceding owner may just have published.
+  result=resident(false);
+  if(result){abort();if(trace)std::fprintf(stderr,"FSTR_AUTO RAM %s\n",key.c_str());finish(result);return result;}
+  if(!result){WorkLane::Lease read(impl_->reads,abort);auto directory=impl_->directory/(key+".entry");
+   try{if(std::filesystem::is_directory(std::filesystem::symlink_status(directory))){SceneCache cache(directory.string(),policy);result=cache.get(i,height);if(result){validate(*result,i);if(trace)std::fprintf(stderr,"FSTR_AUTO DISK %s\n",key.c_str());}}}catch(const std::exception&){result.reset();}
+  }
+  abort();if(!result){
+   WorkLane::Lease compute(impl_->backend,abort);abort();if(trace)std::fprintf(stderr,"FSTR_AUTO COMPUTE %s\n",key.c_str());result=impl_->compute(i,height,cancel);abort();
+   if(!result)throw std::runtime_error("Automatic scene analysis returned no result");validate(*result,i);
+   // Within one context, avoid dropping persistence because a peer owns the
+   // filesystem writer. The existing cross-process root lock stays intact.
+   WorkLane::Lease write(impl_->writes,abort);
+   try{store(impl_->directory,key,policy,*result,height,impl_->budget);}catch(const std::exception&){/* Optional persistence; keep valid current analysis. */}
+  }
+  const auto bytes=validate(*result,i);abort();std::list<Impl::Entry> retired;
+  {std::lock_guard<std::mutex> lock(impl_->resident);
+   if(generation==impl_->generation){
+    impl_->entries.push_front({key,result,bytes});impl_->bytes+=bytes;
+    while(impl_->entries.size()>8||impl_->bytes>max_resident){impl_->bytes-=impl_->entries.back().bytes;retired.splice(retired.begin(),impl_->entries,std::prev(impl_->entries.end()));}
+   }
+  }
+  finish(result);
+ }catch(...){finish({});throw;}
+
  return result;
 }
 }

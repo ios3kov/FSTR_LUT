@@ -12,7 +12,10 @@ struct SceneDiskBudget {
 };
 class AutomaticSceneCache final {
 public:
- AutomaticSceneCache(std::string directory,std::string policy,SceneCompute compute,SceneDiskBudget budget={});
+ // Two computes require a concurrently safe callback; native model stages
+ // each serialize access to their own model.
+ // No workers are created; callers retain image/context lifetime until return.
+ AutomaticSceneCache(std::string directory,std::string policy,SceneCompute compute,SceneDiskBudget budget={},unsigned max_computes=1);
  ~AutomaticSceneCache();
  std::shared_ptr<const SceneAnalysis> get(const AnalysisImage&,double,const std::function<void()>& cancellation={},const std::string& source_identity={});
  // Clears resident entries immediately; older requests cannot republish into

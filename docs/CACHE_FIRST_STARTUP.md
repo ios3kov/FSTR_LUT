@@ -35,4 +35,3 @@ Separate final source review covered deferred ownership, wait cancellation, exce
 Evidence outside Git: `work/cache-first-startup-20261020/` with check logs, mutation reports, `first-cached-pixel-check.json`, original failed host report and controlled retry. Retry8be24512bee8528d contains a test-only model-loading gate; it is not canonical product source. Its helper and private plugin remain installed while the owned AE process lives; cleanup requires its verified exit. Do not remove loaded modules or touch user projects.
 
 GPU research is separate in `work/gpu-colour-20261020/`:30latest component cases,11strict numerical failures, alpha exact. It is neither integrated nor installed; no GPU user-speed claim. Preserve all failures and the accepted installed rollback.
-

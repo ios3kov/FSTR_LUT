@@ -40,6 +40,10 @@ public:
         }catch(...){error_=std::current_exception();state_=State::Failed;changed_.notify_all();}
     }
     State state()const {std::lock_guard<std::mutex> lock(mutex_);return state_;}
+    std::shared_ptr<T> ready()const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return state_==State::Ready?value_:std::shared_ptr<T>{};
+    }
     std::shared_ptr<T> wait(const std::function<void()>& cancel={})const {
         for(;;){
             if(cancel)cancel(); // Host callback belongs only to the calling thread.

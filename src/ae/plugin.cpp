@@ -18,6 +18,8 @@
 #include <locale>
 #ifdef FSTR_NATIVE_SMART
 #include "fstr/native_scene.hpp"
+#include "fstr/native_scene_identity.hpp"
+#include "fstr/deferred_resource.hpp"
 #include <dlfcn.h>
 #include <filesystem>
 #endif
@@ -43,7 +45,13 @@ using LookLibrary=std::array<std::shared_ptr<const fstr::LUT>,fstr::builtin_look
 std::shared_ptr<const LookLibrary> looks;
 std::mutex initialization;
 std::shared_ptr<fstr::SceneCache> scene_cache;
-fstr::BackgroundResource<fstr::AutomaticSceneCache> automatic_loader;
+struct AutomaticResources {
+    std::shared_ptr<fstr::AutomaticSceneCache> cache;
+#ifdef FSTR_NATIVE_SMART
+    std::shared_ptr<fstr::DeferredResource<fstr::NativeSceneAnalyzer>> backend;
+#endif
+};
+fstr::BackgroundResource<AutomaticResources> automatic_loader;
 std::shared_ptr<fstr::SdrPreparationCache> preparation_cache;
 class SmartAnalysisError final : public std::runtime_error {public:using std::runtime_error::runtime_error;};
 using fstr::ae::PreparationError;
@@ -71,15 +79,23 @@ void initialize_automatic_analysis(){
         else {const char* user_home=std::getenv("HOME");if(!user_home)throw std::runtime_error("Smart cache location unavailable");directory=std::filesystem::path(user_home)/"Library/Caches/FSTR.Tools/FSTR_LUT/automatic-v1";}
         automatic_loader.start([resources=std::move(resources),directory=std::move(directory)]{
             if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD BEGIN\n");
-            auto stop_loading=[]{if(automatic_loader.state()==fstr::BackgroundResource<fstr::AutomaticSceneCache>::State::Stopped)throw std::runtime_error("Smart loading stopped");};
-            auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string(),stop_loading);stop_loading();
-            auto cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),analyzer->policy(),[analyzer](const auto&image,double height,const auto&cancel){return analyzer->analyze(image,height,cancel);},fstr::SceneDiskBudget{},2);
+            auto stop_loading=[]{if(automatic_loader.state()==fstr::BackgroundResource<AutomaticResources>::State::Stopped)throw std::runtime_error("Smart loading stopped");};
+            const auto policy=fstr::verified_native_scene_policy(resources.string(),stop_loading);stop_loading();
+            auto result=std::make_shared<AutomaticResources>();
+            result->backend=std::make_shared<fstr::DeferredResource<fstr::NativeSceneAnalyzer>>([resources,policy](const auto& stop){
+                if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_MODEL_LOAD BEGIN\n");
+                auto analyzer=std::make_shared<fstr::NativeSceneAnalyzer>(resources.string(),stop);stop();
+                if(analyzer->policy()!=policy)throw std::runtime_error("Smart resource identity changed during loading");
+                if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_MODEL_LOAD READY\n");
+                return analyzer;
+            });
+            result->cache=std::make_shared<fstr::AutomaticSceneCache>(directory.string(),policy,[backend=result->backend](const auto&image,double height,const auto&cancel){return backend->get(cancel)->analyze(image,height,cancel);},fstr::SceneDiskBudget{},2);
             stop_loading();if(std::getenv("FSTR_LUT_SCENE_TRACE"))std::fprintf(stderr,"FSTR_LOAD READY\n");
-            return cache;
+            return result;
         });
     }catch(...){
         // Configuration failures disable Smart, not ordinary grading.
-        auto error=std::current_exception();automatic_loader.start([error]()->std::shared_ptr<fstr::AutomaticSceneCache>{std::rethrow_exception(error);});
+        auto error=std::current_exception();automatic_loader.start([error]()->std::shared_ptr<AutomaticResources>{std::rethrow_exception(error);});
     }
 #endif
 }
@@ -87,7 +103,7 @@ std::shared_ptr<fstr::AutomaticSceneCache> automatic_analysis(PF_InData* in_data
 #ifdef FSTR_NATIVE_SMART
     if(active&&!std::atomic_load(&scene_cache)){
         auto cancel=[&]{auto error=PF_ABORT(in_data);if(error)throw error;};
-        try{return automatic_loader.wait(cancel);}
+        try{return automatic_loader.wait(cancel)->cache;}
         catch(const std::exception&){throw SmartAnalysisError("Smart model loading failed");}
     }
 #else
@@ -97,10 +113,19 @@ std::shared_ptr<fstr::AutomaticSceneCache> automatic_analysis(PF_InData* in_data
 }
 const char* loading_status(){
 #ifdef FSTR_NATIVE_SMART
-    using State=fstr::BackgroundResource<fstr::AutomaticSceneCache>::State;
+    using State=fstr::BackgroundResource<AutomaticResources>::State;
     switch(automatic_loader.state()){
         case State::Loading:return "Smart: loading model...";
-        case State::Ready:return "Smart: ready";
+        case State::Ready:{
+            const auto resources=automatic_loader.ready();
+            if(resources&&resources->backend){
+                using ModelState=fstr::BackgroundResource<fstr::NativeSceneAnalyzer>::State;
+                const auto state=resources->backend->state();
+                if(state==ModelState::Loading)return "Smart: loading model...";
+                if(state==ModelState::Failed)return "Smart: unavailable. Check installation.";
+            }
+            return "Smart: ready";
+        }
         case State::Failed:return "Smart: unavailable. Check installation.";
         default:break;
     }
@@ -245,7 +270,7 @@ template<class P,class Processor>fstr::AnalysisImage analysis_image(PF_InData* i
     if(in_data->downsample_x.num>0&&in_data->downsample_x.den>0&&in_data->downsample_y.num>0&&in_data->downsample_y.den>0)
         aspect*=double(in_data->downsample_x.den)/in_data->downsample_x.num*in_data->downsample_y.num/in_data->downsample_y.den;
     if(!std::isfinite(aspect)||aspect<.01||aspect>100)throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
-    const bool native=automatic_loader.state()==fstr::BackgroundResource<fstr::AutomaticSceneCache>::State::Ready;
+    const bool native=automatic_loader.state()==fstr::BackgroundResource<AutomaticResources>::State::Ready;
     const double factor=std::min(1.,(native?384.:960.)/std::max(world.width*aspect,double(world.height)));fstr::AnalysisImage image;
     image.width=std::max(1,int(world.width*aspect*factor));image.height=std::max(1,int(world.height*factor));image.rgba.resize(std::size_t(image.width)*image.height*4);
     const double scale=channel_max<P>();

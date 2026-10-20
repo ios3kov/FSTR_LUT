@@ -1,3 +1,7 @@
+## Cache-first startup accepted — 2026-10-20
+
+SMART-CACHE-FIRST-001 complete for installed16e472812ee35e41: compatible masks avoid AI initialization, true misses retain one cancellable loader, identity/invalidations and colour preserved. Installed15and1080ptrial7same-setting comparisons exact at exported pixels; defaultcache48reads/0model starts. Signed9bc rollback retained. See [contract and limits](CACHE_FIRST_STARTUP.md). GPU experiment remains unpromoted after strict numerical failures; no installer/release/push.
+
 ## Completed bounded Smart stage pipeline — 2026-10-20
 
 SMART-BOUNDED-PIPELINE-001 is installed9bc2f053c92ddca5 with exact signed7e rollback.33SDK Release/33ASan+UBSan,3targetedTSan, two complete cold AE orders (32.25%/39.14%less elapsed),845trial image pairs, exact raw mask persistence, real cached/fresh Stop/recovery and15canonical compatibility outputs pass in their stated scopes. Repeat-render gain is not established; startup and GPU colour remain the next separate architectural tasks. [Evidence and limits](COLD_PERFORMANCE.md). No installer/release/push.

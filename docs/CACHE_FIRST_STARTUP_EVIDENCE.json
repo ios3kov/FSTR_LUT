@@ -1,0 +1,53 @@
+{
+  "requirement": "SMART-CACHE-FIRST-001",
+  "implementation_commit": "774e5b6e80f8f39c89f6fbb6d7023a6cf33e5ebe",
+  "installed_build": "16e472812ee35e41",
+  "utc": "2026-10-20T12:31:19.457384+00:00",
+  "evidence_root": "../cache-first-startup-20261020",
+  "files": {
+    "core-checks.log": "e061e8baa805dd11d4731f21d9b4ca5225c8e0eaef307741c39f7dfe0fcfde02",
+    "sdk-mock-checks.log": "a18f122d8fc835d241ab9805b0419c7eee47a9302f19b223f34aebbb816bd91d",
+    "sanitize-checks.log": "ae221c50ed5fa875f136200af3e50f78f0d1e8e41467f65bbda69632861bccdd",
+    "tsan-checks.log": "020ee6df6de937acb6f915f1130716c6b1d3c48f1185f78807dc7ede8ecb7cc6",
+    "post-review-affected-checks.log": "5fa5083ad75779720f637d14ff075d00adddb8df987ab9cc0982449e4b0d2c08",
+    "identity-verification.json": "46c5f5e684906b23a640b7fa37e62ee0e7ab42d4d06e660e9855f64c9804d18e",
+    "identity-mutations.json": "b87a7b33af5108adc5de74284ed9e204964f79088803dbdf5b9cdc9897d34108",
+    "identity-mutations-sanitized.json": "cb97cae6b96ca8f7fd95de00d59a0fa0f0ad83117314405025465222e5b3bc5f",
+    "retry2-verification.json": "6a09d103f387d719780722f7e6a698e7cf8f59784ff13138cb72ddbaeb53774f",
+    "matching-reference-verification.json": "42a63e258f631046faaf07ea5761b3f5c704d3f00c5d2fa546422e692312f648",
+    "retry2-host/actual-stop-request.json": "91eff5e2ac073ad2d38f9d563329c3f41579462497e77ff9a2e5e8ec78c0c9d6",
+    "retry2-host/cleanup.json": "9e11d248c4197a4393a2228fbff0844fbb41dc94d9dff846ff71203be06480ec",
+    "reference-host/cleanup.json": "9e11d248c4197a4393a2228fbff0844fbb41dc94d9dff846ff71203be06480ec",
+    "retry2-comparison-attempt1.json": "67ae8f97be13fc1291dab386157ee249e9ab46f297de588b1d8b1deca706aedd",
+    "current/package-inventory.json": "6b97443f9d1042bf4049a9600eaadca9bf1e50576c9ef0daca37cb9da1282257",
+    "current/installation.json": "5c23ab9886c37318a6ebe7da6400d159902d153963d8ea0f02f0dbbb395a7b0e",
+    "current/verification.json": "18cd5ada5648b23aaea970d3e26cd64edfa0ba60ca8487260efba5299f4241a7",
+    "current/host/cleanup.json": "7642aa8d155db324ac4d64e660a03231590413ac405add5dc956fd01236bbe48",
+    "current/canonical-static-checks-attempt1.log": "7eed4a03d1666e2b48be604a0ef7e6da8d81fb70fdf4c5276f116433646944d9",
+    "current/canonical-static-checks.log": "df920c16621d6b63b68752f5f633b3e6e22a349def9877707483b06f42011ab2",
+    "current/static-check-scope.json": "2eb9e318e2e5c60fac3bc95bd557839d1bb442c003a938ac63d42298b760e72e",
+    "preinstall-final-review.json": "b2284a018824fb84ebf18050ceb7ee41c23d448a7c35e7c9ad40801997d86007",
+    "final-review.json": "39c7d02313969033d4740899eb4a09abc3710d10dc736938784d87adc62e180f",
+    "acceptance.json": "f8dd6505762548f8b4089ae98e6865802b7a1114c8830fe216e08c9a4edebd1a",
+    "final-audit.json": "112a9589999b8ddb532ab83b13dc1190ff69d38cbde686523ee05d4da341c00a"
+  },
+  "summary": {
+    "installed_exports": 15,
+    "installed_matching_comparisons": 15,
+    "trial_matching_1080p_comparisons": 7,
+    "maximum_export_code_difference": 0,
+    "installed_disk_mask_reads": 48,
+    "installed_model_starts": 0,
+    "installed_new_analysis": 0,
+    "signed_previous_build": "9bc2f053c92ddca5",
+    "all_owned_helpers_archived": true
+  },
+  "limits": [
+    "PSD-export pixels, not arbitrary32float bit parity",
+    "No universal startup/render/FPS guarantee",
+    "GPU notintegrated after11/30strict failures",
+    "Mock-only CTest selection and mismatched-strength oracle failures retained",
+    "VendorAI and AEhost notsanitizerinstrumented",
+    "No installer,release orpush"
+  ]
+}

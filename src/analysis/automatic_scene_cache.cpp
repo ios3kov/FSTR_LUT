@@ -2,6 +2,7 @@
 #include "fstr/automatic_scene_cache.hpp"
 #include "json.hpp"
 #include "picosha2.h"
+#include "fstr/byte_sha256.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -21,7 +22,7 @@
 #include <unistd.h>
 #endif
 namespace fstr {namespace {
-constexpr std::size_t max_entry=64*1024*1024,max_resident=128*1024*1024,max_disk=512*1024*1024;
+constexpr std::size_t max_entry=64*1024*1024,max_resident=128*1024*1024;
 // Byte budget controls real mask storage; the count only bounds tiny-entry overhead.
 constexpr std::size_t max_disk_entries=4096;
 // One stable inode coordinates all cooperating writers/recovery in this root.
@@ -81,10 +82,16 @@ std::size_t validate(const SceneAnalysis&a,const AnalysisImage&i){
 }
 std::string floats(const float* data,std::size_t n){if(n>max_entry/4)throw std::invalid_argument("Automatic payload budget");std::string bytes(n*4,'\0');for(std::size_t i=0;i<n;++i){std::uint32_t value;std::memcpy(&value,data+i,4);for(std::size_t c=0;c<4;++c)bytes[i*4+c]=char((value>>(c*8))&255);}return bytes;}
 void write(const std::filesystem::path&p,const std::string&bytes){std::ofstream f(p,std::ios::binary);f.write(bytes.data(),std::streamsize(bytes.size()));f.close();if(!f)throw std::runtime_error("Automatic cache write failed");}
-std::string payload(const std::filesystem::path&p,const float*data,std::size_t n){auto bytes=floats(data,n);write(p,cache_codec::encode(bytes));return picosha2::hash256_hex_string(bytes);}
+std::string payload(const std::filesystem::path&p,const float*data,std::size_t n){auto bytes=floats(data,n);write(p,cache_codec::encode(bytes));return byte_sha256(bytes);}
 bool key_text(const std::string&s){return s.size()==64&&std::all_of(s.begin(),s.end(),[](char c){return(c>='0'&&c<='9')||(c>='a'&&c<='f');});}
-void store(const std::filesystem::path&root,const std::string&key,const std::string&policy,const SceneAnalysis&a,double height){
- std::filesystem::create_directories(root);RootWriteLock lock(root);if(!lock)return;remove_abandoned(root);
+void store(const std::filesystem::path&root,const std::string&key,const std::string&policy,const SceneAnalysis&a,double height,const SceneDiskBudget& budget){
+ if(!budget.bytes)return;
+ std::filesystem::create_directories(root);RootWriteLock lock(root);if(!lock)return;
+ // Best-effort reserve: other applications can consume disk concurrently.
+ // Budget checks are advisory persistence only; valid analysis remains usable.
+ const auto available=std::filesystem::space(root).available;
+ if(available==std::uintmax_t(-1)||available<budget.free_reserve||available-budget.free_reserve<max_entry+2*1024*1024)return;
+ remove_abandoned(root);
  auto destination=root/(key+".entry");if(std::filesystem::exists(std::filesystem::symlink_status(destination)))std::filesystem::remove_all(destination);
 #if defined(__APPLE__) || defined(__linux__)
  const std::string prefix=".building-v1-";
@@ -98,10 +105,12 @@ void store(const std::filesystem::path&root,const std::string&key,const std::str
  }auto header=j.dump();if(header.size()>65536)throw std::invalid_argument("Automatic cache header budget");write(dir/(key+".fstrscene"),header);
  // A complete entry directory appears atomically. Never overwrite an active
  // immutable entry with a partially published collection of payloads.
+ std::uintmax_t entry_bytes=0;for(const auto& part:std::filesystem::directory_iterator(dir))if(std::filesystem::is_regular_file(part.symlink_status()))entry_bytes+=part.file_size();
+ if(entry_bytes>budget.bytes)return; // Temporary RAII cleanup; valid analysis remains resident.
  std::error_code error;std::filesystem::rename(dir,destination,error);if(error){if(!std::filesystem::is_directory(std::filesystem::symlink_status(destination)))throw std::runtime_error("Automatic cache publish failed");}
  std::vector<std::pair<std::filesystem::directory_entry,std::uintmax_t>> entries;std::uintmax_t total=0;
  for(const auto&e:std::filesystem::directory_iterator(root)){auto filename=e.path().filename().string();if(filename.size()!=70||filename.substr(64)!=".entry"||!key_text(filename.substr(0,64))||!std::filesystem::is_directory(e.symlink_status()))continue;std::uintmax_t bytes=0;for(const auto&p:std::filesystem::directory_iterator(e.path()))if(std::filesystem::is_regular_file(p.symlink_status()))bytes+=p.file_size();entries.push_back({e,bytes});total+=bytes;}
- std::sort(entries.begin(),entries.end(),[](const auto&a,const auto&b){return a.first.last_write_time()<b.first.last_write_time();});std::size_t remaining=entries.size();for(std::size_t k=0;k<entries.size()&&(total>max_disk||remaining>max_disk_entries);++k){if(entries[k].first.path()==destination)continue;std::filesystem::remove_all(entries[k].first.path());total-=entries[k].second;--remaining;}
+ std::sort(entries.begin(),entries.end(),[](const auto&a,const auto&b){return a.first.last_write_time()<b.first.last_write_time();});std::size_t remaining=entries.size();for(std::size_t k=0;k<entries.size()&&(total>budget.bytes||remaining>max_disk_entries);++k){if(entries[k].first.path()==destination)continue;std::filesystem::remove_all(entries[k].first.path());total-=entries[k].second;--remaining;}
 }
 }
 namespace {
@@ -117,14 +126,14 @@ struct ActiveSceneMiss {
 thread_local ActiveSceneMiss* ActiveSceneMiss::current=nullptr;
 }
 struct AutomaticSceneCache::Impl {
- std::filesystem::path directory;std::string policy;SceneCompute compute;
+ std::filesystem::path directory;std::string policy;SceneCompute compute;SceneDiskBudget budget;
  // Never hold resident while waiting for miss, invoking callbacks or doing I/O.
  std::mutex resident,miss;std::size_t generation=0;
  struct Entry{std::string key;std::shared_ptr<const SceneAnalysis> analysis;std::size_t bytes;};
  std::list<Entry> entries;std::size_t bytes=0;
- Impl(std::string d,std::string p,SceneCompute c):directory(std::move(d)),policy(std::move(p)),compute(std::move(c)){if(!directory.is_absolute()||!key_text(policy)||!compute)throw std::invalid_argument("Invalid automatic cache configuration");recover(directory);}
+ Impl(std::string d,std::string p,SceneCompute c,SceneDiskBudget b):directory(std::move(d)),policy(std::move(p)),compute(std::move(c)),budget(b){if(budget.bytes && (budget.bytes<max_entry || budget.bytes>32ULL*1024*1024*1024))throw std::invalid_argument("Automatic cache disk budget must be64MiB..32GiB or zero");if(!directory.is_absolute()||!key_text(policy)||!compute)throw std::invalid_argument("Invalid automatic cache configuration");recover(directory);}
 };
-AutomaticSceneCache::AutomaticSceneCache(std::string d,std::string p,SceneCompute c):impl_(new Impl(std::move(d),std::move(p),std::move(c))){}
+AutomaticSceneCache::AutomaticSceneCache(std::string d,std::string p,SceneCompute c,SceneDiskBudget b):impl_(new Impl(std::move(d),std::move(p),std::move(c),b)){}
 AutomaticSceneCache::~AutomaticSceneCache()=default;
 const std::string& AutomaticSceneCache::guid()const noexcept{return impl_->policy;}
 void AutomaticSceneCache::clear_memory(){
@@ -156,7 +165,7 @@ std::shared_ptr<const SceneAnalysis> AutomaticSceneCache::get(const AnalysisImag
  result=resident(false);if(result)return return_resident();
  auto directory=impl_->directory/(key+".entry");
  try{if(std::filesystem::is_directory(std::filesystem::symlink_status(directory))){SceneCache cache(directory.string(),policy);result=cache.get(i,height);if(result){validate(*result,i);if(trace)std::fprintf(stderr,"FSTR_AUTO DISK %s\n",key.c_str());}}}catch(const std::exception&){result.reset();/* Invalid data is a miss; no false analysis success. */}
- abort();if(!result){if(trace)std::fprintf(stderr,"FSTR_AUTO COMPUTE %s\n",key.c_str());result=impl_->compute(i,height,cancel);abort();if(!result)throw std::runtime_error("Automatic scene analysis returned no result");validate(*result,i);try{store(impl_->directory,key,policy,*result,height);}catch(const std::exception&){/* Persistence failure retains valid current analysis. */}}
+ abort();if(!result){if(trace)std::fprintf(stderr,"FSTR_AUTO COMPUTE %s\n",key.c_str());result=impl_->compute(i,height,cancel);abort();if(!result)throw std::runtime_error("Automatic scene analysis returned no result");validate(*result,i);try{store(impl_->directory,key,policy,*result,height,impl_->budget);}catch(const std::exception&){/* Persistence failure retains valid current analysis. */}}
  const auto bytes=validate(*result,i);abort();std::list<Impl::Entry> retired;
  {
   std::lock_guard<std::mutex> lock(impl_->resident);

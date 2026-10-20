@@ -2,6 +2,7 @@
 #include "fstr/scene_cache.hpp"
 #include "json.hpp"
 #include "picosha2.h"
+#include "fstr/byte_sha256.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -30,7 +31,7 @@ std::vector<float> payload(const std::filesystem::path&p,std::size_t count,const
   if(!std::filesystem::is_regular_file(std::filesystem::symlink_status(p)))throw std::runtime_error("Scene cache payload type mismatch");
   const auto size=std::filesystem::file_size(p);if(size>compressBound(uLong(count*4)))throw std::runtime_error("Scene cache compressed size mismatch");
   bytes=cache_codec::decode(read(p,std::size_t(size)),count*4);
- }else bytes=read(p,count*4);const auto expected=sha.get<std::string>();if(!hash_text(expected)||picosha2::hash256_hex_string(bytes)!=expected)throw std::runtime_error("Scene cache checksum mismatch");
+ }else bytes=read(p,count*4);const auto expected=sha.get<std::string>();if(!hash_text(expected)||byte_sha256(bytes)!=expected)throw std::runtime_error("Scene cache checksum mismatch");
  static_assert(sizeof(float)==4&&std::numeric_limits<float>::is_iec559,"IEEE32 required");
  std::vector<float> result(count);for(std::size_t i=0;i<count;++i){std::uint32_t bits=0;for(std::size_t c=0;c<4;++c)bits|=std::uint32_t(static_cast<unsigned char>(bytes[i*4+c]))<<(c*8);std::memcpy(&result[i],&bits,4);if(!std::isfinite(result[i]))throw std::invalid_argument("Nonfinite scene cache");}return result;
 }
@@ -38,7 +39,7 @@ void unit(float v){if(v<0||v>1)throw std::invalid_argument("Invalid scene cache 
 }
 std::string scene_cache_key(const AnalysisImage&i,double height,const std::string&policy){
  if(i.width<1||i.height<1||i.width>2048||i.height>2048||std::size_t(i.width)*std::size_t(i.height)>1048576||i.rgba.size()!=std::size_t(i.width)*std::size_t(i.height)*4||!std::isfinite(height)||height<=0||!hash_text(policy))throw std::invalid_argument("Invalid scene cache identity");
- std::ostringstream meta;meta.imbue(std::locale::classic());meta<<"FSTR_SCENE_V1\n"<<policy<<'\n'<<i.width<<' '<<i.height<<' '<<std::setprecision(17)<<height<<'\n';auto bytes=meta.str();bytes.append(reinterpret_cast<const char*>(i.rgba.data()),i.rgba.size());return picosha2::hash256_hex_string(bytes);
+ std::ostringstream meta;meta.imbue(std::locale::classic());meta<<"FSTR_SCENE_V1\n"<<policy<<'\n'<<i.width<<' '<<i.height<<' '<<std::setprecision(17)<<height<<'\n';auto bytes=meta.str();bytes.append(reinterpret_cast<const char*>(i.rgba.data()),i.rgba.size());return byte_sha256(bytes);
 }
 struct SceneCache::Impl {
  bool trace=std::getenv("FSTR_LUT_SCENE_TRACE")&&std::string(std::getenv("FSTR_LUT_SCENE_TRACE"))=="1";std::filesystem::path directory;std::string policy,guid;std::map<std::string,std::string> headers;std::mutex mutex;
@@ -59,7 +60,7 @@ std::shared_ptr<const SceneAnalysis> SceneCache::get(const AnalysisImage&i,doubl
  if(found!=impl_->entries.end()){if(impl_->trace)std::fprintf(stderr,"FSTR_SCENE RAM %s\n",key.c_str());auto value=found->value;impl_->entries.splice(impl_->entries.begin(),impl_->entries,found);return value;}
  const auto expected=impl_->headers.find(key);if(expected==impl_->headers.end()){if(impl_->trace)std::fprintf(stderr,"FSTR_SCENE MISS %s\n",key.c_str());return {};}
  const auto path=impl_->directory/(key+".fstrscene");
- auto n=std::filesystem::file_size(path);if(n>65536)throw std::invalid_argument("Scene cache header budget");auto bytes=read(path,static_cast<std::size_t>(n));if(picosha2::hash256_hex_string(bytes)!=expected->second)throw std::runtime_error("Immutable scene snapshot changed; restart analysis context");auto j=Json::parse(bytes);
+ auto n=std::filesystem::file_size(path);if(n>65536)throw std::invalid_argument("Scene cache header budget");auto bytes=read(path,static_cast<std::size_t>(n));if(byte_sha256(bytes)!=expected->second)throw std::runtime_error("Immutable scene snapshot changed; restart analysis context");auto j=Json::parse(bytes);
  if((j.at("version")!=1&&j.at("version")!=2&&j.at("version")!=3&&j.at("version")!=4)||j.at("key")!=key||j.at("policy")!=impl_->policy||j.at("width")!=i.width||j.at("height")!=i.height||j.at("source_height").get<double>()!=height)throw std::runtime_error("Scene cache identity mismatch");
  const bool compressed=j.at("version")==4;if(compressed&&j.at("payload_codec")!="zlib-1")throw std::invalid_argument("Unsupported scene payload codec");
  const std::size_t pixels=std::size_t(i.width)*std::size_t(i.height);const auto&people=j.at("people");if(!people.is_array()||people.size()>16)throw std::invalid_argument("Scene cache person budget");

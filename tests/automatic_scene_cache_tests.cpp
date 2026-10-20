@@ -91,8 +91,23 @@ int main(){const auto root=std::filesystem::temp_directory_path()/("fstr-auto-ca
  {std::ofstream f(old_dir/"old.weights",std::ios::binary);f<<'x';}
  std::filesystem::resize_file(old_dir/"old.weights",513ULL*1024*1024);
  std::filesystem::last_write_time(old_dir,std::filesystem::file_time_type::clock::now()-std::chrono::hours(1));
- {AutomaticSceneCache bounded(byte_root.string(),policy,compute);bounded.get(im,100);}
+ {AutomaticSceneCache bounded(byte_root.string(),policy,compute,{512ULL*1024*1024,0});bounded.get(im,100);}
  check(!std::filesystem::exists(old_dir)&&std::filesystem::exists(byte_root/(key+".entry")),"Disk byte budget did not evict oldest payload or removed current entry");
+ // Default capacity retains an entry that the old512MiB policy evicted.
+ const auto larger_root=root/"larger-budget",kept=larger_root/(old_key+".entry");std::filesystem::create_directories(kept);
+ {std::ofstream f(kept/"old.weights",std::ios::binary);f<<'x';}std::filesystem::resize_file(kept/"old.weights",513ULL*1024*1024);
+ {AutomaticSceneCache larger(larger_root.string(),policy,compute);larger.get(im,100);}
+ check(std::filesystem::exists(kept),"New default evicted below its byte ceiling");
+ // The8GiB default remains bounded; logical sparse bytes isolate quota policy.
+ std::filesystem::resize_file(kept/"old.weights",8ULL*1024*1024*1024+1);
+ {AutomaticSceneCache larger(larger_root.string(),policy,compute);auto unique=im;unique.rgba[0]+=20;larger.get(unique,100);}
+ check(!std::filesystem::exists(kept),"New default exceeded8GiB quota");
+ // A full disk reserve is optional-persistence failure, never false inference failure.
+ const auto reserve_root=root/"reserve";
+ {AutomaticSceneCache limited(reserve_root.string(),policy,compute,{512ULL*1024*1024,~std::uint64_t(0)});auto result=limited.get(im,100);check(bool(result),"Low space discarded valid analysis");check(!std::filesystem::exists(reserve_root/(key+".entry")),"Reserve was ignored");auto prior=calls.load();check(limited.get(im,100)==result&&calls==prior,"Low space disabled resident reuse");}
+ const auto readonly_root=root/"no-writes";
+ {AutomaticSceneCache readonly(readonly_root.string(),policy,compute,{0,0});check(bool(readonly.get(im,100))&&!std::filesystem::exists(readonly_root/(key+".entry")),"Disabled persistence wrote an entry");}
+ for(auto invalid_budget:{1ULL,33ULL*1024*1024*1024}){bool failed=false;try{AutomaticSceneCache invalid_config((root/"bad-budget").string(),policy,compute,{invalid_budget,0});}catch(const std::invalid_argument&){failed=true;}check(failed,"Invalid budget was accepted");}
  // Seed tiny managed entries to exercise the separate inode/count ceiling.
  const auto count_root=root/"count-budget";std::filesystem::create_directories(count_root);
  for(unsigned n=0;n<4096;++n){auto k=std::string(64,'0');for(unsigned j=0;j<4;++j)k[63-j]="0123456789abcdef"[(n>>(4*j))&15];std::filesystem::create_directory(count_root/(k+".entry"));}

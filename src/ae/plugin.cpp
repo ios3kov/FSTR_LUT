@@ -13,6 +13,7 @@
 #include "external_lut_ui.hpp"
 #include <optional>
 #include "picosha2.h"
+#include "pixel_digest.hpp"
 #include <iomanip>
 #include <locale>
 #ifdef FSTR_NATIVE_SMART
@@ -232,9 +233,10 @@ template<class P>std::string analysis_source_metadata(const PF_EffectWorld&world
 }
 template<class P>std::string analysis_source_identity(PF_InData*in_data,const PF_EffectWorld&world,const fstr::ColorSettings&s,fstr::Transfer transfer,const std::string& preparation_key={}){
     const auto text=analysis_source_metadata<P>(world,s,transfer,preparation_key);
-    picosha2::hash256_one_by_one hash;hash.init();hash.process(text.begin(),text.end());
+    fstr::ByteSha256 hash;hash.update(text.data(),text.size());
     // Hash valid channels only, excluding undefined row padding and ROI output.
-    for(A_long y=0;y<world.height;++y){auto error=PF_ABORT(in_data);if(error)throw error;auto row=reinterpret_cast<const P*>(reinterpret_cast<const char*>(world.data)+std::size_t(y)*std::size_t(world.rowbytes));for(A_long x=0;x<world.width;++x){const auto&p=row[x];for(const auto*channel:{&p.alpha,&p.red,&p.green,&p.blue}){auto begin=reinterpret_cast<const unsigned char*>(channel);hash.process(begin,begin+sizeof(*channel));}}}hash.finish();return picosha2::get_hash_hex_string(hash);
+    // SDK pixel layout must be exactly ARGB, with no internal or tail padding.
+    for(A_long y=0;y<world.height;++y){auto error=PF_ABORT(in_data);if(error)throw error;const auto* row=reinterpret_cast<const unsigned char*>(world.data)+std::size_t(y)*std::size_t(world.rowbytes);fstr::ae::hash_argb_row<P>(hash,row,std::size_t(world.width));}return hash.finish();
 }
 template<class P,class Processor>fstr::AnalysisImage analysis_image(PF_InData* in_data,const PF_EffectWorld& world,const Processor& prepare,fstr::Transfer transfer){
     if(world.width<=0||world.height<=0||!world.data||world.rowbytes<=0||world.width>world.rowbytes/static_cast<A_long>(sizeof(P)))throw static_cast<PF_Err>(PF_Err_BAD_CALLBACK_PARAM);
